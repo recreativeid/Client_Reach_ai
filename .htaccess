@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /Client_Reach_ai/
+
+# Don't rewrite existing files/dirs
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# API routes
+RewriteRule ^api/(.*)$ api/$1.php [L,QSA]

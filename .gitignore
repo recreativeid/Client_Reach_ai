@@ -1,0 +1,26 @@
+# Client Reach AI - Git Ignore
+config.local.php
+.env
+.env.*
+*.env
+
+# SQLite Database
+database/*.db
+database/*.db-journal
+database/*.db-wal
+database/*.db-shm
+
+# Scratchpad & testing scripts
+scratch/
+
+# IDE & OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Dependencies & temporary files
+node_modules/
+vendor/
+*.tmp
+*.log

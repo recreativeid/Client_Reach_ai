@@ -1,0 +1,1446 @@
+/**
+ * Client Reach AI - Google Maps Scraper Orchestrator
+ * Distinct Modes:
+ * 1. Mode Wilayah Administratif: Cascading Province -> Reg/City -> District -> Village with Red Boundary Polygon. NO radius.
+ * 2. Mode Titik Peta & Radius: Pin on Map Click + KM Radius slider. NO administrative region dropdowns.
+ * Target Selection: Keyword Input OR Category Presets. (Custom typing tab removed as requested).
+ * AI Outreach: 1-Click Clipboard Copy & Google Gemini AI Sales Pitch Generator.
+ */
+
+const ScraperClient = {
+    currentQuery: {
+        zoneMode: 'boundary', // 'boundary' or 'radius'
+        targetMode: 'keyword', // 'keyword' or 'preset'
+        category: 'cafe',
+        location: 'Magelang Utara',
+        lat: -7.4589,
+        lng: 110.2251,
+        radius: 3
+    },
+
+    candidatePlaces: [],
+    scrapedResults: [],
+    activeFilter: 'all',
+    activeModalItem: null,
+
+    init() {
+        this.bindZoneModeTabs();
+        this.bindTargetModeToggle();
+        this.initRegionDropdowns();
+        this.bindKeywordInput();
+        this.bindRadiusControls();
+        this.bindScrapingActions();
+        this.bindLeadFilterPills();
+        this.bindAIPitchModal();
+
+        // Connect map click: Only active when in Radius Mode
+        if (window.mapEngine) {
+            window.mapEngine.onPointSelectedCallback = (lat, lng, radius) => {
+                if (this.currentQuery.zoneMode === 'radius') {
+                    this.currentQuery.lat = lat;
+                    this.currentQuery.lng = lng;
+                    this.currentQuery.radius = radius;
+                    
+                    // Identify closest Indonesian administrative region for accurate location labeling
+                    let nearestName = 'Indonesia';
+                    let minDist = 999999;
+                    if (typeof REGIONS_DATA !== 'undefined') {
+                        (REGIONS_DATA.provinces || []).forEach(p => {
+                            const d = Math.hypot(p.lat - lat, p.lng - lng);
+                            if (d < minDist) {
+                                minDist = d;
+                                nearestName = p.name;
+                            }
+                        });
+                        for (const pid in REGIONS_DATA.regencies) {
+                            (REGIONS_DATA.regencies[pid] || []).forEach(k => {
+                                const d = Math.hypot(k.lat - lat, k.lng - lng);
+                                if (d < minDist) {
+                                    minDist = d;
+                                    nearestName = k.name;
+                                }
+                            });
+                        }
+                    }
+
+                    this.currentQuery.location = `${nearestName}`;
+                    
+                    const coordEl = document.getElementById('display-selected-coord');
+                    if (coordEl) coordEl.textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)} (${nearestName})`;
+
+                    this.loadPreScrapeCandidates();
+                }
+            };
+        }
+
+        // Initial default view
+        setTimeout(() => {
+            this.handleRegionChange();
+        }, 400);
+    },
+
+    // ----------------------------------------------------
+    // 1. MUTUALLY EXCLUSIVE ZONE MODES
+    // ----------------------------------------------------
+    bindZoneModeTabs() {
+        const btnBoundary = document.getElementById('btn-mode-boundary');
+        const btnRadius = document.getElementById('btn-mode-radius');
+        const boxBoundary = document.getElementById('zone-boundary-container');
+        const boxRadius = document.getElementById('zone-radius-container');
+        const mapIndicatorText = document.getElementById('map-indicator-text');
+
+        if (btnBoundary && btnRadius) {
+            btnBoundary.addEventListener('click', () => {
+                this.currentQuery.zoneMode = 'boundary';
+                btnBoundary.classList.add('active');
+                btnRadius.classList.remove('active');
+                btnBoundary.style.background = '#ffffff';
+                btnBoundary.style.color = '#1e40af';
+                btnRadius.style.background = 'transparent';
+                btnRadius.style.color = '#475569';
+
+                if (boxBoundary) boxBoundary.style.display = 'block';
+                if (boxRadius) boxRadius.style.display = 'none';
+                if (mapIndicatorText) mapIndicatorText.textContent = 'Garis Merah: Cakupan Wilayah Administratif';
+
+                this.handleRegionChange();
+            });
+
+            btnRadius.addEventListener('click', () => {
+                this.currentQuery.zoneMode = 'radius';
+                btnRadius.classList.add('active');
+                btnBoundary.classList.remove('active');
+                btnRadius.style.background = '#ffffff';
+                btnRadius.style.color = '#c2410c';
+                btnBoundary.style.background = 'transparent';
+                btnBoundary.style.color = '#475569';
+
+                if (boxRadius) boxRadius.style.display = 'block';
+                if (boxBoundary) boxBoundary.style.display = 'none';
+                if (mapIndicatorText) mapIndicatorText.textContent = 'Titik Pin & Lingkaran Merah: Jangkauan Radius';
+
+                const coordEl = document.getElementById('display-selected-coord');
+                if (coordEl) coordEl.textContent = `${this.currentQuery.lat.toFixed(4)}, ${this.currentQuery.lng.toFixed(4)} (${this.currentQuery.location || 'Titik Target'})`;
+
+                if (window.mapEngine) {
+                    window.mapEngine.showRadiusMode(this.currentQuery.lat, this.currentQuery.lng, this.currentQuery.radius, this.currentQuery.location || 'Titik Target Peta');
+                }
+                this.loadPreScrapeCandidates();
+            });
+        }
+    },
+
+    // ----------------------------------------------------
+    // 2. TARGET PARAMETER (KEYWORD vs CATEGORY PRESET)
+    // ----------------------------------------------------
+    bindTargetModeToggle() {
+        const btnKeyword = document.getElementById('btn-toggle-keyword');
+        const btnPreset = document.getElementById('btn-toggle-preset');
+        const boxKeyword = document.getElementById('target-keyword-box');
+        const boxPreset = document.getElementById('target-preset-box');
+        const keywordInput = document.getElementById('target-keyword-input');
+        const presetSelect = document.getElementById('target-category-select');
+
+        if (btnKeyword && btnPreset) {
+            btnKeyword.addEventListener('click', () => {
+                this.currentQuery.targetMode = 'keyword';
+                btnKeyword.classList.add('active');
+                btnPreset.classList.remove('active');
+                btnKeyword.style.background = '#2563eb';
+                btnKeyword.style.color = '#ffffff';
+                btnPreset.style.background = 'transparent';
+                btnPreset.style.color = '#64748b';
+
+                if (boxKeyword) boxKeyword.style.display = 'block';
+                if (boxPreset) boxPreset.style.display = 'none';
+
+                this.currentQuery.category = keywordInput ? keywordInput.value.trim() : 'cafe';
+                this.loadPreScrapeCandidates();
+            });
+
+            btnPreset.addEventListener('click', () => {
+                this.currentQuery.targetMode = 'preset';
+                btnPreset.classList.add('active');
+                btnKeyword.classList.remove('active');
+                btnPreset.style.background = '#2563eb';
+                btnPreset.style.color = '#ffffff';
+                btnKeyword.style.background = 'transparent';
+                btnKeyword.style.color = '#64748b';
+
+                if (boxPreset) boxPreset.style.display = 'block';
+                if (boxKeyword) boxKeyword.style.display = 'none';
+
+                this.currentQuery.category = presetSelect ? presetSelect.value : 'cafe';
+                this.loadPreScrapeCandidates();
+            });
+        }
+
+        if (presetSelect) {
+            presetSelect.addEventListener('change', () => {
+                if (this.currentQuery.targetMode === 'preset') {
+                    this.currentQuery.category = presetSelect.value;
+                    this.loadPreScrapeCandidates();
+                }
+            });
+        }
+    },
+
+    bindKeywordInput() {
+        const input = document.getElementById('target-keyword-input');
+        const btnSearch = document.getElementById('btn-trigger-search');
+        if (!input) return;
+
+        let debounce = null;
+        input.addEventListener('input', () => {
+            clearTimeout(debounce);
+            debounce = setTimeout(() => {
+                const val = input.value.trim();
+                if (val) {
+                    this.currentQuery.category = val;
+                    this.loadPreScrapeCandidates();
+                }
+            }, 400);
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const val = input.value.trim();
+                if (val) {
+                    this.currentQuery.category = val;
+                    this.loadPreScrapeCandidates();
+                }
+            }
+        });
+
+        if (btnSearch) {
+            btnSearch.addEventListener('click', () => {
+                const val = input.value.trim();
+                if (val) {
+                    this.currentQuery.category = val;
+                    this.loadPreScrapeCandidates();
+                }
+            });
+        }
+    },
+
+    // ----------------------------------------------------
+    // 3. CASCADING ADMINISTRATIVE REGIONS
+    // ----------------------------------------------------
+    initRegionDropdowns() {
+        const provSelect = document.getElementById('filter-provinsi');
+        if (!provSelect) return;
+
+        provSelect.innerHTML = '<option value="">-- Pilih Provinsi --</option>';
+        if (typeof REGIONS_DATA !== 'undefined' && REGIONS_DATA.provinces) {
+            REGIONS_DATA.provinces.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = p.name;
+                if (p.id === '33') opt.selected = true; // default Jawa Tengah
+                provSelect.appendChild(opt);
+            });
+        }
+
+        this.populateRegencies('33');
+
+        const kabSelect = document.getElementById('filter-kabupaten');
+        const kecSelect = document.getElementById('filter-kecamatan');
+        const kelSelect = document.getElementById('filter-kelurahan');
+
+        provSelect.addEventListener('change', () => {
+            this.populateRegencies(provSelect.value);
+            this.handleRegionChange();
+        });
+        if (kabSelect) {
+            kabSelect.addEventListener('change', () => {
+                this.populateDistricts(kabSelect.value);
+                this.handleRegionChange();
+            });
+        }
+        if (kecSelect) {
+            kecSelect.addEventListener('change', () => {
+                this.populateVillages(kecSelect.value);
+                this.handleRegionChange();
+            });
+        }
+        if (kelSelect) {
+            kelSelect.addEventListener('change', () => this.handleRegionChange());
+        }
+    },
+
+    populateRegencies(provId) {
+        const kabSelect = document.getElementById('filter-kabupaten');
+        const kecSelect = document.getElementById('filter-kecamatan');
+        const kelSelect = document.getElementById('filter-kelurahan');
+        if (!kabSelect) return;
+
+        kabSelect.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
+        if (kecSelect) kecSelect.innerHTML = '<option value="">-- Semua Kecamatan --</option>';
+        if (kelSelect) kelSelect.innerHTML = '<option value="">-- Semua Kelurahan --</option>';
+
+        // Center coordinates on the selected province
+        if (typeof REGIONS_DATA !== 'undefined' && REGIONS_DATA.provinces) {
+            const pObj = REGIONS_DATA.provinces.find(p => p.id === provId);
+            if (pObj) {
+                this.currentQuery.lat = pObj.lat;
+                this.currentQuery.lng = pObj.lng;
+                if (pObj.bbox) this.currentQuery.bbox = pObj.bbox;
+            }
+        }
+
+        const regList = (typeof REGIONS_DATA !== 'undefined' && REGIONS_DATA.regencies[provId]) ? REGIONS_DATA.regencies[provId] : [];
+        let defaultSelectedId = null;
+
+        regList.forEach((k, idx) => {
+            const opt = document.createElement('option');
+            opt.value = k.id;
+            opt.textContent = k.name;
+            if (provId === '33' && k.id === '3371') {
+                opt.selected = true;
+                defaultSelectedId = k.id;
+            } else if (provId !== '33' && idx === 0) {
+                opt.selected = true;
+                defaultSelectedId = k.id;
+            }
+            kabSelect.appendChild(opt);
+        });
+
+        if (!defaultSelectedId && regList.length > 0) {
+            defaultSelectedId = regList[0].id;
+        }
+
+        if (defaultSelectedId) {
+            kabSelect.value = defaultSelectedId;
+            const activeReg = regList.find(k => k.id === defaultSelectedId);
+            if (activeReg) {
+                this.currentQuery.lat = activeReg.lat;
+                this.currentQuery.lng = activeReg.lng;
+                if (activeReg.bbox) this.currentQuery.bbox = activeReg.bbox;
+            }
+            this.populateDistricts(defaultSelectedId);
+        } else {
+            kabSelect.value = '';
+            this.populateDistricts('');
+        }
+    },
+
+    populateDistricts(regId) {
+        const kabSelect = document.getElementById('filter-kabupaten');
+        const regName = kabSelect?.options[kabSelect.selectedIndex]?.text || '';
+        const kecSelect = document.getElementById('filter-kecamatan');
+        const kelSelect = document.getElementById('filter-kelurahan');
+        if (!kecSelect) return;
+
+        kecSelect.innerHTML = '<option value="">-- Semua Kecamatan --</option>';
+        if (kelSelect) kelSelect.innerHTML = '<option value="">-- Semua Kelurahan --</option>';
+
+        // Sync coordinates with selected regency
+        if (regId && typeof REGIONS_DATA !== 'undefined' && REGIONS_DATA.regencies) {
+            for (const pid in REGIONS_DATA.regencies) {
+                const found = REGIONS_DATA.regencies[pid].find(k => k.id === regId);
+                if (found) {
+                    this.currentQuery.lat = found.lat;
+                    this.currentQuery.lng = found.lng;
+                    if (found.bbox) this.currentQuery.bbox = found.bbox;
+                    break;
+                }
+            }
+        }
+
+        let distList = (typeof REGIONS_DATA !== 'undefined' && REGIONS_DATA.districts && REGIONS_DATA.districts[regId]) ? REGIONS_DATA.districts[regId] : [];
+        
+        // Dynamic fallback subdistricts for ANY regency in Indonesia
+        if ((!distList || distList.length === 0) && regName && !regName.startsWith('--')) {
+            const cleanReg = regName.replace(/^(Kabupaten|Kota)\s+/i, '');
+            const cLat = this.currentQuery.lat;
+            const cLng = this.currentQuery.lng;
+            distList = [
+                { id: regId + '01', name: cleanReg + ' Pusat / Kota', lat: cLat, lng: cLng },
+                { id: regId + '02', name: cleanReg + ' Utara', lat: cLat + 0.03, lng: cLng },
+                { id: regId + '03', name: cleanReg + ' Selatan', lat: cLat - 0.03, lng: cLng },
+                { id: regId + '04', name: cleanReg + ' Barat', lat: cLat, lng: cLng - 0.03 },
+                { id: regId + '05', name: cleanReg + ' Timur', lat: cLat, lng: cLng + 0.03 }
+            ];
+        }
+
+        let activeDistId = null;
+        distList.forEach((d, idx) => {
+            const opt = document.createElement('option');
+            opt.value = d.id;
+            opt.textContent = d.name;
+            if (regId === '3371' && d.id === '337103') {
+                opt.selected = true;
+                activeDistId = d.id;
+            } else if (regId !== '3371' && idx === 0) {
+                opt.selected = true;
+                activeDistId = d.id;
+            }
+            kecSelect.appendChild(opt);
+        });
+
+        if (!activeDistId && distList.length > 0) {
+            activeDistId = distList[0].id;
+        }
+
+        if (activeDistId) {
+            kecSelect.value = activeDistId;
+            const activeDist = distList.find(d => d.id === activeDistId);
+            if (activeDist && activeDist.lat) {
+                this.currentQuery.lat = activeDist.lat;
+                this.currentQuery.lng = activeDist.lng;
+            }
+            this.populateVillages(activeDistId);
+        } else {
+            kecSelect.value = '';
+            this.populateVillages('');
+        }
+    },
+
+    populateVillages(distId) {
+        const kecSelect = document.getElementById('filter-kecamatan');
+        const distName = kecSelect?.options[kecSelect.selectedIndex]?.text || '';
+        const kelSelect = document.getElementById('filter-kelurahan');
+        if (!kelSelect) return;
+
+        kelSelect.innerHTML = '<option value="">-- Semua Kelurahan/Desa --</option>';
+        let vList = (typeof REGIONS_DATA !== 'undefined' && REGIONS_DATA.villages && REGIONS_DATA.villages[distId]) ? REGIONS_DATA.villages[distId] : [];
+        if ((!vList || vList.length === 0) && distName && !distName.startsWith('--')) {
+            const cleanDist = distName.replace(/^(Kecamatan)\s+/i, '');
+            const cLat = this.currentQuery.lat;
+            const cLng = this.currentQuery.lng;
+            vList = [
+                { id: distId + '01', name: cleanDist + ' 1', lat: cLat + 0.008, lng: cLng + 0.008 },
+                { id: distId + '02', name: cleanDist + ' 2', lat: cLat - 0.008, lng: cLng - 0.008 },
+                { id: distId + '03', name: cleanDist + ' 3', lat: cLat + 0.005, lng: cLng - 0.005 }
+            ];
+        }
+        let activeVillageId = null;
+        vList.forEach((v, idx) => {
+            const opt = document.createElement('option');
+            opt.value = v.id;
+            opt.textContent = v.name;
+            if (idx === 0) {
+                opt.selected = true;
+                activeVillageId = v.id;
+            }
+            kelSelect.appendChild(opt);
+        });
+
+        if (activeVillageId) {
+            kelSelect.value = activeVillageId;
+        } else {
+            kelSelect.value = '';
+        }
+    },
+
+    async handleRegionChange() {
+        if (this.currentQuery.zoneMode !== 'boundary') return;
+
+        const provSelect = document.getElementById('filter-provinsi');
+        const kabSelect = document.getElementById('filter-kabupaten');
+        const kecSelect = document.getElementById('filter-kecamatan');
+        const kelSelect = document.getElementById('filter-kelurahan');
+
+        const provName = provSelect?.options[provSelect.selectedIndex]?.text || '';
+        const kabName = kabSelect?.options[kabSelect.selectedIndex]?.text || '';
+        const kecName = kecSelect?.options[kecSelect.selectedIndex]?.text || '';
+        const kelName = kelSelect?.options[kelSelect.selectedIndex]?.text || '';
+
+        const locationParts = [kelName, kecName, kabName, provName].filter(x => x && !x.startsWith('--'));
+        const locationStr = locationParts.join(', ') || 'Indonesia';
+        this.currentQuery.location = locationStr;
+
+        // Fetch official territory bounding polygon from regions API
+        const searchScope = kecName && !kecName.startsWith('--') ? kecName : (kabName && !kabName.startsWith('--') ? kabName : provName);
+        try {
+            const res = await fetch(`api/regions.php?action=boundary&q=${encodeURIComponent(searchScope)}&lat=${this.currentQuery.lat}&lng=${this.currentQuery.lng}`);
+            const data = await res.json();
+            if (data.success && window.mapEngine) {
+                this.currentQuery.lat = data.lat;
+                this.currentQuery.lng = data.lng;
+                this.currentQuery.bbox = data.boundingbox;
+                window.mapEngine.showBoundaryMode(data.boundingbox, data.geojson, data.name || locationStr);
+            }
+        } catch (e) {
+            console.error('Region boundary fetch error:', e);
+        }
+
+        this.loadPreScrapeCandidates();
+    },
+
+    // ----------------------------------------------------
+    // 4. RADIUS CONTROLS
+    // ----------------------------------------------------
+    bindRadiusControls() {
+        const slider = document.getElementById('unified-radius-slider');
+        const display = document.getElementById('radius-km-display');
+
+        if (slider) {
+            slider.addEventListener('input', () => {
+                const val = parseFloat(slider.value);
+                if (display) display.textContent = `${val} KM`;
+                this.currentQuery.radius = val;
+                if (this.currentQuery.zoneMode === 'radius' && window.mapEngine) {
+                    window.mapEngine.updateRadius(val);
+                }
+                this.loadPreScrapeCandidates();
+            });
+        }
+    },
+
+    // ----------------------------------------------------
+    // 5. CANDIDATE PREVIEW
+    // ----------------------------------------------------
+    async loadPreScrapeCandidates() {
+        const countBadge = document.getElementById('preview-count-badge');
+        const listContainer = document.getElementById('pre-scrape-places-list');
+
+        try {
+            const queryObj = {
+                action: 'preview',
+                method: this.currentQuery.zoneMode,
+                category: this.currentQuery.category || 'cafe',
+                location: this.currentQuery.location || 'Magelang Utara',
+                lat: this.currentQuery.lat,
+                lng: this.currentQuery.lng,
+                radius: this.currentQuery.radius
+            };
+
+            // Pass bbox when in boundary mode
+            if (this.currentQuery.zoneMode === 'boundary' && this.currentQuery.bbox) {
+                queryObj.bbox = this.currentQuery.bbox.join(',');
+            }
+
+            const params = new URLSearchParams(queryObj);
+            const res = await fetch(`api/scraper.php?${params.toString()}`);
+            const data = await res.json();
+
+            if (data.success && data.preview_places) {
+                // Strictly guarantee all places sit inside red boundary when in boundary mode
+                if (this.currentQuery.zoneMode === 'boundary' && window.mapEngine) {
+                    this.candidatePlaces = data.preview_places.map(p => {
+                        const safe = window.mapEngine.ensurePointInsideBoundary(p.lat, p.lng);
+                        p.lat = safe[0];
+                        p.lng = safe[1];
+                        return p;
+                    });
+                } else {
+                    this.candidatePlaces = data.preview_places;
+                }
+
+                if (countBadge) {
+                    countBadge.textContent = `${this.candidatePlaces.length} Calon Terdeteksi (Dalam Batas)`;
+                }
+
+                if (listContainer) {
+                    listContainer.innerHTML = '';
+                    this.candidatePlaces.forEach(p => {
+                        const row = document.createElement('div');
+                        row.style.cssText = 'padding: 8px 10px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem;';
+                        row.innerHTML = `
+                            <div>
+                                <strong style="color: #0f172a;">${p.name}</strong>
+                                <div style="color: #64748b; font-size: 0.68rem;">${p.address}</div>
+                            </div>
+                            <div style="text-align: right; white-space: nowrap;">
+                                <span class="badge badge-blue">${p.category}</span>
+                                <span style="font-weight: 700; color: #f59e0b; margin-left: 4px;">⭐ ${p.rating}</span>
+                            </div>
+                        `;
+                        listContainer.appendChild(row);
+                    });
+                }
+
+                if (window.mapEngine) {
+                    window.mapEngine.showPreviewMarkers(this.candidatePlaces);
+                }
+            }
+        } catch (e) {
+            console.error('Candidate preview load failed:', e);
+        }
+    },
+
+    // ----------------------------------------------------
+    // 6. DEEP SCRAPE ACTION & RESULTS TABLE
+    // ----------------------------------------------------
+    bindScrapingActions() {
+        const btnScrape = document.getElementById('btn-execute-scrape');
+        if (btnScrape) {
+            btnScrape.addEventListener('click', () => this.executeDeepScrape());
+        }
+
+        const btnExportExcel = document.getElementById('btn-export-excel');
+        if (btnExportExcel) {
+            btnExportExcel.addEventListener('click', () => this.exportScrapedToExcel());
+        }
+
+        const btnSaveArchive = document.getElementById('btn-save-to-archive-modal');
+        if (btnSaveArchive) {
+            btnSaveArchive.addEventListener('click', () => this.openSaveArchiveModal());
+        }
+
+        // History buttons (both on search panel and on results table header)
+        document.querySelectorAll('#btn-show-history, #btn-show-history-results, .btn-show-history-trigger').forEach(btn => {
+            btn.addEventListener('click', () => this.openHistoryModal());
+        });
+
+        const btnBackToSearch = document.getElementById('btn-back-to-search');
+        if (btnBackToSearch) {
+            btnBackToSearch.addEventListener('click', () => {
+                document.getElementById('scraped-results-view').style.display = 'none';
+                document.getElementById('scraper-setup-view').style.display = 'block';
+            });
+        }
+    },
+
+    async executeDeepScrape() {
+        const btn = document.getElementById('btn-execute-scrape');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengekstrak Data Google Maps...';
+        }
+
+        try {
+            const payload = {
+                action: 'scrape',
+                method: this.currentQuery.zoneMode,
+                category: this.currentQuery.category || 'cafe',
+                location: this.currentQuery.location || 'Magelang Utara',
+                lat: this.currentQuery.lat,
+                lng: this.currentQuery.lng,
+                radius: this.currentQuery.radius,
+                limit: 15
+            };
+
+            if (this.currentQuery.zoneMode === 'boundary' && this.currentQuery.bbox) {
+                payload.bbox = this.currentQuery.bbox;
+            }
+
+            const res = await fetch('api/scraper.php?action=scrape', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+
+            if (data.success && data.items) {
+                if (this.currentQuery.zoneMode === 'boundary' && window.mapEngine) {
+                    this.scrapedResults = data.items.map(item => {
+                        const safe = window.mapEngine.ensurePointInsideBoundary(item.lat, item.lng);
+                        item.lat = safe[0];
+                        item.lng = safe[1];
+                        return item;
+                    });
+                } else {
+                    this.scrapedResults = data.items;
+                }
+
+                this.renderScrapedResultsTable();
+
+                document.getElementById('scraper-setup-view').style.display = 'none';
+                document.getElementById('scraped-results-view').style.display = 'block';
+
+                if (window.App) window.App.refreshDashboardStats();
+            } else {
+                alert('Gagal scraping: ' + data.message);
+            }
+        } catch (e) {
+            alert('Kesalahan jaringan: ' + e.message);
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Scrape Data Lengkap';
+            }
+        }
+    },
+
+    // Filter pills in scraped results
+    bindLeadFilterPills() {
+        document.querySelectorAll('.lead-filter-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                document.querySelectorAll('.lead-filter-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                this.activeFilter = pill.getAttribute('data-filter') || 'all';
+                this.renderScrapedResultsTable();
+            });
+        });
+    },
+
+    renderScrapedResultsTable() {
+        const tbody = document.getElementById('scraped-table-body');
+        const titleEl = document.getElementById('scraped-results-title');
+        const countBadge = document.getElementById('scraped-count-badge');
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+        if (titleEl) titleEl.textContent = `Hasil Scraping: ${this.currentQuery.category.toUpperCase()} di ${this.currentQuery.location}`;
+
+        let filtered = this.scrapedResults;
+        if (this.activeFilter === 'has_wa') {
+            filtered = this.scrapedResults.filter(it => it.phone && it.phone !== '-');
+        } else if (this.activeFilter === 'low_rating') {
+            filtered = this.scrapedResults.filter(it => parseFloat(it.rating) < 4.5);
+        } else if (this.activeFilter === 'high_rating') {
+            filtered = this.scrapedResults.filter(it => parseFloat(it.rating) >= 4.5);
+        } else if (this.activeFilter === 'no_web') {
+            filtered = this.scrapedResults.filter(it => !it.social_media || it.social_media.startsWith('@'));
+        }
+
+        if (countBadge) countBadge.textContent = `${filtered.length} dari ${this.scrapedResults.length} Data Ditampilkan`;
+
+        filtered.forEach((it, idx) => {
+            const tr = document.createElement('tr');
+            const waUrl = window.TemplateManager ? window.TemplateManager.getWhatsAppUrl(it) : '#';
+
+            tr.innerHTML = `
+                <td style="width: 30px; text-align: center;">${idx + 1}</td>
+                <td>
+                    <div style="font-weight: 700; color: #0f172a;">${it.name}</div>
+                    <div style="font-size: 0.72rem; color: #64748b;">${it.category}</div>
+                </td>
+                <td style="max-width: 170px; font-size: 0.74rem;">${it.address}</td>
+                <td style="white-space: nowrap; font-weight: 600; font-size: 0.76rem;">${it.phone || '-'}</td>
+                <td style="font-size: 0.72rem; color: #2563eb;">${it.social_media || '-'}</td>
+                <td style="font-size: 0.72rem; color: #64748b;">${it.opening_hours || '-'}</td>
+                <td style="font-weight: 700; color: #f59e0b; white-space: nowrap;">⭐ ${it.rating} <span style="font-size: 0.68rem; color:#94a3b8;">(${it.reviews_count})</span></td>
+                <td style="text-align: right; white-space: nowrap;">
+                    <div style="display: inline-flex; gap: 4px;">
+                        <button class="btn btn-outline btn-sm btn-quick-copy" title="Salin Pesan Penawaran Terpersonalisasi" data-id="${it.id}">
+                            <i class="fa-solid fa-copy"></i> Salin
+                        </button>
+                        <button class="btn btn-primary btn-sm btn-open-gemini-pitch" title="Buat Pesan Sales Otomatis dengan Gemini AI" data-id="${it.id}" style="background: linear-gradient(135deg, #2563eb, #7c3aed); border: none;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ AI Pitch
+                        </button>
+                        <a href="${waUrl}" target="_blank" class="btn btn-wa btn-sm" title="Chat WhatsApp Langsung">
+                            <i class="fa-brands fa-whatsapp"></i> WA
+                        </a>
+                    </div>
+                </td>
+            `;
+
+            // Quick Copy Handler
+            tr.querySelector('.btn-quick-copy').addEventListener('click', () => {
+                const pitch = window.TemplateManager ? window.TemplateManager.getPersonalizedMessage(it) : `Halo ${it.name}, kami dari Client Reach AI.`;
+                navigator.clipboard.writeText(pitch);
+                this.showToast(`✓ Pesan penawaran untuk ${it.name} berhasil disalin!`);
+            });
+
+            // Open Gemini AI Pitch Modal
+            tr.querySelector('.btn-open-gemini-pitch').addEventListener('click', () => {
+                this.openAIPitchModal(it);
+            });
+
+            tbody.appendChild(tr);
+        });
+    },
+
+    // ----------------------------------------------------
+    // 7. WHATSAPP OUTREACH & GEMINI AI SALES PITCH MODAL
+    // ----------------------------------------------------
+    uploadedPromoImage: null,
+
+    bindAIPitchModal() {
+        // Tab Switchers
+        const tabStandard = document.getElementById('tab-btn-standard');
+        const tabGemini = document.getElementById('tab-btn-gemini');
+        const panelStandard = document.getElementById('outreach-panel-standard');
+        const panelGemini = document.getElementById('outreach-panel-gemini');
+        const btnQuickSwitch = document.getElementById('btn-quick-switch-to-ai');
+
+        const switchTab = (mode) => {
+            if (mode === 'standard') {
+                tabStandard.classList.add('active');
+                tabGemini.classList.remove('active');
+                panelStandard.style.display = 'block';
+                panelGemini.style.display = 'none';
+            } else {
+                tabGemini.classList.add('active');
+                tabStandard.classList.remove('active');
+                panelGemini.style.display = 'block';
+                panelStandard.style.display = 'none';
+            }
+        };
+
+        if (tabStandard && tabGemini) {
+            tabStandard.addEventListener('click', () => switchTab('standard'));
+            tabGemini.addEventListener('click', () => switchTab('gemini'));
+        }
+        if (btnQuickSwitch) {
+            btnQuickSwitch.addEventListener('click', () => switchTab('gemini'));
+        }
+
+        // Standard Panel Controls
+        const standardGreeting = document.getElementById('standard-greeting-select');
+        if (standardGreeting) {
+            standardGreeting.addEventListener('change', () => this.updateStandardPitchText());
+        }
+
+        const btnCopyStandard = document.getElementById('btn-copy-standard-output');
+        if (btnCopyStandard) {
+            btnCopyStandard.addEventListener('click', () => {
+                const text = document.getElementById('standard-pitch-output')?.value;
+                if (text) {
+                    navigator.clipboard.writeText(text);
+                    this.showToast('✓ Template pesan WhatsApp berhasil disalin!');
+                }
+            });
+        }
+
+        // Gemini AI Controls
+        const btnRun = document.getElementById('btn-run-gemini-pitch');
+        const btnCopyAI = document.getElementById('btn-copy-ai-output');
+        const btnSaveAITemplate = document.getElementById('btn-save-ai-to-templates');
+
+        if (btnRun) {
+            btnRun.addEventListener('click', () => this.generateGeminiPitch());
+        }
+
+        if (btnCopyAI) {
+            btnCopyAI.addEventListener('click', () => {
+                const text = document.getElementById('ai-pitch-output')?.value;
+                if (text) {
+                    navigator.clipboard.writeText(text);
+                    this.showToast('✓ Pesan AI Closing berhasil disalin ke clipboard!');
+                }
+            });
+        }
+
+        if (btnSaveAITemplate) {
+            btnSaveAITemplate.addEventListener('click', () => {
+                const text = document.getElementById('ai-pitch-output')?.value;
+                if (text && window.TemplateManager) {
+                    const cat = this.activeModalItem?.category || 'Umum';
+                    window.TemplateManager.templatesMap[cat] = {
+                        category_name: cat,
+                        greeting_type: 'formal',
+                        message_body: text
+                    };
+                    this.showToast(`✓ Pesan berhasil disimpan ke template kategori ${cat}!`);
+                }
+            });
+        }
+
+        // Multimodal Promo Image Upload & Drag-and-Drop
+        const dropzone = document.getElementById('promo-image-dropzone');
+        const fileInput = document.getElementById('promo-image-file');
+        const previewCard = document.getElementById('promo-image-preview-card');
+        const previewThumb = document.getElementById('promo-image-thumb');
+        const previewFilename = document.getElementById('promo-image-filename');
+        const btnRemoveImage = document.getElementById('btn-remove-promo-image');
+
+        if (dropzone && fileInput) {
+            dropzone.addEventListener('click', () => fileInput.click());
+
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            });
+
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('dragover');
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    this.handlePromoImageFile(e.dataTransfer.files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    this.handlePromoImageFile(e.target.files[0]);
+                }
+            });
+        }
+
+        if (btnRemoveImage) {
+            btnRemoveImage.addEventListener('click', () => {
+                this.uploadedPromoImage = null;
+                if (fileInput) fileInput.value = '';
+                if (previewCard) previewCard.style.display = 'none';
+                if (dropzone) dropzone.style.display = 'block';
+                this.showToast('Foto brosur promosi dihapus');
+            });
+        }
+
+        // Connect button from Template Management page
+        const btnOpenAITemplate = document.getElementById('btn-open-ai-template-gen');
+        if (btnOpenAITemplate) {
+            btnOpenAITemplate.addEventListener('click', () => {
+                const dummyItem = {
+                    name: 'Nama Bisnis Calon Klien',
+                    category: window.TemplateManager?.activeCategory || 'Cafe & Coffee Shop',
+                    address: 'Kota Magelang',
+                    rating: '4.8',
+                    reviews_count: '120',
+                    phone: '081234567890'
+                };
+                this.openAIPitchModal(dummyItem, 'gemini');
+            });
+        }
+    },
+
+    handlePromoImageFile(file) {
+        if (!file.type.startsWith('image/')) {
+            alert('Silakan pilih file gambar (JPG, PNG, atau WebP)');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const dataUrl = e.target.result;
+            this.uploadedPromoImage = {
+                dataUrl: dataUrl,
+                base64: dataUrl,
+                mime: file.type,
+                filename: file.name
+            };
+
+            const dropzone = document.getElementById('promo-image-dropzone');
+            const previewCard = document.getElementById('promo-image-preview-card');
+            const previewThumb = document.getElementById('promo-image-thumb');
+            const previewFilename = document.getElementById('promo-image-filename');
+
+            if (previewThumb) previewThumb.src = dataUrl;
+            if (previewFilename) previewFilename.textContent = `${file.name} (${Math.round(file.size / 1024)} KB)`;
+            if (dropzone) dropzone.style.display = 'none';
+            if (previewCard) previewCard.style.display = 'flex';
+
+            this.showToast('✓ Gambar flyer/brosur berhasil dimuat! Siap dianalisis Gemini AI.');
+        };
+        reader.readAsDataURL(file);
+    },
+
+    openAIPitchModal(item, initialMode = 'standard') {
+        this.activeModalItem = item;
+        const modal = document.getElementById('modal-ai-pitch');
+        const bizName = document.getElementById('ai-modal-biz-name');
+        const bizMeta = document.getElementById('ai-modal-biz-meta');
+        const inputBizName = document.getElementById('ai-input-biz-name');
+        const statusEl = document.getElementById('ai-pitch-status');
+        const tabStandard = document.getElementById('tab-btn-standard');
+        const tabGemini = document.getElementById('tab-btn-gemini');
+        const panelStandard = document.getElementById('outreach-panel-standard');
+        const panelGemini = document.getElementById('outreach-panel-gemini');
+
+        if (bizName) bizName.textContent = item.name;
+        if (inputBizName) inputBizName.value = item.name;
+        if (bizMeta) bizMeta.textContent = `${item.category} • ${item.address} • ⭐ ${item.rating} (${item.reviews_count || '0'} ulasan)`;
+        if (statusEl) statusEl.textContent = '';
+
+        // Reset promo image if modal opened afresh
+        this.uploadedPromoImage = null;
+        const fileInput = document.getElementById('promo-image-file');
+        const previewCard = document.getElementById('promo-image-preview-card');
+        const dropzone = document.getElementById('promo-image-dropzone');
+        if (fileInput) fileInput.value = '';
+        if (previewCard) previewCard.style.display = 'none';
+        if (dropzone) dropzone.style.display = 'block';
+
+        // Update standard template text
+        this.updateStandardPitchText();
+
+        // Switch to appropriate tab
+        if (initialMode === 'gemini') {
+            tabGemini?.classList.add('active');
+            tabStandard?.classList.remove('active');
+            if (panelGemini) panelGemini.style.display = 'block';
+            if (panelStandard) panelStandard.style.display = 'none';
+        } else {
+            tabStandard?.classList.add('active');
+            tabGemini?.classList.remove('active');
+            if (panelStandard) panelStandard.style.display = 'block';
+            if (panelGemini) panelGemini.style.display = 'none';
+        }
+
+        if (modal) modal.classList.add('active');
+    },
+
+    updateStandardPitchText() {
+        if (!this.activeModalItem) return;
+        const item = this.activeModalItem;
+        const outputBox = document.getElementById('standard-pitch-output');
+        const waBtn = document.getElementById('btn-wa-standard-output');
+        const greetingSelect = document.getElementById('standard-greeting-select');
+        const greetingType = greetingSelect ? greetingSelect.value : 'formal';
+
+        let greetingText = `Hallo kak dgn pemilik/manajemen *${item.name}*?`;
+        if (greetingType === 'humas') {
+            greetingText = `Selamat siang bapak/ibu bagian manajemen & kemitraan *${item.name}*.`;
+        } else if (greetingType === 'casual') {
+            greetingText = `Halo kak *${item.name}*! Salam kenal dari tim Client Reach AI.`;
+        }
+
+        let body = window.TemplateManager ? window.TemplateManager.getPersonalizedMessage(item) : '';
+        // If template doesn't have custom body, create standard template
+        if (!body) {
+            body = `${greetingText}\n\nKami sempat melihat profil usaha kakak di Google Maps dengan reputasi yang sangat baik (Rating ${item.rating} ⭐). Kami ingin sharing solusi singkat untuk optimasi visibilitas pelanggan lokal dan hemat biaya promosi.\n\nKira-kira jika kami kirimkan ringkasan insight singkatnya via WhatsApp ini, boleh kak? Terima kasih banyak 🙏`;
+        } else {
+            // Replace greeting at beginning if standard
+            body = `${greetingText}\n\n` + body.replace(/^Halo [^\n]+?\n\n/i, '').replace(/^Hallo [^\n]+?\n\n/i, '');
+        }
+
+        if (outputBox) outputBox.value = body;
+
+        let phone = (item.phone || '').replace(/[^0-9]/g, '');
+        if (phone.startsWith('0')) phone = '62' + phone.substring(1);
+        else if (!phone.startsWith('62') && phone.length > 8) phone = '62' + phone;
+
+        if (waBtn) {
+            waBtn.href = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(body)}`;
+        }
+    },
+
+    async generateGeminiPitch() {
+        if (!this.activeModalItem) return;
+
+        const btnRun = document.getElementById('btn-run-gemini-pitch');
+        const outputBox = document.getElementById('ai-pitch-output');
+        const statusEl = document.getElementById('ai-pitch-status');
+        const waBtn = document.getElementById('btn-wa-ai-output');
+
+        const bizNameInput = document.getElementById('ai-input-biz-name');
+        const targetBizName = bizNameInput && bizNameInput.value.trim() ? bizNameInput.value.trim() : this.activeModalItem.name;
+        const service = document.getElementById('ai-modal-service-select')?.value || 'Jasa Optimasi Google Maps & Review Booster';
+        const painPoint = document.getElementById('ai-modal-pain-select')?.value || 'Peringkat Google Maps belum di 3 besar & kompetitor di sekitar lebih ramai';
+        const offer = document.getElementById('ai-modal-offer-input')?.value || 'Free Audit Profil Google Maps 10 Menit & Diskon Promo 50%';
+        const tone = document.getElementById('ai-modal-tone-select')?.value || 'Hangat, Sopan & Profesional';
+
+        if (btnRun) {
+            btnRun.disabled = true;
+            btnRun.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gemini AI Sedang Menganalisis & Meracik Pesan...';
+        }
+        if (statusEl) {
+            statusEl.textContent = 'Gemini AI sedang membaca data & menganalisis psikologi closing...';
+            statusEl.style.color = '#2563eb';
+        }
+
+        try {
+            const payload = {
+                action: 'generate_pitch',
+                business_name: targetBizName,
+                category: this.activeModalItem.category,
+                address: this.activeModalItem.address,
+                rating: this.activeModalItem.rating,
+                reviews_count: this.activeModalItem.reviews_count || '100',
+                has_website: !!(this.activeModalItem.social_media && this.activeModalItem.social_media.includes('.')),
+                my_service: service,
+                my_offer: offer,
+                pain_point: painPoint,
+                tone: tone
+            };
+
+            // Attach image if uploaded
+            if (this.uploadedPromoImage && this.uploadedPromoImage.base64) {
+                payload.image_base64 = this.uploadedPromoImage.base64;
+                payload.image_mime = this.uploadedPromoImage.mime;
+            }
+
+            const res = await fetch('api/gemini.php?action=generate_pitch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+            if (data.success && data.pitch) {
+                if (outputBox) outputBox.value = data.pitch;
+                if (statusEl) {
+                    statusEl.textContent = data.has_image ? '✓ Sukses diracik oleh Gemini Vision (Teks + Analisis Flyer)! ' : '✓ Berhasil diracik oleh Gemini AI!';
+                    statusEl.style.color = '#16a34a';
+                }
+
+                // Update WhatsApp button with generated AI text
+                let phone = (this.activeModalItem.phone || '').replace(/[^0-9]/g, '');
+                if (phone.startsWith('0')) phone = '62' + phone.substring(1);
+                else if (!phone.startsWith('62') && phone.length > 8) phone = '62' + phone;
+
+                if (waBtn) waBtn.href = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(data.pitch)}`;
+                this.showToast('✓ Naskah closing AI berhasil diracik!');
+            } else {
+                alert('Gagal generate: ' + (data.message || 'Terjadi kesalahan'));
+            }
+        } catch (e) {
+            alert('Kesalahan koneksi AI: ' + e.message);
+        } finally {
+            if (btnRun) {
+                btnRun.disabled = false;
+                btnRun.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Racik Naskah Closing Otomatis dengan Gemini AI';
+            }
+        }
+    },
+
+    showToast(message) {
+        let toast = document.getElementById('app-toast-alert');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'app-toast-alert';
+            toast.style.cssText = 'position:fixed; bottom:24px; right:24px; background:#0f172a; color:#ffffff; padding:10px 18px; border-radius:8px; font-size:0.8rem; font-family:"Poppins",sans-serif; z-index:9999; box-shadow:0 8px 20px rgba(0,0,0,0.18); transition:all 0.3s; opacity:0; transform:translateY(10px); pointer-events:none;';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(10px)';
+        }, 2800);
+    },
+
+    exportScrapedToExcel() {
+        if (!this.scrapedResults || this.scrapedResults.length === 0) {
+            alert('Tidak ada data hasil scraping untuk diunduh!');
+            return;
+        }
+
+        const excelRows = this.scrapedResults.map((item, idx) => ({
+            'No': idx + 1,
+            'Nama Tempat': item.name,
+            'Kategori Usaha': item.category,
+            'Lokasi / Alamat': item.address,
+            'Nomor HP (WhatsApp)': item.phone,
+            'Tautan Medsos / Web': item.social_media,
+            'Jam Operasional': item.opening_hours,
+            'Rating Bintang': item.rating,
+            'Jumlah Ulasan': item.reviews_count
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(excelRows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Hasil Scraping');
+
+        const filename = `Scraped_${this.currentQuery.category}_${Date.now()}.xlsx`;
+        XLSX.writeFile(wb, filename);
+    },
+
+    // ----------------------------------------------------
+    // 7. EXCEL EXPORT, ARCHIVES (GOOGLE DRIVE) & HISTORY
+    // ----------------------------------------------------
+    exportScrapedToExcel() {
+        if (!this.scrapedResults || this.scrapedResults.length === 0) {
+            alert('Tidak ada data hasil scraping untuk diunduh!');
+            return;
+        }
+
+        const excelRows = this.scrapedResults.map((item, idx) => ({
+            'No': idx + 1,
+            'Nama Tempat': item.name,
+            'Kategori Usaha': item.category,
+            'Lokasi / Alamat': item.address,
+            'Nomor HP (WhatsApp)': item.phone,
+            'Tautan Medsos / Web': item.social_media,
+            'Jam Operasional': item.opening_hours,
+            'Rating Bintang': item.rating,
+            'Jumlah Ulasan': item.reviews_count
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(excelRows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Hasil Scraping');
+
+        const filename = `Scraped_${this.currentQuery.category}_${Date.now()}.xlsx`;
+        XLSX.writeFile(wb, filename);
+    },
+
+    targetSaveSource: { type: 'current' },
+
+    openSaveArchiveModal(fromHistory = null) {
+        if (fromHistory) {
+            this.targetSaveSource = {
+                type: 'history',
+                historyId: fromHistory.id,
+                name: fromHistory.query_name
+            };
+            const defaultName = `${fromHistory.query_name} (${fromHistory.created_at ? fromHistory.created_at.substring(0, 10) : 'Riwayat'})`;
+            const nameInput = document.getElementById('save-archive-name-input');
+            const titleEl = document.getElementById('save-archive-modal-title');
+            if (nameInput) nameInput.value = defaultName;
+            if (titleEl) titleEl.textContent = 'Simpan Riwayat ke Arsip (Google Drive)';
+        } else {
+            if (!this.scrapedResults || this.scrapedResults.length === 0) {
+                alert('Belum ada data hasil scraping untuk disimpan!');
+                return;
+            }
+            this.targetSaveSource = { type: 'current' };
+            const defaultName = `${(this.currentQuery.category || 'BISNIS').toUpperCase()} - ${this.currentQuery.location || 'Wilayah'} (${new Date().toLocaleDateString('id-ID')})`;
+            const nameInput = document.getElementById('save-archive-name-input');
+            const titleEl = document.getElementById('save-archive-modal-title');
+            if (nameInput) nameInput.value = defaultName;
+            if (titleEl) titleEl.textContent = 'Simpan ke Arsip (Google Drive)';
+        }
+
+        // Hide inline quick folder creator initially
+        const quickContainer = document.getElementById('quick-folder-input-container');
+        if (quickContainer) quickContainer.style.display = 'none';
+
+        this.populateArchiveFoldersSelect();
+
+        const modal = document.getElementById('modal-save-archive');
+        if (modal) modal.classList.add('active');
+    },
+
+    async populateArchiveFoldersSelect(selectedId = null) {
+        const select = document.getElementById('save-archive-folder-select');
+        if (!select) return;
+
+        select.innerHTML = '<option value="">📁 Root (Arsip Utama)</option>';
+        try {
+            const res = await fetch('api/archives.php?action=list_all_folders');
+            const data = await res.json();
+            if (data.success && data.folders) {
+                data.folders.forEach(f => {
+                    const opt = document.createElement('option');
+                    opt.value = f.id;
+                    opt.innerHTML = f.label;
+                    if (selectedId && parseInt(selectedId) === parseInt(f.id)) {
+                        opt.selected = true;
+                    }
+                    select.appendChild(opt);
+                });
+            }
+        } catch (e) {
+            console.error('Failed to populate folders select:', e);
+        }
+
+        // Bind quick folder toggle if not yet bound
+        const btnToggleQuick = document.getElementById('btn-quick-new-folder-in-modal');
+        const quickContainer = document.getElementById('quick-folder-input-container');
+        const quickInput = document.getElementById('quick-folder-name-input');
+        const btnSaveQuick = document.getElementById('btn-save-quick-folder');
+
+        if (btnToggleQuick && !btnToggleQuick.dataset.bound) {
+            btnToggleQuick.dataset.bound = 'true';
+            btnToggleQuick.addEventListener('click', () => {
+                if (quickContainer) {
+                    const isVisible = quickContainer.style.display === 'block';
+                    quickContainer.style.display = isVisible ? 'none' : 'block';
+                    if (!isVisible && quickInput) {
+                        quickInput.value = '';
+                        setTimeout(() => quickInput.focus(), 100);
+                    }
+                }
+            });
+        }
+
+        if (btnSaveQuick && !btnSaveQuick.dataset.bound) {
+            btnSaveQuick.dataset.bound = 'true';
+            btnSaveQuick.addEventListener('click', async () => {
+                const folderName = quickInput ? quickInput.value.trim() : '';
+                if (!folderName) {
+                    alert('Nama folder tidak boleh kosong!');
+                    return;
+                }
+
+                const parentId = select.value ? select.value : null;
+
+                try {
+                    const res = await fetch('api/archives.php?action=create_folder', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: folderName, parent_id: parentId })
+                    });
+                    const d = await res.json();
+                    if (d.success) {
+                        if (quickContainer) quickContainer.style.display = 'none';
+                        await this.populateArchiveFoldersSelect(d.folder.id);
+                        this.showToast(`✓ Folder "${folderName}" berhasil dibuat!`);
+                    } else {
+                        alert('Gagal: ' + d.message);
+                    }
+                } catch (err) {
+                    alert('Kesalahan koneksi: ' + err.message);
+                }
+            });
+        }
+    },
+
+    async confirmSaveArchive() {
+        const nameInput = document.getElementById('save-archive-name-input');
+        const folderSelect = document.getElementById('save-archive-folder-select');
+        const name = nameInput ? nameInput.value.trim() : '';
+        const folderId = folderSelect && folderSelect.value ? folderSelect.value : null;
+
+        if (!name) {
+            alert('Nama simpanan arsip wajib diisi!');
+            return;
+        }
+
+        const btnConfirm = document.getElementById('btn-confirm-save-archive');
+        if (btnConfirm) {
+            btnConfirm.disabled = true;
+            btnConfirm.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+        }
+
+        try {
+            let res, data;
+            if (this.targetSaveSource && this.targetSaveSource.type === 'history') {
+                res = await fetch('api/history.php?action=save_to_archive', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        history_id: this.targetSaveSource.historyId,
+                        name: name,
+                        folder_id: folderId
+                    })
+                });
+            } else {
+                res = await fetch('api/archives.php?action=save_archive', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: name,
+                        folder_id: folderId,
+                        items: this.scrapedResults
+                    })
+                });
+            }
+
+            data = await res.json();
+            if (data.success) {
+                this.showToast(`✓ ${data.message || 'Data berhasil disimpan ke arsip!'}`);
+                document.getElementById('modal-save-archive')?.classList.remove('active');
+                if (window.ArchiveManager) {
+                    window.ArchiveManager.loadCollectionsView(folderId);
+                }
+                if (window.App) {
+                    window.App.refreshDashboardStats();
+                }
+            } else {
+                alert('Gagal menyimpan: ' + data.message);
+            }
+        } catch (e) {
+            alert('Kesalahan jaringan: ' + e.message);
+        } finally {
+            if (btnConfirm) {
+                btnConfirm.disabled = false;
+                btnConfirm.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Data ke Arsip';
+            }
+        }
+    },
+
+    async openHistoryModal() {
+        const modal = document.getElementById('modal-history');
+        const listEl = document.getElementById('history-list-items');
+        if (!modal || !listEl) return;
+
+        modal.classList.add('active');
+        listEl.innerHTML = '<div style="padding: 16px; text-align: center; color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat riwayat scraping...</div>';
+
+        try {
+            const res = await fetch('api/history.php?action=list');
+            const data = await res.json();
+
+            if (data.success && data.history) {
+                listEl.innerHTML = '';
+                if (data.history.length === 0) {
+                    listEl.innerHTML = `
+                        <div style="padding: 24px; text-align: center; color: #94a3b8; font-size: 0.8rem;">
+                            <i class="fa-solid fa-clock-rotate-left" style="font-size: 1.8rem; margin-bottom: 6px; display: block; color: #cbd5e1;"></i>
+                            Belum ada riwayat aktivitas scraping.
+                        </div>
+                    `;
+                    return;
+                }
+
+                data.history.forEach(h => {
+                    const row = document.createElement('div');
+                    row.style.cssText = 'padding: 12px 14px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 0.78rem; transition: background 0.15s;';
+                    row.addEventListener('mouseenter', () => row.style.background = '#f8fafc');
+                    row.addEventListener('mouseleave', () => row.style.background = 'transparent');
+
+                    row.innerHTML = `
+                        <div style="min-width: 0; flex: 1;">
+                            <strong style="color: #0f172a; font-size: 0.82rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${h.query_name}</strong>
+                            <div style="font-size: 0.7rem; color: #64748b; margin-top: 2px;">
+                                <span><i class="fa-regular fa-clock"></i> ${h.created_at}</span> • 
+                                <span class="badge badge-blue" style="font-size: 0.65rem; padding: 1px 6px;">${h.total_found} kontak</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 4px; flex-shrink: 0;">
+                            <button class="btn btn-primary btn-sm btn-load-hist" style="padding: 4px 8px; font-size: 0.72rem;" title="Buka Data di Tabel">
+                                <i class="fa-solid fa-eye"></i> Buka
+                            </button>
+                            <button class="btn btn-outline btn-sm btn-save-hist" style="padding: 4px 8px; font-size: 0.72rem; color: #2563eb; border-color: #bfdbfe;" title="Simpan ke Folder Arsip Google Drive">
+                                <i class="fa-solid fa-folder-plus"></i> Simpan
+                            </button>
+                            <button class="btn btn-outline btn-sm btn-excel-hist" style="padding: 4px 8px; font-size: 0.72rem; color: #16a34a; border-color: #bbf7d0;" title="Download Excel">
+                                <i class="fa-solid fa-file-excel"></i>
+                            </button>
+                        </div>
+                    `;
+
+                    // 1. Load Data
+                    row.querySelector('.btn-load-hist').addEventListener('click', async () => {
+                        await this.loadHistoryItems(h.id, h.query_name);
+                        modal.classList.remove('active');
+                    });
+
+                    // 2. Simpan ke Arsip
+                    row.querySelector('.btn-save-hist').addEventListener('click', () => {
+                        this.openSaveArchiveModal(h);
+                    });
+
+                    // 3. Download Excel
+                    row.querySelector('.btn-excel-hist').addEventListener('click', () => {
+                        this.exportHistoryToExcel(h.id, h.query_name);
+                    });
+
+                    listEl.appendChild(row);
+                });
+            }
+        } catch (e) {
+            listEl.innerHTML = '<div style="padding: 12px; color: #ef4444;">Gagal memuat riwayat: ' + e.message + '</div>';
+        }
+    },
+
+    async exportHistoryToExcel(historyId, queryName) {
+        try {
+            const res = await fetch(`api/history.php?action=get_items&history_id=${historyId}`);
+            const data = await res.json();
+            if (data.success && data.items && data.items.length > 0) {
+                const excelRows = data.items.map((item, idx) => ({
+                    'No': idx + 1,
+                    'Nama Tempat': item.name,
+                    'Kategori': item.category,
+                    'Alamat Lengkap': item.address,
+                    'Nomor HP (WhatsApp)': item.phone,
+                    'Rating': item.rating,
+                    'Jumlah Ulasan': item.reviews_count,
+                    'Jam Operasional': item.opening_hours
+                }));
+
+                const ws = XLSX.utils.json_to_sheet(excelRows);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Riwayat Scraping');
+                XLSX.writeFile(wb, `${queryName || 'Riwayat_Scraping'}.xlsx`);
+            } else {
+                alert('Tidak ada data pada riwayat ini.');
+            }
+        } catch (e) {
+            alert('Gagal ekspor riwayat: ' + e.message);
+        }
+    },
+
+    async loadHistoryItems(historyId, title) {
+        try {
+            const res = await fetch(`api/history.php?action=get_items&history_id=${historyId}`);
+            const data = await res.json();
+            if (data.success && data.items) {
+                this.scrapedResults = data.items;
+                this.renderScrapedResultsTable();
+                document.getElementById('scraper-setup-view').style.display = 'none';
+                document.getElementById('scraped-results-view').style.display = 'block';
+                this.showToast(`✓ Berhasil memuat ${data.items.length} kontak dari riwayat.`);
+            }
+        } catch (e) {
+            alert('Gagal memuat item riwayat: ' + e.message);
+        }
+    }
+};
+
+window.ScraperClient = ScraperClient;
+

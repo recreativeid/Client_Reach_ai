@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Client Reach AI - Workflow AI Sales</title>
+  
+  <!-- FontAwesome 6 & Google Fonts (Poppins) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Chart.js for Professional Sales & Marketing Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- SheetJS for Instant Excel Export -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
+  <!-- App Custom Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Top Application Header with Centered Menu -->
+  <header class="app-header">
+    <!-- Brand Logo (Left) -->
+    <div class="brand-container">
+      <div class="brand-badge">
+        <i class="fa-solid fa-radar"></i>
+      </div>
+      <div class="brand-info">
+        <h1>Client Reach <span>AI</span></h1>
+        <p>Workflow AI Sales</p>
+      </div>
+    </div>
+
+    <!-- Centered Desktop Navigation (Middle) -->
+    <div class="desktop-nav-wrapper">
+      <nav class="desktop-nav">
+        <a class="nav-link active" data-page="dashboard">
+          <i class="fa-solid fa-chart-pie"></i> Dashboard
+        </a>
+        <a class="nav-link" data-page="scraper">
+          <i class="fa-solid fa-map-location-dot"></i> Scraping Client
+        </a>
+        <a class="nav-link" data-page="templates">
+          <i class="fa-solid fa-message"></i> Template Pesan
+        </a>
+        <a class="nav-link" data-page="archives">
+          <i class="fa-solid fa-bookmark"></i> Koleksi Arsip
+        </a>
+      </nav>
+    </div>
+
+    <!-- Header Status Indicator (Right) -->
+    <div class="header-status-badge">
+      <span class="status-dot"></span>
+      <span>AI Sales Mode Aktif</span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+
+    <!-- ==============================================================
+         1. MENU DASHBOARD (Analisis Sales & Marketing)
+         ============================================================== -->
+    <section id="view-dashboard" class="page-view active">
+      <!-- Metric Stats -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-header">
+            <span class="stat-label">Total Leads Terdeteksi</span>
+            <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+          </div>
+          <div class="stat-value" id="stat-total-scraped">145</div>
+          <div class="stat-hint">+24% dari minggu lalu</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-header">
+            <span class="stat-label">Prospek Terkualifikasi</span>
+            <div class="stat-icon"><i class="fa-solid fa-check"></i></div>
+          </div>
+          <div class="stat-value" id="stat-total-prospects">28</div>
+          <div class="stat-hint">Diverifikasi & prospektif</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-header">
+            <span class="stat-label">Koleksi Tersimpan</span>
+            <div class="stat-icon"><i class="fa-solid fa-box-archive"></i></div>
+          </div>
+          <div class="stat-value" id="stat-total-archives">3</div>
+          <div class="stat-hint">Koleksi Arsip & Folder</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-header">
+            <span class="stat-label">WhatsApp Terhubung</span>
+            <div class="stat-icon"><i class="fa-brands fa-whatsapp"></i></div>
+          </div>
+          <div class="stat-value" id="stat-total-connected">42</div>
+          <div class="stat-hint">Pesan terkirim via sales flow</div>
+        </div>
+      </div>
+
+      <!-- Professional Charts Grid (Chart.js) -->
+      <div class="charts-grid">
+        <!-- Sales Pipeline Line Area Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">
+              <i class="fa-solid fa-chart-line" style="color:#2563eb;"></i> Tren Performa Pipeline & Konversi Sales
+            </div>
+            <span class="badge badge-blue">7 Hari Terakhir</span>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chart-sales-funnel"></canvas>
+          </div>
+        </div>
+
+        <!-- Category Distribution Donut Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">
+              <i class="fa-solid fa-chart-pie" style="color:#10b981;"></i> Sebaran Industri Klien
+            </div>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chart-category-donut"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==============================================================
+         2. MENU SCRAPING CLIENT (Panel 2-Kolom Terpadu)
+         ============================================================== -->
+    <section id="view-scraper" class="page-view">
+      
+      <!-- SUB-VIEW 1: Setup & Mutually Exclusive Scoping -->
+      <div id="scraper-setup-view">
+        <div class="scraper-split-container">
+          
+          <!-- LEFT PANEL: Controls & Form -->
+          <div class="scraper-left-panel">
+            <div class="d-flex justify-between align-center" style="margin-bottom: 12px;">
+              <div class="card-title" style="font-size: 0.92rem;">
+                <i class="fa-solid fa-location-crosshairs"></i> Parameter Pencarian Klien
+              </div>
+              <button class="btn btn-outline btn-sm" id="btn-show-history" style="font-size: 0.72rem; padding: 4px 8px;">
+                <i class="fa-solid fa-clock-rotate-left"></i> Riwayat
+              </button>
+            </div>
+
+            <!-- 1. MUTUALLY EXCLUSIVE ZONE MODE TABS -->
+            <div class="zone-mode-tabs" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: #ffffff; border: 1px solid #e2e8f0; padding: 4px; border-radius: 10px; margin-bottom: 14px;">
+              <button type="button" class="zone-mode-btn active" id="btn-mode-boundary" style="padding: 8px 6px; font-size: 0.74rem; font-weight: 600; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; background: #0f172a; color: #ffffff;">
+                <i class="fa-solid fa-map"></i> 1. Wilayah Administratif
+              </button>
+              <button type="button" class="zone-mode-btn" id="btn-mode-radius" style="padding: 8px 6px; font-size: 0.74rem; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s; background: transparent; color: #475569;">
+                <i class="fa-solid fa-crosshairs"></i> 2. Titik Peta & Radius
+              </button>
+            </div>
+
+            <!-- ZONE CONTAINER A: Batas Wilayah Administratif Penuh (NO RADIUS) -->
+            <div id="zone-boundary-container" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 0.72rem; font-weight: 700; color: #0f172a; text-transform: uppercase;">
+                  <i class="fa-solid fa-landmark"></i> Pilih Daerah Administratif
+                </span>
+                <span class="badge" style="background:#ffffff; border: 1px solid #e2e8f0; color:#0f172a; font-size: 0.65rem;">Garis Merah Batas Daerah</span>
+              </div>
+              
+              <!-- Provinsi & Kab/Kota Dipisah Bertingkat (Wajib) -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                <div>
+                  <label style="font-size: 0.68rem; color: #475569; font-weight: 600; display:block; margin-bottom: 2px;">Provinsi (Wajib)</label>
+                  <select id="filter-provinsi" class="form-select" style="font-size: 0.76rem; padding: 6px 8px;"></select>
+                </div>
+                <div>
+                  <label style="font-size: 0.68rem; color: #475569; font-weight: 600; display:block; margin-bottom: 2px;">Kab / Kota (Wajib)</label>
+                  <select id="filter-kabupaten" class="form-select" style="font-size: 0.76rem; padding: 6px 8px;"></select>
+                </div>
+              </div>
+
+              <!-- Kecamatan & Kelurahan (Opsional) -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div>
+                  <label style="font-size: 0.68rem; color: #64748b; display:block; margin-bottom: 2px;">Kecamatan (Opsional)</label>
+                  <select id="filter-kecamatan" class="form-select" style="font-size: 0.76rem; padding: 6px 8px;"></select>
+                </div>
+                <div>
+                  <label style="font-size: 0.68rem; color: #64748b; display:block; margin-bottom: 2px;">Kelurahan (Opsional)</label>
+                  <select id="filter-kelurahan" class="form-select" style="font-size: 0.76rem; padding: 6px 8px;"></select>
+                </div>
+              </div>
+
+              <small style="display: block; font-size: 0.68rem; color: #64748b; margin-top: 6px;">
+                *Target sasaran dan preview hanya mengambil bisnis di dalam batas garis merah wilayah di atas.
+              </small>
+            </div>
+
+            <!-- ZONE CONTAINER B: Titik Peta & Radius (NO PROVINSI/KAB/KOTA REQUIRED) -->
+            <div id="zone-radius-container" style="display: none; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 0.72rem; font-weight: 700; color: #0f172a; text-transform: uppercase;">
+                  <i class="fa-solid fa-bullseye"></i> Titik Lokasi Peta & Jangkauan
+                </span>
+                <span id="radius-km-display" style="font-size: 0.72rem; font-weight: 700; color: #2563eb;">3 KM</span>
+              </div>
+              <p style="font-size: 0.7rem; color: #475569; margin-bottom: 8px; line-height: 1.3;">
+                👉 <strong>Klik di titik mana saja pada peta preview di kanan</strong> untuk menempatkan pin bisnis target.
+              </p>
+              <div style="font-size: 0.72rem; color: #64748b; margin-bottom: 8px; background: #ffffff; padding: 6px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                Koordinat Pin: <strong id="display-selected-coord" style="color: #0f172a;">-7.4589, 110.2251</strong>
+              </div>
+              
+              <label style="font-size: 0.68rem; color: #475569; font-weight: 600; display:block; margin-bottom: 2px;">Atur Jarak Radius</label>
+              <input type="range" id="unified-radius-slider" min="1" max="25" step="0.5" value="3" style="width: 100%;">
+            </div>
+
+            <!-- 2. TARGET PARAMETER (MUTUALLY EXCLUSIVE: KEYWORD vs CATEGORY) -->
+            <div class="form-group" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 14px;">
+              <div class="d-flex justify-between align-center" style="margin-bottom: 8px;">
+                <span style="font-size: 0.74rem; font-weight: 700; color: #0f172a;">Target Sasaran Usaha</span>
+                <!-- Target Mode Switcher -->
+                <div class="target-mode-toggle" style="display: flex; gap: 4px; background: #ffffff; border: 1px solid #e2e8f0; padding: 2px; border-radius: 6px;">
+                  <button type="button" class="target-toggle-btn active" id="btn-toggle-keyword" style="padding: 4px 8px; font-size: 0.68rem; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: #0f172a; color: #ffffff;">Cari Keyword</button>
+                  <button type="button" class="target-toggle-btn" id="btn-toggle-preset" style="padding: 4px 8px; font-size: 0.68rem; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: transparent; color: #64748b;">Pilih Kategori</button>
+                </div>
+              </div>
+
+              <!-- Option 1: Search Keyword Box -->
+              <div id="target-keyword-box">
+                <div style="display: flex; gap: 6px;">
+                  <input type="text" id="target-keyword-input" class="form-input" 
+                         placeholder="Ketik kata kunci (misal: cafe, laundry, bengkel, klinik, hotel)..." value="cafe">
+                  <button class="btn btn-primary btn-sm" id="btn-trigger-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                </div>
+                <small style="font-size: 0.66rem; color: #64748b; margin-top: 4px; display: block;">
+                  *Sistem cerdas mengenali sinonim kata kunci & nama bisnis lokal nyata.
+                </small>
+              </div>
+
+              <!-- Option 2: Category Dropdown Box -->
+              <div id="target-preset-box" style="display: none;">
+                <select id="target-category-select" class="form-select">
+                  <option value="cafe">Cafe & Coffee Shop</option>
+                  <option value="resto">Restoran, Kuliner & Rumah Makan</option>
+                  <option value="bengkel">Bengkel Mobil, Motor & Otomotif</option>
+                  <option value="laundry">Jasa Laundry & Cuci</option>
+                  <option value="salon">Salon, Barbershop & Perawatan</option>
+                  <option value="sekolah">Sekolah, Bimbel & Edukasi</option>
+                  <option value="klinik">Klinik, Apotek & Rumah Sakit</option>
+                  <option value="hotel">Hotel, Villa & Penginapan</option>
+                  <option value="studio">Studio Foto & Jasa Kreatif</option>
+                  <option value="toko">Toko, Minimarket & Retail</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Candidate Places Preview List (Before deep scraping) -->
+            <div style="margin-top: 8px;">
+              <div class="d-flex justify-between align-center" style="margin-bottom: 6px;">
+                <strong style="font-size: 0.78rem; color: #0f172a;">Pratinjau Calon Klien (Di Dalam Batas)</strong>
+                <span class="badge" style="background:#ffffff; border:1px solid #e2e8f0; color:#0f172a;" id="preview-count-badge">Memuat...</span>
+              </div>
+              <div id="pre-scrape-places-list" 
+                   style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; max-height: 140px; overflow-y: auto; margin-bottom: 12px;">
+              </div>
+              
+              <!-- Primary Scrape Action Button -->
+              <button class="btn btn-primary btn-block" id="btn-execute-scrape" style="padding: 11px; font-size: 0.88rem;">
+                <i class="fa-solid fa-bolt"></i> Scrape Data Lengkap
+              </button>
+            </div>
+
+          </div>
+
+          <!-- RIGHT PANEL: Google Maps Interactive Preview -->
+          <div class="scraper-right-panel">
+            <div class="map-container-unified">
+              <div class="map-badge-overlay" id="map-mode-indicator">
+                <span class="dot"></span>
+                <span id="map-indicator-text">Garis Merah: Cakupan Wilayah Administratif</span>
+              </div>
+              <div id="map-preview" style="width: 100%; height: 100%;"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SUB-VIEW 2: Complete Scraped Results Table -->
+      <div id="scraped-results-view" style="display: none;">
+        <div class="card">
+          <div class="card-header" style="flex-wrap: wrap; gap: 8px;">
+            <div>
+              <div class="card-title" id="scraped-results-title">Hasil Data Scraping Google Maps</div>
+              <span class="badge badge-green" id="scraped-count-badge">0 Data Diekstrak</span>
+            </div>
+
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <button class="btn btn-outline btn-sm" id="btn-back-to-search">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Peta
+              </button>
+              <button class="btn btn-outline btn-sm btn-show-history-trigger" id="btn-show-history-results">
+                <i class="fa-solid fa-clock-rotate-left" style="color: #2563eb;"></i> Riwayat Scraping
+              </button>
+              <button class="btn btn-outline btn-sm" id="btn-export-excel">
+                <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i> Download Excel
+              </button>
+              <button class="btn btn-primary btn-sm" id="btn-save-to-archive-modal" style="background: #2563eb; color: #fff;">
+                <i class="fa-solid fa-folder-plus"></i> Simpan ke Arsip
+              </button>
+            </div>
+          </div>
+
+          <!-- Lead Qualification Quick Filter Pills -->
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; padding: 0 4px;">
+            <button type="button" class="lead-filter-pill active" data-filter="all">Semua Leads</button>
+            <button type="button" class="lead-filter-pill" data-filter="has_wa">🟢 Punya WhatsApp</button>
+            <button type="button" class="lead-filter-pill" data-filter="low_rating">🟡 Rating &lt; 4.2 (Target Jasa Review)</button>
+            <button type="button" class="lead-filter-pill" data-filter="high_rating">⭐ Rating &ge; 4.5 (Bisnis Mapan)</button>
+            <button type="button" class="lead-filter-pill" data-filter="no_web">🌐 Belum Punya Website</button>
+          </div>
+
+          <!-- Scraped Data Table -->
+          <div class="table-responsive">
+            <table class="table-clean">
+              <thead>
+                <tr>
+                  <th style="width: 30px;">#</th>
+                  <th>Nama Tempat</th>
+                  <th>Lokasi / Alamat</th>
+                  <th>Nomor HP</th>
+                  <th>Medsos / Web</th>
+                  <th>Jam Operasional</th>
+                  <th>Rating</th>
+                  <th style="text-align: right; width: 230px;">Aksi Sales & Outreach</th>
+                </tr>
+              </thead>
+              <tbody id="scraped-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==============================================================
+         3. MENU KELOLA TEMPLATE PESAN
+         ============================================================== -->
+    <section id="view-templates" class="page-view">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-message"></i> Kelola Template Pesan WhatsApp
+          </div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm" id="btn-add-category">
+              <i class="fa-solid fa-plus"></i> Tambah Kategori
+            </button>
+            <button class="btn btn-primary btn-sm" id="btn-open-ai-template-gen" style="background: linear-gradient(135deg, #2563eb, #7c3aed); border: none;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ Racik Template via AI
+            </button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+          <!-- Left Column: Template Editor -->
+          <div>
+            <div class="form-group">
+              <label class="form-label">Pilih Kategori Tempat</label>
+              <select id="template-category-select" class="form-select"></select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Pilihan Gaya Sapaan</label>
+              <select id="template-greeting-select" class="form-select">
+                <option value="formal">Hallo kak dgn pemilik/team manajemen {nama_tempat}?</option>
+                <option value="humas">Selamat siang bapak/ibu bagian humas & manajemen {nama_tempat}.</option>
+                <option value="casual">Halo kak {nama_tempat}! Salam kenal dari tim Client Reach AI.</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Isi Pesan WhatsApp</label>
+              <textarea id="template-body-input" class="form-textarea" rows="7" 
+                        placeholder="Ketik template pesan di sini..."></textarea>
+              
+              <!-- Variable insertion chips -->
+              <div style="margin-top: 8px;">
+                <span style="font-size: 0.72rem; color: #64748b; font-weight: 600;">Klik Variabel Otomatis:</span>
+                <div class="variable-chips">
+                  <span class="var-chip" data-tag="{nama_tempat}">+ {nama_tempat}</span>
+                  <span class="var-chip" data-tag="{kategori}">+ {kategori}</span>
+                  <span class="var-chip" data-tag="{alamat}">+ {alamat}</span>
+                  <span class="var-chip" data-tag="{rating}">+ {rating}</span>
+                  <span class="var-chip" data-tag="{telepon}">+ {telepon}</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+              <span id="template-save-status" style="font-size: 0.78rem; font-weight: 600;"></span>
+              <button class="btn btn-primary" id="btn-save-template">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Template
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: WhatsApp Mockup Phone Preview -->
+          <div>
+            <label class="form-label" style="text-align: center; margin-bottom: 8px;">
+              <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> Pratinjau Tampilan Pesan di WhatsApp
+            </label>
+            <div class="wa-mockup-frame">
+              <div class="wa-header">
+                <i class="fa-solid fa-circle-user" style="font-size: 1.4rem;"></i>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.85rem;">Client Reach AI Sales</div>
+                  <div style="font-size: 0.65rem; opacity: 0.85;">Online</div>
+                </div>
+              </div>
+
+              <div class="wa-bubble">
+                <div id="wa-preview-text">
+                  Hallo kak dgn pemilik/team manajemen <strong>Kopi Senja Utama</strong>?
+                </div>
+                <span class="wa-time">12:30 ✓✓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==============================================================
+         4. MENU KELOLA ARSIP (Google Drive Style Nested Folders & Excel Data)
+         ============================================================== -->
+    <section id="view-archives" class="page-view">
+      
+      <!-- FOLDER & FILES EXPLORER VIEW (Glassmorphism Clean Collections & Datasets) -->
+      <div id="archive-collections-view">
+        <div class="card" style="background: #ffffff;">
+          <div class="card-header" style="flex-wrap: wrap; gap: 8px;">
+            <div>
+              <div class="card-title">
+                <i class="fa-solid fa-box-archive" style="color: #0f172a;"></i> Koleksi Arsip Data Leads
+              </div>
+              <span class="badge" style="background: #ffffff; border: 1px solid #e2e8f0; color: #0f172a;">Koleksi Bersarang (Bulan / Tanggal) & Dataset Excel</span>
+            </div>
+            
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+              <!-- View Mode Toggle: Grid Cover vs Kotak Memanjang -->
+              <div class="archive-layout-toggle">
+                <button type="button" class="btn-layout-mode active" id="btn-layout-grid" title="Tampilan Grid Cover">
+                  <i class="fa-solid fa-table-cells-large"></i> Grid Cover
+                </button>
+                <button type="button" class="btn-layout-mode" id="btn-layout-row" title="Tampilan Kotak Memanjang">
+                  <i class="fa-solid fa-bars"></i> Kotak Memanjang
+                </button>
+              </div>
+
+              <button class="btn btn-outline btn-sm" id="btn-gdrive-up-level" style="display: none; padding: 4px 10px; font-size: 0.74rem;">
+                <i class="fa-solid fa-arrow-up"></i> Folder Induk
+              </button>
+
+              <button class="btn btn-primary btn-sm" id="btn-gdrive-new-folder" style="font-weight: 600; background: #0f172a; color: #fff;">
+                <i class="fa-solid fa-plus"></i> + Buat Folder Baru
+              </button>
+            </div>
+          </div>
+
+          <!-- Glassmorphism Breadcrumbs Toolbar -->
+          <div class="glass-archive-toolbar">
+            <div class="gdrive-breadcrumbs" id="gdrive-breadcrumbs-container">
+              <span class="gdrive-bc-item active"><i class="fa-solid fa-house"></i> Arsip Utama</span>
+            </div>
+          </div>
+
+          <!-- Section 1: Subfolders / Sub-Collections -->
+          <div id="gdrive-folders-section">
+            <div class="gdrive-section-title">
+              <i class="fa-solid fa-layer-group"></i> Direktori Sub-Koleksi (<span id="gdrive-folder-count">0</span>)
+            </div>
+            <div id="gdrive-folders-grid" class="gdrive-folders-grid mode-grid"></div>
+          </div>
+
+          <!-- Section 2: Files / Scraped Datasets -->
+          <div id="gdrive-files-section">
+            <div class="gdrive-section-title">
+              <i class="fa-solid fa-file-lines"></i> File Dataset Excel Leads (<span id="gdrive-files-count">0</span>)
+            </div>
+            <div id="gdrive-files-grid" class="gdrive-files-grid mode-grid"></div>
+          </div>
+
+          <!-- Empty State -->
+          <div id="gdrive-empty-state" style="display: none; padding: 36px 16px; text-align: center; color: #94a3b8; font-size: 0.82rem;">
+            <i class="fa-solid fa-box-open" style="font-size: 2.4rem; color: #cbd5e1; margin-bottom: 8px; display: block;"></i>
+            <strong style="color: #475569; font-size: 0.9rem;">Koleksi Ini Masih Kosong</strong>
+            <p style="font-size: 0.74rem; color: #64748b; margin-top: 4px; max-width: 440px; margin-left: auto; margin-right: auto;">
+              Klik <strong>"+ Buat Folder Baru"</strong> untuk membuat sub-koleksi (misalnya tanggal atau bulan) atau simpan data scraping ke folder ini.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLLECTION DETAIL / FEED VIEW (Ketika File Data Excel Dibuka) -->
+      <div id="archive-detail-view" style="display: none;">
+        <div class="card">
+          <div class="card-header" style="flex-wrap: wrap; gap: 8px;">
+            <div>
+              <div class="card-title" id="collection-detail-title">Nama File Data</div>
+              <span class="badge badge-green" id="collection-count-badge">0 Klien Terfilter</span>
+            </div>
+            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+              <!-- View Switcher -->
+              <div style="display: flex; gap: 4px; margin-right: 6px;">
+                <button class="btn btn-primary btn-sm" id="btn-view-cards" title="Tampilan Kartu Visual">
+                  <i class="fa-solid fa-border-all"></i>
+                </button>
+                <button class="btn btn-outline btn-sm" id="btn-view-table" title="Tampilan Tabel Lengkap">
+                  <i class="fa-solid fa-table-list"></i>
+                </button>
+              </div>
+
+              <button class="btn btn-outline btn-sm" id="btn-back-to-collections">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Folder
+              </button>
+              <button class="btn btn-outline btn-sm" id="btn-export-collection-excel">
+                <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i> Download Excel
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 12px; font-size: 0.74rem; color: #64748b; display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+            <span><strong style="color:#16a34a;">✔ Hijau:</strong> Prospek Positif / Siap Closing</span>
+            <span><strong style="color:#dc2626;">✖ Merah:</strong> Bukan Prospek</span>
+            <span><strong>⚪ Putih:</strong> Belum Ada Tindakan</span>
+          </div>
+
+          <!-- Filter Pills -->
+          <div class="ig-filter-bar">
+            <div class="ig-filter-pill active" data-filter="all">Semua Klien</div>
+            <div class="ig-filter-pill" data-filter="prospect">⭐ Prospek Positif (Hijau)</div>
+            <div class="ig-filter-pill" data-filter="none">🕒 Perlu Dihubungi (Putih)</div>
+            <div class="ig-filter-pill" data-filter="rejected">✖ Ditolak (Merah)</div>
+          </div>
+
+          <!-- 1. Visual Prospect Cards Feed -->
+          <div id="collection-cards-grid" class="prospects-cards-grid"></div>
+
+          <!-- 2. Alternative Data Table View -->
+          <div id="collection-table-container" class="table-responsive" style="display: none; margin-top: 14px;">
+            <table class="table-clean">
+              <thead>
+                <tr>
+                  <th style="width: 30px;">#</th>
+                  <th>Nama Bisnis</th>
+                  <th>Alamat</th>
+                  <th>Nomor HP</th>
+                  <th>Rating</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Aksi Sales</th>
+                </tr>
+              </thead>
+              <tbody id="collection-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==============================================================
+       MODALS & DRAWERS
+       ============================================================== -->
+  
+  <!-- Modal: Buat Folder Baru (Google Drive Nested Folder) -->
+  <div id="modal-create-folder" class="modal-backdrop">
+    <div class="modal-sheet" style="max-width: 440px;">
+      <div class="d-flex justify-between align-center" style="margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="background: #fef3c7; color: #d97706; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+            <i class="fa-solid fa-folder-plus"></i>
+          </div>
+          <strong style="font-size: 0.95rem; color: #0f172a;">Buat Folder Baru</strong>
+        </div>
+        <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 10px; margin-bottom: 12px; font-size: 0.72rem; color: #64748b;">
+        Lokasi: <strong id="modal-folder-parent-name" style="color: #2563eb;">📁 Arsip Utama</strong>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" style="font-size: 0.74rem;">Nama Folder</label>
+        <input type="text" id="create-folder-name-input" class="form-input" 
+               placeholder="Misal: September 2026 atau 24-09-2026...">
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+        <button class="btn btn-outline btn-close-modal" style="font-size: 0.78rem;">Batal</button>
+        <button class="btn btn-primary" id="btn-submit-create-folder" style="font-size: 0.78rem; background: #2563eb; color: #fff;">
+          <i class="fa-solid fa-folder-plus"></i> Buat Folder
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Simpan ke Arsip (Google Drive Style) -->
+  <div id="modal-save-archive" class="modal-backdrop">
+    <div class="modal-sheet" style="max-width: 480px;">
+      <div class="d-flex justify-between align-center" style="margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="background: #e0f2fe; color: #0284c7; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+            <i class="fa-solid fa-folder-plus"></i>
+          </div>
+          <div>
+            <strong style="font-size: 0.95rem; color: #0f172a;" id="save-archive-modal-title">Simpan ke Arsip (Google Drive)</strong>
+            <div style="font-size: 0.68rem; color: #64748b;">Beri nama simpanan dan tempatkan di folder pilihan</div>
+          </div>
+        </div>
+        <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" style="font-size: 0.74rem;">Nama Simpanan Arsip (Wajib)</label>
+        <input type="text" id="save-archive-name-input" class="form-input" 
+               placeholder="Misal: Data Cafe Magelang - 24 September...">
+        <small style="font-size: 0.66rem; color: #64748b; margin-top: 3px; display: block;">
+          *Nama ini akan muncul sebagai file Excel di dalam direktori folder Google Drive.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <label class="form-label" style="margin-bottom: 0; font-size: 0.74rem;">Pilih Folder Tujuan</label>
+          <button type="button" class="btn btn-outline btn-sm" id="btn-quick-new-folder-in-modal" 
+                  style="padding: 2px 8px; font-size: 0.68rem; border-color: #bfdbfe; color: #2563eb;">
+            <i class="fa-solid fa-plus"></i> Buat Folder Baru
+          </button>
+        </div>
+        <select id="save-archive-folder-select" class="form-select" style="font-size: 0.78rem;"></select>
+      </div>
+
+      <!-- Quick Inline New Folder Input (Toggled) -->
+      <div id="quick-folder-input-container" style="display: none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+        <label style="font-size: 0.7rem; font-weight: 700; color: #166534; display: block; margin-bottom: 4px;">
+          Nama Folder Baru (Langsung Dibuat)
+        </label>
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="quick-folder-name-input" class="form-input" placeholder="Misal: September 2026 atau 24-09-2026" style="font-size: 0.76rem; padding: 6px 8px;">
+          <button type="button" class="btn btn-sm btn-primary" id="btn-save-quick-folder" style="font-size: 0.72rem; padding: 6px 12px; background: #16a34a; border: none; white-space: nowrap;">
+            Simpan Folder
+          </button>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
+        <button class="btn btn-outline btn-close-modal" style="font-size: 0.78rem;">Batal</button>
+        <button class="btn btn-primary" id="btn-confirm-save-archive" style="font-size: 0.78rem; background: #2563eb; color: #fff;">
+          <i class="fa-solid fa-floppy-disk"></i> Simpan Data ke Arsip
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Riwayat Scraping Google Maps -->
+  <div id="modal-history" class="modal-backdrop">
+    <div class="modal-sheet" style="max-width: 600px; max-height: 85vh; overflow-y: auto;">
+      <div class="d-flex justify-between align-center" style="margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="background: #e0f2fe; color: #0284c7; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div>
+            <strong style="font-size: 0.95rem; color: #0f172a;">Riwayat Scraping Google Maps</strong>
+            <div style="font-size: 0.68rem; color: #64748b;">Lihat sesi scraping sebelumnya & simpan langsung ke arsip Google Drive</div>
+          </div>
+        </div>
+        <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div id="history-list-items" style="max-height: 380px; overflow-y: auto;"></div>
+
+      <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+        <button class="btn btn-outline btn-close-modal" style="font-size: 0.78rem;">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: WhatsApp Outreach & Gemini AI Closer (2-Mode: Template Standar & AI Auto-Pitch) -->
+  <div id="modal-ai-pitch" class="modal-backdrop">
+    <div class="modal-sheet" style="max-width: 630px; max-height: 90vh; overflow-y: auto;">
+      <div class="d-flex justify-between align-center" style="margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="background: linear-gradient(135deg, #2563eb, #7c3aed); color: #fff; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <div>
+            <strong style="font-size: 0.96rem; color: #0f172a;">WhatsApp Sales Outreach & AI Closer</strong>
+            <div style="font-size: 0.68rem; color: #64748b;">Pilih Template Standar Cepat atau Racik AI Khusus Sesuai Nama Toko & Promo</div>
+          </div>
+        </div>
+        <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Outreach Mode Tabs (Mutually Exclusive: Template Standar vs AI Gemini) -->
+      <div class="outreach-mode-tabs">
+        <button type="button" class="outreach-tab-btn active" id="tab-btn-standard">
+          <i class="fa-solid fa-message"></i> 1. Template Standar (Cepat)
+        </button>
+        <button type="button" class="outreach-tab-btn tab-ai" id="tab-btn-gemini">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> 2. ✨ Racik Personal Gemini AI
+        </button>
+      </div>
+
+      <!-- Target Business Summary Card (Shared Context) -->
+      <div style="background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
+        <div class="d-flex justify-between align-center" style="margin-bottom: 2px;">
+          <span style="font-size: 0.7rem; color: #1e40af; font-weight: 700; text-transform: uppercase;">
+            Target Calon Klien Google Maps:
+          </span>
+          <span class="badge badge-blue" id="ai-modal-biz-badge">Terkualifikasi</span>
+        </div>
+        <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;" id="ai-modal-biz-name">Kopi Senja Utama</div>
+        <div style="font-size: 0.72rem; color: #475569;" id="ai-modal-biz-meta">
+          Cafe & Coffee Shop • Magelang Utara • ⭐ 4.8 (85 ulasan)
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           PANEL 1: TEMPLATE STANDAR (Sesuai Template Awal, Cepat & Praktis)
+           ============================================================== -->
+      <div id="outreach-panel-standard">
+        <div class="form-group" style="margin-bottom: 10px;">
+          <label class="form-label" style="font-size: 0.72rem;">Pilihan Gaya Sapaan Cepat</label>
+          <select id="standard-greeting-select" class="form-select" style="font-size: 0.75rem;">
+            <option value="formal">Formal: Hallo kak dgn pemilik/manajemen {nama_tempat}?</option>
+            <option value="humas">Resmi Humas: Selamat siang bapak/ibu bagian manajemen & kemitraan {nama_tempat}.</option>
+            <option value="casual">Santai Bersahabat: Halo kak {nama_tempat}! Salam kenal dari tim Client Reach AI.</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="font-size: 0.72rem;">Naskah Pesan WhatsApp Terpersonalisasi</label>
+          <textarea id="standard-pitch-output" class="form-textarea" rows="6" style="font-size: 0.78rem;"></textarea>
+        </div>
+
+        <!-- Callout Banner to AI Tab -->
+        <div style="background: #fdf4ff; border: 1px solid #f0abfc; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+          <div style="font-size: 0.72rem; color: #86198f;">
+            <strong>✨ Ingin Closing Lebih Tinggi?</strong><br>
+            Gunakan <strong>Gemini AI</strong> untuk membuat calon pelanggan merasa butuh & sertakan gambar/brosur promo!
+          </div>
+          <button type="button" class="btn btn-sm" id="btn-quick-switch-to-ai" style="background: #a21caf; color:#fff; font-size: 0.72rem; padding: 5px 10px; border:none; white-space:nowrap;">
+            Buka AI Closer &rarr;
+          </button>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 10px;">
+          <button class="btn btn-outline btn-close-modal" style="font-size: 0.78rem;">Tutup</button>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-outline btn-sm" id="btn-copy-standard-output" style="font-size: 0.76rem;">
+              <i class="fa-solid fa-copy"></i> Salin Pesan
+            </button>
+            <a id="btn-wa-standard-output" href="#" target="_blank" class="btn btn-wa btn-sm" style="font-size: 0.76rem;">
+              <i class="fa-brands fa-whatsapp"></i> Buka WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           PANEL 2: GEMINI AI MULTIMODAL & CLOSING PROMPT GENERATOR
+           ============================================================== -->
+      <div id="outreach-panel-gemini" style="display: none;">
+        
+        <!-- Editable Target Info -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+          <div>
+            <label style="font-size: 0.68rem; color: #475569; font-weight: 600; display:block; margin-bottom: 2px;">
+              Nama Toko / Bisnis Sasaran
+            </label>
+            <input type="text" id="ai-input-biz-name" class="form-input" style="font-size: 0.76rem; padding: 6px 8px;">
+          </div>
+          <div>
+            <label style="font-size: 0.68rem; color: #475569; font-weight: 600; display:block; margin-bottom: 2px;">
+              Layanan / Produk Penawaran Anda
+            </label>
+            <select id="ai-modal-service-select" class="form-select" style="font-size: 0.76rem; padding: 6px 8px;">
+              <option value="Jasa Optimasi Google Maps & Review Booster">Jasa Optimasi Gmaps & Review</option>
+              <option value="Jasa Pembuatan Website & Landing Page Profesional">Pembuatan Website & Landing Page</option>
+              <option value="Jasa Kelola Media Sosial & Iklan Berbayar">Kelola Medsos & Iklan</option>
+              <option value="Jasa Foto & Video Konten Promosi Produk">Foto & Video Konten Kreatif</option>
+              <option value="Suplier Bahan Baku & Perlengkapan Bisnis Berkualitas">Suplier Bahan Baku & Stok</option>
+              <option value="Sistem POS Kasir Online & Manajemen Usaha">Software / POS Kasir Digital</option>
+              <option value="Kemitraan Usaha & Kerjasama Bisnis">Kemitraan & Kerjasama</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Psychological Need Triggers (Membuat Pelanggan Merasa Butuh) -->
+        <div class="form-group" style="margin-bottom: 10px;">
+          <label class="form-label" style="font-size: 0.7rem; color: #1e3a8a;">
+            <span><i class="fa-solid fa-bullseye" style="color: #ea580c;"></i> Trigger Kebutuhan (Buat Pelanggan Merasa Butuh)</span>
+          </label>
+          <select id="ai-modal-pain-select" class="form-select" style="font-size: 0.75rem; padding: 6px 8px;">
+            <option value="Peringkat Google Maps belum di 3 besar & kompetitor di sekitar lebih ramai pengunjung">
+              🎯 Kompetitor lokal lebih ramai di jam sibuk & ranking Google Maps belum #1
+            </option>
+            <option value="Jumlah ulasan masih sedikit atau ada review negatif yang belum ditangani profesional">
+              ⭐ Ulasan Google Maps masih sedikit atau ada review negatif belum direspon
+            </option>
+            <option value="Belum memiliki website resmi atau portofolio digital sehingga calon pembeli ragu">
+              🌐 Belum punya website resmi sehingga calon pembeli ragu memilih toko ini
+            </option>
+            <option value="Ingin menambah omset harian dan hemat jutaan rupiah dari biaya iklan Meta/Google Ads">
+              💰 Ingin omset naik drastis tapi hemat biaya iklan berbayar yang mahal
+            </option>
+            <option value="Promo khusus pelanggan baru terbatas hanya untuk 3 pelaku usaha terpilih bulan ini">
+              ⏳ Penawaran terbatas / urgensi kuota khusus pelaku usaha pilihan bulan ini
+            </option>
+          </select>
+        </div>
+
+        <!-- Special Offer & Tone -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+          <div>
+            <label style="font-size: 0.68rem; color: #475569; font-weight: 600; display:block; margin-bottom: 2px;">
+              Tawaran Menarik / Lead Magnet
+            </label>
+            <input type="text" id="ai-modal-offer-input" class="form-input" style="font-size: 0.75rem; padding: 6px 8px;"
+                   value="Free Audit Profil Google Maps 10 Menit & Diskon Promo 50%">
+          </div>
+
+          <div>
+            <label style="font-size: 0.68rem; color: #475569; font-weight: 600; display:block; margin-bottom: 2px;">
+              Gaya Bahasa / Tone
+            </label>
+            <select id="ai-modal-tone-select" class="form-select" style="font-size: 0.75rem; padding: 6px 8px;">
+              <option value="Hangat, Sopan & Profesional">Hangat, Sopan & Profesional (Perkenalan Tulus)</option>
+              <option value="Santai, Akrab & Bersahabat">Santai, Akrab & Bersahabat (Cocok utk Cafe/Anak Muda)</option>
+              <option value="Konsultatif & Memberi Solusi Nyata">Konsultatif & Berorientasi Solusi Nyata</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ==============================================================
+             FEATURE: UPLOAD GAMBAR PROMOSI / FLYER (Gemini Multimodal Vision)
+             ============================================================== -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" style="font-size: 0.7rem; color: #0f172a;">
+            <span><i class="fa-solid fa-image" style="color: #2563eb;"></i> Unggah Gambar Promosi / Flyer / Brosur (Opsional)</span>
+            <span style="font-size: 0.65rem; color: #2563eb; font-weight: 600;">✨ Multimodal AI Vision</span>
+          </label>
+          
+          <!-- Dropzone -->
+          <div class="promo-dropzone" id="promo-image-dropzone">
+            <input type="file" id="promo-image-file" accept="image/png, image/jpeg, image/webp" style="display: none;">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.5rem; color: #3b82f6; margin-bottom: 4px;"></i>
+            <div style="font-size: 0.74rem; font-weight: 600; color: #1e3a8a;">
+              Klik untuk Pilih Gambar atau Seret (Drag & Drop) Foto Flyer Promosi
+            </div>
+            <div style="font-size: 0.66rem; color: #64748b; margin-top: 2px;">
+              Mendukung JPG, PNG, WebP (Brosur, daftar harga, banner diskon, portofolio)
+            </div>
+          </div>
+
+          <!-- Uploaded Preview Card -->
+          <div id="promo-image-preview-card" class="promo-preview-card" style="display: none;">
+            <img id="promo-image-thumb" src="" alt="Thumbnail Promo" class="promo-preview-thumb">
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 0.76rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="promo-image-filename">
+                flyer_promo.jpg
+              </div>
+              <div style="font-size: 0.66rem; color: #16a34a; font-weight: 600;">
+                <i class="fa-solid fa-circle-check"></i> Gambar siap dianalisis oleh Gemini AI Vision
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-remove-promo-image" style="font-size: 0.7rem; padding: 4px 8px; color: #dc2626;">
+              <i class="fa-solid fa-trash"></i> Hapus
+            </button>
+          </div>
+        </div>
+
+        <!-- Generate Action Button -->
+        <button class="btn btn-primary btn-block" id="btn-run-gemini-pitch" 
+                style="margin-bottom: 12px; padding: 10px; font-size: 0.84rem; background: linear-gradient(135deg, #2563eb, #7c3aed); border: none; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Racik Naskah Closing Otomatis dengan Gemini AI
+        </button>
+
+        <!-- AI Pitch Output Area -->
+        <div class="form-group">
+          <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.72rem; font-weight: 700;">Naskah Pesan WhatsApp AI (Siap Kirim / Edit)</span>
+            <span id="ai-pitch-status" style="font-size: 0.68rem; font-weight: 600;"></span>
+          </label>
+          <textarea id="ai-pitch-output" class="form-textarea" rows="6" style="font-size: 0.78rem;"
+                    placeholder="Klik tombol racik di atas, Gemini AI akan membuatkan pesan ramah & persuasif khusus toko ini..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 10px;">
+          <button class="btn btn-outline btn-close-modal" style="font-size: 0.78rem;">Tutup</button>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm" id="btn-save-ai-to-templates" style="font-size: 0.76rem;" title="Simpan naskah ini ke koleksi template">
+              <i class="fa-solid fa-floppy-disk"></i> Simpan ke Template
+            </button>
+            <button class="btn btn-outline btn-sm" id="btn-copy-ai-output" style="font-size: 0.76rem;">
+              <i class="fa-solid fa-copy"></i> Salin Pesan
+            </button>
+            <a id="btn-wa-ai-output" href="#" target="_blank" class="btn btn-wa btn-sm" style="font-size: 0.76rem;">
+              <i class="fa-brands fa-whatsapp"></i> Buka WhatsApp
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav">
+    <div class="mobile-nav-item active" data-page="dashboard">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Dashboard</span>
+    </div>
+    <div class="mobile-nav-item" data-page="scraper">
+      <i class="fa-solid fa-map-location-dot"></i>
+      <span>Scraping</span>
+    </div>
+    <div class="mobile-nav-item" data-page="templates">
+      <i class="fa-solid fa-message"></i>
+      <span>Template</span>
+    </div>
+    <div class="mobile-nav-item" data-page="archives">
+      <i class="fa-solid fa-bookmark"></i>
+      <span>Koleksi</span>
+    </div>
+  </nav>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Application Modules -->
+  <script src="assets/js/regions_data.js"></script>
+  <script src="assets/js/map.js"></script>
+  <script src="assets/js/templates.js"></script>
+  <script src="assets/js/archives.js"></script>
+  <script src="assets/js/scraper.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
