@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Client Reach AI - Workflow AI Sales</title>
-  
+  <title>cliento - sales intelligence</title>
+  <link rel="icon" type="image/png" href="assets/images/logo-icon.png">
+  <link rel="apple-touch-icon" href="assets/images/logo-icon.png">
+
   <!-- FontAwesome 6 & Google Fonts (Poppins) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,15 +30,9 @@
   <!-- Top Application Header with Centered Menu -->
   <header class="app-header">
     <!-- Brand Logo (Left) -->
-    <div class="brand-container">
-      <div class="brand-badge">
-        <i class="fa-solid fa-radar"></i>
-      </div>
-      <div class="brand-info">
-        <h1>Client Reach <span>AI</span></h1>
-        <p>Workflow AI Sales</p>
-      </div>
-    </div>
+    <a href="#" class="brand-container" onclick="if(window.App) window.App.switchPage('dashboard'); return false;" title="cliento - sales intelligence">
+      <img src="assets/images/logo-horizontal.png" alt="cliento - sales intelligence" class="brand-logo-img">
+    </a>
 
     <!-- Centered Desktop Navigation (Middle) -->
     <div class="desktop-nav-wrapper">
@@ -387,7 +383,7 @@
               <select id="template-greeting-select" class="form-select">
                 <option value="formal">Hallo kak dgn pemilik/team manajemen {nama_tempat}?</option>
                 <option value="humas">Selamat siang bapak/ibu bagian humas & manajemen {nama_tempat}.</option>
-                <option value="casual">Halo kak {nama_tempat}! Salam kenal dari tim Client Reach AI.</option>
+                <option value="casual">Halo kak {nama_tempat}! Salam kenal dari tim cliento.</option>
               </select>
             </div>
 
@@ -424,9 +420,9 @@
             </label>
             <div class="wa-mockup-frame">
               <div class="wa-header">
-                <i class="fa-solid fa-circle-user" style="font-size: 1.4rem;"></i>
+                <img src="assets/images/logo-icon.png" alt="cliento" style="width: 28px; height: 28px; border-radius: 50%; object-fit: contain; background: #ffffff; padding: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
                 <div>
-                  <div style="font-weight: 700; font-size: 0.85rem;">Client Reach AI Sales</div>
+                  <div style="font-weight: 700; font-size: 0.85rem;">cliento Sales Intelligence</div>
                   <div style="font-size: 0.65rem; opacity: 0.85;">Online</div>
                 </div>
               </div>
@@ -749,7 +745,7 @@
           <select id="standard-greeting-select" class="form-select" style="font-size: 0.75rem;">
             <option value="formal">Formal: Hallo kak dgn pemilik/manajemen {nama_tempat}?</option>
             <option value="humas">Resmi Humas: Selamat siang bapak/ibu bagian manajemen & kemitraan {nama_tempat}.</option>
-            <option value="casual">Santai Bersahabat: Halo kak {nama_tempat}! Salam kenal dari tim Client Reach AI.</option>
+            <option value="casual">Santai Bersahabat: Halo kak {nama_tempat}! Salam kenal dari tim cliento.</option>
           </select>
         </div>
 

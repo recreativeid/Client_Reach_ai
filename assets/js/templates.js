@@ -50,7 +50,7 @@ const TemplateManager = {
         const tpl = this.templatesMap[this.activeCategory] || {
             category_name: this.activeCategory,
             greeting_type: 'formal',
-            message_body: 'Hallo kak dgn pemilik/team manajemen {nama_tempat}? Kami dari Client Reach AI melihat potensi bisnis kakak di {alamat} sangat bagus. Boleh kami sharing solusi singkat untuk optimasi sales? Terima kasih!'
+            message_body: 'Hallo kak dgn pemilik/team manajemen {nama_tempat}? Kami dari cliento melihat potensi bisnis kakak di {alamat} sangat bagus. Boleh kami sharing solusi singkat untuk optimasi sales? Terima kasih!'
         };
 
         const bodyInput = document.getElementById('template-body-input');
@@ -157,7 +157,7 @@ const TemplateManager = {
     getWhatsAppUrl(item) {
         const cat = item.category || 'Umum / Lainnya';
         const tpl = this.templatesMap[cat] || this.templatesMap['Umum / Lainnya'] || {
-            message_body: 'Hallo kak dgn pemilik/team manajemen {nama_tempat}? Kami dari Client Reach AI ingin berbagi info seputar optimasi sales. Boleh sharing singkat kak? Terima kasih!'
+            message_body: 'Hallo kak dgn pemilik/team manajemen {nama_tempat}? Kami dari tim cliento ingin berbagi info seputar optimasi sales. Boleh sharing singkat kak? Terima kasih!'
         };
 
         let msg = tpl.message_body || '';
@@ -183,7 +183,7 @@ const TemplateManager = {
     getPersonalizedMessage(item) {
         const cat = item.category || 'Umum / Lainnya';
         const tpl = this.templatesMap[cat] || this.templatesMap['Umum / Lainnya'] || {
-            message_body: 'Hallo kak dgn pemilik/team manajemen {nama_tempat}? Kami dari Client Reach AI melihat potensi bisnis kakak di {alamat} sangat bagus (Rating {rating} ⭐). Kami ingin sharing solusi singkat untuk optimasi sales & hemat biaya iklan. Boleh izin kirimkan ringkasannya kak? Terima kasih! 🙏'
+            message_body: 'Hallo kak dgn pemilik/team manajemen {nama_tempat}? Kami dari tim cliento melihat potensi bisnis kakak di {alamat} sangat bagus (Rating {rating} ⭐). Kami ingin sharing solusi singkat untuk optimasi sales & hemat biaya iklan. Boleh izin kirimkan ringkasannya kak? Terima kasih! 🙏'
         };
 
         let msg = tpl.message_body || '';
@@ -217,7 +217,7 @@ const TemplateManager = {
                 if (val === 'humas') {
                     greeting = 'Selamat siang bapak/ibu bagian humas & manajemen {nama_tempat}. ';
                 } else if (val === 'casual') {
-                    greeting = 'Halo kak {nama_tempat}! Salam kenal dari tim Client Reach AI. ';
+                    greeting = 'Halo kak {nama_tempat}! Salam kenal dari tim cliento. ';
                 }
                 if (bodyInput) {
                     bodyInput.value = greeting + bodyInput.value.replace(/^Hallo kak [^\?]+\? |^Selamat siang [^\.]+\. |^Halo kak [^\!]+\! /, '');

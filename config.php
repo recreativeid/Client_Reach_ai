@@ -60,6 +60,6 @@ $gmapsKey  = $localConfig['GOOGLE_MAPS_API_KEY'] ?? (getenv('GOOGLE_MAPS_API_KEY
 
 define('GEMINI_API_KEY', $geminiKey);
 define('GOOGLE_MAPS_API_KEY', $gmapsKey);
-define('APP_NAME', 'Client Reach AI');
-define('APP_SUBTITLE', 'Workflow AI Sales');
+define('APP_NAME', 'cliento');
+define('APP_SUBTITLE', 'sales intelligence');
 

@@ -156,7 +156,7 @@ Sertakan poin penting dari gambar tersebut (misalnya diskon, bonus, keunggulan, 
         $aiResponseText = "Halo kak, salam hangat untuk tim manajemen *{$businessName}* di {$address} 👋\n\n"
             . "Kami sempat melihat profil {$businessName} di Google Maps dengan reputasi yang luar biasa (Rating {$rating} ⭐). Kami sangat mengapresiasi kualitas pelayanan kakak yang sudah dipercaya oleh banyak pelanggan.\n\n"
             . "Di era sekarang, persaingan usaha {$category} di sekitar area ini semakin ketat. Kami melihat ada potensi besar bagi *{$businessName}* untuk mendominasi peringkat teratas dan menjaring lebih banyak pembeli lokal baru tanpa harus boros biaya iklan berbayar.\n\n"
-            . "Kebetulan tim Client Reach AI sedang membuka program *{$myOffer}* khusus pelaku usaha pilihan di kawasan ini. Kami ingin membantu mengoptimalkan visibilitas bisnis kakak agar calon pelanggan di Google langsung memilih *{$businessName}* ketimbang kompetitor.\n\n"
+            . "Kebetulan tim cliento sedang membuka program *{$myOffer}* khusus pelaku usaha pilihan di kawasan ini. Kami ingin membantu mengoptimalkan visibilitas bisnis kakak agar calon pelanggan di Google langsung memilih *{$businessName}* ketimbang kompetitor.\n\n"
             . "Kira-kira jika kami kirimkan rincian insight singkatnya via WhatsApp ini, boleh kak? Tidak ada ikatan apa pun, murni sharing untuk kemajuan {$businessName} 🙏\n\n"
             . "Terima kasih banyak atas waktunya kak, sukses dan laris selalu usahanya!";
     }

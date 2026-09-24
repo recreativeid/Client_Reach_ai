@@ -1,4 +1,4 @@
-# CLIENT REACH AI (WORKFLOW AI SALES) — MASTER PROJECT MAP
+# CLIENTO (SALES INTELLIGENCE) — MASTER PROJECT MAP
 
 > **Dokumen Peta Proyek Terpadu (All-in-One Context Map)**  
 > *Tujuan File Ini:* Berisi dokumentasi arsitektur menyeluruh, struktur direktori, skema basis data SQLite, kontrak endpoint REST API, alur logika modul frontend, dan panduan fitur. Dalam sesi berikutnya, Anda cukup membaca file `PROJECT_MAP.md` ini untuk memahami 100% sistem tanpa perlu membaca ulang file-file terpisah, sehingga sangat hemat token dan cepat.
@@ -6,7 +6,8 @@
 ---
 
 ## 1. Identitas & Konsep Aplikasi
-- **Nama Aplikasi:** Client Reach AI (Workflow AI Sales)
+- **Nama Aplikasi:** cliento (sales intelligence)
+- **Logo & Branding:** Emblem 3 busur sinyal/radar dengan titik biru royal (`#1d4ed8`) + tipografi modern *cliento* & *sales intelligence*. Asset tersedia di `assets/images/logo-horizontal.png` (header), `assets/images/logo-icon.png` (favicon & icon), `logo-full.png`, dan `logo.png`.
 - **Tema Desain:** SaaS Minimalist, Clean, Rapi, Latar Belakang Putih (`#ffffff` / `#f8fafc`) dengan Aksen Electric/Royal Blue (`#2563eb`), to-the-point tanpa kalimat bertele-tele.
 - **Typografi:** **Poppins** (Google Fonts) di seluruh aplikasi.
 - **Navigasi Header:** Rata tengah (*centered*) di desktop, bottom navigation bar ergonomis di mobile.

@@ -722,7 +722,7 @@ const ScraperClient = {
 
             // Quick Copy Handler
             tr.querySelector('.btn-quick-copy').addEventListener('click', () => {
-                const pitch = window.TemplateManager ? window.TemplateManager.getPersonalizedMessage(it) : `Halo ${it.name}, kami dari Client Reach AI.`;
+                const pitch = window.TemplateManager ? window.TemplateManager.getPersonalizedMessage(it) : `Halo ${it.name}, kami dari tim cliento.`;
                 navigator.clipboard.writeText(pitch);
                 this.showToast(`✓ Pesan penawaran untuk ${it.name} berhasil disalin!`);
             });
@@ -972,7 +972,7 @@ const ScraperClient = {
         if (greetingType === 'humas') {
             greetingText = `Selamat siang bapak/ibu bagian manajemen & kemitraan *${item.name}*.`;
         } else if (greetingType === 'casual') {
-            greetingText = `Halo kak *${item.name}*! Salam kenal dari tim Client Reach AI.`;
+            greetingText = `Halo kak *${item.name}*! Salam kenal dari tim cliento.`;
         }
 
         let body = window.TemplateManager ? window.TemplateManager.getPersonalizedMessage(item) : '';
