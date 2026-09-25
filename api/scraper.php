@@ -323,13 +323,16 @@ if ($action === 'scrape') {
 
     // Save to scraping_history table
     try {
-        $stmt = $pdo->prepare("INSERT INTO scraping_history (query_name, method, location_name, target_category, total_found) VALUES (?, ?, ?, ?, ?)");
+        $authUser = getAuthUser($pdo);
+        $authUserId = $authUser ? $authUser['id'] : null;
+        $stmt = $pdo->prepare("INSERT INTO scraping_history (query_name, method, location_name, target_category, total_found, user_id) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $category . ' di ' . $locationName,
             $methodType,
             $locationName,
             $category,
-            count($scrapedData)
+            count($scrapedData),
+            $authUserId
         ]);
         $historyId = (int)$pdo->lastInsertId();
 

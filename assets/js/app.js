@@ -54,8 +54,19 @@ const App = {
     },
 
     navigateTo(pageId) {
-        const validPages = ['dashboard', 'scraper', 'templates', 'archives'];
+        const validPages = ['dashboard', 'scraper', 'templates', 'archives', 'customers'];
         if (!validPages.includes(pageId)) pageId = 'dashboard';
+
+        // Protected Admin View: customers
+        if (pageId === 'customers') {
+            if (!window.Auth || !window.Auth.currentUser || window.Auth.currentUser.role !== 'admin') {
+                if (window.Auth) {
+                    window.Auth.showAuthModal('login');
+                    window.Auth.toast('Silakan masuk sebagai Administrator untuk mengakses Database Customer.', 'warning');
+                }
+                return;
+            }
+        }
 
         this.activePage = pageId;
         window.location.hash = pageId;
@@ -84,6 +95,12 @@ const App = {
         // If navigating to archives, refresh collections view
         if (pageId === 'archives' && window.ArchiveManager) {
             window.ArchiveManager.loadCollectionsView();
+        }
+
+        // If navigating to customers, refresh customer list & stats
+        if (pageId === 'customers' && window.CustomerManager) {
+            window.CustomerManager.loadCustomers();
+            window.CustomerManager.loadStats();
         }
 
         // If navigating to dashboard, refresh charts & stats

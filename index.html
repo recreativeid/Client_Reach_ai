@@ -49,13 +49,21 @@
         <a class="nav-link" data-page="archives">
           <i class="fa-solid fa-bookmark"></i> Koleksi Arsip
         </a>
+        <a class="nav-link nav-admin-only" data-page="customers" style="display:none;">
+          <i class="fa-solid fa-users"></i> Database Customer
+        </a>
       </nav>
     </div>
 
-    <!-- Header Status Indicator (Right) -->
-    <div class="header-status-badge">
-      <span class="status-dot"></span>
-      <span>AI Sales Mode Aktif</span>
+    <!-- Header Right: Status Indicator & User Auth Widget (Right) -->
+    <div class="header-right-actions">
+      <div class="header-status-badge hidden-mobile">
+        <span class="status-dot"></span>
+        <span>AI Sales Mode Aktif</span>
+      </div>
+      <div id="auth-header-container">
+        <!-- Injected dynamically by Auth.renderHeader() -->
+      </div>
     </div>
   </header>
 
@@ -576,6 +584,133 @@
       </div>
     </section>
 
+    <!-- ==============================================================
+         5. MENU DATABASE CUSTOMER (Khusus Administrator)
+         ============================================================== -->
+    <section id="view-customers" class="page-view">
+      <!-- Section Header -->
+      <div class="d-flex justify-between align-center" style="margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <h1 class="page-title" style="margin: 0;">Basis Data Customer & Pengguna</h1>
+            <span class="badge badge-blue"><i class="fa-solid fa-shield-halved"></i> Area Admin</span>
+          </div>
+          <p class="page-subtitle" style="margin: 4px 0 0;">
+            Kelola data akun customer, hak akses, status aktivasi OTP email, serta pantau aktivitas penggunaan scraper dan koleksi arsip.
+          </p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-outline btn-sm" id="btn-refresh-customers">
+            <i class="fa-solid fa-arrows-rotate"></i> Muat Ulang
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-add-customer">
+            <i class="fa-solid fa-user-plus"></i> Tambah Customer Baru
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Stats Row -->
+      <div class="stats-grid" style="margin-bottom: 24px;">
+        <div class="stat-box">
+          <div class="stat-header">
+            <span class="stat-label">Total Customer Terdaftar</span>
+            <div class="stat-icon" style="background:#eff6ff; color:#2563eb;"><i class="fa-solid fa-users"></i></div>
+          </div>
+          <div class="stat-value" id="stat-cust-total">0</div>
+          <div class="stat-hint">Akun pelanggan tersimpan</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-header">
+            <span class="stat-label">Customer Aktif</span>
+            <div class="stat-icon" style="background:#ecfdf5; color:#10b981;"><i class="fa-solid fa-user-check"></i></div>
+          </div>
+          <div class="stat-value" id="stat-cust-active">0</div>
+          <div class="stat-hint">Dapat login & scraping</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-header">
+            <span class="stat-label">Terverifikasi OTP</span>
+            <div class="stat-icon" style="background:#f0fdf4; color:#16a34a;"><i class="fa-solid fa-envelope-circle-check"></i></div>
+          </div>
+          <div class="stat-value" id="stat-cust-verified">0</div>
+          <div class="stat-hint">Email telah divalidasi</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-header">
+            <span class="stat-label">Menunggu Verifikasi</span>
+            <div class="stat-icon" style="background:#fffbeb; color:#f59e0b;"><i class="fa-solid fa-clock-rotate-left"></i></div>
+          </div>
+          <div class="stat-value" id="stat-cust-pending">0</div>
+          <div class="stat-hint">Pending kode OTP email</div>
+        </div>
+      </div>
+
+      <!-- Customers Table Container Card -->
+      <div class="glass-card" style="padding: 20px;">
+        <!-- Filters Toolbar -->
+        <div class="customer-toolbar" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+          <div style="display: flex; gap: 10px; flex: 1; min-width: 280px; max-width: 480px;">
+            <div class="search-input-wrapper" style="position: relative; width: 100%;">
+              <i class="fa-solid fa-magnifying-glass search-icon" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;"></i>
+              <input type="text" id="customer-search-input" class="form-input" placeholder="Cari nama, email, atau no. telepon customer..." style="padding-left: 36px; font-size: 0.82rem;">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <select id="customer-status-filter" class="form-input" style="font-size: 0.8rem; padding: 6px 12px; width: auto;">
+              <option value="">Semua Status Akun</option>
+              <option value="active">Aktif</option>
+              <option value="suspended">Dinonaktifkan</option>
+            </select>
+
+            <select id="customer-verified-filter" class="form-input" style="font-size: 0.8rem; padding: 6px 12px; width: auto;">
+              <option value="">Semua Status OTP</option>
+              <option value="1">Terverifikasi (1)</option>
+              <option value="0">Pending OTP (0)</option>
+            </select>
+
+            <span id="customers-count-badge" class="badge" style="background: #f1f5f9; color: #475569; font-weight: 600;">
+              0 Pengguna
+            </span>
+          </div>
+        </div>
+
+        <!-- Table Responsive -->
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Customer / Pengguna</th>
+                <th>No. WhatsApp</th>
+                <th>Status Akun</th>
+                <th>Verifikasi Email</th>
+                <th>Aktivitas</th>
+                <th>Tanggal Daftar</th>
+                <th style="text-align: right;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="customers-table-body">
+              <!-- Rendered dynamically by CustomerManager -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div id="customers-empty-state" style="display: none; text-align: center; padding: 48px 16px;">
+          <div style="width: 56px; height: 56px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 12px;">
+            <i class="fa-solid fa-user-slash"></i>
+          </div>
+          <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f172a;">Tidak Ada Data Customer</h4>
+          <p style="margin: 0; font-size: 0.8rem; color: #64748b; max-width: 400px; display: inline-block;">
+            Belum ada akun customer yang cocok dengan kriteria pencarian atau filter yang Anda pilih.
+          </p>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- ==============================================================
@@ -927,6 +1062,371 @@
     </div>
   </div>
 
+  <!-- ==============================================================
+       AUTH & USER PROFILE MODALS
+       ============================================================== -->
+
+  <!-- Modal: Login, Register, & OTP Email Verification -->
+  <div id="modal-auth" class="modal-backdrop">
+    <div class="modal-sheet" style="max-width: 440px;">
+      <!-- Modal Header -->
+      <div class="d-flex justify-between align-center" style="margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="background: #eff6ff; color: #2563eb; width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.05rem;">
+            <i class="fa-solid fa-user-shield"></i>
+          </div>
+          <div>
+            <strong style="font-size: 0.95rem; color: #0f172a; display: block; line-height: 1.2;">Portal Masuk Cliento</strong>
+            <span style="font-size: 0.72rem; color: #64748b;">Akses akun Admin atau Customer</span>
+          </div>
+        </div>
+        <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Tab Buttons (Login vs Register) -->
+      <div class="auth-tabs-nav" style="display: flex; gap: 6px; background: #f1f5f9; padding: 4px; border-radius: 10px; margin-bottom: 18px;">
+        <button type="button" class="auth-tab-btn active" data-tab="login" style="flex: 1; padding: 7px 12px; border-radius: 8px; border: none; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk
+        </button>
+        <button type="button" class="auth-tab-btn" data-tab="register" style="flex: 1; padding: 7px 12px; border-radius: 8px; border: none; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          <i class="fa-solid fa-user-plus"></i> Buat Akun Baru
+        </button>
+      </div>
+
+      <!-- TAB 1: LOGIN FORM -->
+      <div id="tab-auth-login" class="auth-tab-pane">
+        <form id="form-login">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Email Terdaftar</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-envelope" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;"></i>
+              <input type="email" id="login-email" class="form-input" placeholder="contoh: nama@perusahaan.com" style="padding-left: 36px; font-size: 0.82rem;" required autocomplete="username">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label class="form-label" style="font-size: 0.76rem; font-weight: 600; margin: 0;">Kata Sandi</label>
+            </div>
+            <div style="position: relative;">
+              <i class="fa-solid fa-lock" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;"></i>
+              <input type="password" id="login-password" class="form-input" placeholder="Masukkan kata sandi..." style="padding-left: 36px; padding-right: 36px; font-size: 0.82rem;" required autocomplete="current-password">
+              <button type="button" class="btn-toggle-password" data-target="login-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer;">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="btn-submit-login" style="padding: 10px; font-size: 0.85rem; font-weight: 600; margin-bottom: 16px;">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk Sekarang
+          </button>
+        </form>
+
+        <!-- Quick 1-Click Demo Login Box -->
+        <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; padding: 12px; margin-top: 10px;">
+          <div style="font-size: 0.72rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+            <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Akses Cepat Uji Coba (1-Klik)
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-outline btn-sm" id="btn-demo-login-admin" style="flex: 1; font-size: 0.75rem; padding: 6px 10px; text-align: left; background: #ffffff;">
+              <i class="fa-solid fa-shield-halved" style="color:#2563eb;"></i> <strong>Admin</strong><br><span style="font-size:0.68rem; color:#64748b;">admin@cliento.id</span>
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-demo-login-customer" style="flex: 1; font-size: 0.75rem; padding: 6px 10px; text-align: left; background: #ffffff;">
+              <i class="fa-solid fa-user" style="color:#10b981;"></i> <strong>Customer</strong><br><span style="font-size:0.68rem; color:#64748b;">customer@demo.com</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: REGISTER FORM -->
+      <div id="tab-auth-register" class="auth-tab-pane" style="display: none;">
+        <form id="form-register">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Nama Lengkap / Nama Bisnis *</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-user" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;"></i>
+              <input type="text" id="register-name" class="form-input" placeholder="contoh: Hendra Setiawan" style="padding-left: 36px; font-size: 0.82rem;" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Alamat Email Aktif *</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-envelope" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;"></i>
+              <input type="email" id="register-email" class="form-input" placeholder="contoh: nama@perusahaan.com" style="padding-left: 36px; font-size: 0.82rem;" required autocomplete="username">
+            </div>
+            <div style="font-size: 0.68rem; color: #64748b; margin-top: 4px;">Kode OTP 6-digit akan dikirimkan ke email ini untuk verifikasi.</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">No. WhatsApp (Opsional)</label>
+            <div style="position: relative;">
+              <i class="fa-brands fa-whatsapp" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;"></i>
+              <input type="text" id="register-phone" class="form-input" placeholder="contoh: 081234567890" style="padding-left: 36px; font-size: 0.82rem;">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Kata Sandi Akun *</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-lock" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;"></i>
+              <input type="password" id="register-password" class="form-input" placeholder="Minimal 6 karakter..." style="padding-left: 36px; padding-right: 36px; font-size: 0.82rem;" required autocomplete="new-password">
+              <button type="button" class="btn-toggle-password" data-target="register-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer;">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="btn-submit-register" style="padding: 10px; font-size: 0.85rem; font-weight: 600;">
+            <i class="fa-solid fa-user-plus"></i> Daftar & Dapatkan Kode OTP
+          </button>
+        </form>
+      </div>
+
+      <!-- TAB 3: OTP EMAIL VERIFICATION -->
+      <div id="tab-auth-otp" class="auth-tab-pane" style="display: none;">
+        <div style="text-align: center; margin-bottom: 16px;">
+          <div style="width: 52px; height: 52px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 10px;">
+            <i class="fa-solid fa-envelope-open-text"></i>
+          </div>
+          <h4 style="margin: 0 0 4px; font-size: 1rem; color: #0f172a;">Verifikasi Email Anda</h4>
+          <p style="margin: 0; font-size: 0.76rem; color: #64748b;">
+            Kami telah mengirimkan 6 digit kode OTP ke <strong id="otp-target-email" style="color: #0f172a;">email@anda.com</strong>.
+          </p>
+        </div>
+
+        <!-- Local / Dev OTP Simulation Banner (One-click fill) -->
+        <div id="otp-preview-banner" style="display: none; background: #fefce8; border: 1px dashed #facc15; border-radius: 8px; padding: 8px 12px; margin-bottom: 14px; font-size: 0.74rem; color: #854d0e; cursor: pointer; text-align: center;">
+          <i class="fa-solid fa-lightbulb" style="color: #eab308;"></i> <strong>Mode Uji Coba:</strong> Klik untuk isi kode OTP: <strong id="otp-preview-code" style="letter-spacing: 2px; font-size: 0.88rem; font-family: monospace; color: #1e3a8a;"></strong>
+        </div>
+
+        <form id="form-otp-verify">
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600; text-align: center; display: block;">Masukkan 6 Digit Kode OTP</label>
+            <input type="text" id="otp-code-input" class="form-input text-center" maxlength="6" placeholder="• • • • • •" 
+                   style="font-size: 1.3rem; letter-spacing: 8px; font-weight: 700; font-family: monospace; color: #1e3a8a; height: 48px;" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="btn-submit-otp" style="padding: 10px; font-size: 0.85rem; font-weight: 600; margin-bottom: 12px;">
+            <i class="fa-solid fa-shield-check"></i> Verifikasi & Masuk
+          </button>
+        </form>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem; color: #64748b; margin-top: 10px;">
+          <button type="button" id="btn-back-to-register" style="background: none; border: none; color: #64748b; cursor: pointer; font-size: 0.74rem; padding: 0;">
+            <i class="fa-solid fa-arrow-left"></i> Ganti Email
+          </button>
+          <div>
+            Belum menerima kode? 
+            <button type="button" id="btn-resend-otp" style="background: none; border: none; color: #2563eb; font-weight: 600; cursor: pointer; font-size: 0.74rem; padding: 0;">
+              Kirim Ulang <span id="otp-countdown-timer"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal: Tambah & Edit Customer (Admin Only) -->
+  <div id="modal-customer-form" class="modal-backdrop">
+    <div class="modal-sheet" style="max-width: 460px;">
+      <div class="d-flex justify-between align-center" style="margin-bottom: 14px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="background: #eff6ff; color: #2563eb; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+            <i class="fa-solid fa-user-gear"></i>
+          </div>
+          <strong id="customer-modal-title" style="font-size: 0.95rem; color: #0f172a;">Tambah Customer Baru</strong>
+        </div>
+        <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="form-customer-modal">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Nama Lengkap / Nama Bisnis *</label>
+          <input type="text" id="cust-form-name" class="form-input" placeholder="contoh: Budi Santoso" required style="font-size: 0.82rem;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Email Akun *</label>
+          <input type="email" id="cust-form-email" class="form-input" placeholder="contoh: budi@gmail.com" required style="font-size: 0.82rem;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">No. WhatsApp / Telepon</label>
+          <input type="text" id="cust-form-phone" class="form-input" placeholder="contoh: 085712345678" style="font-size: 0.82rem;">
+        </div>
+
+        <div class="form-group" id="customer-password-field-container" style="margin-bottom: 12px;">
+          <label class="form-label" id="customer-modal-pwd-label" style="font-size: 0.76rem; font-weight: 600;">Kata Sandi *</label>
+          <input type="password" id="cust-form-password" class="form-input" placeholder="Minimal 6 karakter..." style="font-size: 0.82rem;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+          <div class="form-group" style="margin: 0;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Status Akun</label>
+            <select id="cust-form-status" class="form-input" style="font-size: 0.82rem;">
+              <option value="active">Aktif (Dapat Login)</option>
+              <option value="suspended">Dinonaktifkan</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin: 0; display: flex; flex-direction: column; justify-content: flex-end;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: #1e293b; cursor: pointer; margin-bottom: 8px;">
+              <input type="checkbox" id="cust-form-verified" checked style="width: 16px; height: 16px; accent-color: #2563eb;">
+              <span>Terverifikasi (OTP Valid)</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-outline btn-close-modal" style="font-size: 0.8rem;">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-customer-form" style="font-size: 0.8rem;">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan Customer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Reset Password Customer (Admin Only) -->
+  <div id="modal-reset-password" class="modal-backdrop">
+    <div class="modal-sheet" style="max-width: 400px;">
+      <div class="d-flex justify-between align-center" style="margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="background: #fef3c7; color: #d97706; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+            <i class="fa-solid fa-key"></i>
+          </div>
+          <strong style="font-size: 0.95rem; color: #0f172a;">Reset Kata Sandi Customer</strong>
+        </div>
+        <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <p style="font-size: 0.78rem; color: #64748b; margin: 0 0 14px;">
+        Atur kata sandi baru untuk akun customer <strong id="reset-pwd-customer-name" style="color: #0f172a;">Customer</strong>.
+      </p>
+
+      <form id="form-reset-customer-password">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Kata Sandi Baru *</label>
+          <input type="password" id="reset-new-password" class="form-input" placeholder="Minimal 6 karakter..." required style="font-size: 0.82rem;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Konfirmasi Kata Sandi Baru *</label>
+          <input type="password" id="reset-confirm-password" class="form-input" placeholder="Ulangi kata sandi baru..." required style="font-size: 0.82rem;">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-outline btn-close-modal" style="font-size: 0.8rem;">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-reset-pwd" style="font-size: 0.8rem;">
+            <i class="fa-solid fa-key"></i> Simpan Password Baru
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Pengaturan Akun & Profil Admin -->
+  <div id="modal-admin-settings" class="modal-backdrop">
+    <div class="modal-sheet" style="max-width: 500px;">
+      <div class="d-flex justify-between align-center" style="margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="background: #eff6ff; color: #2563eb; width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.05rem;">
+            <i class="fa-solid fa-user-gear"></i>
+          </div>
+          <div>
+            <strong style="font-size: 0.95rem; color: #0f172a; display: block; line-height: 1.2;">Pengaturan Akun & Keamanan</strong>
+            <span style="font-size: 0.72rem; color: #64748b;">Kelola profil, informasi login, dan kata sandi</span>
+          </div>
+        </div>
+        <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Settings Nav Tabs -->
+      <div class="settings-tabs-nav" style="display: flex; gap: 6px; background: #f1f5f9; padding: 4px; border-radius: 10px; margin-bottom: 18px;">
+        <button type="button" class="settings-tab-btn active" data-tab="profile" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-id-badge"></i> Profil & Info Login
+        </button>
+        <button type="button" class="settings-tab-btn" data-tab="password" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-lock"></i> Ganti Password
+        </button>
+        <button type="button" class="settings-tab-btn" data-tab="system" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-server"></i> Info Sistem
+        </button>
+      </div>
+
+      <!-- TAB 1: Profile & Login Info -->
+      <div id="tab-settings-profile" class="settings-tab-pane active">
+        <form id="form-admin-profile">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Nama Lengkap *</label>
+            <input type="text" id="admin-profile-name" class="form-input" required style="font-size: 0.82rem;">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Email Login Akun *</label>
+            <input type="email" id="admin-profile-email" class="form-input" required style="font-size: 0.82rem;">
+            <div style="font-size: 0.68rem; color: #64748b; margin-top: 4px;">Email ini digunakan saat masuk ke sistem Cliento.</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">No. WhatsApp / Kontak</label>
+            <input type="text" id="admin-profile-phone" class="form-input" placeholder="contoh: 081234567890" style="font-size: 0.82rem;">
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" class="btn btn-primary" id="btn-save-admin-profile" style="font-size: 0.82rem;">
+              <i class="fa-solid fa-floppy-disk"></i> Simpan Informasi Profil
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- TAB 2: Change Password -->
+      <div id="tab-settings-password" class="settings-tab-pane">
+        <form id="form-admin-password">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Password Saat Ini *</label>
+            <input type="password" id="admin-current-password" class="form-input" placeholder="Masukkan password lama..." required style="font-size: 0.82rem;">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Password Baru *</label>
+            <input type="password" id="admin-new-password" class="form-input" placeholder="Minimal 6 karakter..." required style="font-size: 0.82rem;">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Konfirmasi Password Baru *</label>
+            <input type="password" id="admin-confirm-password" class="form-input" placeholder="Ulangi password baru..." required style="font-size: 0.82rem;">
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" class="btn btn-primary" id="btn-save-admin-password" style="font-size: 0.82rem;">
+              <i class="fa-solid fa-key"></i> Simpan Password Baru
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- TAB 3: System & Mail Info -->
+      <div id="tab-settings-system" class="settings-tab-pane">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 14px; font-size: 0.78rem;">
+          <div style="font-weight: 700; color: #0f172a; margin-bottom: 6px;">
+            <i class="fa-solid fa-circle-check text-success"></i> Sistem Pengiriman OTP Aktif
+          </div>
+          <p style="margin: 0 0 8px; color: #64748b; line-height: 1.5;">
+            Sistem menggunakan fungsi email native server. Pada lingkungan pengembangan (localhost tanpa SMTP lokal), kode OTP otomatis ditampilkan pada banner simulasi pop-up agar pendaftaran customer tetap dapat diuji tanpa hambatan.
+          </p>
+          <div style="font-size: 0.72rem; color: #94a3b8;">
+            Aplikasi: <strong>cliento sales intelligence</strong> v2.2 | Database: <strong>SQLite (WAL Mode)</strong>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Mobile Bottom Navigation Bar -->
   <nav class="mobile-bottom-nav">
     <div class="mobile-nav-item active" data-page="dashboard">
@@ -945,6 +1445,10 @@
       <i class="fa-solid fa-bookmark"></i>
       <span>Koleksi</span>
     </div>
+    <div class="mobile-nav-item nav-admin-only" data-page="customers" style="display:none;">
+      <i class="fa-solid fa-users"></i>
+      <span>Customer</span>
+    </div>
   </nav>
 
   <!-- Leaflet JS -->
@@ -956,6 +1460,8 @@
   <script src="assets/js/templates.js"></script>
   <script src="assets/js/archives.js"></script>
   <script src="assets/js/scraper.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/customers.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>

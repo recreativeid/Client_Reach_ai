@@ -63,6 +63,40 @@ CREATE TABLE IF NOT EXISTS templates (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    role TEXT NOT NULL DEFAULT 'customer', -- 'admin' or 'customer'
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    phone TEXT DEFAULT '',
+    password_hash TEXT NOT NULL,
+    status TEXT DEFAULT 'active', -- 'active', 'suspended', 'pending'
+    is_verified INTEGER DEFAULT 0, -- 1 = verified via OTP, 0 = pending OTP
+    avatar TEXT DEFAULT '',
+    token TEXT DEFAULT '',
+    last_login DATETIME DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS email_otps (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER DEFAULT NULL,
+    email TEXT NOT NULL,
+    otp_code TEXT NOT NULL,
+    type TEXT DEFAULT 'register', -- 'register', 'reset_password', 'login'
+    expires_at DATETIME NOT NULL,
+    is_used INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS system_settings (
+    setting_key TEXT PRIMARY KEY,
+    setting_value TEXT,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Seed initial categories and standard templates
 INSERT OR IGNORE INTO categories (name) VALUES 
 ('Cafe'),
@@ -81,3 +115,4 @@ INSERT OR IGNORE INTO templates (category_name, greeting_type, message_body) VAL
 ('Klinik & RS', 'formal', 'Selamat pagi/siang tim manajemen {nama_tempat}. Kami mengapresiasi layanan kesehatan bapak/ibu di {alamat}. Kami memiliki workflow AI penjadwalan & reminder pasien otomatis via WA. Boleh kami jadwalkan demo singkat?'),
 ('Hotel & Penginapan', 'formal', 'Hallo tim reservasi dan manajemen {nama_tempat}. Kami dari Client Reach AI memiliki program direct booking booster via WhatsApp untuk meningkatkan okupansi kamar {nama_tempat}. Apakah berkenan menerima penawaran kami?'),
 ('Umum / Lainnya', 'formal', 'Hallo kak dgn pemilik/team manajemen {nama_tempat}? Salam kenal dari tim Client Reach AI. Kami melihat potensi bisnis kakak di {alamat} sangat bagus. Kami ingin menawarkan workflow AI sales untuk menjangkau calon pelanggan potensial lebih cepat. Boleh kami sharing detailnya kak?');
+

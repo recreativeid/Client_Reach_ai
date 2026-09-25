@@ -64,8 +64,10 @@ if ($action === 'save_to_archive') {
         }
 
         // Create new archive entry
-        $arcStmt = $pdo->prepare("INSERT INTO archives (folder_id, name, total_items) VALUES (?, ?, ?)");
-        $arcStmt->execute([$folderId, $archiveName, count($items)]);
+        $authUser = getAuthUser($pdo);
+        $authUserId = $authUser ? $authUser['id'] : null;
+        $arcStmt = $pdo->prepare("INSERT INTO archives (folder_id, name, total_items, user_id) VALUES (?, ?, ?, ?)");
+        $arcStmt->execute([$folderId, $archiveName, count($items), $authUserId]);
         $archiveId = (int)$pdo->lastInsertId();
 
         // Clone items into the archive

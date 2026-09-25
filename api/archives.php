@@ -154,8 +154,10 @@ if ($action === 'save_archive') {
     }
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO archives (folder_id, name, total_items) VALUES (?, ?, ?)");
-        $stmt->execute([$folderId, $name, count($items)]);
+        $authUser = getAuthUser($pdo);
+        $authUserId = $authUser ? $authUser['id'] : null;
+        $stmt = $pdo->prepare("INSERT INTO archives (folder_id, name, total_items, user_id) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$folderId, $name, count($items), $authUserId]);
         $archiveId = (int)$pdo->lastInsertId();
 
         // Insert items into scraped_items table

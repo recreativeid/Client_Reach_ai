@@ -35,6 +35,9 @@ c:\xampp\htdocs\Client_Reach_ai/
 │   ├── init.php               # Skrip inisialisasi & migrasi tabel otomatis
 │   └── client_reach.db        # File database SQLite (WAL Mode enabled)
 ├── api/
+│   ├── auth.php               # Autentikasi Admin & Customer, Registrasi, Verifikasi OTP Email, & Session Me
+│   ├── customers.php          # CRUD Database Customer khusus Admin, Toggle Status, Reset Password & Stats
+│   ├── settings.php           # Pengaturan Profil Admin, Ganti Password Login, & Konfigurasi Sistem
 │   ├── regions.php            # Endpoint hierarki wilayah Indonesia & GeoJSON polygon pembatas
 │   ├── scraper.php            # Engine scraping cerdas (Keyword synonym matching & valid business generation)
 │   ├── gemini.php             # Google Gemini AI cold outreach copywriter & pitch generator (Vision + Text)
@@ -43,13 +46,15 @@ c:\xampp\htdocs\Client_Reach_ai/
 │   └── history.php            # Endpoint riwayat scraping & simpan riwayat ke folder arsip Google Drive
 └── assets/
     ├── css/
-    │   └── style.css          # Desain SaaS putih-biru, Poppins font, centered nav, split layout, Google Drive styling
+    │   └── style.css          # Desain SaaS putih-biru, Poppins font, centered nav, split layout, Google Drive styling, Auth dropdown
     └── js/
         ├── regions_data.js    # Data geospasial Provinsi & Kab/Kota Indonesia instan
         ├── map.js             # Leaflet engine (Mode Wilayah Polygon Merah Penuh vs Mode Titik Peta & Radius)
         ├── templates.js       # Template manager, tag `{nama_tempat}`, mockup WA, generator link
         ├── archives.js        # Google Drive Style Folder Explorer, Breadcrumbs, Excel file cards, status prospek
         ├── scraper.js         # 2 Mode zonasi independen, smart keyword search, lead qualification, Gemini AI pitch, history
+        ├── auth.js            # Controller Autentikasi, Login/Register modal, Verifikasi OTP email, User Dropdown
+        ├── customers.js       # Controller CRUD Basis Data Customer Admin, live search, status filters
         └── app.js             # SPA router, Chart.js sales & marketing analytics, modal controller
 ```
 
@@ -202,9 +207,35 @@ c:\xampp\htdocs\Client_Reach_ai/
 - Generator kecamatan (districts) dan kelurahan (villages) dinamis berbasis koordinat lokal, sehingga tidak ada daerah yang kosong di seluruh Indonesia.
 - Alamat hasil scraping otomatis menyertakan nama jalan nasional (`Jl. Ahmad Yani`, `Jl. Jenderal Sudirman`, `Jl. Diponegoro`, `Jl. Cenderawasih`, `Jl. Sam Ratulangi`, `Jl. Yos Sudarso`, dll.) beserta kelurahan, kecamatan, kabupaten/kota, dan provinsi yang dipilih.
 
+### Menu 5: Basis Data Customer (`#customers`) — Khusus Administrator
+- **Autentikasi & Hak Akses Berjenjang:**
+  - Token Bearer berbasis `localStorage` + session endpoint `api/auth.php?action=me`.
+  - Header interaktif: Menampilkan tombol "Masuk / Daftar" untuk tamu (Guest), atau avatar inisial, nama, dan badge role (Admin/Customer) jika telah login.
+  - Dropdown Profil: Akses cepat ke Database Customer (Admin), Pengaturan Profil & Ganti Password, dan Logout.
+  - Quick 1-Click Demo Login untuk pengujian cepat: `admin@cliento.id` (password: `admin123`) & `customer@demo.com` (password: `customer123`).
+- **Pendaftaran Customer & Verifikasi OTP Email:**
+  - Customer mendaftar dengan nama, email aktif, no. WhatsApp, dan password.
+  - Sistem menghasilkan 6-digit kode OTP (berlaku 15 menit) dan mencatat ke tabel `email_otps`.
+  - Otomatis mengirimkan email OTP dengan template HTML modern Cliento.
+  - Layar Verifikasi OTP interaktif dengan timer countdown kirim ulang 60 detik + dev preview banner untuk pengujian lokal instan tanpa server email.
+- **CRUD Basis Data Customer oleh Admin:**
+  - Matriks Metrik Cepat: Total Customer, Customer Aktif, Terverifikasi OTP, Menunggu Verifikasi.
+  - Live Search (pencarian instan nama, email, no. HP dengan debounce).
+  - Filter Status Akun (Semua, Aktif, Dinonaktifkan) dan Status Verifikasi (Terverifikasi, Pending OTP).
+  - Tambah / Edit Customer Modal: Mengatur data pelanggan, password baru, status aktif/nonaktif, dan validasi OTP langsung.
+  - Quick Reset Password Modal: Reset kata sandi customer dengan verifikasi konfirmasi.
+  - 1-Klik Toggle Status (Aktif / Nonaktif) langsung dari baris tabel.
+  - Hapus Customer permanen dengan dialog konfirmasi aman.
+- **Pengaturan Profil & Keamanan Admin:**
+  - Ubah Nama Lengkap, Email Login, dan No. Telepon Admin.
+  - Ubah Password Admin dengan validasi password saat ini.
+
 ---
 
 ## 5. Cara Menjalankan & Verifikasi
 - Dev Server lokal: `http://127.0.0.1:8080/index.html` (atau Apache XAMPP di `http://localhost/Client_Reach_ai/index.html`).
 - Skrip inisialisasi basis data: `http://127.0.0.1:8080/database/init.php`.
+- Kredensial Uji Coba Default:
+  - **Super Admin:** `admin@cliento.id` / `admin123`
+  - **Customer:** `customer@demo.com` / `customer123`
 
