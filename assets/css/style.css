@@ -93,9 +93,9 @@ body {
 }
 
 .brand-logo-img {
-  height: 40px;
+  height: 38px;
   width: auto;
-  max-width: 165px;
+  max-width: 185px;
   object-fit: contain;
   display: block;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
@@ -1840,5 +1840,352 @@ body {
   cursor: pointer;
   line-height: 1;
 }
+
+/* ==================================================
+   Strict Auth Gatekeeper (Screen Before Dashboard)
+   ================================================== */
+#auth-gate-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
+  background: radial-gradient(circle at 10% 20%, #eff6ff 0%, #f8fafc 45%, #e2e8f0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+body.authenticated #auth-gate-container {
+  display: none !important;
+}
+
+body:not(.authenticated) .app-header,
+body:not(.authenticated) .app-container,
+body:not(.authenticated) .mobile-bottom-nav {
+  display: none !important;
+}
+
+.auth-gate-card {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.12), 0 10px 20px -5px rgba(37, 99, 235, 0.06);
+  padding: 32px 28px;
+  position: relative;
+  box-sizing: border-box;
+  animation: authCardIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes authCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.auth-gate-header {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.auth-gate-logo {
+  height: 52px;
+  width: auto;
+  max-width: 220px;
+  object-fit: contain;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.auth-gate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.auth-gate-tagline {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.auth-gate-tabs {
+  display: flex;
+  gap: 6px;
+  background: #f1f5f9;
+  padding: 5px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.auth-gate-tab {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 9px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+
+.auth-gate-tab.active {
+  background: #ffffff;
+  color: #2563eb;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.gate-pane {
+  animation: paneIn 0.25s ease-out;
+}
+
+@keyframes paneIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: #64748b;
+  text-decoration: none;
+  cursor: pointer;
+  margin-bottom: 16px;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.auth-back-link:hover {
+  color: #2563eb;
+}
+
+.auth-pane-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.auth-pane-desc {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin-bottom: 18px;
+  line-height: 1.45;
+}
+
+.demo-login-box {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 18px;
+}
+
+.demo-login-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.demo-login-btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-demo-card {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.btn-demo-card:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+  transform: translateY(-1px);
+}
+
+.btn-demo-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-demo-sub {
+  font-size: 0.68rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* ==================================================
+   Portal Switcher (User vs Admin Separation)
+   ================================================== */
+.auth-portal-selector {
+  display: flex;
+  gap: 6px;
+  background: #f1f5f9;
+  padding: 5px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.auth-portal-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+
+.auth-portal-btn:hover {
+  color: #0f172a;
+}
+
+.auth-portal-btn.active[data-portal="user"] {
+  background: #ffffff;
+  color: #2563eb;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.auth-portal-btn.active[data-portal="admin"] {
+  background: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25), 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.portal-badge-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.badge-portal-user {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #dbeafe;
+}
+
+.badge-portal-admin {
+  background: #0f172a;
+  color: #f8fafc;
+  border: 1px solid #334155;
+}
+
+.admin-login-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-left: 4px solid #0f172a;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  font-size: 0.78rem;
+  color: #1e293b;
+}
+
+.btn-admin-submit {
+  background: #0f172a !important;
+  border-color: #0f172a !important;
+}
+
+.btn-admin-submit:hover {
+  background: #1e293b !important;
+  border-color: #1e293b !important;
+}
+
+/* Forgot Email Search Result Card */
+.found-account-card {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.found-account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.found-account-name {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.found-account-email {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #2563eb;
+  font-family: monospace;
+}
+
+.found-account-phone {
+  font-size: 0.68rem;
+  color: #64748b;
+}
+
 
 

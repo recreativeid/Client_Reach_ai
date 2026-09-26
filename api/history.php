@@ -12,8 +12,17 @@ $action = $_GET['action'] ?? ($input['action'] ?? 'list');
 
 // 1. List Scraping History
 if ($action === 'list') {
+    $authUser = getAuthUser($pdo);
+    $authUserId = $authUser ? $authUser['id'] : null;
+    $isAdmin = $authUser && $authUser['role'] === 'admin';
+
     try {
-        $stmt = $pdo->query("SELECT * FROM scraping_history ORDER BY created_at DESC LIMIT 30");
+        if ($isAdmin || $authUserId === null) {
+            $stmt = $pdo->query("SELECT * FROM scraping_history ORDER BY created_at DESC LIMIT 30");
+        } else {
+            $stmt = $pdo->prepare("SELECT * FROM scraping_history WHERE user_id = ? OR user_id IS NULL ORDER BY created_at DESC LIMIT 30");
+            $stmt->execute([$authUserId]);
+        }
         $history = $stmt->fetchAll();
 
         jsonResponse([

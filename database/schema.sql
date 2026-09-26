@@ -5,8 +5,10 @@ CREATE TABLE IF NOT EXISTS folders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     parent_id INTEGER DEFAULT NULL,
     name TEXT NOT NULL,
+    user_id INTEGER DEFAULT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (parent_id) REFERENCES folders(id) ON DELETE CASCADE
+    FOREIGN KEY (parent_id) REFERENCES folders(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS archives (
@@ -15,8 +17,10 @@ CREATE TABLE IF NOT EXISTS archives (
     name TEXT NOT NULL,
     total_items INTEGER DEFAULT 0,
     notes TEXT DEFAULT '',
+    user_id INTEGER DEFAULT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE SET NULL
+    FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE SET NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS scraping_history (
@@ -26,7 +30,9 @@ CREATE TABLE IF NOT EXISTS scraping_history (
     location_name TEXT NOT NULL,
     target_category TEXT NOT NULL,
     total_found INTEGER DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    user_id INTEGER DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS scraped_items (

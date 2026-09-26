@@ -69,6 +69,7 @@ try {
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         role TEXT NOT NULL DEFAULT 'customer',
+        username TEXT UNIQUE DEFAULT NULL,
         name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
         phone TEXT DEFAULT '',
@@ -98,10 +99,17 @@ try {
     );
     ");
 
+    // Ensure username and user_id columns exist across tables
+    try { $pdo->exec("ALTER TABLE users ADD COLUMN username TEXT DEFAULT NULL;"); } catch (Exception $e) {}
+    try { $pdo->exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username) WHERE username IS NOT NULL;"); } catch (Exception $e) {}
+    try { $pdo->exec("ALTER TABLE folders ADD COLUMN user_id INTEGER DEFAULT NULL;"); } catch (Exception $e) {}
+    try { $pdo->exec("ALTER TABLE archives ADD COLUMN user_id INTEGER DEFAULT NULL;"); } catch (Exception $e) {}
+    try { $pdo->exec("ALTER TABLE scraping_history ADD COLUMN user_id INTEGER DEFAULT NULL;"); } catch (Exception $e) {}
+
     // Seed default admin if empty
     $chkAdmin = $pdo->query("SELECT id FROM users WHERE role = 'admin' LIMIT 1")->fetch();
     if (!$chkAdmin) {
-        $adminStmt = $pdo->prepare("INSERT INTO users (role, name, email, phone, password_hash, status, is_verified) VALUES ('admin', 'Super Administrator', 'admin@cliento.id', '081234567890', ?, 'active', 1)");
+        $adminStmt = $pdo->prepare("INSERT INTO users (role, username, name, email, phone, password_hash, status, is_verified) VALUES ('admin', 'admin', 'Super Administrator', 'admin@cliento.id', '081234567890', ?, 'active', 1)");
         $adminStmt->execute([password_hash('admin123', PASSWORD_DEFAULT)]);
     }
 } catch (Exception $e) {
@@ -169,10 +177,165 @@ function getAuthUser($pdo, $requiredRole = null) {
 }
 
 /**
- * Helper to send branded HTML OTP email
+ * Native PHP Socket SMTP Client (Works directly with Gmail SMTP ssl://smtp.gmail.com:465)
  */
-function sendEmailOtp($toEmail, $otpCode, $userName = 'Pengguna Cliento') {
-    $subject = "Kode OTP Verifikasi Akun Cliento Anda: " . $otpCode;
+function sendDirectSmtpSocket($host, $port, $username, $password, $from, $fromName, $to, $subject, $htmlBody) {
+    $timeout = 10;
+    $isSsl = ($port == 465 || strpos($host, 'ssl://') !== false);
+    $connectHost = ($isSsl && strpos($host, 'ssl://') === false) ? 'ssl://' . $host : $host;
+
+    $socket = @stream_socket_client($connectHost . ':' . $port, $errno, $errstr, $timeout);
+    if (!$socket) {
+        return ['success' => false, 'error' => "Koneksi SMTP socket gagal ($errno): $errstr"];
+    }
+
+    stream_set_timeout($socket, $timeout);
+
+    $readResp = function($s) {
+        $out = '';
+        while ($str = fgets($s, 515)) {
+            $out .= $str;
+            if (substr($str, 3, 1) == ' ') break;
+        }
+        return $out;
+    };
+
+    $sendCmd = function($s, $cmd) use ($readResp) {
+        fputs($s, $cmd . "\r\n");
+        return $readResp($s);
+    };
+
+    $greeting = $readResp($socket);
+    if (substr($greeting, 0, 3) != '220') {
+        fclose($socket);
+        return ['success' => false, 'error' => "Server SMTP tidak merespon: $greeting"];
+    }
+
+    $sendCmd($socket, "EHLO " . gethostname());
+
+    if ($port == 587) {
+        $tls = $sendCmd($socket, "STARTTLS");
+        if (substr($tls, 0, 3) != '220') {
+            fclose($socket);
+            return ['success' => false, 'error' => "STARTTLS ditolak: $tls"];
+        }
+        if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+            fclose($socket);
+            return ['success' => false, 'error' => "Enkripsi TLS gagal"];
+        }
+        $sendCmd($socket, "EHLO " . gethostname());
+    }
+
+    $auth = $sendCmd($socket, "AUTH LOGIN");
+    if (substr($auth, 0, 3) != '334') {
+        fclose($socket);
+        return ['success' => false, 'error' => "AUTH LOGIN ditolak: $auth"];
+    }
+
+    $userRes = $sendCmd($socket, base64_encode($username));
+    if (substr($userRes, 0, 3) != '334') {
+        fclose($socket);
+        return ['success' => false, 'error' => "Email/Username SMTP ditolak: $userRes"];
+    }
+
+    $passRes = $sendCmd($socket, base64_encode($password));
+    if (substr($passRes, 0, 3) != '235') {
+        fclose($socket);
+        return ['success' => false, 'error' => "Password / Sandi Aplikasi Gmail ditolak: $passRes"];
+    }
+
+    $sendCmd($socket, "MAIL FROM: <$from>");
+    $sendCmd($socket, "RCPT TO: <$to>");
+    $sendCmd($socket, "DATA");
+
+    $headers  = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $headers .= "From: $fromName <$from>\r\n";
+    $headers .= "To: <$to>\r\n";
+    $headers .= "Subject: =?UTF-8?B?" . base64_encode($subject) . "?=\r\n";
+    $headers .= "Date: " . date('r') . "\r\n";
+
+    $message = $headers . "\r\n" . $htmlBody . "\r\n.\r\n";
+    fputs($socket, $message);
+    $dataResp = $readResp($socket);
+
+    $sendCmd($socket, "QUIT");
+    fclose($socket);
+
+    if (substr($dataResp, 0, 3) == '250') {
+        return ['success' => true, 'message' => 'Email terkirim via SMTP'];
+    }
+    return ['success' => false, 'error' => "Pengiriman data gagal: $dataResp"];
+}
+
+/**
+ * Resend REST API Mailer (Free 3,000 emails/month via https://resend.com)
+ */
+function sendResendApiMail($apiKey, $from, $to, $subject, $html) {
+    if (empty($apiKey)) return ['success' => false, 'error' => 'API Key Resend kosong'];
+    $ch = curl_init('https://api.resend.com/emails');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . $apiKey,
+        'Content-Type: application/json'
+    ]);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+        'from' => $from ?: 'Cliento <onboarding@resend.dev>',
+        'to' => [$to],
+        'subject' => $subject,
+        'html' => $html
+    ]));
+    $res = curl_exec($ch);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    $data = json_decode($res, true);
+    return ['success' => ($code >= 200 && $code < 300), 'response' => $data];
+}
+
+/**
+ * Brevo REST API Mailer (Free 300 emails/day / 9,000/mo via https://brevo.com)
+ */
+function sendBrevoApiMail($apiKey, $fromEmail, $fromName, $toEmail, $toName, $subject, $html) {
+    if (empty($apiKey)) return ['success' => false, 'error' => 'API Key Brevo kosong'];
+    $ch = curl_init('https://api.brevo.com/v3/smtp/email');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'api-key: ' . $apiKey,
+        'Content-Type: application/json',
+        'Accept: application/json'
+    ]);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+        'sender' => ['name' => $fromName, 'email' => $fromEmail],
+        'to' => [['email' => $toEmail, 'name' => $toName]],
+        'subject' => $subject,
+        'htmlContent' => $html
+    ]));
+    $res = curl_exec($ch);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    $data = json_decode($res, true);
+    return ['success' => ($code >= 200 && $code < 300), 'response' => $data];
+}
+
+/**
+ * Helper to send branded HTML OTP email with support for Gmail SMTP, Resend API, & Native Mail
+ */
+function sendEmailOtp($toEmail, $otpCode, $userName = 'Pengguna Cliento', $purpose = 'register') {
+    global $pdo;
+
+    $badgeLabel = 'Verifikasi Akun Baru';
+    $purposeDesc = 'Gunakan kode verifikasi OTP berikut untuk menyelesaikan pendaftaran akun Anda:';
+    if ($purpose === 'forgot_password') {
+        $badgeLabel = 'Pemulihan Kata Sandi Akun';
+        $purposeDesc = 'Kami menerima permintaan untuk mereset kata sandi akun Anda. Masukkan kode OTP berikut:';
+    } elseif ($purpose === 'change_email') {
+        $badgeLabel = 'Verifikasi Perubahan Email';
+        $purposeDesc = 'Gunakan kode OTP berikut untuk mengonfirmasi perubahan alamat email akun Cliento Anda:';
+    }
+
+    $subject = "Kode OTP $badgeLabel Cliento: " . $otpCode;
     
     $htmlContent = '
     <!DOCTYPE html>
@@ -195,16 +358,16 @@ function sendEmailOtp($toEmail, $otpCode, $userName = 'Pengguna Cliento') {
     <body>
         <div class="card">
             <div class="logo">cliento <span style="font-size: 12px; font-weight: 500; color: #64748b;">sales intelligence</span></div>
-            <div class="badge">Verifikasi Email OTP</div>
+            <div class="badge">' . htmlspecialchars($badgeLabel) . '</div>
             <div class="title">Halo, ' . htmlspecialchars($userName) . '!</div>
-            <div class="desc">Terima kasih telah mendaftar di <strong>cliento</strong>. Gunakan kode verifikasi OTP berikut untuk menyelesaikan pendaftaran akun Anda:</div>
+            <div class="desc">' . $purposeDesc . '</div>
             
             <div class="otp-box">
                 <div class="otp-code">' . htmlspecialchars($otpCode) . '</div>
                 <div class="otp-hint">Kode ini berlaku selama 15 menit. Jaga kerahasiaan kode Anda.</div>
             </div>
             
-            <div class="desc" style="font-size: 13px;">Jika Anda tidak merasa melakukan pendaftaran ini, silakan abaikan email ini dengan aman.</div>
+            <div class="desc" style="font-size: 13px;">Jika Anda tidak merasa melakukan permintaan ini, abaikan email ini dengan aman.</div>
             
             <div class="footer">
                 &copy; ' . date('Y') . ' cliento - sales intelligence. Seluruh hak cipta dilindungi.
@@ -213,15 +376,50 @@ function sendEmailOtp($toEmail, $otpCode, $userName = 'Pengguna Cliento') {
     </body>
     </html>';
 
+    // Check configured settings from DB
+    $settings = [];
+    try {
+        $stmt = $pdo->query("SELECT setting_key, setting_value FROM system_settings");
+        $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+    } catch (Exception $e) {}
+
+    $provider = $settings['smtp_provider'] ?? 'smtp';
+    $smtpHost = $settings['smtp_host'] ?? 'smtp.gmail.com';
+    $smtpPort = (int)($settings['smtp_port'] ?? 465);
+    $smtpUser = $settings['smtp_user'] ?? '';
+    $smtpPass = $settings['smtp_pass'] ?? '';
+    $smtpFrom = $settings['smtp_from'] ?? ($smtpUser ?: 'no-reply@cliento.id');
+    $smtpFromName = 'cliento Sales Intelligence';
+    $brevoKey = $settings['brevo_api_key'] ?? '';
+    $resendKey = $settings['resend_api_key'] ?? '';
+
+    // 1. Try Brevo API (Free 300 emails/day to Gmail)
+    if ($provider === 'brevo' || (!empty($brevoKey) && empty($smtpPass))) {
+        $res = sendBrevoApiMail($brevoKey, $smtpFrom, $smtpFromName, $toEmail, $userName, $subject, $htmlContent);
+        if ($res['success']) return true;
+    }
+
+    // 2. Try Resend API (Free 3,000 emails/month)
+    if ($provider === 'resend' || (!empty($resendKey) && empty($smtpPass))) {
+        $res = sendResendApiMail($resendKey, $smtpFrom, $toEmail, $subject, $htmlContent);
+        if ($res['success']) return true;
+    }
+
+    // 3. Try Gmail SMTP / Custom SMTP if password configured
+    if (!empty($smtpUser) && !empty($smtpPass)) {
+        $res = sendDirectSmtpSocket($smtpHost, $smtpPort, $smtpUser, $smtpPass, $smtpFrom, $smtpFromName, $toEmail, $subject, $htmlContent);
+        if ($res['success']) return true;
+    }
+
+    // 3. Fallback to native PHP mail
     $headers = [
         'MIME-Version: 1.0',
         'Content-Type: text/html; charset=UTF-8',
-        'From: cliento Sales Intelligence <no-reply@cliento.id>',
+        'From: ' . $smtpFromName . ' <' . $smtpFrom . '>',
         'Reply-To: support@cliento.id',
         'X-Mailer: PHP/' . phpversion()
     ];
 
-    // Attempt native PHP mail
     $sent = false;
     try {
         $sent = @mail($toEmail, $subject, $htmlContent, implode("\r\n", $headers));

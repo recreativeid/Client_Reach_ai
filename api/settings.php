@@ -105,20 +105,26 @@ if ($action === 'get_system_settings') {
 
     $gemini = $rawSettings['gemini_api_key'] ?? (defined('GEMINI_API_KEY') ? GEMINI_API_KEY : '');
     $gmaps = $rawSettings['gmaps_api_key'] ?? (defined('GOOGLE_MAPS_API_KEY') ? GOOGLE_MAPS_API_KEY : '');
-    $smtpHost = $rawSettings['smtp_host'] ?? '';
-    $smtpPort = $rawSettings['smtp_port'] ?? '587';
+    $smtpProvider = $rawSettings['smtp_provider'] ?? 'gmail_smtp';
+    $smtpHost = $rawSettings['smtp_host'] ?? 'smtp.gmail.com';
+    $smtpPort = $rawSettings['smtp_port'] ?? '465';
     $smtpUser = $rawSettings['smtp_user'] ?? '';
     $smtpFrom = $rawSettings['smtp_from'] ?? 'no-reply@cliento.id';
+    $brevoKey = $rawSettings['brevo_api_key'] ?? '';
+    $resendKey = $rawSettings['resend_api_key'] ?? '';
 
     jsonResponse([
         'success' => true,
         'settings' => [
             'gemini_api_key' => $gemini,
             'gmaps_api_key' => $gmaps,
+            'smtp_provider' => $smtpProvider,
             'smtp_host' => $smtpHost,
             'smtp_port' => $smtpPort,
             'smtp_user' => $smtpUser,
             'smtp_from' => $smtpFrom,
+            'brevo_api_key' => $brevoKey,
+            'resend_api_key' => $resendKey,
             'backend_url' => $rawSettings['backend_url'] ?? ''
         ]
     ]);
@@ -129,10 +135,13 @@ if ($action === 'save_system_settings') {
     $settings = [
         'gemini_api_key' => trim($input['gemini_api_key'] ?? ''),
         'gmaps_api_key' => trim($input['gmaps_api_key'] ?? ''),
-        'smtp_host' => trim($input['smtp_host'] ?? ''),
-        'smtp_port' => trim($input['smtp_port'] ?? '587'),
+        'smtp_provider' => trim($input['smtp_provider'] ?? 'gmail_smtp'),
+        'smtp_host' => trim($input['smtp_host'] ?? 'smtp.gmail.com'),
+        'smtp_port' => trim($input['smtp_port'] ?? '465'),
         'smtp_user' => trim($input['smtp_user'] ?? ''),
         'smtp_from' => trim($input['smtp_from'] ?? 'no-reply@cliento.id'),
+        'brevo_api_key' => trim($input['brevo_api_key'] ?? ''),
+        'resend_api_key' => trim($input['resend_api_key'] ?? ''),
         'backend_url' => trim($input['backend_url'] ?? '')
     ];
 
@@ -149,10 +158,35 @@ if ($action === 'save_system_settings') {
 
         jsonResponse([
             'success' => true,
-            'message' => 'Pengaturan sistem & konfigurasi API berhasil disimpan!'
+            'message' => 'Pengaturan sistem & konfigurasi API email berhasil disimpan!'
         ]);
     } catch (Exception $e) {
         jsonResponse(['success' => false, 'message' => 'Gagal menyimpan pengaturan: ' . $e->getMessage()], 500);
+    }
+}
+
+// 6. TEST SEND EMAIL TO GMAIL
+if ($action === 'test_email') {
+    $targetEmail = strtolower(trim($input['target_email'] ?? ''));
+    if (empty($targetEmail) || !filter_var($targetEmail, FILTER_VALIDATE_EMAIL)) {
+        jsonResponse(['success' => false, 'message' => 'Alamat email target uji coba tidak valid.'], 400);
+    }
+
+    $testOtp = str_pad((string)random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
+    $sent = sendEmailOtp($targetEmail, $testOtp, 'Admin Cliento', 'register');
+
+    if ($sent) {
+        jsonResponse([
+            'success' => true,
+            'message' => 'Uji coba pengiriman email BERHASIL! Kode OTP simulasi ' . $testOtp . ' dikirimkan ke ' . $targetEmail . '. Silakan periksa inbox/spam Gmail Anda.',
+            'otp' => $testOtp
+        ]);
+    } else {
+        jsonResponse([
+            'success' => false,
+            'message' => 'Gagal mengirim email secara langsung. Pastikan Sandi Aplikasi Gmail atau API Key Brevo/Resend sudah tepat.',
+            'otp_preview' => $testOtp
+        ], 500);
     }
 }
 

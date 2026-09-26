@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Administrator - cliento (AI Sales Intelligence)</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/images/logo-icon.png">
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at 10% 20%, #0f172a 0%, #1e293b 50%, #090d16 100%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f8fafc;
+      box-sizing: border-box;
+      padding: 24px 16px;
+    }
+
+    .admin-auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 20px;
+      padding: 36px 30px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      position: relative;
+      animation: adminCardIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes adminCardIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .admin-card-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .admin-logo {
+      height: 48px;
+      width: auto;
+      max-width: 200px;
+      object-fit: contain;
+      margin-bottom: 14px;
+      display: inline-block;
+    }
+
+    .admin-badge-portal {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.25);
+    }
+
+    .admin-tagline {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin: 0;
+      line-height: 1.45;
+    }
+
+    .admin-notice-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-left: 4px solid #0f172a;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      font-size: 0.78rem;
+      color: #334155;
+      line-height: 1.4;
+    }
+
+    .admin-notice-box i {
+      font-size: 1.1rem;
+      color: #2563eb;
+      margin-top: 2px;
+    }
+
+    .admin-form-group {
+      margin-bottom: 16px;
+    }
+
+    .admin-form-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 6px;
+    }
+
+    .admin-input-wrap {
+      position: relative;
+    }
+
+    .admin-input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .admin-form-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 40px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      color: #0f172a;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: all 0.2s;
+      background: #ffffff;
+    }
+
+    .admin-form-input:focus {
+      outline: none;
+      border-color: #0f172a;
+      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.12);
+    }
+
+    .admin-toggle-pwd {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 4px 6px;
+      font-size: 0.88rem;
+    }
+
+    .admin-toggle-pwd:hover {
+      color: #475569;
+    }
+
+    .btn-admin-login {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      background: #0f172a;
+      color: #ffffff;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+      transition: all 0.2s;
+      margin-top: 6px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+    }
+
+    .btn-admin-login:hover {
+      background: #1e293b;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.35);
+    }
+
+    .btn-admin-login:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .admin-alert {
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.4;
+    }
+
+    .admin-alert-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+    }
+
+    .admin-alert-success {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #047857;
+    }
+
+    .admin-footer-links {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.78rem;
+    }
+
+    .admin-footer-links a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s;
+    }
+
+    .admin-footer-links a:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
+
+    .admin-security-note {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #94a3b8;
+      margin-top: 16px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-auth-card">
+    <!-- Header -->
+    <div class="admin-card-header">
+      <img src="assets/images/logo-horizontal.png" alt="cliento - sales intelligence" class="admin-logo">
+      <div>
+        <span class="admin-badge-portal">
+          <i class="fa-solid fa-shield-halved"></i> Portal Administrator
+        </span>
+      </div>
+      <p class="admin-tagline">
+        Panel Autentikasi Pengelola Sistem & Manajemen Pengguna
+      </p>
+    </div>
+
+    <!-- Security Banner -->
+    <div class="admin-notice-box">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <div>
+        <strong>Akses Terbatas</strong><br>
+        Halaman ini khusus untuk Administrator. Pengguna biasa silakan masuk melalui portal pengguna.
+      </div>
+    </div>
+
+    <!-- Alert Box -->
+    <div id="admin-alert" class="admin-alert"></div>
+
+    <!-- Admin Login Form -->
+    <form id="admin-login-form">
+      <div class="admin-form-group">
+        <label class="admin-form-label" for="admin-account">Username atau Email Administrator *</label>
+        <div class="admin-input-wrap">
+          <i class="fa-solid fa-user-shield admin-input-icon"></i>
+          <input type="text" id="admin-account" class="admin-form-input" placeholder="contoh: admin atau admin@cliento.id" required autofocus autocomplete="username">
+        </div>
+      </div>
+
+      <div class="admin-form-group">
+        <label class="admin-form-label" for="admin-password">Kata Sandi Administrator *</label>
+        <div class="admin-input-wrap">
+          <i class="fa-solid fa-key admin-input-icon"></i>
+          <input type="password" id="admin-password" class="admin-form-input" placeholder="Masukkan kata sandi administrator..." required autocomplete="current-password" style="padding-right: 42px;">
+          <button type="button" class="admin-toggle-pwd" id="btn-toggle-admin-pwd" title="Lihat kata sandi">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-admin-login" id="btn-submit-admin">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Masuk sebagai Administrator</span>
+      </button>
+    </form>
+
+    <!-- Footer Links -->
+    <div class="admin-footer-links">
+      <a href="index.html">
+        <i class="fa-solid fa-arrow-left"></i> Kembali ke Halaman Login Pengguna
+      </a>
+    </div>
+
+    <div class="admin-security-note">
+      <i class="fa-solid fa-lock"></i> Sesi login dienkripsi dan dipantau demi keamanan sistem.
+    </div>
+  </div>
+
+  <script>
+    // Cek apakah admin sudah login sebelumnya
+    (function checkExistingAdminSession() {
+      const token = localStorage.getItem('cliento_token');
+      const cachedUser = localStorage.getItem('cliento_user');
+      if (token && cachedUser) {
+        try {
+          const user = JSON.parse(cachedUser);
+          if (user && user.role === 'admin') {
+            // Sudah login sebagai admin, langsung redirect ke dashboard
+            window.location.href = 'index.html#dashboard';
+          }
+        } catch (e) {}
+      }
+    })();
+
+    // Toggle Password Visibility
+    const btnTogglePwd = document.getElementById('btn-toggle-admin-pwd');
+    const inputPwd = document.getElementById('admin-password');
+    if (btnTogglePwd && inputPwd) {
+      btnTogglePwd.addEventListener('click', () => {
+        const isPwd = inputPwd.type === 'password';
+        inputPwd.type = isPwd ? 'text' : 'password';
+        btnTogglePwd.innerHTML = isPwd ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
+      });
+    }
+
+    // Alert Helper
+    function showAlert(message, type = 'error') {
+      const alertBox = document.getElementById('admin-alert');
+      alertBox.className = 'admin-alert admin-alert-' + type;
+      alertBox.innerHTML = (type === 'error' ? '<i class="fa-solid fa-circle-xmark"></i> ' : '<i class="fa-solid fa-circle-check"></i> ') + message;
+      alertBox.style.display = 'flex';
+    }
+
+    function hideAlert() {
+      const alertBox = document.getElementById('admin-alert');
+      alertBox.style.display = 'none';
+    }
+
+    // Form Submission
+    const form = document.getElementById('admin-login-form');
+    const submitBtn = document.getElementById('btn-submit-admin');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      const account = document.getElementById('admin-account').value.trim();
+      const password = document.getElementById('admin-password').value;
+
+      if (!account || !password) {
+        showAlert('Silakan masukkan username/email dan kata sandi Administrator.');
+        return;
+      }
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memverifikasi Kredensial...';
+
+        const response = await fetch('api/auth.php?action=login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            account: account,
+            password: password,
+            portal: 'admin'
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.token && data.user) {
+          // Simpan sesi autentikasi ke localStorage
+          localStorage.setItem('cliento_token', data.token);
+          localStorage.setItem('cliento_user', JSON.stringify(data.user));
+
+          showAlert('Login berhasil! Mengalihkan ke dashboard...', 'success');
+          
+          setTimeout(() => {
+            window.location.href = 'index.html#dashboard';
+          }, 600);
+        } else {
+          showAlert(data.message || 'Login gagal. Periksa username/email dan kata sandi admin.');
+        }
+      } catch (err) {
+        showAlert('Kesalahan koneksi ke server: ' + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> <span>Masuk sebagai Administrator</span>';
+      }
+    });
+  </script>
+</body>
+</html>

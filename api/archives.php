@@ -14,36 +14,69 @@ $action = $_GET['action'] ?? ($input['action'] ?? 'get_view');
 // 1. Get Folder View: Lists subfolders, datasets in current folder, and breadcrumb trail
 if ($action === 'get_view') {
     $folderId = isset($_GET['folder_id']) && $_GET['folder_id'] !== '' ? (int)$_GET['folder_id'] : null;
+    $authUser = getAuthUser($pdo);
+    $authUserId = $authUser ? $authUser['id'] : null;
+    $isAdmin = $authUser && $authUser['role'] === 'admin';
 
     try {
-        // Fetch subfolders
-        if ($folderId === null) {
-            $folderStmt = $pdo->prepare("SELECT * FROM folders WHERE parent_id IS NULL ORDER BY name ASC");
-            $folderStmt->execute();
+        // Fetch subfolders (isolated for customer, full for admin)
+        if ($isAdmin || $authUserId === null) {
+            if ($folderId === null) {
+                $folderStmt = $pdo->prepare("SELECT * FROM folders WHERE parent_id IS NULL ORDER BY name ASC");
+                $folderStmt->execute();
+            } else {
+                $folderStmt = $pdo->prepare("SELECT * FROM folders WHERE parent_id = ? ORDER BY name ASC");
+                $folderStmt->execute([$folderId]);
+            }
         } else {
-            $folderStmt = $pdo->prepare("SELECT * FROM folders WHERE parent_id = ? ORDER BY name ASC");
-            $folderStmt->execute([$folderId]);
+            if ($folderId === null) {
+                $folderStmt = $pdo->prepare("SELECT * FROM folders WHERE parent_id IS NULL AND (user_id = ? OR user_id IS NULL) ORDER BY name ASC");
+                $folderStmt->execute([$authUserId]);
+            } else {
+                $folderStmt = $pdo->prepare("SELECT * FROM folders WHERE parent_id = ? AND (user_id = ? OR user_id IS NULL) ORDER BY name ASC");
+                $folderStmt->execute([$folderId, $authUserId]);
+            }
         }
         $folders = $folderStmt->fetchAll();
 
         // Add subfolder count and archive count to each folder
         foreach ($folders as &$f) {
-            $subCount = $pdo->prepare("SELECT COUNT(*) FROM folders WHERE parent_id = ?");
-            $subCount->execute([$f['id']]);
-            $f['subfolder_count'] = (int)$subCount->fetchColumn();
+            if ($isAdmin || $authUserId === null) {
+                $subCount = $pdo->prepare("SELECT COUNT(*) FROM folders WHERE parent_id = ?");
+                $subCount->execute([$f['id']]);
+                $f['subfolder_count'] = (int)$subCount->fetchColumn();
 
-            $arcCount = $pdo->prepare("SELECT COUNT(*) FROM archives WHERE folder_id = ?");
-            $arcCount->execute([$f['id']]);
-            $f['archive_count'] = (int)$arcCount->fetchColumn();
+                $arcCount = $pdo->prepare("SELECT COUNT(*) FROM archives WHERE folder_id = ?");
+                $arcCount->execute([$f['id']]);
+                $f['archive_count'] = (int)$arcCount->fetchColumn();
+            } else {
+                $subCount = $pdo->prepare("SELECT COUNT(*) FROM folders WHERE parent_id = ? AND (user_id = ? OR user_id IS NULL)");
+                $subCount->execute([$f['id'], $authUserId]);
+                $f['subfolder_count'] = (int)$subCount->fetchColumn();
+
+                $arcCount = $pdo->prepare("SELECT COUNT(*) FROM archives WHERE folder_id = ? AND (user_id = ? OR user_id IS NULL)");
+                $arcCount->execute([$f['id'], $authUserId]);
+                $f['archive_count'] = (int)$arcCount->fetchColumn();
+            }
         }
 
         // Fetch datasets/archives in this folder
-        if ($folderId === null) {
-            $arcStmt = $pdo->prepare("SELECT * FROM archives WHERE folder_id IS NULL ORDER BY created_at DESC");
-            $arcStmt->execute();
+        if ($isAdmin || $authUserId === null) {
+            if ($folderId === null) {
+                $arcStmt = $pdo->prepare("SELECT * FROM archives WHERE folder_id IS NULL ORDER BY created_at DESC");
+                $arcStmt->execute();
+            } else {
+                $arcStmt = $pdo->prepare("SELECT * FROM archives WHERE folder_id = ? ORDER BY created_at DESC");
+                $arcStmt->execute([$folderId]);
+            }
         } else {
-            $arcStmt = $pdo->prepare("SELECT * FROM archives WHERE folder_id = ? ORDER BY created_at DESC");
-            $arcStmt->execute([$folderId]);
+            if ($folderId === null) {
+                $arcStmt = $pdo->prepare("SELECT * FROM archives WHERE folder_id IS NULL AND (user_id = ? OR user_id IS NULL) ORDER BY created_at DESC");
+                $arcStmt->execute([$authUserId]);
+            } else {
+                $arcStmt = $pdo->prepare("SELECT * FROM archives WHERE folder_id = ? AND (user_id = ? OR user_id IS NULL) ORDER BY created_at DESC");
+                $arcStmt->execute([$folderId, $authUserId]);
+            }
         }
         $archives = $arcStmt->fetchAll();
 
@@ -64,9 +97,19 @@ if ($action === 'get_view') {
         }
         $breadcrumbs = array_merge($breadcrumbs, array_reverse($trail));
 
-        // Get total system stats for archives
-        $totalArchives = (int)$pdo->query("SELECT COUNT(*) FROM archives")->fetchColumn();
-        $totalProspects = (int)$pdo->query("SELECT COUNT(*) FROM scraped_items WHERE status = 'prospect'")->fetchColumn();
+        // Get isolated stats for user
+        if ($isAdmin || $authUserId === null) {
+            $totalArchives = (int)$pdo->query("SELECT COUNT(*) FROM archives")->fetchColumn();
+            $totalProspects = (int)$pdo->query("SELECT COUNT(*) FROM scraped_items WHERE status = 'prospect'")->fetchColumn();
+        } else {
+            $totArcStmt = $pdo->prepare("SELECT COUNT(*) FROM archives WHERE user_id = ? OR user_id IS NULL");
+            $totArcStmt->execute([$authUserId]);
+            $totalArchives = (int)$totArcStmt->fetchColumn();
+
+            $totProsStmt = $pdo->prepare("SELECT COUNT(*) FROM scraped_items si JOIN archives a ON si.archive_id = a.id WHERE (a.user_id = ? OR a.user_id IS NULL) AND si.status = 'prospect'");
+            $totProsStmt->execute([$authUserId]);
+            $totalProspects = (int)$totProsStmt->fetchColumn();
+        }
 
         jsonResponse([
             'success' => true,
@@ -86,14 +129,16 @@ if ($action === 'get_view') {
 if ($action === 'create_folder') {
     $name = trim($input['name'] ?? '');
     $parentId = isset($input['parent_id']) && $input['parent_id'] !== '' ? (int)$input['parent_id'] : null;
+    $authUser = getAuthUser($pdo);
+    $authUserId = $authUser ? $authUser['id'] : null;
 
     if (empty($name)) {
         jsonResponse(['success' => false, 'message' => 'Nama folder tidak boleh kosong'], 400);
     }
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO folders (parent_id, name) VALUES (?, ?)");
-        $stmt->execute([$parentId, $name]);
+        $stmt = $pdo->prepare("INSERT INTO folders (parent_id, name, user_id) VALUES (?, ?, ?)");
+        $stmt->execute([$parentId, $name, $authUserId]);
         $newId = (int)$pdo->lastInsertId();
 
         jsonResponse([
@@ -108,9 +153,19 @@ if ($action === 'create_folder') {
 
 // 2b. List All Folders Hierarchically (For Dropdowns and Tree Pickers)
 if ($action === 'list_all_folders') {
+    $authUser = getAuthUser($pdo);
+    $authUserId = $authUser ? $authUser['id'] : null;
+    $isAdmin = $authUser && $authUser['role'] === 'admin';
+
     try {
-        $stmt = $pdo->query("SELECT * FROM folders ORDER BY name ASC");
-        $allFolders = $stmt->fetchAll();
+        if ($isAdmin || $authUserId === null) {
+            $stmt = $pdo->query("SELECT * FROM folders ORDER BY name ASC");
+            $allFolders = $stmt->fetchAll();
+        } else {
+            $stmt = $pdo->prepare("SELECT * FROM folders WHERE user_id = ? OR user_id IS NULL ORDER BY name ASC");
+            $stmt->execute([$authUserId]);
+            $allFolders = $stmt->fetchAll();
+        }
 
         function buildFolderTree($folders, $parentId = null, $depth = 0) {
             $result = [];
@@ -247,10 +302,18 @@ if ($action === 'update_status') {
 // 6. Delete Archive
 if ($action === 'delete_archive') {
     $archiveId = (int)($input['archive_id'] ?? 0);
+    $authUser = getAuthUser($pdo);
+    $authUserId = $authUser ? $authUser['id'] : null;
+    $isAdmin = $authUser && $authUser['role'] === 'admin';
 
     try {
-        $stmt = $pdo->prepare("DELETE FROM archives WHERE id = ?");
-        $stmt->execute([$archiveId]);
+        if ($isAdmin || $authUserId === null) {
+            $stmt = $pdo->prepare("DELETE FROM archives WHERE id = ?");
+            $stmt->execute([$archiveId]);
+        } else {
+            $stmt = $pdo->prepare("DELETE FROM archives WHERE id = ? AND user_id = ?");
+            $stmt->execute([$archiveId, $authUserId]);
+        }
         jsonResponse(['success' => true, 'message' => 'Arsip berhasil dihapus']);
     } catch (Exception $e) {
         jsonResponse(['success' => false, 'message' => $e->getMessage()], 500);
@@ -260,10 +323,18 @@ if ($action === 'delete_archive') {
 // 7. Delete Folder
 if ($action === 'delete_folder') {
     $folderId = (int)($input['folder_id'] ?? 0);
+    $authUser = getAuthUser($pdo);
+    $authUserId = $authUser ? $authUser['id'] : null;
+    $isAdmin = $authUser && $authUser['role'] === 'admin';
 
     try {
-        $stmt = $pdo->prepare("DELETE FROM folders WHERE id = ?");
-        $stmt->execute([$folderId]);
+        if ($isAdmin || $authUserId === null) {
+            $stmt = $pdo->prepare("DELETE FROM folders WHERE id = ?");
+            $stmt->execute([$folderId]);
+        } else {
+            $stmt = $pdo->prepare("DELETE FROM folders WHERE id = ? AND user_id = ?");
+            $stmt->execute([$folderId, $authUserId]);
+        }
         jsonResponse(['success' => true, 'message' => 'Folder berhasil dihapus']);
     } catch (Exception $e) {
         jsonResponse(['success' => false, 'message' => $e->getMessage()], 500);

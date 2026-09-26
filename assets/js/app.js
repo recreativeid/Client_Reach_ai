@@ -61,7 +61,8 @@ const App = {
         if (pageId === 'customers') {
             if (!window.Auth || !window.Auth.currentUser || window.Auth.currentUser.role !== 'admin') {
                 if (window.Auth) {
-                    window.Auth.showAuthModal('login');
+                    window.Auth.syncAuthGate();
+                    window.Auth.setPortal('admin');
                     window.Auth.toast('Silakan masuk sebagai Administrator untuk mengakses Database Customer.', 'warning');
                 }
                 return;
@@ -238,10 +239,11 @@ const App = {
 
     async refreshDashboardStats() {
         try {
-            const resArc = await fetch('api/archives.php?action=get_view');
+            const fetchFn = window.appFetch || fetch;
+            const resArc = await fetchFn('api/archives.php?action=get_view');
             const dataArc = await resArc.json();
 
-            const resHist = await fetch('api/history.php?action=list');
+            const resHist = await fetchFn('api/history.php?action=list');
             const dataHist = await resHist.json();
 
             let totalScraped = 0;
@@ -257,13 +259,10 @@ const App = {
             const elArchives = document.getElementById('stat-total-archives');
             const elConnected = document.getElementById('stat-total-connected');
 
-            const leadsCount = totalScraped > 0 ? totalScraped : 145;
-            const prospectsCount = totalProspects > 0 ? totalProspects : 28;
-
-            if (elScraped) elScraped.textContent = leadsCount.toLocaleString('id-ID');
-            if (elProspects) elProspects.textContent = prospectsCount.toLocaleString('id-ID');
+            if (elScraped) elScraped.textContent = totalScraped.toLocaleString('id-ID');
+            if (elProspects) elProspects.textContent = totalProspects.toLocaleString('id-ID');
             if (elArchives) elArchives.textContent = totalArchives.toLocaleString('id-ID');
-            if (elConnected) elConnected.textContent = ((prospectsCount * 2) + 14).toLocaleString('id-ID');
+            if (elConnected) elConnected.textContent = (totalProspects * 2).toLocaleString('id-ID');
         } catch (e) {
             console.error('Stats refresh failed:', e);
         }

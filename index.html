@@ -27,6 +27,301 @@
 </head>
 <body>
 
+  <!-- ==============================================================
+       STRICT AUTHENTICATION GATE (WAJIB LOGIN SEBELUM MASUK DASHBOARD)
+       PORTAL ADMIN & USER TERPISAH (Hanya User yang bisa Buat Akun, Lupa PW & Email)
+       ============================================================== -->
+  <div id="auth-gate-container">
+    <div class="auth-gate-card">
+      
+      <!-- Brand Logo & Header -->
+      <div class="auth-gate-header">
+        <img src="assets/images/logo-horizontal.png" alt="cliento - sales intelligence" class="auth-gate-logo">
+        <p class="auth-gate-tagline">
+          Platform AI Sales Intelligence & Scraping Prospek Google Maps B2B
+        </p>
+      </div>
+
+      <!-- PANE 1: USER LOGIN -->
+      <div id="gate-pane-user-login" class="gate-pane">
+        <form id="gate-form-user-login">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Username atau Email *</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-user-tag" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
+              <input type="text" id="gate-user-login-account" class="form-input" placeholder="contoh: budi_pratama atau budi@gmail.com" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="username">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600; margin-bottom: 5px;">Kata Sandi *</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-lock" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
+              <input type="password" id="gate-user-login-password" class="form-input" placeholder="Masukkan kata sandi..." style="padding-left: 40px; padding-right: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="current-password">
+              <button type="button" class="btn-toggle-password" data-target="gate-user-login-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px;">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+            
+            <!-- Posisi Lupa Username/Email dan Lupa Kata Sandi di Bawah Kolom Kata Sandi -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.74rem;">
+              <a href="#" id="gate-link-to-forgot-email" style="color: #64748b; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                <i class="fa-regular fa-circle-question" style="color: #94a3b8;"></i> Lupa Username / Email?
+              </a>
+              <a href="#" id="gate-link-to-forgot-pwd" style="color: #2563eb; text-decoration: none; font-weight: 600;">
+                Lupa Kata Sandi?
+              </a>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="gate-btn-submit-user-login" style="padding: 11px; font-size: 0.88rem; font-weight: 600; border-radius: 10px;">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk ke Akun
+          </button>
+        </form>
+
+        <!-- Penempatan Tombol Buat Akun Baru di Bagian Bawah -->
+        <div style="text-align: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid #f1f5f9; font-size: 0.82rem; color: #64748b;">
+          Belum memiliki akun cliento?
+          <button type="button" id="gate-btn-to-register" style="background: none; border: none; color: #2563eb; font-weight: 700; cursor: pointer; padding: 0 4px; font-size: 0.82rem; text-decoration: underline;">
+            Buat Akun Baru
+          </button>
+        </div>
+      </div>
+
+      <!-- PANE 3: REGISTER (HANYA UNTUK USER) -->
+      <div id="gate-pane-register" class="gate-pane" style="display: none;">
+        <a href="#" class="auth-back-link" id="gate-btn-back-from-register">
+          <i class="fa-solid fa-arrow-left"></i> Kembali ke Halaman Masuk
+        </a>
+
+        <div style="text-align: center; margin-bottom: 14px;">
+          <h3 class="auth-pane-title" style="font-size: 1.05rem;">Daftar Akun User Baru</h3>
+          <p class="auth-pane-desc" style="margin-bottom: 0;">Mulai kelola prospek bisnis Anda dengan AI Sales Intelligence</p>
+        </div>
+
+        <form id="gate-form-register">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Nama Lengkap / Nama Bisnis *</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-user" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
+              <input type="text" id="gate-reg-name" class="form-input" placeholder="contoh: Hendra Setiawan" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Username Akun *</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-at" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
+              <input type="text" id="gate-reg-username" class="form-input" placeholder="contoh: hendra_setiawan" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="username" pattern="[a-zA-Z0-9_]{3,30}" title="Hanya huruf, angka, dan garis bawah (_) 3-30 karakter">
+            </div>
+            <div style="font-size: 0.68rem; color: #64748b; margin-top: 4px;">Dapat digunakan untuk masuk (login) ke akun Anda.</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Alamat Email Aktif *</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-envelope" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
+              <input type="email" id="gate-reg-email" class="form-input" placeholder="nama@gmail.com" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="email">
+            </div>
+            <div style="font-size: 0.68rem; color: #2563eb; margin-top: 4px; font-weight: 500;">
+              <i class="fa-solid fa-circle-info"></i> Wajib diisi untuk pengiriman kode OTP verifikasi & pemulihan jika Anda lupa username atau kata sandi.
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">No. WhatsApp (Opsional)</label>
+            <div style="position: relative;">
+              <i class="fa-brands fa-whatsapp" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
+              <input type="text" id="gate-reg-phone" class="form-input" placeholder="081234567890 (bisa untuk bantuan pencarian akun)" style="padding-left: 40px; font-size: 0.85rem; height: 42px;">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Kata Sandi Baru *</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-lock" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
+              <input type="password" id="gate-reg-password" class="form-input" placeholder="Minimal 6 karakter..." style="padding-left: 40px; padding-right: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="new-password">
+              <button type="button" class="btn-toggle-password" data-target="gate-reg-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px;">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="gate-btn-submit-register" style="padding: 11px; font-size: 0.88rem; font-weight: 600; border-radius: 10px;">
+            <i class="fa-solid fa-paper-plane"></i> Daftar Akun User & Dapatkan OTP
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 14px; font-size: 0.78rem; color: #64748b;">
+          Sudah memiliki akun terdaftar? 
+          <a href="#" id="gate-link-to-login" style="color: #2563eb; font-weight: 600; text-decoration: none;">Masuk di sini</a>
+        </div>
+      </div>
+
+      <!-- PANE 4: OTP VERIFICATION (REGISTER USER) -->
+      <div id="gate-pane-otp" class="gate-pane" style="display: none;">
+        <a href="#" class="auth-back-link" id="gate-btn-back-from-otp">
+          <i class="fa-solid fa-arrow-left"></i> Kembali / Ganti Email
+        </a>
+
+        <div style="text-align: center; margin-bottom: 18px;">
+          <div style="width: 54px; height: 54px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 10px;">
+            <i class="fa-solid fa-envelope-open-text"></i>
+          </div>
+          <h3 class="auth-pane-title">Verifikasi Email Anda</h3>
+          <p class="auth-pane-desc" style="margin-bottom: 0;">
+            Kami telah mengirimkan 6 digit kode OTP ke <br><strong id="gate-otp-target-email" style="color: #0f172a;">email@anda.com</strong>
+          </p>
+        </div>
+
+        <!-- Dev Helper Banner (One-click fill) -->
+        <div id="gate-otp-preview-banner" style="display: none; background: #fefce8; border: 1px dashed #facc15; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; font-size: 0.76rem; color: #854d0e; cursor: pointer; text-align: center;">
+          <i class="fa-solid fa-lightbulb" style="color: #eab308;"></i> <strong>Uji Coba:</strong> Klik untuk otomatis isi OTP: <strong id="gate-otp-preview-code" style="letter-spacing: 2px; font-size: 0.95rem; font-family: monospace; color: #1e3a8a;"></strong>
+        </div>
+
+        <form id="gate-form-otp">
+          <div class="form-group" style="margin-bottom: 18px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600; text-align: center; display: block;">Masukkan 6 Digit Kode OTP</label>
+            <input type="text" id="gate-otp-code-input" class="form-input text-center" maxlength="6" placeholder="• • • • • •" 
+                   style="font-size: 1.4rem; letter-spacing: 10px; font-weight: 800; font-family: monospace; color: #1e3a8a; height: 50px; border-radius: 12px;" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="gate-btn-submit-otp" style="padding: 11px; font-size: 0.88rem; font-weight: 600; border-radius: 10px; margin-bottom: 14px;">
+            <i class="fa-solid fa-shield-check"></i> Verifikasi & Masuk ke Dashboard
+          </button>
+        </form>
+
+        <div style="text-align: center; font-size: 0.76rem; color: #64748b;">
+          Belum menerima email kode? 
+          <button type="button" id="gate-btn-resend-otp" style="background: none; border: none; color: #2563eb; font-weight: 600; cursor: pointer; padding: 0; font-size: 0.76rem;">
+            Kirim Ulang <span id="gate-otp-countdown-timer"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- PANE 5: FORGOT PASSWORD (HANYA UNTUK USER) -->
+      <div id="gate-pane-forgot" class="gate-pane" style="display: none;">
+        <a href="#" class="auth-back-link" id="gate-btn-back-from-forgot">
+          <i class="fa-solid fa-arrow-left"></i> Kembali ke Login User
+        </a>
+
+        <div style="text-align: center; margin-bottom: 16px;">
+          <div style="width: 52px; height: 52px; border-radius: 50%; background: #fef3c7; color: #d97706; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 10px;">
+            <i class="fa-solid fa-key"></i>
+          </div>
+          <h3 class="auth-pane-title">Pemulihan Kata Sandi User</h3>
+          <p class="auth-pane-desc" id="gate-forgot-desc">
+            Masukkan username atau alamat email akun User Anda. Kode OTP 6 digit akan dikirimkan ke email terdaftar untuk mengatur ulang kata sandi.
+          </p>
+        </div>
+
+        <!-- STEP 1: REQUEST OTP FOR FORGOT PASSWORD -->
+        <form id="gate-form-forgot-request">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Username atau Email Akun User *</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-user-tag" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
+              <input type="text" id="gate-forgot-email" class="form-input" placeholder="contoh: budi_pratama atau nama@gmail.com" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="username">
+            </div>
+            <div style="text-align: right; margin-top: 6px;">
+              <a href="#" id="gate-link-from-forgot-to-email" style="font-size: 0.74rem; color: #2563eb; text-decoration: none; font-weight: 500;">
+                <i class="fa-regular fa-circle-question"></i> Lupa Username atau Email Anda? Cari di sini
+              </a>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="gate-btn-send-forgot-otp" style="padding: 11px; font-size: 0.88rem; font-weight: 600; border-radius: 10px;">
+            <i class="fa-solid fa-paper-plane"></i> Kirim Kode OTP Pemulihan
+          </button>
+        </form>
+
+        <!-- STEP 2: VERIFY OTP & RESET PASSWORD -->
+        <form id="gate-form-forgot-reset" style="display: none;">
+          <div id="gate-forgot-preview-banner" style="display: none; background: #fefce8; border: 1px dashed #facc15; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; font-size: 0.76rem; color: #854d0e; cursor: pointer; text-align: center;">
+            <i class="fa-solid fa-lightbulb" style="color: #eab308;"></i> <strong>Uji Coba:</strong> Klik untuk isi OTP: <strong id="gate-forgot-preview-code" style="letter-spacing: 2px; font-size: 0.95rem; font-family: monospace; color: #1e3a8a;"></strong>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600; text-align: center; display: block;">Masukkan 6 Digit Kode OTP dari Email</label>
+            <input type="text" id="gate-forgot-otp-input" class="form-input text-center" maxlength="6" placeholder="• • • • • •" 
+                   style="font-size: 1.4rem; letter-spacing: 10px; font-weight: 800; font-family: monospace; color: #1e3a8a; height: 48px; border-radius: 10px;" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Kata Sandi Baru *</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-lock" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
+              <input type="password" id="gate-forgot-new-pwd" class="form-input" placeholder="Minimal 6 karakter..." style="padding-left: 40px; padding-right: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="new-password">
+              <button type="button" class="btn-toggle-password" data-target="gate-forgot-new-pwd" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px;">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Ulangi Kata Sandi Baru *</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-lock" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
+              <input type="password" id="gate-forgot-confirm-pwd" class="form-input" placeholder="Konfirmasi kata sandi..." style="padding-left: 40px; padding-right: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="new-password">
+              <button type="button" class="btn-toggle-password" data-target="gate-forgot-confirm-pwd" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px;">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="gate-btn-submit-reset" style="padding: 11px; font-size: 0.88rem; font-weight: 600; border-radius: 10px; margin-bottom: 12px;">
+            <i class="fa-solid fa-key"></i> Simpan Kata Sandi Baru & Masuk
+          </button>
+
+          <div style="text-align: center; font-size: 0.76rem; color: #64748b;">
+            Belum terima kode? 
+            <button type="button" id="gate-btn-resend-forgot-otp" style="background: none; border: none; color: #2563eb; font-weight: 600; cursor: pointer; padding: 0; font-size: 0.76rem;">
+              Kirim Ulang Kode OTP
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- PANE 6: LUPA EMAIL (HANYA UNTUK USER) -->
+      <div id="gate-pane-forgot-email" class="gate-pane" style="display: none;">
+        <a href="#" class="auth-back-link" id="gate-btn-back-from-forgot-email">
+          <i class="fa-solid fa-arrow-left"></i> Kembali ke Login User
+        </a>
+
+        <div style="text-align: center; margin-bottom: 16px;">
+          <div style="width: 52px; height: 52px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 10px;">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
+          <h3 class="auth-pane-title">Pencarian Username & Email Akun</h3>
+          <p class="auth-pane-desc" style="margin-bottom: 0;">
+            Lupa username atau email akun Anda? Masukkan nomor WhatsApp atau nama lengkap akun User terdaftar.
+          </p>
+        </div>
+
+        <form id="gate-form-forgot-email">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">No. WhatsApp atau Nama Lengkap *</label>
+            <div style="position: relative;">
+              <i class="fa-brands fa-whatsapp" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
+              <input type="text" id="gate-forgot-email-query" class="form-input" placeholder="contoh: 085712345678 atau Budi Pratama" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required>
+            </div>
+            <div style="font-size: 0.68rem; color: #64748b; margin-top: 4px;">Pencarian akun khusus pengguna/customer terdaftar.</div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="gate-btn-submit-forgot-email" style="padding: 11px; font-size: 0.88rem; font-weight: 600; border-radius: 10px;">
+            <i class="fa-solid fa-search"></i> Cari Akun Saya
+          </button>
+        </form>
+
+        <!-- Container Hasil Pencarian Email -->
+        <div id="gate-forgot-email-result" style="display: none; margin-top: 16px;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Top Application Header with Centered Menu -->
   <header class="app-header">
     <!-- Brand Logo (Left) -->
@@ -1327,9 +1622,9 @@
     </div>
   </div>
 
-  <!-- Modal: Pengaturan Akun & Profil Admin -->
+  <!-- Modal: Pengaturan Akun & Profil (Admin & Customer) -->
   <div id="modal-admin-settings" class="modal-backdrop">
-    <div class="modal-sheet" style="max-width: 500px;">
+    <div class="modal-sheet" style="max-width: 520px;">
       <div class="d-flex justify-between align-center" style="margin-bottom: 16px;">
         <div style="display: flex; align-items: center; gap: 8px;">
           <div style="background: #eff6ff; color: #2563eb; width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.05rem;">
@@ -1337,7 +1632,7 @@
           </div>
           <div>
             <strong style="font-size: 0.95rem; color: #0f172a; display: block; line-height: 1.2;">Pengaturan Akun & Keamanan</strong>
-            <span style="font-size: 0.72rem; color: #64748b;">Kelola profil, informasi login, dan kata sandi</span>
+            <span style="font-size: 0.72rem; color: #64748b;">Kelola profil, ubah email dengan OTP, dan kata sandi</span>
           </div>
         </div>
         <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
@@ -1345,29 +1640,34 @@
 
       <!-- Settings Nav Tabs -->
       <div class="settings-tabs-nav" style="display: flex; gap: 6px; background: #f1f5f9; padding: 4px; border-radius: 10px; margin-bottom: 18px;">
-        <button type="button" class="settings-tab-btn active" data-tab="profile" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
-          <i class="fa-solid fa-id-badge"></i> Profil & Info Login
+        <button type="button" class="settings-tab-btn active" data-tab="profile" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.76rem; font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-id-badge"></i> Profil & Kontak
         </button>
-        <button type="button" class="settings-tab-btn" data-tab="password" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
-          <i class="fa-solid fa-lock"></i> Ganti Password
+        <button type="button" class="settings-tab-btn" data-tab="email" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.76rem; font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-envelope"></i> Ganti Email (OTP)
         </button>
-        <button type="button" class="settings-tab-btn" data-tab="system" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
-          <i class="fa-solid fa-server"></i> Info Sistem
+        <button type="button" class="settings-tab-btn" data-tab="password" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.76rem; font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-lock"></i> Ganti Sandi
+        </button>
+        <button type="button" class="settings-tab-btn settings-admin-tab" data-tab="system" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.76rem; font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-paper-plane"></i> Email API
         </button>
       </div>
 
-      <!-- TAB 1: Profile & Login Info -->
+      <!-- TAB 1: Profile & Contact Info -->
       <div id="tab-settings-profile" class="settings-tab-pane active">
         <form id="form-admin-profile">
           <div class="form-group" style="margin-bottom: 12px;">
-            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Nama Lengkap *</label>
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Nama Lengkap / Nama Bisnis *</label>
             <input type="text" id="admin-profile-name" class="form-input" required style="font-size: 0.82rem;">
           </div>
 
           <div class="form-group" style="margin-bottom: 12px;">
-            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Email Login Akun *</label>
-            <input type="email" id="admin-profile-email" class="form-input" required style="font-size: 0.82rem;">
-            <div style="font-size: 0.68rem; color: #64748b; margin-top: 4px;">Email ini digunakan saat masuk ke sistem Cliento.</div>
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Email Akun Saat Ini</label>
+            <input type="email" id="admin-profile-email" class="form-input" readonly style="font-size: 0.82rem; background: #f8fafc; color: #475569; cursor: not-allowed;">
+            <div style="font-size: 0.68rem; color: #64748b; margin-top: 4px;">
+              Untuk mengganti email, gunakan tab <strong>"Ganti Email (OTP)"</strong> untuk verifikasi alamat email baru.
+            </div>
           </div>
 
           <div class="form-group" style="margin-bottom: 16px;">
@@ -1377,49 +1677,145 @@
 
           <div style="display: flex; justify-content: flex-end;">
             <button type="submit" class="btn btn-primary" id="btn-save-admin-profile" style="font-size: 0.82rem;">
-              <i class="fa-solid fa-floppy-disk"></i> Simpan Informasi Profil
+              <i class="fa-solid fa-floppy-disk"></i> Simpan Profil
             </button>
           </div>
         </form>
       </div>
 
-      <!-- TAB 2: Change Password -->
+      <!-- TAB 2: Change Email with Mandatory OTP -->
+      <div id="tab-settings-email" class="settings-tab-pane">
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px; margin-bottom: 14px; font-size: 0.76rem; color: #166534;">
+          <i class="fa-solid fa-shield-halved"></i> <strong>Keamanan Akun:</strong> Alamat email baru wajib diverifikasi dengan kode OTP 6-digit sebelum diubah dalam sistem.
+        </div>
+
+        <form id="form-change-email-request">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Alamat Email Baru (Gmail) *</label>
+            <input type="email" id="change-new-email" class="form-input" placeholder="emailbaru@gmail.com" required style="font-size: 0.82rem;">
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 14px;">
+            <button type="submit" class="btn btn-primary btn-sm" id="btn-request-email-otp" style="font-size: 0.78rem;">
+              <i class="fa-solid fa-paper-plane"></i> Minta Kode OTP ke Email Baru
+            </button>
+          </div>
+        </form>
+
+        <!-- OTP Input Container (Shown after request) -->
+        <div id="email-change-otp-container" style="display: none; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-top: 10px;">
+          <div style="font-size: 0.76rem; color: #334155; margin-bottom: 10px;">
+            Kode OTP telah dikirimkan ke <strong id="email-change-target-display" style="color: #2563eb;"></strong>. Masukkan kode untuk memproses:
+          </div>
+
+          <form id="form-change-email-verify">
+            <div class="form-group" style="margin-bottom: 12px;">
+              <input type="text" id="change-email-otp-input" class="form-input text-center" maxlength="6" placeholder="• • • • • •" 
+                     style="font-size: 1.2rem; letter-spacing: 6px; font-weight: 700; font-family: monospace; color: #1e3a8a; height: 42px;" required>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button type="button" id="btn-cancel-email-change" class="btn btn-outline btn-sm" style="font-size: 0.75rem;">Batal</button>
+              <button type="submit" class="btn btn-success btn-sm" id="btn-submit-verify-email" style="font-size: 0.78rem;">
+                <i class="fa-solid fa-check-double"></i> Verifikasi & Terapkan Email Baru
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 3: Change Password -->
       <div id="tab-settings-password" class="settings-tab-pane">
         <form id="form-admin-password">
           <div class="form-group" style="margin-bottom: 12px;">
-            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Password Saat Ini *</label>
-            <input type="password" id="admin-current-password" class="form-input" placeholder="Masukkan password lama..." required style="font-size: 0.82rem;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Kata Sandi Saat Ini *</label>
+            <input type="password" id="admin-current-password" class="form-input" placeholder="Masukkan kata sandi lama..." required style="font-size: 0.82rem;">
           </div>
 
           <div class="form-group" style="margin-bottom: 12px;">
-            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Password Baru *</label>
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Kata Sandi Baru *</label>
             <input type="password" id="admin-new-password" class="form-input" placeholder="Minimal 6 karakter..." required style="font-size: 0.82rem;">
           </div>
 
           <div class="form-group" style="margin-bottom: 16px;">
-            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Konfirmasi Password Baru *</label>
-            <input type="password" id="admin-confirm-password" class="form-input" placeholder="Ulangi password baru..." required style="font-size: 0.82rem;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Konfirmasi Kata Sandi Baru *</label>
+            <input type="password" id="admin-confirm-password" class="form-input" placeholder="Ulangi kata sandi baru..." required style="font-size: 0.82rem;">
           </div>
 
           <div style="display: flex; justify-content: flex-end;">
             <button type="submit" class="btn btn-primary" id="btn-save-admin-password" style="font-size: 0.82rem;">
-              <i class="fa-solid fa-key"></i> Simpan Password Baru
+              <i class="fa-solid fa-key"></i> Simpan Kata Sandi Baru
             </button>
           </div>
         </form>
       </div>
 
-      <!-- TAB 3: System & Mail Info -->
+      <!-- TAB 4: Email API & SMTP Configuration (Admin Only) -->
       <div id="tab-settings-system" class="settings-tab-pane">
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 14px; font-size: 0.78rem;">
-          <div style="font-weight: 700; color: #0f172a; margin-bottom: 6px;">
-            <i class="fa-solid fa-circle-check text-success"></i> Sistem Pengiriman OTP Aktif
+        <form id="form-mail-settings">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.76rem; font-weight: 600;">Penyedia Layanan Email (Gratis)</label>
+            <select id="mail-provider-select" class="form-input" style="font-size: 0.82rem;">
+              <option value="gmail_smtp">Google Gmail SMTP (Gratis - Port 465 SSL Socket)</option>
+              <option value="brevo">Brevo API (Gratis 300 Email/Hari = 9.000/Bulan)</option>
+              <option value="resend">Resend REST API (Gratis 3.000 Email/Bulan)</option>
+            </select>
           </div>
-          <p style="margin: 0 0 8px; color: #64748b; line-height: 1.5;">
-            Sistem menggunakan fungsi email native server. Pada lingkungan pengembangan (localhost tanpa SMTP lokal), kode OTP otomatis ditampilkan pada banner simulasi pop-up agar pendaftaran customer tetap dapat diuji tanpa hambatan.
-          </p>
-          <div style="font-size: 0.72rem; color: #94a3b8;">
-            Aplikasi: <strong>cliento sales intelligence</strong> v2.2 | Database: <strong>SQLite (WAL Mode)</strong>
+
+          <!-- Gmail SMTP Group -->
+          <div id="group-gmail-smtp">
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label class="form-label" style="font-size: 0.74rem; font-weight: 600;">Email Akun Gmail</label>
+              <input type="email" id="mail-smtp-user" class="form-input" placeholder="contoh: namabisnis@gmail.com" style="font-size: 0.82rem;">
+            </div>
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label class="form-label" style="font-size: 0.74rem; font-weight: 600;">Sandi Aplikasi Google (16 Karakter)</label>
+              <input type="password" id="mail-smtp-pass" class="form-input" placeholder="xxxx xxxx xxxx xxxx" style="font-size: 0.82rem;">
+              <div style="font-size: 0.68rem; color: #64748b; margin-top: 4px;">
+                Dapatkan gratis di: <a href="https://myaccount.google.com/apppasswords" target="_blank" style="color:#2563eb;">Google App Passwords</a> (Aktifkan 2FA Gmail terlebih dahulu).
+              </div>
+            </div>
+          </div>
+
+          <!-- Brevo API Group -->
+          <div id="group-brevo" style="display: none;">
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label class="form-label" style="font-size: 0.74rem; font-weight: 600;">Brevo API Key (Gratis)</label>
+              <input type="password" id="mail-brevo-key" class="form-input" placeholder="xkeysib-..." style="font-size: 0.82rem;">
+              <div style="font-size: 0.68rem; color: #64748b; margin-top: 4px;">
+                Daftar gratis di <a href="https://brevo.com" target="_blank" style="color:#2563eb;">brevo.com</a> untuk kuota 300 email gratis per hari.
+              </div>
+            </div>
+          </div>
+
+          <!-- Resend API Group -->
+          <div id="group-resend" style="display: none;">
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label class="form-label" style="font-size: 0.74rem; font-weight: 600;">Resend API Key</label>
+              <input type="password" id="mail-resend-key" class="form-input" placeholder="re_..." style="font-size: 0.82rem;">
+              <div style="font-size: 0.68rem; color: #64748b; margin-top: 4px;">
+                Daftar gratis di <a href="https://resend.com" target="_blank" style="color:#2563eb;">resend.com</a> (3.000 email/bulan).
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 14px; margin-top: 10px;">
+            <button type="submit" class="btn btn-primary btn-sm" id="btn-save-mail-settings" style="font-size: 0.78rem;">
+              <i class="fa-solid fa-floppy-disk"></i> Simpan Konfigurasi Email
+            </button>
+          </div>
+        </form>
+
+        <!-- Live Test Send Box -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-top: 10px;">
+          <div style="font-weight: 700; font-size: 0.76rem; color: #0f172a; margin-bottom: 6px;">
+            <i class="fa-solid fa-flask" style="color: #2563eb;"></i> Uji Coba Pengiriman Langsung ke Gmail
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <input type="email" id="test-email-target" class="form-input" placeholder="Ketik email gmail Anda..." style="font-size: 0.8rem; flex: 1;">
+            <button type="button" class="btn btn-outline btn-sm" id="btn-trigger-test-email" style="font-size: 0.78rem; white-space: nowrap;">
+              <i class="fa-solid fa-paper-plane"></i> Kirim Test
+            </button>
           </div>
         </div>
       </div>
