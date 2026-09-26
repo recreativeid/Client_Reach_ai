@@ -276,6 +276,17 @@ const ScraperClient = {
         if (kelSelect) {
             kelSelect.addEventListener('change', () => this.handleRegionChange());
         }
+
+        const badgeGarisMerah = document.getElementById('badge-garis-merah');
+        if (badgeGarisMerah) {
+            badgeGarisMerah.addEventListener('click', () => {
+                if (window.mapEngine && window.mapEngine.boundaryLayer) {
+                    window.mapEngine.map.fitBounds(window.mapEngine.boundaryLayer.getBounds(), { padding: [40, 40] });
+                } else {
+                    this.handleRegionChange();
+                }
+            });
+        }
     },
 
     populateRegencies(provId) {
@@ -451,6 +462,11 @@ const ScraperClient = {
         const kecSelect = document.getElementById('filter-kecamatan');
         const kelSelect = document.getElementById('filter-kelurahan');
 
+        const provId = provSelect?.value || '';
+        const kabId = kabSelect?.value || '';
+        const kecId = kecSelect?.value || '';
+        const kelId = kelSelect?.value || '';
+
         const provName = provSelect?.options[provSelect.selectedIndex]?.text || '';
         const kabName = kabSelect?.options[kabSelect.selectedIndex]?.text || '';
         const kecName = kecSelect?.options[kecSelect.selectedIndex]?.text || '';
@@ -460,19 +476,108 @@ const ScraperClient = {
         const locationStr = locationParts.join(', ') || 'Indonesia';
         this.currentQuery.location = locationStr;
 
-        // Fetch official territory bounding polygon from regions API
-        const searchScope = kecName && !kecName.startsWith('--') ? kecName : (kabName && !kabName.startsWith('--') ? kabName : provName);
-        try {
-            const res = await fetch(`api/regions.php?action=boundary&q=${encodeURIComponent(searchScope)}&lat=${this.currentQuery.lat}&lng=${this.currentQuery.lng}`);
-            const data = await res.json();
-            if (data.success && window.mapEngine) {
-                this.currentQuery.lat = data.lat;
-                this.currentQuery.lng = data.lng;
-                this.currentQuery.bbox = data.boundingbox;
-                window.mapEngine.showBoundaryMode(data.boundingbox, data.geojson, data.name || locationStr);
+        // 1. Immediately resolve geographic boundaries from local REGIONS_DATA
+        let targetScope = null;
+        let targetLabel = locationStr;
+
+        if (typeof REGIONS_DATA !== 'undefined') {
+            // Priority A: Kelurahan
+            if (kelId && REGIONS_DATA.villages && REGIONS_DATA.villages[kecId]) {
+                const found = REGIONS_DATA.villages[kecId].find(v => v.id === kelId);
+                if (found) {
+                    targetScope = found;
+                    targetLabel = `${found.name}, ${kecName && !kecName.startsWith('--') ? kecName : ''}`;
+                }
             }
-        } catch (e) {
-            console.error('Region boundary fetch error:', e);
+            // Priority B: Kecamatan
+            if (!targetScope && kecId && REGIONS_DATA.districts && REGIONS_DATA.districts[kabId]) {
+                const found = REGIONS_DATA.districts[kabId].find(d => d.id === kecId);
+                if (found) {
+                    targetScope = found;
+                    targetLabel = `Kecamatan ${found.name}, ${kabName && !kabName.startsWith('--') ? kabName : ''}`;
+                }
+            }
+            // Priority C: Kabupaten / Kota
+            if (!targetScope && kabId && REGIONS_DATA.regencies) {
+                for (const pid in REGIONS_DATA.regencies) {
+                    const found = REGIONS_DATA.regencies[pid].find(k => k.id === kabId);
+                    if (found) {
+                        targetScope = found;
+                        targetLabel = `${found.name}, ${provName && !provName.startsWith('--') ? provName : ''}`;
+                        break;
+                    }
+                }
+            }
+            // Priority D: Provinsi
+            if (!targetScope && provId && REGIONS_DATA.provinces) {
+                const found = REGIONS_DATA.provinces.find(p => p.id === provId);
+                if (found) {
+                    targetScope = found;
+                    targetLabel = `Provinsi ${found.name}`;
+                }
+            }
+        }
+
+        // Apply coordinates and draw the red boundary polygon immediately
+        if (targetScope) {
+            this.currentQuery.lat = targetScope.lat;
+            this.currentQuery.lng = targetScope.lng;
+
+            if (targetScope.bbox && targetScope.bbox.length === 4) {
+                this.currentQuery.bbox = targetScope.bbox;
+            } else {
+                const delta = kelId ? 0.008 : (kecId ? 0.022 : (kabId ? 0.065 : 0.40));
+                this.currentQuery.bbox = [
+                    targetScope.lat - delta,
+                    targetScope.lng - delta,
+                    targetScope.lat + delta,
+                    targetScope.lng + delta
+                ];
+            }
+
+            if (window.mapEngine) {
+                window.mapEngine.showBoundaryMode(this.currentQuery.bbox, null, targetLabel);
+            }
+        } else if (this.currentQuery.lat && this.currentQuery.lng) {
+            const delta = 0.025;
+            this.currentQuery.bbox = [
+                this.currentQuery.lat - delta,
+                this.currentQuery.lng - delta,
+                this.currentQuery.lat + delta,
+                this.currentQuery.lng + delta
+            ];
+            if (window.mapEngine) {
+                window.mapEngine.showBoundaryMode(this.currentQuery.bbox, null, locationStr);
+            }
+        }
+
+        // Update badge UI indicator
+        const badgeGarisMerah = document.getElementById('badge-garis-merah');
+        if (badgeGarisMerah) {
+            badgeGarisMerah.innerHTML = `<span style="display:inline-block; width:8px; height:8px; background:#dc2626; border-radius:50%;"></span> <span>Batas Merah: ${targetLabel}</span>`;
+            badgeGarisMerah.style.background = '#fef2f2';
+            badgeGarisMerah.style.borderColor = '#f87171';
+            badgeGarisMerah.style.color = '#dc2626';
+        }
+
+        // 2. Asynchronous boundary fetch (if backend API available)
+        const isStaticHost = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+        if (!isStaticHost) {
+            const searchScope = kelName && !kelName.startsWith('--') ? `${kelName}, ${kecName}` : (kecName && !kecName.startsWith('--') ? `${kecName}, ${kabName}` : (kabName && !kabName.startsWith('--') ? kabName : provName));
+            try {
+                const res = await fetch(`api/regions.php?action=boundary&q=${encodeURIComponent(searchScope)}&lat=${this.currentQuery.lat}&lng=${this.currentQuery.lng}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && window.mapEngine) {
+                        this.currentQuery.lat = data.lat;
+                        this.currentQuery.lng = data.lng;
+                        this.currentQuery.bbox = data.boundingbox;
+                        window.mapEngine.showBoundaryMode(data.boundingbox, data.geojson, data.name || targetLabel);
+                    }
+                }
+            } catch (e) {
+                // Silently preserve local boundary
+            }
         }
 
         this.loadPreScrapeCandidates();

@@ -181,16 +181,21 @@ class MapEngine {
     // MODE 1: BOUNDARY REGION MODE (Garis Tepi Merah Penuh)
     // ====================================================
     showBoundaryMode(bbox, geojson = null, label = 'Batas Wilayah Administratif') {
+        if (!this.map) {
+            this.init();
+        }
+        if (!this.map) return;
+
         this.currentMode = 'boundary';
         this.clearAllOverlays();
 
         const redBoundaryStyle = {
-            color: '#dc2626',      // Strong, vivid red border
-            weight: 3.5,           // Thick prominent boundary stroke
+            color: '#dc2626',           // Strong, vivid crimson red border
+            weight: 4,                  // Thick prominent boundary stroke
             opacity: 1,
-            fillColor: 'transparent', // No color overlay, preserve authentic map colors
-            fillOpacity: 0,
-            dashArray: '6, 6'
+            fillColor: '#ef4444',       // Soft red tint so the user clearly sees the active territory
+            fillOpacity: 0.12,          // Visually distinct active zone
+            dashArray: '8, 6'
         };
 
         this.activeBoundaryPolygon = null;
@@ -203,17 +208,36 @@ class MapEngine {
                 this.activeBoundaryPolygon = coords.map(c => [c[1], c[0]]); // [lat, lng]
             } catch (e) {}
         } else if (bbox && bbox.length === 4) {
-            // Generate authentic, curved 24-point organic administrative polygon
-            const latCenter = (bbox[0] + bbox[2]) / 2;
-            const lngCenter = (bbox[1] + bbox[3]) / 2;
-            const rLat = Math.abs(bbox[2] - bbox[0]) / 2;
-            const rLng = Math.abs(bbox[3] - bbox[1]) / 2;
+            // Robust bbox extraction: supports both [minLat, minLng, maxLat, maxLng] and [minLat, maxLat, minLng, maxLng]
+            const b = bbox.map(Number);
+            let minLat, maxLat, minLng, maxLng;
+            if (Math.abs(b[0]) <= 90 && Math.abs(b[1]) <= 90 && b[2] > 60 && b[3] > 60) {
+                // [minLat, maxLat, minLng, maxLng] (Nominatim format)
+                minLat = Math.min(b[0], b[1]);
+                maxLat = Math.max(b[0], b[1]);
+                minLng = Math.min(b[2], b[3]);
+                maxLng = Math.max(b[2], b[3]);
+            } else {
+                // [minLat, minLng, maxLat, maxLng] (standard dataset format)
+                minLat = Math.min(b[0], b[2]);
+                maxLat = Math.max(b[0], b[2]);
+                minLng = Math.min(b[1], b[3]);
+                maxLng = Math.max(b[1], b[3]);
+            }
 
+            const latCenter = (minLat + maxLat) / 2;
+            const lngCenter = (minLng + maxLng) / 2;
+            let rLat = Math.abs(maxLat - minLat) / 2;
+            let rLng = Math.abs(maxLng - minLng) / 2;
+            if (rLat < 0.003) rLat = 0.008;
+            if (rLng < 0.003) rLng = 0.008;
+
+            // Generate authentic, curved 28-point organic administrative polygon
             const pts = [];
-            const numPts = 24;
+            const numPts = 28;
             for (let i = 0; i < numPts; i++) {
                 const theta = (i / numPts) * 2 * Math.PI;
-                const wave = 1.0 + (0.16 * Math.sin(3 * theta)) + (0.09 * Math.cos(5 * theta)) + (0.05 * Math.sin(7 * theta));
+                const wave = 1.0 + (0.18 * Math.sin(3 * theta)) + (0.10 * Math.cos(5 * theta)) + (0.05 * Math.sin(7 * theta));
                 const pLat = latCenter + (rLat * wave * Math.cos(theta));
                 const pLng = lngCenter + (rLng * wave * Math.sin(theta));
                 pts.push([pLat, pLng]);
@@ -229,10 +253,21 @@ class MapEngine {
 
             // Add center territory pin
             this.centerMarker = L.marker([center.lat, center.lng]).addTo(this.map);
-            this.centerMarker.bindPopup(`<b>${label}</b><br><span style="color:#dc2626; font-weight:600;">Batas Wilayah Administratif</span>`).openPopup();
+            this.centerMarker.bindPopup(`
+                <div style="font-family:'Poppins',sans-serif; font-size:12px; min-width:180px;">
+                    <strong style="color:#0f172a; font-size:13px; display:block; margin-bottom:4px;">${label}</strong>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span style="display:inline-block; width:10px; height:10px; background:#dc2626; border-radius:50%;"></span>
+                        <span style="color:#dc2626; font-weight:700; font-size:11px;">Garis Merah Batas Aktif</span>
+                    </div>
+                </div>
+            `).openPopup();
 
             // Fit the ENTIRE territory inside the map view with comfortable padding
-            this.map.fitBounds(this.boundaryLayer.getBounds(), { padding: [35, 35] });
+            this.map.fitBounds(this.boundaryLayer.getBounds(), { padding: [40, 40], maxZoom: 16 });
+            setTimeout(() => {
+                if (this.map) this.map.invalidateSize();
+            }, 250);
         }
     }
 
