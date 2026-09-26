@@ -607,12 +607,71 @@ const Auth = {
                 btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memverifikasi...';
             }
 
-            const res = await fetch('api/auth.php?action=login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ account, password, portal: 'user' })
-            });
-            const data = await res.json();
+            const isStaticHost = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+            let data = null;
+
+            if (!isStaticHost) {
+                try {
+                    const res = await fetch('api/auth.php?action=login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ account, password, portal: 'user' })
+                    });
+                    if (res.ok) {
+                        data = await res.json();
+                    } else if (res.status === 404) {
+                        // Static host without PHP
+                    } else {
+                        try { data = await res.json(); } catch(e) {}
+                    }
+                } catch (netErr) {
+                    console.warn('API network error, fallback to static check if needed...', netErr);
+                }
+            }
+
+            // Fallback for static environments (GitHub Pages, file://, or offline server)
+            if (!data) {
+                const accLower = account.toLowerCase();
+                if (accLower === 'admin' || accLower === 'admin@cliento.id') {
+                    this.toast('Akun ini terdaftar sebagai Administrator. Silakan masuk melalui halaman khusus login Admin (admin.html).', 'error');
+                    return;
+                }
+
+                if ((accLower === 'customer' || accLower === 'customer@demo.com') && password === 'customer123') {
+                    data = {
+                        success: true,
+                        token: 'static_customer_token_' + Date.now(),
+                        user: {
+                            id: 2,
+                            role: 'customer',
+                            username: 'customer',
+                            name: 'Budi Pratama (Owner Cafe Kopi Titik)',
+                            email: 'customer@demo.com',
+                            phone: '085712345678',
+                            status: 'active',
+                            is_verified: 1
+                        }
+                    };
+                } else if ((accLower === 'siti' || accLower === 'siti@example.com') && password === 'secret123') {
+                    data = {
+                        success: true,
+                        token: 'static_siti_token_' + Date.now(),
+                        user: {
+                            id: 3,
+                            role: 'customer',
+                            username: 'siti',
+                            name: 'Siti Nurhaliza',
+                            email: 'siti@example.com',
+                            phone: '081299887766',
+                            status: 'active',
+                            is_verified: 1
+                        }
+                    };
+                } else {
+                    this.toast('Username/email atau kata sandi tidak cocok.', 'error');
+                    return;
+                }
+            }
 
             if (data.success && data.token && data.user) {
                 this.token = data.token;
@@ -665,12 +724,54 @@ const Auth = {
                 btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memverifikasi Admin...';
             }
 
-            const res = await fetch('api/auth.php?action=login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ account, password, portal: 'admin' })
-            });
-            const data = await res.json();
+            const isStaticHost = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+            let data = null;
+
+            if (!isStaticHost) {
+                try {
+                    const res = await fetch('api/auth.php?action=login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ account, password, portal: 'admin' })
+                    });
+                    if (res.ok) {
+                        data = await res.json();
+                    } else if (res.status === 404) {
+                        // Static host without PHP
+                    } else {
+                        try { data = await res.json(); } catch(e) {}
+                    }
+                } catch (netErr) {
+                    console.warn('API network error, fallback to static check if needed...', netErr);
+                }
+            }
+
+            // Fallback for static environments
+            if (!data) {
+                const accLower = account.toLowerCase();
+                if ((accLower === 'admin' || accLower === 'admin@cliento.id') && password === 'admin123') {
+                    data = {
+                        success: true,
+                        token: 'static_admin_token_' + Date.now(),
+                        user: {
+                            id: 1,
+                            role: 'admin',
+                            username: 'admin',
+                            name: 'Super Administrator',
+                            email: 'admin@cliento.id',
+                            phone: '081234567890',
+                            status: 'active',
+                            is_verified: 1
+                        }
+                    };
+                } else if (accLower === 'customer' || accLower === 'customer@demo.com' || accLower === 'siti') {
+                    this.toast('Akses ditolak: Akun ini adalah akun Pengguna/Customer. Silakan masuk melalui halaman login pengguna (index.html).', 'error');
+                    return;
+                } else {
+                    this.toast('Username/email atau kata sandi admin tidak cocok.', 'error');
+                    return;
+                }
+            }
 
             if (data.success && data.token && data.user) {
                 this.token = data.token;

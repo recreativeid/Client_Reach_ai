@@ -140,6 +140,16 @@ try {
         $adminStmt = $pdo->prepare("INSERT INTO users (role, username, name, email, phone, password_hash, status, is_verified) VALUES ('admin', 'admin', 'Super Administrator', 'admin@cliento.id', '081234567890', ?, 'active', 1)");
         $adminStmt->execute([password_hash('admin123', PASSWORD_DEFAULT)]);
     }
+
+    // Seed default customer if empty
+    $chkCust = $pdo->query("SELECT id FROM users WHERE role = 'customer' LIMIT 1")->fetch();
+    if (!$chkCust) {
+        $custStmt = $pdo->prepare("INSERT INTO users (role, username, name, email, phone, password_hash, status, is_verified) VALUES ('customer', 'customer', 'Budi Pratama (Owner Cafe Kopi Titik)', 'customer@demo.com', '085712345678', ?, 'active', 1)");
+        $custStmt->execute([password_hash('customer123', PASSWORD_DEFAULT)]);
+
+        $sitiStmt = $pdo->prepare("INSERT INTO users (role, username, name, email, phone, password_hash, status, is_verified) VALUES ('customer', 'siti', 'Siti Nurhaliza', 'siti@example.com', '081299887766', ?, 'active', 1)");
+        $sitiStmt->execute([password_hash('secret123', PASSWORD_DEFAULT)]);
+    }
 } catch (Exception $e) {
     // Ignore if table already exists or locked
 }
