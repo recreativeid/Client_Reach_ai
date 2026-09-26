@@ -677,7 +677,7 @@
                 <tr>
                   <th style="width: 30px;">#</th>
                   <th>Nama Tempat</th>
-                  <th style="min-width: 170px;">Multi-Kanal (360°)</th>
+                  <th style="min-width: 180px;">Status &amp; Rincian Data</th>
                   <th>Lokasi / Alamat</th>
                   <th>Nomor HP</th>
                   <th>Medsos / Web</th>
@@ -1187,21 +1187,21 @@
           <i class="fa-solid fa-message"></i> 1. Template Standar (Cepat)
         </button>
         <button type="button" class="outreach-tab-btn tab-ai" id="tab-btn-gemini">
-          <i class="fa-solid fa-wand-magic-sparkles"></i> 2. ✨ Racik Personal Gemini AI
+          <i class="fa-solid fa-wand-magic-sparkles"></i> 2. Buat Pesan AI (Gemini)
         </button>
       </div>
 
       <!-- Target Business Summary Card (Shared Context) -->
-      <div style="background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
         <div class="d-flex justify-between align-center" style="margin-bottom: 2px;">
-          <span style="font-size: 0.7rem; color: #1e40af; font-weight: 700; text-transform: uppercase;">
-            Target Calon Klien Terkualifikasi (360°):
+          <span style="font-size: 0.7rem; color: #475569; font-weight: 700; text-transform: uppercase;">
+            Target Calon Klien:
           </span>
-          <span class="badge badge-blue" id="ai-modal-biz-badge">Terkualifikasi</span>
+          <span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:600;" id="ai-modal-biz-badge">Terverifikasi</span>
         </div>
         <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;" id="ai-modal-biz-name">Kopi Senja Utama</div>
         <div style="font-size: 0.72rem; color: #475569;" id="ai-modal-biz-meta">
-          Cafe & Coffee Shop • Magelang Utara • ⭐ 4.8 (85 ulasan)
+          Cafe & Coffee Shop • Magelang Utara • <i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.8 (85 ulasan)
         </div>
       </div>
 
@@ -1397,33 +1397,34 @@
   </div>
 
   <!-- Modal: 360° Multi-Channel Lead Intelligence (Validasi 3 Perspektif Bisnis) -->
+  <!-- MODAL: RINCIAN INFORMASI BISNIS (MINIMALIS & FUNGSIONAL) -->
   <div id="modal-360-insight" class="modal-backdrop">
     <div class="modal-sheet" style="max-width: 820px; max-height: 90vh; overflow-y: auto;">
       
       <!-- Modal Header -->
-      <div class="d-flex justify-between align-center" style="margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+      <div class="d-flex justify-between align-center" style="margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="background: linear-gradient(135deg, #2563eb, #8b5cf6, #059669); color: #fff; width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
-            <i class="fa-solid fa-layer-group"></i>
+          <div style="background: #0f172a; color: #fff; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;">
+            <i class="fa-solid fa-circle-info"></i>
           </div>
           <div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <strong style="font-size: 1rem; color: #0f172a;">360° Multi-Channel Lead Intelligence</strong>
-              <span class="badge-triple-pill"><i class="fa-solid fa-certificate"></i> 3/3 Validasi Multi-Kanal</span>
+              <strong style="font-size: 0.95rem; color: #0f172a;">Rincian Informasi Bisnis</strong>
+              <span class="badge" style="background:#f1f5f9; border: 1px solid #cbd5e1; color:#334155; font-size: 0.68rem; font-weight: 600;"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Data Terverifikasi</span>
             </div>
-            <div style="font-size: 0.72rem; color: #64748b;">Sintesis 3 Perspektif Intelijen Bisnis: Direktori Komersial, Reputasi, &amp; Pemetaan Wilayah</div>
+            <div style="font-size: 0.72rem; color: #64748b;">Rangkuman profil usaha, ulasan pelanggan, dan verifikasi lokasi tempat usaha.</div>
           </div>
         </div>
         <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
       <!-- Business Profile Header Banner -->
-      <div class="insight-profile-banner" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;">
+      <div class="insight-profile-banner" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; margin-bottom: 14px;">
         <div class="d-flex justify-between align-center" style="flex-wrap: wrap; gap: 8px;">
           <div>
             <span style="font-size: 0.68rem; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px;" id="insight-modal-category">Cafe & Coffee Shop</span>
-            <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin: 2px 0;" id="insight-modal-biz-name">Kopi Senja Utama</h3>
-            <div style="font-size: 0.74rem; color: #64748b;" id="insight-modal-address"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Jl. Pahlawan No. 45, Magelang Utara</div>
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: #0f172a; margin: 2px 0;" id="insight-modal-biz-name">Kopi Senja Utama</h3>
+            <div style="font-size: 0.74rem; color: #64748b;" id="insight-modal-address"><i class="fa-solid fa-location-dot" style="color: #64748b;"></i> Jl. Pahlawan No. 45, Magelang Utara</div>
           </div>
           <div style="text-align: right;">
             <div style="font-size: 0.7rem; color: #64748b;">Status Kontak WhatsApp</div>
@@ -1435,25 +1436,25 @@
       <!-- 3-Channel Intelligence Cards Grid -->
       <div class="insight-channels-grid">
         
-        <!-- CARD 1: Saluran Alpha (Biru Royal) -->
-        <div class="insight-channel-card card-alpha">
+        <!-- CARD 1: Profil Usaha -->
+        <div class="insight-channel-card">
           <div class="channel-card-header">
             <div class="channel-card-icon alpha-icon">
               <i class="fa-solid fa-store"></i>
             </div>
             <div>
-              <div class="channel-tag tag-alpha">Saluran Alpha</div>
-              <h4 class="channel-title">Direktori Komersial</h4>
+              <div class="channel-tag tag-alpha">Informasi Usaha</div>
+              <h4 class="channel-title">Profil & Operasional</h4>
             </div>
           </div>
-          <p class="channel-desc">Aktivitas publik, volume ulasan, dan popularitas komersial secara real-time.</p>
+          <p class="channel-desc">Profil tempat usaha, jam buka operasional, dan status aktivitas bisnis.</p>
           <div class="channel-metric-list">
             <div class="metric-row">
-              <span class="metric-label">Rating Komersial</span>
+              <span class="metric-label">Rating Usaha</span>
               <span class="metric-val" id="insight-alpha-rating"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.8 / 5.0</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Ulasan Pelanggan</span>
+              <span class="metric-label">Jumlah Ulasan</span>
               <span class="metric-val" id="insight-alpha-reviews">420 Ulasan</span>
             </div>
             <div class="metric-row">
@@ -1461,82 +1462,82 @@
               <span class="metric-val text-green" id="insight-alpha-status">Buka Normal</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Indeks Popularitas</span>
-              <span class="metric-val text-blue" id="insight-alpha-popularity">96% Sangat Ramai</span>
+              <span class="metric-label">Tingkat Kunjungan</span>
+              <span class="metric-val" id="insight-alpha-popularity">Ramai / Aktif</span>
             </div>
           </div>
-          <div class="channel-highlight bg-alpha" id="insight-alpha-summary">
-            Volume ulasan publik dinamis dengan nomor kontak seluler aktif terverifikasi.
+          <div class="channel-highlight" id="insight-alpha-summary">
+            Profil usaha aktif dengan kontak seluler terdata.
           </div>
         </div>
 
-        <!-- CARD 2: Saluran Beta (Ungu Violet) -->
-        <div class="insight-channel-card card-beta">
+        <!-- CARD 2: Rating & Ulasan -->
+        <div class="insight-channel-card">
           <div class="channel-card-header">
             <div class="channel-card-icon beta-icon">
-              <i class="fa-solid fa-award"></i>
+              <i class="fa-solid fa-star"></i>
             </div>
             <div>
-              <div class="channel-tag tag-beta">Saluran Beta</div>
-              <h4 class="channel-title">Indeks Reputasi</h4>
+              <div class="channel-tag tag-beta">Feedback Pelanggan</div>
+              <h4 class="channel-title">Rating & Ulasan</h4>
             </div>
           </div>
-          <p class="channel-desc">Evaluasi mutu pelayanan, tingkat kepuasan, dan sentimen ulasan konsumen.</p>
+          <p class="channel-desc">Rekam jejak kepuasan konsumen dan tingkat rekomendasi layanan.</p>
           <div class="channel-metric-list">
             <div class="metric-row">
               <span class="metric-label">Sentimen Positif</span>
-              <span class="metric-val text-purple" id="insight-beta-sentiment">96% Positif</span>
+              <span class="metric-val" id="insight-beta-sentiment">96% Positif</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Segmentasi Harga</span>
-              <span class="metric-val" id="insight-beta-price">$$ (Menengah)</span>
+              <span class="metric-label">Kisaran Harga</span>
+              <span class="metric-val" id="insight-beta-price">Menengah ($$)</span>
             </div>
             <div class="metric-row">
               <span class="metric-label">Mutu Pelayanan</span>
-              <span class="metric-val" id="insight-beta-satisfaction">Grade A (Sangat Baik)</span>
+              <span class="metric-val" id="insight-beta-satisfaction">Sangat Baik</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Rasio Rekomendasi</span>
-              <span class="metric-val text-purple" id="insight-beta-recommend">94% Konsumen</span>
+              <span class="metric-label">Rekomendasi</span>
+              <span class="metric-val" id="insight-beta-recommend">94% Pelanggan</span>
             </div>
           </div>
-          <div class="channel-highlight bg-beta" id="insight-beta-summary">
-            Diverifikasi memiliki rekam jejak kepuasan konsumen positif stabil dan rasio rekomendasi tinggi.
+          <div class="channel-highlight" id="insight-beta-summary">
+            Konsumen memberikan ulasan positif stabil dengan rekomendasi tinggi.
           </div>
         </div>
 
-        <!-- CARD 3: Saluran Gamma (Hijau Emerald) -->
-        <div class="insight-channel-card card-gamma">
+        <!-- CARD 3: Lokasi & Alamat -->
+        <div class="insight-channel-card">
           <div class="channel-card-header">
             <div class="channel-card-icon gamma-icon">
-              <i class="fa-solid fa-map-pin"></i>
+              <i class="fa-solid fa-location-dot"></i>
             </div>
             <div>
-              <div class="channel-tag tag-gamma">Saluran Gamma</div>
-              <h4 class="channel-title">Validasi Geospasial</h4>
+              <div class="channel-tag tag-gamma">Verifikasi Wilayah</div>
+              <h4 class="channel-title">Lokasi & Alamat</h4>
             </div>
           </div>
-          <p class="channel-desc">Presisi koordinat GPS nyata, zonasi peruntukan ruang usaha, dan tapak kadaster.</p>
+          <p class="channel-desc">Kepastian koordinat GPS dan posisi bisnis di dalam batas daerah terpilih.</p>
           <div class="channel-metric-list">
             <div class="metric-row">
-              <span class="metric-label">Akurasi Tapak GPS</span>
-              <span class="metric-val text-emerald" id="insight-gamma-gps">±2.5 meter (Presisi)</span>
+              <span class="metric-label">Titik Koordinat GPS</span>
+              <span class="metric-val text-green" id="insight-gamma-gps">±2.5 meter (Presisi)</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Zonasi Tata Ruang</span>
-              <span class="metric-val" id="insight-gamma-zoning">Komersial Resmi</span>
+              <span class="metric-label">Zonasi Lokasi</span>
+              <span class="metric-val" id="insight-gamma-zoning">Komersial / Usaha</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Aksesibilitas</span>
+              <span class="metric-label">Akses Jalan</span>
               <span class="metric-val" id="insight-gamma-access">Jalan Utama & Parkir</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Status Kadaster</span>
-              <span class="metric-val text-emerald" id="insight-gamma-cadastral">Tapak Terdaftar</span>
+              <span class="metric-label">Batas Daerah</span>
+              <span class="metric-val text-green" id="insight-gamma-cadastral">100% Dalam Wilayah</span>
             </div>
           </div>
-          <div class="channel-highlight bg-gamma" id="insight-gamma-summary">
-            Lokasi fisik tervalidasi pada zonasi ruang komersial dengan titik koordinat tapak nyata.
+          <div class="channel-highlight" id="insight-gamma-summary">
+            Lokasi fisik terkonfirmasi berada di dalam batas garis merah daerah yang dipilih.
           </div>
         </div>
 
@@ -1549,10 +1550,10 @@
         </button>
         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
           <button class="btn btn-outline btn-sm" id="btn-copy-360-summary" style="font-size: 0.8rem;">
-            <i class="fa-solid fa-copy"></i> Salin Ringkasan Lead
+            <i class="fa-solid fa-copy"></i> Salin Rincian
           </button>
-          <button class="btn btn-primary btn-sm" id="btn-jump-to-ai-pitch" style="background: linear-gradient(135deg, #2563eb, #7c3aed); border: none; font-size: 0.8rem;">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ Racik Pesan AI
+          <button class="btn btn-primary btn-sm" id="btn-jump-to-ai-pitch" style="background: #2563eb; border: none; font-size: 0.8rem;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Buat Pesan AI
           </button>
           <a href="#" target="_blank" class="btn btn-wa btn-sm" id="btn-wa-360-direct" style="font-size: 0.8rem;">
             <i class="fa-brands fa-whatsapp"></i> Chat WhatsApp

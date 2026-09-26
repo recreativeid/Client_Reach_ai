@@ -1124,23 +1124,19 @@ const ScraperClient = {
             const waUrl = window.TemplateManager ? window.TemplateManager.getWhatsAppUrl(it) : '#';
 
             const multiChannelHtml = `
-                <div class="multi-channel-tags-container">
-                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
-                        <span class="badge-triple-pill" title="Terverifikasi Lintas 3 Saluran Intelijen"><i class="fa-solid fa-certificate"></i> 3/3 Valid</span>
-                        <button class="btn-view-360" data-id="${it.id}" title="Buka Detail Intelijen 360°">
-                            <i class="fa-solid fa-layer-group"></i> 360°
+                <div class="lead-data-verification">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 5px;">
+                        <span class="badge-clean-status" title="Data profil, ulasan, dan lokasi terverifikasi lengkap">
+                            <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 0.75rem;"></i> Data Lengkap
+                        </span>
+                        <button class="btn-view-detail" data-id="${it.id}" title="Klik untuk membuka rincian informasi bisnis">
+                            <i class="fa-solid fa-circle-info"></i> Rincian Data
                         </button>
                     </div>
-                    <div class="mini-channel-tags">
-                        <span class="ch-tag ch-tag-alpha" title="Saluran Alpha: Direktori Komersial (Profil & Kunjungan)">
-                            <i class="fa-solid fa-store"></i> Direktori
-                        </span>
-                        <span class="ch-tag ch-tag-beta" title="Saluran Beta: Indeks Reputasi (Mutu Layanan & Sentimen)">
-                            <i class="fa-solid fa-award"></i> Reputasi
-                        </span>
-                        <span class="ch-tag ch-tag-gamma" title="Saluran Gamma: Pemetaan Wilayah (Presisi GPS & Kadaster)">
-                            <i class="fa-solid fa-map-pin"></i> Spasial
-                        </span>
+                    <div class="lead-checklist-tags">
+                        <span class="tag-clean" title="Informasi Profil & Kontak"><i class="fa-solid fa-store"></i> Profil Usaha</span>
+                        <span class="tag-clean" title="Rating & Ulasan Pelanggan"><i class="fa-solid fa-star"></i> Ulasan</span>
+                        <span class="tag-clean" title="Lokasi di Dalam Wilayah"><i class="fa-solid fa-location-dot"></i> Lokasi</span>
                     </div>
                 </div>
             `;
@@ -1151,7 +1147,7 @@ const ScraperClient = {
                     <div style="font-weight: 700; color: #0f172a;">${it.name}</div>
                     <div style="font-size: 0.72rem; color: #64748b;">${it.category}</div>
                 </td>
-                <td style="min-width: 170px;">
+                <td style="min-width: 180px;">
                     ${multiChannelHtml}
                 </td>
                 <td style="max-width: 170px; font-size: 0.74rem;">${it.address}</td>
@@ -1174,10 +1170,10 @@ const ScraperClient = {
                 </td>
             `;
 
-            // Open 360 Multi-Channel Insight Modal
-            const btn360 = tr.querySelector('.btn-view-360');
-            if (btn360) {
-                btn360.addEventListener('click', (e) => {
+            // Open Business Detail Modal (Rincian Data)
+            const btnDetail = tr.querySelector('.btn-view-detail') || tr.querySelector('.btn-view-360');
+            if (btnDetail) {
+                btnDetail.addEventListener('click', (e) => {
                     e.stopPropagation();
                     this.open360InsightModal(it);
                 });
@@ -1683,19 +1679,19 @@ const ScraperClient = {
                 const chB = ins.channel_beta || {};
                 const chG = ins.channel_gamma || {};
 
-                const summaryText = `[PROSPEK BISNIS 360° - CLIENTO]\n` +
+                const summaryText = `[INFORMASI BISNIS - CLIENTO]\n` +
                     `Nama Bisnis : ${it.name}\n` +
                     `Kategori    : ${it.category}\n` +
                     `Alamat      : ${it.address}\n` +
                     `Kontak WA   : ${it.phone || '-'}\n` +
                     `Rating / Rev: ${it.rating} (${it.reviews_count} ulasan)\n` +
-                    `Status Validasi: 3/3 Saluran Multi-Kanal Terverifikasi\n\n` +
-                    `• Saluran Alpha (Direktori Komersial): ${chA.popularity_score || '95%'} • ${chA.status || 'Buka Normal'}\n` +
-                    `• Saluran Beta (Indeks Reputasi): ${chB.sentiment_positive || '95% Positif'} • Mutu ${chB.satisfaction_grade || 'Grade A'}\n` +
-                    `• Saluran Gamma (Pemetaan Wilayah): ${chG.gps_accuracy || 'Presisi ±2.5m'} • Zonasi ${chG.zoning || 'Komersial'}\n`;
+                    `Status Data : Terverifikasi Lengkap\n\n` +
+                    `• Profil & Operasional : ${chA.status || 'Aktif Operasional'} (Popularitas: ${chA.popularity_score || 'Tinggi'})\n` +
+                    `• Rating & Ulasan      : ${chB.sentiment_positive || 'Positif'} • Kepuasan: ${chB.satisfaction_grade || 'Grade A'}\n` +
+                    `• Lokasi & Alamat      : ${chG.gps_accuracy || 'Presisi'} • Zonasi: ${chG.zoning || 'Sesuai'}\n`;
 
                 navigator.clipboard.writeText(summaryText);
-                this.showToast('Ringkasan Prospek 360° berhasil disalin ke clipboard!');
+                this.showToast('Rincian informasi bisnis berhasil disalin!');
             });
         }
     },
