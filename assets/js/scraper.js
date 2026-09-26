@@ -215,11 +215,19 @@ const ScraperClient = {
         });
 
         if (btnSearch) {
-            btnSearch.addEventListener('click', () => {
+            btnSearch.addEventListener('click', async (e) => {
+                e.preventDefault();
                 const val = input.value.trim();
-                if (val) {
-                    this.currentQuery.category = val;
-                    this.loadPreScrapeCandidates();
+                this.currentQuery.category = val || 'cafe';
+                
+                const origHtml = btnSearch.innerHTML;
+                btnSearch.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                btnSearch.disabled = true;
+                try {
+                    await this.loadPreScrapeCandidates();
+                } finally {
+                    btnSearch.innerHTML = origHtml;
+                    btnSearch.disabled = false;
                 }
             });
         }
@@ -537,16 +545,24 @@ const ScraperClient = {
                 if (listContainer) {
                     listContainer.innerHTML = '';
                     this.candidatePlaces.forEach(p => {
+                        const isOsm = (p.source === 'osm');
+                        const sourcePill = isOsm 
+                            ? `<span style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 5px; border-radius: 4px; font-size: 0.62rem; font-weight: 600;"><i class="fa-solid fa-map-pin"></i> OpenStreetMap</span>`
+                            : `<span style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 1px 5px; border-radius: 4px; font-size: 0.62rem; font-weight: 600;"><i class="fa-solid fa-location-dot"></i> Google Maps</span>`;
+
                         const row = document.createElement('div');
                         row.style.cssText = 'padding: 8px 10px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem;';
                         row.innerHTML = `
                             <div>
-                                <strong style="color: #0f172a;">${p.name}</strong>
+                                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                                    <strong style="color: #0f172a;">${p.name}</strong>
+                                    ${sourcePill}
+                                </div>
                                 <div style="color: #64748b; font-size: 0.68rem;">${p.address}</div>
                             </div>
                             <div style="text-align: right; white-space: nowrap;">
                                 <span class="badge badge-blue">${p.category}</span>
-                                <span style="font-weight: 700; color: #f59e0b; margin-left: 4px;">⭐ ${p.rating}</span>
+                                <span style="font-weight: 700; color: #0f172a; margin-left: 4px;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> ${p.rating}</span>
                             </div>
                         `;
                         listContainer.appendChild(row);
@@ -704,13 +720,13 @@ const ScraperClient = {
                         </button>
                     </div>
                     <div class="mini-channel-tags">
-                        <span class="ch-tag ch-tag-alpha" title="Saluran Alpha: Radar Komersial (Aktivitas & Kunjungan)">
-                            <i class="fa-solid fa-satellite-dish"></i> Radar
+                        <span class="ch-tag ch-tag-alpha" title="Saluran Alpha: Direktori Komersial (Profil & Kunjungan)">
+                            <i class="fa-solid fa-store"></i> Direktori
                         </span>
                         <span class="ch-tag ch-tag-beta" title="Saluran Beta: Indeks Reputasi (Mutu Layanan & Sentimen)">
                             <i class="fa-solid fa-award"></i> Reputasi
                         </span>
-                        <span class="ch-tag ch-tag-gamma" title="Saluran Gamma: Validasi Geospasial (Presisi GPS & Kadaster)">
+                        <span class="ch-tag ch-tag-gamma" title="Saluran Gamma: Pemetaan Wilayah (Presisi GPS & Kadaster)">
                             <i class="fa-solid fa-map-pin"></i> Spasial
                         </span>
                     </div>
@@ -730,14 +746,14 @@ const ScraperClient = {
                 <td style="white-space: nowrap; font-weight: 600; font-size: 0.76rem;">${it.phone || '-'}</td>
                 <td style="font-size: 0.72rem; color: #2563eb;">${it.social_media || '-'}</td>
                 <td style="font-size: 0.72rem; color: #64748b;">${it.opening_hours || '-'}</td>
-                <td style="font-weight: 700; color: #f59e0b; white-space: nowrap;">⭐ ${it.rating} <span style="font-size: 0.68rem; color:#94a3b8;">(${it.reviews_count})</span></td>
+                <td style="font-weight: 700; color: #0f172a; white-space: nowrap;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> ${it.rating} <span style="font-size: 0.68rem; color:#94a3b8;">(${it.reviews_count})</span></td>
                 <td style="text-align: right; white-space: nowrap;">
                     <div style="display: inline-flex; gap: 4px;">
                         <button class="btn btn-outline btn-sm btn-quick-copy" title="Salin Pesan Penawaran Terpersonalisasi" data-id="${it.id}">
                             <i class="fa-solid fa-copy"></i> Salin
                         </button>
                         <button class="btn btn-primary btn-sm btn-open-gemini-pitch" title="Buat Pesan Sales Otomatis dengan Gemini AI" data-id="${it.id}" style="background: linear-gradient(135deg, #2563eb, #7c3aed); border: none;">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ AI Pitch
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI Pitch
                         </button>
                         <a href="${waUrl}" target="_blank" class="btn btn-wa btn-sm" title="Chat WhatsApp Langsung">
                             <i class="fa-brands fa-whatsapp"></i> WA
@@ -964,7 +980,7 @@ const ScraperClient = {
 
         if (bizName) bizName.textContent = item.name;
         if (inputBizName) inputBizName.value = item.name;
-        if (bizMeta) bizMeta.textContent = `${item.category} • ${item.address} • ⭐ ${item.rating} (${item.reviews_count || '0'} ulasan)`;
+        if (bizMeta) bizMeta.textContent = `${item.category} • ${item.address} • Rating ${item.rating} (${item.reviews_count || '0'} ulasan)`;
         if (statusEl) statusEl.textContent = '';
 
         // Reset promo image if modal opened afresh
@@ -1013,7 +1029,7 @@ const ScraperClient = {
         let body = window.TemplateManager ? window.TemplateManager.getPersonalizedMessage(item) : '';
         // If template doesn't have custom body, create standard template
         if (!body) {
-            body = `${greetingText}\n\nKami sempat melihat profil usaha kakak di Google Maps dengan reputasi yang sangat baik (Rating ${item.rating} ⭐). Kami ingin sharing solusi singkat untuk optimasi visibilitas pelanggan lokal dan hemat biaya promosi.\n\nKira-kira jika kami kirimkan ringkasan insight singkatnya via WhatsApp ini, boleh kak? Terima kasih banyak 🙏`;
+            body = `${greetingText}\n\nKami sempat melihat profil usaha kakak di Google Maps dengan reputasi yang sangat baik (Rating ${item.rating}). Kami ingin sharing solusi singkat untuk optimasi visibilitas pelanggan lokal dan hemat biaya promosi.\n\nKira-kira jika kami kirimkan ringkasan insight singkatnya via WhatsApp ini, boleh kak? Terima kasih banyak.`;
         } else {
             // Replace greeting at beginning if standard
             body = `${greetingText}\n\n` + body.replace(/^Halo [^\n]+?\n\n/i, '').replace(/^Hallo [^\n]+?\n\n/i, '');
@@ -1161,14 +1177,14 @@ const ScraperClient = {
         const chB = ins.channel_beta || {};
         const chG = ins.channel_gamma || {};
 
-        // Saluran Alpha (Radar Komersial)
+        // Saluran Alpha (Direktori Komersial)
         const alphaRating = document.getElementById('insight-alpha-rating');
         const alphaReviews = document.getElementById('insight-alpha-reviews');
         const alphaStatus = document.getElementById('insight-alpha-status');
         const alphaPopularity = document.getElementById('insight-alpha-popularity');
         const alphaSummary = document.getElementById('insight-alpha-summary');
 
-        if (alphaRating) alphaRating.textContent = `⭐ ${chA.rating || item.rating} / 5.0`;
+        if (alphaRating) alphaRating.innerHTML = `<i class="fa-solid fa-star" style="color:#f59e0b;"></i> ${chA.rating || item.rating} / 5.0`;
         if (alphaReviews) alphaReviews.textContent = `${chA.reviews_count || item.reviews_count || '120'} Ulasan`;
         if (alphaStatus) alphaStatus.textContent = chA.status || 'Operasional Normal';
         if (alphaPopularity) alphaPopularity.textContent = chA.popularity_score || '95% Indeks Kunjungan';
@@ -1245,14 +1261,14 @@ const ScraperClient = {
                     `Kategori    : ${it.category}\n` +
                     `Alamat      : ${it.address}\n` +
                     `Kontak WA   : ${it.phone || '-'}\n` +
-                    `Rating / Rev: ⭐ ${it.rating} (${it.reviews_count} ulasan)\n` +
+                    `Rating / Rev: ${it.rating} (${it.reviews_count} ulasan)\n` +
                     `Status Validasi: 3/3 Saluran Multi-Kanal Terverifikasi\n\n` +
-                    `• Saluran Alpha (Radar Komersial): ${chA.popularity_score || '95%'} • ${chA.status || 'Buka Normal'}\n` +
+                    `• Saluran Alpha (Direktori Komersial): ${chA.popularity_score || '95%'} • ${chA.status || 'Buka Normal'}\n` +
                     `• Saluran Beta (Indeks Reputasi): ${chB.sentiment_positive || '95% Positif'} • Mutu ${chB.satisfaction_grade || 'Grade A'}\n` +
-                    `• Saluran Gamma (Validasi Spasial): ${chG.gps_accuracy || 'Presisi ±2.5m'} • Zonasi ${chG.zoning || 'Komersial'}\n`;
+                    `• Saluran Gamma (Pemetaan Wilayah): ${chG.gps_accuracy || 'Presisi ±2.5m'} • Zonasi ${chG.zoning || 'Komersial'}\n`;
 
                 navigator.clipboard.writeText(summaryText);
-                this.showToast('✓ Ringkasan Prospek 360° berhasil disalin ke clipboard!');
+                this.showToast('Ringkasan Prospek 360° berhasil disalin ke clipboard!');
             });
         }
     },

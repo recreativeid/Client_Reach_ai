@@ -444,6 +444,41 @@
       
       <!-- SUB-VIEW 1: Setup & Mutually Exclusive Scoping -->
       <div id="scraper-setup-view">
+
+        <!-- PANDUAN PENGGUNAAN CEPAT (Minimalis, Vektor Sederhana, Tanpa Emo) -->
+        <div class="quick-usage-guide">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-compass" style="color: #0f172a; font-size: 0.88rem;"></i>
+              <strong style="font-size: 0.80rem; color: #0f172a;">Panduan Penggunaan Cepat</strong>
+            </div>
+            <span style="font-size: 0.66rem; color: #64748b; font-weight: 500;">Alur Pencarian &amp; Ekstraksi Data</span>
+          </div>
+          <div class="guide-steps-grid">
+            <div class="guide-step-item">
+              <span class="guide-step-num">1</span>
+              <div>
+                <strong>Tentukan Area Target</strong>
+                <p>Pilih wilayah administratif bertingkat (Provinsi, Kab/Kota) atau tentukan titik koordinat peta dengan radius.</p>
+              </div>
+            </div>
+            <div class="guide-step-item">
+              <span class="guide-step-num">2</span>
+              <div>
+                <strong>Pratinjau Titik Bisnis</strong>
+                <p>Ketik kata kunci usaha lalu klik tombol kaca pembesar untuk melihat titik potensi Google Maps &amp; OpenStreetMap di peta.</p>
+              </div>
+            </div>
+            <div class="guide-step-item">
+              <span class="guide-step-num">3</span>
+              <div>
+                <strong>Tarik Data Lengkap</strong>
+                <p>Klik tombol Scrape Data Lengkap untuk mengumpulkan kontak WhatsApp, jam operasional, dan analisis prospek bisnis.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="scraper-split-container">
           
           <!-- LEFT PANEL: Controls & Form -->
@@ -514,7 +549,7 @@
                 <span id="radius-km-display" style="font-size: 0.72rem; font-weight: 700; color: #2563eb;">3 KM</span>
               </div>
               <p style="font-size: 0.7rem; color: #475569; margin-bottom: 8px; line-height: 1.3;">
-                👉 <strong>Klik di titik mana saja pada peta preview di kanan</strong> untuk menempatkan pin bisnis target.
+                <i class="fa-solid fa-arrow-pointer" style="color: #2563eb;"></i> <strong>Klik di titik mana saja pada peta pratinjau di kanan</strong> untuk menempatkan pin bisnis target.
               </p>
               <div style="font-size: 0.72rem; color: #64748b; margin-bottom: 8px; background: #ffffff; padding: 6px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
                 Koordinat Pin: <strong id="display-selected-coord" style="color: #0f172a;">-7.4589, 110.2251</strong>
@@ -540,12 +575,12 @@
                 <div style="display: flex; gap: 6px;">
                   <input type="text" id="target-keyword-input" class="form-input" 
                          placeholder="Ketik kata kunci (misal: cafe, laundry, bengkel, klinik, hotel)..." value="cafe">
-                  <button class="btn btn-primary btn-sm" id="btn-trigger-search">
+                  <button class="btn btn-primary btn-sm" id="btn-trigger-search" title="Cari & Pratinjau Titik Potensial di Peta">
                     <i class="fa-solid fa-magnifying-glass"></i>
                   </button>
                 </div>
                 <small style="font-size: 0.66rem; color: #64748b; margin-top: 4px; display: block;">
-                  *Sistem cerdas mengenali sinonim kata kunci & nama bisnis lokal nyata.
+                  *Sistem cerdas mendeteksi titik potensial dari Google Maps dan OpenStreetMap.
                 </small>
               </div>
 
@@ -626,10 +661,10 @@
           <!-- Lead Qualification Quick Filter Pills -->
           <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; padding: 0 4px;">
             <button type="button" class="lead-filter-pill active" data-filter="all">Semua Leads</button>
-            <button type="button" class="lead-filter-pill" data-filter="has_wa">🟢 Punya WhatsApp</button>
-            <button type="button" class="lead-filter-pill" data-filter="low_rating">🟡 Rating &lt; 4.2 (Target Jasa Review)</button>
-            <button type="button" class="lead-filter-pill" data-filter="high_rating">⭐ Rating &ge; 4.5 (Bisnis Mapan)</button>
-            <button type="button" class="lead-filter-pill" data-filter="no_web">🌐 Belum Punya Website</button>
+            <button type="button" class="lead-filter-pill" data-filter="has_wa"><i class="fa-brands fa-whatsapp text-success"></i> Punya WhatsApp</button>
+            <button type="button" class="lead-filter-pill" data-filter="low_rating"><i class="fa-solid fa-chart-line text-warning"></i> Rating &lt; 4.2 (Target Jasa Review)</button>
+            <button type="button" class="lead-filter-pill" data-filter="high_rating"><i class="fa-solid fa-star text-amber"></i> Rating &ge; 4.5 (Bisnis Mapan)</button>
+            <button type="button" class="lead-filter-pill" data-filter="no_web"><i class="fa-solid fa-globe text-secondary"></i> Belum Punya Website</button>
           </div>
 
           <!-- Scraped Data Table -->
@@ -843,17 +878,17 @@
           </div>
 
           <div style="margin-bottom: 12px; font-size: 0.74rem; color: #64748b; display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
-            <span><strong style="color:#16a34a;">✔ Hijau:</strong> Prospek Positif / Siap Closing</span>
-            <span><strong style="color:#dc2626;">✖ Merah:</strong> Bukan Prospek</span>
-            <span><strong>⚪ Putih:</strong> Belum Ada Tindakan</span>
+            <span><strong style="color:#16a34a;"><i class="fa-solid fa-circle-check"></i> Hijau:</strong> Prospek Positif / Siap Closing</span>
+            <span><strong style="color:#dc2626;"><i class="fa-solid fa-circle-xmark"></i> Merah:</strong> Bukan Prospek</span>
+            <span><strong><i class="fa-regular fa-circle"></i> Putih:</strong> Belum Ada Tindakan</span>
           </div>
 
           <!-- Filter Pills -->
           <div class="ig-filter-bar">
             <div class="ig-filter-pill active" data-filter="all">Semua Klien</div>
-            <div class="ig-filter-pill" data-filter="prospect">⭐ Prospek Positif (Hijau)</div>
-            <div class="ig-filter-pill" data-filter="none">🕒 Perlu Dihubungi (Putih)</div>
-            <div class="ig-filter-pill" data-filter="rejected">✖ Ditolak (Merah)</div>
+            <div class="ig-filter-pill" data-filter="prospect"><i class="fa-solid fa-circle-check text-success"></i> Prospek Positif (Hijau)</div>
+            <div class="ig-filter-pill" data-filter="none"><i class="fa-regular fa-clock text-secondary"></i> Perlu Dihubungi (Putih)</div>
+            <div class="ig-filter-pill" data-filter="rejected"><i class="fa-solid fa-circle-xmark text-danger"></i> Ditolak (Merah)</div>
           </div>
 
           <!-- 1. Visual Prospect Cards Feed -->
@@ -1373,7 +1408,7 @@
               <strong style="font-size: 1rem; color: #0f172a;">360° Multi-Channel Lead Intelligence</strong>
               <span class="badge-triple-pill"><i class="fa-solid fa-certificate"></i> 3/3 Validasi Multi-Kanal</span>
             </div>
-            <div style="font-size: 0.72rem; color: #64748b;">Sintesis 3 Perspektif Intelijen Bisnis: Radar Komersial, Reputasi, & Validasi Geospasial</div>
+            <div style="font-size: 0.72rem; color: #64748b;">Sintesis 3 Perspektif Intelijen Bisnis: Direktori Komersial, Reputasi, &amp; Pemetaan Wilayah</div>
           </div>
         </div>
         <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
@@ -1401,18 +1436,18 @@
         <div class="insight-channel-card card-alpha">
           <div class="channel-card-header">
             <div class="channel-card-icon alpha-icon">
-              <i class="fa-solid fa-satellite-dish"></i>
+              <i class="fa-solid fa-store"></i>
             </div>
             <div>
               <div class="channel-tag tag-alpha">Saluran Alpha</div>
-              <h4 class="channel-title">Radar Komersial</h4>
+              <h4 class="channel-title">Direktori Komersial</h4>
             </div>
           </div>
           <p class="channel-desc">Aktivitas publik, volume ulasan, dan popularitas komersial secara real-time.</p>
           <div class="channel-metric-list">
             <div class="metric-row">
               <span class="metric-label">Rating Komersial</span>
-              <span class="metric-val" id="insight-alpha-rating">⭐ 4.8 / 5.0</span>
+              <span class="metric-val" id="insight-alpha-rating"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.8 / 5.0</span>
             </div>
             <div class="metric-row">
               <span class="metric-label">Ulasan Pelanggan</span>
@@ -2014,7 +2049,7 @@
                 </div>
                 <div>
                   <strong style="font-size: 0.82rem; color: #0f172a;">Google Maps Platform</strong>
-                  <span style="font-size: 0.64rem; color: #64748b; display: block;">Saluran Alpha (Radar Komersial &amp; Lead Publik)</span>
+                  <span style="font-size: 0.64rem; color: #64748b; display: block;">Saluran Alpha (Direktori Komersial &amp; Lead Publik)</span>
                 </div>
               </div>
               <span class="badge badge-green" style="font-size: 0.64rem;"><i class="fa-solid fa-check"></i> Terhubung Aktif</span>

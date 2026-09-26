@@ -2450,6 +2450,179 @@ body:not(.authenticated) .mobile-bottom-nav {
   image-rendering: -webkit-optimize-contrast;
 }
 
+/* Minimalist Vector Map Layer Switcher (No Emojis) */
+.map-minimal-switcher {
+  border: none !important;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.14) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  margin-top: 10px !important;
+  margin-right: 10px !important;
+}
+
+.minimal-switcher-group {
+  display: flex;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+  backdrop-filter: blur(8px);
+}
+
+.btn-layer-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.70rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-layer-opt i {
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.btn-layer-opt:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.btn-layer-opt:hover i {
+  color: #0f172a;
+}
+
+.btn-layer-opt.active {
+  background: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+}
+
+.btn-layer-opt.active i {
+  color: #ffffff;
+}
+
+/* Minimalist Map Source Legend (Bottom Left) */
+.map-minimal-legend {
+  display: flex;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 4px 8px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 8px !important;
+  margin-left: 8px !important;
+}
+
+.legend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-dot.dot-gmaps {
+  background: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+}
+
+.legend-dot.dot-osm {
+  background: #059669;
+  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.25);
+}
+
+.text-gmaps {
+  color: #2563eb;
+  font-size: 0.70rem;
+}
+
+.text-osm {
+  color: #059669;
+  font-size: 0.70rem;
+}
+
+/* Quick Usage Guide Card */
+.quick-usage-guide {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.guide-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.guide-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.guide-step-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.70rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.guide-step-item strong {
+  font-size: 0.76rem;
+  color: #0f172a;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.guide-step-item p {
+  font-size: 0.68rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.35;
+}
+
+@media (max-width: 768px) {
+  .guide-steps-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
 .leaflet-control-layers {
   border: 1px solid #cbd5e1 !important;
   border-radius: 12px !important;

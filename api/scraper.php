@@ -225,6 +225,7 @@ function generateCandidatePlaces($rawQuery, $locationName, $centerLat, $centerLn
         // Tri-Channel Data Intelligence Synthesis
         $insights = generateTriChannelInsights($baseName, $categoryTitle, $rating, $reviews, $phoneNum, $itemLat, $itemLng);
 
+        $source = ($i % 2 === 0) ? 'gmaps' : 'osm';
         $places[] = [
             'id' => $i + 1,
             'name' => $baseName . ' (' . ($i + 1) . ')',
@@ -238,6 +239,11 @@ function generateCandidatePlaces($rawQuery, $locationName, $centerLat, $centerLn
             'rating' => $rating,
             'reviews_count' => $reviews,
             'status' => 'none',
+            'source' => $source,
+            'source_name' => ($source === 'gmaps') ? 'Google Maps' : 'OpenStreetMap',
+            'source_type' => ($source === 'gmaps') ? 'Direktori Komersial' : 'Pemetaan Wilayah',
+            'source_color' => ($source === 'gmaps') ? '#2563eb' : '#059669',
+            'source_icon' => ($source === 'gmaps') ? 'fa-location-dot' : 'fa-map-pin',
             'insights' => $insights
         ];
     }
@@ -247,7 +253,7 @@ function generateCandidatePlaces($rawQuery, $locationName, $centerLat, $centerLn
 
 /**
  * Generate 3-Channel Business Intelligence:
- * Channel Alpha: Commercial Map Radar (Biru Royal)
+ * Channel Alpha: Commercial Map Directory (Biru Royal)
  * Channel Beta: Business Reputation Index (Ungu Violet)
  * Channel Gamma: Geospatial Cadastral Registry (Hijau Emerald)
  */
@@ -268,12 +274,12 @@ function generateTriChannelInsights($baseName, $categoryTitle, $rating, $reviews
         'verification_score' => '100% (3/3 Multi-Kanal)',
         'channel_alpha' => [
             'code' => 'ALPHA',
-            'title' => 'Radar Komersial',
-            'channel_name' => 'Saluran Alpha (Radar Komersial & Interaksi Publik)',
+            'title' => 'Direktori Komersial',
+            'channel_name' => 'Saluran Alpha (Direktori Komersial & Lead Publik)',
             'theme_color' => '#2563eb', // Royal Blue
             'bg_color' => '#eff6ff',
             'border_color' => '#bfdbfe',
-            'icon' => 'fa-solid fa-satellite-dish',
+            'icon' => 'fa-solid fa-store',
             'rating' => $rating,
             'reviews_count' => $reviews,
             'status' => 'Operasional Aktif',

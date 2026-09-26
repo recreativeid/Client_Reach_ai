@@ -42,48 +42,96 @@ class MapEngine {
             attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
         });
 
-        // 2. OpenStreetMap Kontras Hangat (Humanitarian HOT - Jalan & Tata Kota Tajam)
-        const osmHotHD = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; OpenStreetMap contributors, Tiles style by HOT'
-        });
-
-        // 3. Google Maps Satellite Hybrid (Fotorealistik Nyata + Label Jalan HD)
+        // 2. Google Maps Satellite Hybrid (Fotorealistik Nyata + Label Jalan HD)
         const googleHybridHD = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
             subdomains: ['0', '1', '2', '3'],
             maxZoom: 20,
             attribution: 'Citra Satelit HD &copy; Google Maps'
         });
 
-        // 4. Google Maps Standard Roads HD
+        // 3. Google Maps Standard Roads HD
         const googleRoadsHD = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
             subdomains: ['0', '1', '2', '3'],
             maxZoom: 20,
             attribution: 'Peta Jalan &copy; Google Maps'
         });
 
-        // 5. OpenStreetMap Klasik Standar
-        const osmStandard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; OpenStreetMap contributors'
-        });
-
         // Pasang OpenStreetMap Segar HD sebagai layer default utama (segar, tidak pudar, dan anti-blur)
         osmFreshHD.addTo(this.map);
+        this.activeTileLayer = osmFreshHD;
 
-        // Control Switcher Layer Peta yang Elegan & Mudah Digunakan
-        const baseMaps = {
-            "🗺️ OpenStreetMap Segar HD (Ultra Jernih)": osmFreshHD,
-            "🏙️ OpenStreetMap Kontras Hangat (HOT)": osmHotHD,
-            "🛰️ Satelit Nyata HD (Google Hybrid)": googleHybridHD,
-            "🚗 Google Jalanan HD": googleRoadsHD,
-            "🌐 OpenStreetMap Klasik": osmStandard
-        };
+        // Minimalist Vector Map Layer Switcher (No Emojis, uncolored vector icons + concise text)
+        const MinimalLayerControl = L.Control.extend({
+            options: { position: 'topright' },
+            onAdd: () => {
+                const container = L.DomUtil.create('div', 'leaflet-bar map-minimal-switcher');
+                container.innerHTML = `
+                    <div class="minimal-switcher-group">
+                        <button type="button" class="btn-layer-opt active" data-layer="osm" title="OpenStreetMap Segar HD">
+                            <i class="fa-solid fa-map"></i> <span>OSM HD</span>
+                        </button>
+                        <button type="button" class="btn-layer-opt" data-layer="sat" title="Google Satelit Hybrid HD">
+                            <i class="fa-solid fa-satellite"></i> <span>Satelit</span>
+                        </button>
+                        <button type="button" class="btn-layer-opt" data-layer="roads" title="Google Jalanan HD">
+                            <i class="fa-solid fa-road"></i> <span>Jalan</span>
+                        </button>
+                    </div>
+                `;
+                L.DomEvent.disableClickPropagation(container);
+                L.DomEvent.disableScrollPropagation(container);
 
-        L.control.layers(baseMaps, null, {
-            position: 'topright',
-            collapsed: true
-        }).addTo(this.map);
+                const btns = container.querySelectorAll('.btn-layer-opt');
+                btns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const layerType = btn.getAttribute('data-layer');
+                        btns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+
+                        if (this.activeTileLayer) {
+                            this.map.removeLayer(this.activeTileLayer);
+                        }
+                        if (layerType === 'osm') {
+                            this.activeTileLayer = osmFreshHD;
+                        } else if (layerType === 'sat') {
+                            this.activeTileLayer = googleHybridHD;
+                        } else if (layerType === 'roads') {
+                            this.activeTileLayer = googleRoadsHD;
+                        }
+                        if (this.activeTileLayer) {
+                            this.activeTileLayer.addTo(this.map);
+                        }
+                    });
+                });
+
+                return container;
+            }
+        });
+        new MinimalLayerControl().addTo(this.map);
+
+        // Minimalist Map Legend (Distinguishing Google Maps vs OpenStreetMap points, no emojis)
+        const MapLegendControl = L.Control.extend({
+            options: { position: 'bottomleft' },
+            onAdd: () => {
+                const container = L.DomUtil.create('div', 'map-minimal-legend');
+                container.innerHTML = `
+                    <div class="legend-pill">
+                        <span class="legend-dot dot-gmaps"></span>
+                        <i class="fa-solid fa-location-dot text-gmaps"></i>
+                        <span>Google Maps</span>
+                    </div>
+                    <div class="legend-pill">
+                        <span class="legend-dot dot-osm"></span>
+                        <i class="fa-solid fa-map-pin text-osm"></i>
+                        <span>OpenStreetMap</span>
+                    </div>
+                `;
+                L.DomEvent.disableClickPropagation(container);
+                return container;
+            }
+        });
+        new MapLegendControl().addTo(this.map);
 
         this.markersGroup = L.layerGroup().addTo(this.map);
 
@@ -282,9 +330,16 @@ class MapEngine {
                     p.lng = finalLng;
                 }
 
+                const isOsm = (p.source === 'osm');
+                const markerColor = isOsm ? '#059669' : '#2563eb';
+                const sourceBadge = isOsm 
+                    ? `<span style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-map-pin"></i> OpenStreetMap</span>`
+                    : `<span style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-location-dot"></i> Google Maps</span>`;
+                const sourceDesc = isOsm ? 'Pemetaan Wilayah' : 'Direktori Komersial';
+
                 const marker = L.circleMarker([finalLat, finalLng], {
-                    radius: 5.5,
-                    fillColor: '#2563eb',
+                    radius: 6,
+                    fillColor: markerColor,
                     color: '#ffffff',
                     weight: 2,
                     opacity: 1,
@@ -292,10 +347,18 @@ class MapEngine {
                 });
 
                 marker.bindPopup(`
-                    <div style="font-size: 12px; font-family: 'Poppins', sans-serif;">
-                        <strong style="color: #2563eb;">${p.name}</strong><br>
-                        <span>${p.category}</span> • ⭐ ${p.rating || '-'}<br>
-                        <small style="color: #64748b;">${p.address}</small>
+                    <div style="font-size: 11px; font-family: 'Poppins', sans-serif; min-width: 175px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px;">
+                            ${sourceBadge}
+                            <span style="font-size: 9px; color: #64748b; font-weight: 600;">${sourceDesc}</span>
+                        </div>
+                        <strong style="color: #0f172a; font-size: 12px; display: block; margin-bottom: 2px;">${p.name}</strong>
+                        <div style="color: #475569; font-size: 10px; margin-bottom: 2px;">${p.category}</div>
+                        <div style="color: #64748b; font-size: 10px; margin-bottom: 4px; line-height: 1.3;">${p.address}</div>
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 10px;">
+                            <span style="color: #0f172a; font-weight: 600;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> ${p.rating || '-'}</span>
+                            <span style="color: #94a3b8;">(${p.reviews_count || 0} ulasan)</span>
+                        </div>
                     </div>
                 `);
 
