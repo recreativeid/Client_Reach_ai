@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS scraped_items (
     rating REAL DEFAULT 0,
     reviews_count INTEGER DEFAULT 0,
     status TEXT DEFAULT 'none', -- 'none' (putih), 'prospect' (centang/hijau), 'rejected' (silang/merah)
+    insights_json TEXT DEFAULT NULL, -- Multi-Channel Intelligence: Channel Alpha, Beta, Gamma
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (archive_id) REFERENCES archives(id) ON DELETE CASCADE,
     FOREIGN KEY (history_id) REFERENCES scraping_history(id) ON DELETE SET NULL

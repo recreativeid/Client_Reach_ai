@@ -216,8 +216,9 @@ if ($action === 'save_archive') {
         $archiveId = (int)$pdo->lastInsertId();
 
         // Insert items into scraped_items table
-        $itemStmt = $pdo->prepare("INSERT INTO scraped_items (archive_id, name, address, phone, lat, lng, category, social_media, opening_hours, rating, reviews_count, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $itemStmt = $pdo->prepare("INSERT INTO scraped_items (archive_id, name, address, phone, lat, lng, category, social_media, opening_hours, rating, reviews_count, status, insights_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         foreach ($items as $it) {
+            $insightsJson = !empty($it['insights']) ? (is_string($it['insights']) ? $it['insights'] : json_encode($it['insights'], JSON_UNESCAPED_UNICODE)) : null;
             $itemStmt->execute([
                 $archiveId,
                 $it['name'] ?? 'Tempat Usaha',
@@ -230,7 +231,8 @@ if ($action === 'save_archive') {
                 $it['opening_hours'] ?? '',
                 $it['rating'] ?? 0,
                 $it['reviews_count'] ?? 0,
-                $it['status'] ?? 'none'
+                $it['status'] ?? 'none',
+                $insightsJson
             ]);
         }
 
@@ -263,6 +265,12 @@ if ($action === 'get_archive_items') {
         $itemsStmt = $pdo->prepare("SELECT * FROM scraped_items WHERE archive_id = ? ORDER BY id ASC");
         $itemsStmt->execute([$archiveId]);
         $items = $itemsStmt->fetchAll();
+
+        foreach ($items as &$it) {
+            if (!empty($it['insights_json'])) {
+                $it['insights'] = json_decode($it['insights_json'], true);
+            }
+        }
 
         jsonResponse([
             'success' => true,

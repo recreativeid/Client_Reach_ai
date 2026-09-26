@@ -88,6 +88,7 @@ CREATE TABLE IF NOT EXISTS public.scraped_items (
     rating DOUBLE PRECISION DEFAULT 0,
     reviews_count INT DEFAULT 0,
     status VARCHAR(20) DEFAULT 'none', -- 'none', 'prospect', 'rejected'
+    insights_json TEXT DEFAULT NULL, -- Multi-Channel Intelligence: Channel Alpha, Beta, Gamma
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 

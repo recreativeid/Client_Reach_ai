@@ -132,6 +132,7 @@ try {
     try { $pdo->exec("ALTER TABLE folders ADD COLUMN user_id INTEGER DEFAULT NULL;"); } catch (Exception $e) {}
     try { $pdo->exec("ALTER TABLE archives ADD COLUMN user_id INTEGER DEFAULT NULL;"); } catch (Exception $e) {}
     try { $pdo->exec("ALTER TABLE scraping_history ADD COLUMN user_id INTEGER DEFAULT NULL;"); } catch (Exception $e) {}
+    try { $pdo->exec("ALTER TABLE scraped_items ADD COLUMN insights_json TEXT DEFAULT NULL;"); } catch (Exception $e) {}
 
     // Seed default admin if empty
     $chkAdmin = $pdo->query("SELECT id FROM users WHERE role = 'admin' LIMIT 1")->fetch();

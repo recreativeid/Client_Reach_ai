@@ -34,10 +34,48 @@ class MapEngine {
             zoomControl: true
         });
 
-        // OpenStreetMap clean tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        // 1. Google Maps Satellite Hybrid (Fotorealistik Nyata + Label Jalan HD) - Default
+        const googleHybridHD = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            subdomains: ['0', '1', '2', '3'],
+            maxZoom: 20,
+            attribution: 'Citra Satelit HD &copy; Google Maps'
+        });
+
+        // 2. CartoDB Voyager Retina HD (Peta Jalan Modern Super Jernih & Bersih)
+        const cartoVoyagerHD = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            subdomains: 'abcd',
+            maxZoom: 20,
+            detectRetina: true,
+            attribution: '&copy; CartoDB &copy; OpenStreetMap'
+        });
+
+        // 3. Google Maps Standard Roads HD
+        const googleRoadsHD = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            subdomains: ['0', '1', '2', '3'],
+            maxZoom: 20,
+            attribution: 'Peta Jalan &copy; Google Maps'
+        });
+
+        // 4. OpenStreetMap Standard
+        const osmStandard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
+            attribution: '&copy; OpenStreetMap contributors'
+        });
+
+        // Pasang Google Hybrid Satelit HD sebagai layer default (nyata, jelas, dan HD fotorealistik)
+        googleHybridHD.addTo(this.map);
+
+        // Control Switcher Layer Peta yang Elegan & Mudah Digunakan
+        const baseMaps = {
+            "🛰️ Satelit Nyata HD (Google Hybrid)": googleHybridHD,
+            "🗺️ Peta Jalan Bersih HD (Carto Voyager)": cartoVoyagerHD,
+            "🚗 Google Jalanan HD": googleRoadsHD,
+            "🌐 OpenStreetMap": osmStandard
+        };
+
+        L.control.layers(baseMaps, null, {
+            position: 'topright',
+            collapsed: true
         }).addTo(this.map);
 
         this.markersGroup = L.layerGroup().addTo(this.map);

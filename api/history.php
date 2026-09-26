@@ -42,6 +42,12 @@ if ($action === 'get_items') {
         $stmt->execute([$historyId]);
         $items = $stmt->fetchAll();
 
+        foreach ($items as &$it) {
+            if (!empty($it['insights_json'])) {
+                $it['insights'] = json_decode($it['insights_json'], true);
+            }
+        }
+
         jsonResponse([
             'success' => true,
             'history_id' => $historyId,
