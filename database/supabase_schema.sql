@@ -120,23 +120,48 @@ VALUES (
     'Super Administrator',
     'admin@cliento.id',
     '08110000000',
-    '$2y$10$w859W3i8JzG28g9YJ2G1UuS2yZ6s1wV3R6E5yq0k8gU0fWqYf5g2i', -- hash for admin123
+    '$2y$10$L3Fa05/bo79tZWvNUqVhAeazwuQmJEXcshJ877J3FT5nHyQB4ZbMe', -- valid bcrypt hash for admin123
     'active',
     1
-) ON CONFLICT (email) DO NOTHING;
+) ON CONFLICT (email) DO UPDATE SET 
+    username = EXCLUDED.username,
+    password_hash = EXCLUDED.password_hash,
+    status = 'active',
+    is_verified = 1;
 
--- Customer Demo Account: budi_pratama / customer123
+-- Customer Demo Account: customer / customer123
 INSERT INTO public.users (role, username, name, email, phone, password_hash, status, is_verified)
 VALUES (
     'customer',
-    'budi_pratama',
+    'customer',
     'Budi Pratama (Owner / Director)',
     'customer@demo.com',
     '085712345678',
-    '$2y$10$tZzK0i4oU1z1W9m2Q8x1Vu7oY2a1K3g4h5j6k7l8m9n0p1q2r3s4t', -- hash for customer123
+    '$2y$10$nVznSPrZ2.rVVxVMgJKwROAqZzdjFcO2G3Qa7KgcjNkR1bAkN0eVa', -- valid bcrypt hash for customer123
     'active',
     1
-) ON CONFLICT (email) DO NOTHING;
+) ON CONFLICT (email) DO UPDATE SET 
+    username = EXCLUDED.username,
+    password_hash = EXCLUDED.password_hash,
+    status = 'active',
+    is_verified = 1;
+
+-- Customer Demo Account 2: siti / secret123
+INSERT INTO public.users (role, username, name, email, phone, password_hash, status, is_verified)
+VALUES (
+    'customer',
+    'siti',
+    'Siti Nurhaliza',
+    'siti@example.com',
+    '081299887766',
+    '$2y$10$RTtUic25gqkHvhb1NhvBWOefasV.HsPQUOgHqUwJV5rxcCNSdaI2q', -- valid bcrypt hash for secret123
+    'active',
+    1
+) ON CONFLICT (email) DO UPDATE SET 
+    username = EXCLUDED.username,
+    password_hash = EXCLUDED.password_hash,
+    status = 'active',
+    is_verified = 1;
 
 -- Initial Business Categories
 INSERT INTO public.categories (name) VALUES
