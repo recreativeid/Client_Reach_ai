@@ -2444,6 +2444,12 @@ body:not(.authenticated) .mobile-bottom-nav {
 /* ==============================================================
    LEAFLET HD MAP ENHANCEMENTS & LAYER SWITCHER CONTROLS
    ============================================================== */
+#map-preview .leaflet-tile-pane {
+  filter: contrast(1.10) saturate(1.28) brightness(1.02);
+  -webkit-backface-visibility: hidden;
+  image-rendering: -webkit-optimize-contrast;
+}
+
 .leaflet-control-layers {
   border: 1px solid #cbd5e1 !important;
   border-radius: 12px !important;

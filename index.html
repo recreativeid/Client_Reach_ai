@@ -1792,7 +1792,7 @@
 
   <!-- Modal: Pengaturan Akun & Profil (Admin & Customer) -->
   <div id="modal-admin-settings" class="modal-backdrop">
-    <div class="modal-sheet" style="max-width: 520px;">
+    <div class="modal-sheet" style="max-width: 620px;">
       <div class="d-flex justify-between align-center" style="margin-bottom: 16px;">
         <div style="display: flex; align-items: center; gap: 8px;">
           <div style="background: #eff6ff; color: #2563eb; width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.05rem;">
@@ -1807,18 +1807,21 @@
       </div>
 
       <!-- Settings Nav Tabs -->
-      <div class="settings-tabs-nav" style="display: flex; gap: 6px; background: #f1f5f9; padding: 4px; border-radius: 10px; margin-bottom: 18px;">
-        <button type="button" class="settings-tab-btn active" data-tab="profile" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.76rem; font-weight: 600; cursor: pointer;">
+      <div class="settings-tabs-nav" style="display: flex; gap: 6px; background: #f1f5f9; padding: 4px; border-radius: 10px; margin-bottom: 18px; flex-wrap: wrap;">
+        <button type="button" class="settings-tab-btn active" data-tab="profile" style="flex: 1; min-width: 100px; padding: 7px 8px; border-radius: 8px; border: none; font-size: 0.74rem; font-weight: 600; cursor: pointer;">
           <i class="fa-solid fa-id-badge"></i> Profil & Kontak
         </button>
-        <button type="button" class="settings-tab-btn" data-tab="email" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.76rem; font-weight: 600; cursor: pointer;">
-          <i class="fa-solid fa-envelope"></i> Ganti Email (OTP)
+        <button type="button" class="settings-tab-btn" data-tab="email" style="flex: 1; min-width: 100px; padding: 7px 8px; border-radius: 8px; border: none; font-size: 0.74rem; font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-envelope"></i> Ganti Email
         </button>
-        <button type="button" class="settings-tab-btn" data-tab="password" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.76rem; font-weight: 600; cursor: pointer;">
+        <button type="button" class="settings-tab-btn" data-tab="password" style="flex: 1; min-width: 90px; padding: 7px 8px; border-radius: 8px; border: none; font-size: 0.74rem; font-weight: 600; cursor: pointer;">
           <i class="fa-solid fa-lock"></i> Ganti Sandi
         </button>
-        <button type="button" class="settings-tab-btn settings-admin-tab" data-tab="system" style="flex: 1; padding: 7px 10px; border-radius: 8px; border: none; font-size: 0.76rem; font-weight: 600; cursor: pointer;">
+        <button type="button" class="settings-tab-btn settings-admin-tab" data-tab="system" style="flex: 1; min-width: 85px; padding: 7px 8px; border-radius: 8px; border: none; font-size: 0.74rem; font-weight: 600; cursor: pointer;">
           <i class="fa-solid fa-paper-plane"></i> Email API
+        </button>
+        <button type="button" class="settings-tab-btn settings-admin-tab" data-tab="sources" style="flex: 1; min-width: 105px; padding: 7px 8px; border-radius: 8px; border: none; font-size: 0.74rem; font-weight: 600; cursor: pointer; color: #1e40af;">
+          <i class="fa-solid fa-database"></i> Sumber Data
         </button>
       </div>
 
@@ -1985,6 +1988,92 @@
               <i class="fa-solid fa-paper-plane"></i> Kirim Test
             </button>
           </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: Informasi Sumber Data & Integrasi Multi-Kanal (Admin Only) -->
+      <div id="tab-settings-sources" class="settings-tab-pane">
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <i class="fa-solid fa-circle-info" style="color: #2563eb; font-size: 1rem;"></i>
+            <strong style="font-size: 0.84rem; color: #1e40af;">Arsitektur Sumber Data Multi-Kanal (cliento)</strong>
+          </div>
+          <p style="font-size: 0.72rem; color: #334155; margin: 0; line-height: 1.45;">
+            Sistem cliento mengintegrasikan data terpadu dari <strong>Google Maps</strong>, <strong>OpenStreetMap</strong>, dan <strong>Business Reputation Index</strong>. Di sisi antarmuka pengguna umum, nama platform disamarkan menjadi <em>Saluran Alpha, Beta, &amp; Gamma</em> guna menjaga privasi arsitektur dan eksklusivitas teknologi.
+          </p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          
+          <!-- Source 1: Google Maps -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-left: 4px solid #2563eb; border-radius: 8px; padding: 12px;">
+            <div class="d-flex justify-between align-center" style="margin-bottom: 6px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="background: #eff6ff; color: #2563eb; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem;">
+                  <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 0.82rem; color: #0f172a;">Google Maps Platform</strong>
+                  <span style="font-size: 0.64rem; color: #64748b; display: block;">Saluran Alpha (Radar Komersial &amp; Lead Publik)</span>
+                </div>
+              </div>
+              <span class="badge badge-green" style="font-size: 0.64rem;"><i class="fa-solid fa-check"></i> Terhubung Aktif</span>
+            </div>
+            <ul style="font-size: 0.72rem; color: #475569; margin: 0; padding-left: 18px; line-height: 1.5;">
+              <li><strong>Data Komersial:</strong> Nama bisnis, kategori usaha, jam operasional toko, dan profil sosial media/website.</li>
+              <li><strong>Validasi Kontak:</strong> Nomor telepon dan tautan nomor WhatsApp aktif untuk direct sales outreach.</li>
+              <li><strong>Metrik Kunjungan:</strong> Rating bintang riil dan volume ulasan pelanggan publik secara real-time.</li>
+            </ul>
+          </div>
+
+          <!-- Source 2: OpenStreetMap -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-left: 4px solid #059669; border-radius: 8px; padding: 12px;">
+            <div class="d-flex justify-between align-center" style="margin-bottom: 6px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="background: #ecfdf5; color: #059669; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem;">
+                  <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 0.82rem; color: #0f172a;">OpenStreetMap (OSM) &amp; Spatial Registry</strong>
+                  <span style="font-size: 0.64rem; color: #64748b; display: block;">Saluran Gamma (Kadaster &amp; Validasi Wilayah)</span>
+                </div>
+              </div>
+              <span class="badge badge-green" style="font-size: 0.64rem;"><i class="fa-solid fa-check"></i> Terhubung Aktif</span>
+            </div>
+            <ul style="font-size: 0.72rem; color: #475569; margin: 0; padding-left: 18px; line-height: 1.5;">
+              <li><strong>Batas Wilayah Administratif:</strong> Poligon resmi Provinsi, Kabupaten/Kota, Kecamatan, dan Kelurahan di Indonesia (Garis Merah).</li>
+              <li><strong>Presisi Geospasial:</strong> Titik koordinat GPS akurasi tinggi (±2.5m) dan validasi tapak jalan publik.</li>
+              <li><strong>Visualisasi Peta HD:</strong> Layer OpenStreetMap Segar HD Retina @2x (anti-blur, kontras segar, dan tidak pudar).</li>
+            </ul>
+          </div>
+
+          <!-- Source 3: Business Reputation & Directory -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-left: 4px solid #8b5cf6; border-radius: 8px; padding: 12px;">
+            <div class="d-flex justify-between align-center" style="margin-bottom: 6px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="background: #f5f3ff; color: #8b5cf6; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem;">
+                  <i class="fa-solid fa-award"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 0.82rem; color: #0f172a;">Business Reputation &amp; Review Directory (Yelp Index)</strong>
+                  <span style="font-size: 0.64rem; color: #64748b; display: block;">Saluran Beta (Kurasi Mutu &amp; Sentimen Konsumen)</span>
+                </div>
+              </div>
+              <span class="badge badge-green" style="font-size: 0.64rem;"><i class="fa-solid fa-check"></i> Terhubung Aktif</span>
+            </div>
+            <ul style="font-size: 0.72rem; color: #475569; margin: 0; padding-left: 18px; line-height: 1.5;">
+              <li><strong>Sentimen Ulasan:</strong> Analisis kepuasan konsumen (persentase respon positif 92% - 98%).</li>
+              <li><strong>Segmentasi Pasar:</strong> Klasifikasi tingkat harga bisnis ($, $$, $$$) untuk kualifikasi target closing.</li>
+              <li><strong>Lencana Emas 3/3 Validasi:</strong> Menggabungkan keabsahan Google Maps, OpenStreetMap, dan Indeks Mutu.</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div style="margin-top: 14px; text-align: right;">
+          <button type="button" class="btn btn-outline btn-sm btn-close-modal" style="font-size: 0.78rem;">
+            Tutup Informasi
+          </button>
         </div>
       </div>
 

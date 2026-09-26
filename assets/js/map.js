@@ -34,43 +34,50 @@ class MapEngine {
             zoomControl: true
         });
 
-        // 1. Google Maps Satellite Hybrid (Fotorealistik Nyata + Label Jalan HD) - Default
+        // 1. OpenStreetMap Segar HD Retina @2x (Warna Segar, Kontras Hidup, Anti-Blur) - DEFAULT
+        const osmFreshHD = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            subdomains: 'abcd',
+            maxZoom: 20,
+            detectRetina: true,
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+        });
+
+        // 2. OpenStreetMap Kontras Hangat (Humanitarian HOT - Jalan & Tata Kota Tajam)
+        const osmHotHD = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors, Tiles style by HOT'
+        });
+
+        // 3. Google Maps Satellite Hybrid (Fotorealistik Nyata + Label Jalan HD)
         const googleHybridHD = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
             subdomains: ['0', '1', '2', '3'],
             maxZoom: 20,
             attribution: 'Citra Satelit HD &copy; Google Maps'
         });
 
-        // 2. CartoDB Voyager Retina HD (Peta Jalan Modern Super Jernih & Bersih)
-        const cartoVoyagerHD = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            subdomains: 'abcd',
-            maxZoom: 20,
-            detectRetina: true,
-            attribution: '&copy; CartoDB &copy; OpenStreetMap'
-        });
-
-        // 3. Google Maps Standard Roads HD
+        // 4. Google Maps Standard Roads HD
         const googleRoadsHD = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
             subdomains: ['0', '1', '2', '3'],
             maxZoom: 20,
             attribution: 'Peta Jalan &copy; Google Maps'
         });
 
-        // 4. OpenStreetMap Standard
+        // 5. OpenStreetMap Klasik Standar
         const osmStandard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; OpenStreetMap contributors'
         });
 
-        // Pasang Google Hybrid Satelit HD sebagai layer default (nyata, jelas, dan HD fotorealistik)
-        googleHybridHD.addTo(this.map);
+        // Pasang OpenStreetMap Segar HD sebagai layer default utama (segar, tidak pudar, dan anti-blur)
+        osmFreshHD.addTo(this.map);
 
         // Control Switcher Layer Peta yang Elegan & Mudah Digunakan
         const baseMaps = {
+            "🗺️ OpenStreetMap Segar HD (Ultra Jernih)": osmFreshHD,
+            "🏙️ OpenStreetMap Kontras Hangat (HOT)": osmHotHD,
             "🛰️ Satelit Nyata HD (Google Hybrid)": googleHybridHD,
-            "🗺️ Peta Jalan Bersih HD (Carto Voyager)": cartoVoyagerHD,
             "🚗 Google Jalanan HD": googleRoadsHD,
-            "🌐 OpenStreetMap": osmStandard
+            "🌐 OpenStreetMap Klasik": osmStandard
         };
 
         L.control.layers(baseMaps, null, {
