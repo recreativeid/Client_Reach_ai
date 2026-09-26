@@ -17,16 +17,45 @@ const TemplateManager = {
 
     async loadTemplates() {
         try {
-            const res = await fetch('api/templates.php?action=list');
-            const data = await res.json();
-            if (data.success && data.categories) {
-                this.categories = data.categories;
-                data.categories.forEach(c => {
-                    this.templatesMap[c.category_name] = c;
-                });
+            const isStaticHost = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+            if (!isStaticHost) {
+                const res = await fetch('api/templates.php?action=list');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.categories) {
+                        this.categories = data.categories;
+                        data.categories.forEach(c => {
+                            this.templatesMap[c.category_name] = c;
+                        });
+                        return;
+                    }
+                }
             }
         } catch (e) {
-            console.error('Failed to load templates:', e);
+            console.warn('Backend unavailable, using default templates:', e);
+        }
+
+        // Static default templates
+        this.categories = [
+            { id: 1, category_name: 'Cafe & Resto', greeting_type: 'santai', message_body: 'Halo kak, salam kenal dari tim Client Reach! Kami notice {nama_tempat} di {alamat} review-nya bagus banget (⭐ {rating}). Ada sedikit insight optimasi promo digital nih kak, boleh kami share?' },
+            { id: 2, category_name: 'Sekolah & Bimbel', greeting_type: 'formal', message_body: 'Selamat Pagi/Siang Bapak/Ibu pimpinan {nama_tempat}. Kami dari konsultan digital cliento ingin membagikan studi kasus peningkatan pendaftaran siswa/peserta baru melalui otomatisasi outreach.' },
+            { id: 3, category_name: 'Klinik & Salon', greeting_type: 'formal', message_body: 'Halo kak/dokter di {nama_tempat}, kami perhatikan reputasi klinik kakak sangat baik di {alamat}. Kami punya solusi reminder & follow up otomatis pasien via WhatsApp.' },
+            { id: 4, category_name: 'Umum / Bisnis Lainnya', greeting_type: 'formal', message_body: 'Halo dengan pemilik/manajemen {nama_tempat}? Kami melihat peluang ekspansi prospek potensial di wilayah {alamat}. Boleh izin terhubung singkat kak?' }
+        ];
+        this.categories.forEach(c => {
+            this.templatesMap[c.category_name] = c;
+        });
+
+        const savedCustom = localStorage.getItem('cliento_static_templates');
+        if (savedCustom) {
+            try {
+                const parsed = JSON.parse(savedCustom);
+                Object.assign(this.templatesMap, parsed);
+            } catch(e) {}
+        }
+
+        if (!this.activeCategory || !this.templatesMap[this.activeCategory]) {
+            this.activeCategory = this.categories[0].category_name;
         }
     },
 
@@ -110,47 +139,73 @@ const TemplateManager = {
         };
 
         try {
-            const res = await fetch('api/templates.php?action=save', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const data = await res.json();
-            if (data.success) {
-                this.templatesMap[this.activeCategory] = payload;
-                if (statusEl) {
-                    statusEl.textContent = '✓ Template tersimpan!';
-                    statusEl.style.color = '#16a34a';
-                    setTimeout(() => { statusEl.textContent = ''; }, 3000);
+            const isStaticHost = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+            if (!isStaticHost) {
+                const res = await fetch('api/templates.php?action=save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success) {
+                        this.templatesMap[this.activeCategory] = payload;
+                        if (statusEl) {
+                            statusEl.textContent = '✓ Template tersimpan!';
+                            statusEl.style.color = '#16a34a';
+                            setTimeout(() => { statusEl.textContent = ''; }, 3000);
+                        }
+                        return;
+                    }
                 }
-            } else {
-                alert('Gagal menyimpan: ' + data.message);
             }
         } catch (e) {
-            alert('Kesalahan jaringan: ' + e.message);
+            console.warn('Backend unavailable, saving template to localStorage:', e);
+        }
+
+        // Static host / offline fallback
+        this.templatesMap[this.activeCategory] = payload;
+        try {
+            localStorage.setItem('cliento_static_templates', JSON.stringify(this.templatesMap));
+        } catch(e) {}
+        if (statusEl) {
+            statusEl.textContent = '✓ Template tersimpan (mode offline)!';
+            statusEl.style.color = '#16a34a';
+            setTimeout(() => { statusEl.textContent = ''; }, 3000);
         }
     },
 
     async addNewCategory(name) {
         if (!name || !name.trim()) return;
         try {
-            const res = await fetch('api/templates.php?action=create_category', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: name.trim() })
-            });
-            const data = await res.json();
-            if (data.success) {
-                this.activeCategory = name.trim();
-                await this.loadTemplates();
-                this.renderCategorySelect();
-                alert('Kategori baru berhasil ditambahkan!');
-            } else {
-                alert(data.message);
+            const isStaticHost = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+            if (!isStaticHost) {
+                const res = await fetch('api/templates.php?action=create_category', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: name.trim() })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success) {
+                        this.activeCategory = name.trim();
+                        await this.loadTemplates();
+                        this.renderCategorySelect();
+                        alert('Kategori baru berhasil ditambahkan!');
+                        return;
+                    }
+                }
             }
         } catch (e) {
-            alert('Gagal menambah kategori: ' + e.message);
+            console.warn('Backend unavailable, adding category locally:', e);
         }
+
+        const catName = name.trim();
+        this.categories.push({ id: Date.now(), category_name: catName, greeting_type: 'formal', message_body: '' });
+        this.templatesMap[catName] = { category_name: catName, greeting_type: 'formal', message_body: '' };
+        this.activeCategory = catName;
+        this.renderCategorySelect();
+        alert(`Kategori "${catName}" berhasil ditambahkan!`);
     },
 
     // Interpolate message for a specific prospect item and build WhatsApp URL

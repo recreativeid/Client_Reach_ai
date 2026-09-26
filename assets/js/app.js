@@ -238,34 +238,57 @@ const App = {
     },
 
     async refreshDashboardStats() {
+        let totalScraped = 0;
+        let totalProspects = 0;
+        let totalArchives = 0;
+
         try {
-            const fetchFn = window.appFetch || fetch;
-            const resArc = await fetchFn('api/archives.php?action=get_view');
-            const dataArc = await resArc.json();
+            const isStaticHost = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+            if (!isStaticHost) {
+                const fetchFn = window.appFetch || fetch;
+                const resArc = await fetchFn('api/archives.php?action=get_view');
+                if (resArc.ok) {
+                    const dataArc = await resArc.json();
+                    totalProspects = dataArc.total_prospects || 0;
+                    totalArchives = dataArc.total_system_archives || 0;
+                }
 
-            const resHist = await fetchFn('api/history.php?action=list');
-            const dataHist = await resHist.json();
-
-            let totalScraped = 0;
-            if (dataHist.success && dataHist.history) {
-                totalScraped = dataHist.history.reduce((acc, h) => acc + (parseInt(h.total_found) || 0), 0);
+                const resHist = await fetchFn('api/history.php?action=list');
+                if (resHist.ok) {
+                    const dataHist = await resHist.json();
+                    if (dataHist.success && dataHist.history) {
+                        totalScraped = dataHist.history.reduce((acc, h) => acc + (parseInt(h.total_found) || 0), 0);
+                    }
+                }
             }
-
-            const totalProspects = dataArc.total_prospects || 0;
-            const totalArchives = dataArc.total_system_archives || 0;
-
-            const elScraped = document.getElementById('stat-total-scraped');
-            const elProspects = document.getElementById('stat-total-prospects');
-            const elArchives = document.getElementById('stat-total-archives');
-            const elConnected = document.getElementById('stat-total-connected');
-
-            if (elScraped) elScraped.textContent = totalScraped.toLocaleString('id-ID');
-            if (elProspects) elProspects.textContent = totalProspects.toLocaleString('id-ID');
-            if (elArchives) elArchives.textContent = totalArchives.toLocaleString('id-ID');
-            if (elConnected) elConnected.textContent = (totalProspects * 2).toLocaleString('id-ID');
         } catch (e) {
-            console.error('Stats refresh failed:', e);
+            console.warn('Backend unavailable, using local stats:', e);
         }
+
+        // Static host / offline fallback
+        if (totalScraped === 0 && totalArchives === 0) {
+            try {
+                const staticHistory = JSON.parse(localStorage.getItem('cliento_static_history') || '[]');
+                totalScraped = staticHistory.reduce((acc, h) => acc + (parseInt(h.total_found) || 0), 0);
+
+                const staticArchives = JSON.parse(localStorage.getItem('cliento_static_archives') || '[]');
+                totalArchives = staticArchives.length;
+                totalProspects = staticArchives.reduce((acc, a) => {
+                    const p = (a.items || []).filter(i => i.status === 'prospect').length;
+                    return acc + p;
+                }, 0);
+            } catch(e) {}
+        }
+
+        const elScraped = document.getElementById('stat-total-scraped');
+        const elProspects = document.getElementById('stat-total-prospects');
+        const elArchives = document.getElementById('stat-total-archives');
+        const elConnected = document.getElementById('stat-total-connected');
+
+        if (elScraped) elScraped.textContent = totalScraped.toLocaleString('id-ID');
+        if (elProspects) elProspects.textContent = totalProspects.toLocaleString('id-ID');
+        if (elArchives) elArchives.textContent = totalArchives.toLocaleString('id-ID');
+        if (elConnected) elConnected.textContent = (totalProspects * 2).toLocaleString('id-ID');
     },
 
     bindModalEvents() {

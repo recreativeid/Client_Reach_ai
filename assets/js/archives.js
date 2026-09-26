@@ -40,9 +40,38 @@ const ArchiveManager = {
         if (detailViewEl) detailViewEl.style.display = 'none';
 
         try {
-            const url = `api/archives.php?action=get_view${this.currentFolderId !== null ? `&folder_id=${this.currentFolderId}` : ''}`;
-            const res = await fetch(url);
-            const data = await res.json();
+            let data = null;
+            const isStaticHost = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+
+            if (!isStaticHost) {
+                try {
+                    const url = `api/archives.php?action=get_view${this.currentFolderId !== null ? `&folder_id=${this.currentFolderId}` : ''}`;
+                    const res = await fetch(url);
+                    if (res.ok) data = await res.json();
+                } catch(netErr) {}
+            }
+
+            if (!data || !data.success) {
+                const staticFolders = JSON.parse(localStorage.getItem('cliento_static_folders') || '[]');
+                const staticArchives = JSON.parse(localStorage.getItem('cliento_static_archives') || '[]');
+
+                const currentFolders = staticFolders.filter(f => {
+                    if (this.currentFolderId === null) return !f.parent_id;
+                    return String(f.parent_id) === String(this.currentFolderId);
+                });
+
+                const currentArchives = staticArchives.filter(a => {
+                    if (this.currentFolderId === null) return !a.folder_id;
+                    return String(a.folder_id) === String(this.currentFolderId);
+                });
+
+                data = {
+                    success: true,
+                    breadcrumbs: [{ id: null, name: 'Arsip Utama' }],
+                    folders: currentFolders,
+                    archives: currentArchives
+                };
+            }
 
             if (data.success) {
                 this.breadcrumbs = data.breadcrumbs || [{ id: null, name: 'Arsip Utama' }];
@@ -369,8 +398,19 @@ const ArchiveManager = {
      */
     async downloadArchiveExcel(archiveId, archiveName) {
         try {
-            const res = await fetch(`api/archives.php?action=get_archive_items&archive_id=${archiveId}`);
-            const data = await res.json();
+            let data = null;
+            const isStaticHost = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+            if (!isStaticHost) {
+                try {
+                    const res = await fetch(`api/archives.php?action=get_archive_items&archive_id=${archiveId}`);
+                    if (res.ok) data = await res.json();
+                } catch(netErr) {}
+            }
+            if (!data || !data.success) {
+                const staticArchives = JSON.parse(localStorage.getItem('cliento_static_archives') || '[]');
+                const found = staticArchives.find(a => String(a.id) === String(archiveId));
+                data = { success: true, items: found ? found.items : [] };
+            }
             if (data.success && data.items && data.items.length > 0) {
                 const excelRows = data.items.map((item, idx) => ({
                     'No': idx + 1,
@@ -436,17 +476,30 @@ const ArchiveManager = {
                 })
             });
 
-            const data = await res.json();
-            if (data.success) {
-                document.getElementById('modal-create-folder')?.classList.remove('active');
-                await this.loadCollectionsView(this.currentFolderId);
-                this.showToast(`✓ Folder "${name}" berhasil dibuat!`);
-            } else {
-                alert('Gagal membuat folder: ' + data.message);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('modal-create-folder')?.classList.remove('active');
+                    await this.loadCollectionsView(this.currentFolderId);
+                    this.showToast(`✓ Folder "${name}" berhasil dibuat!`);
+                    return;
+                }
             }
         } catch (e) {
-            alert('Kesalahan jaringan: ' + e.message);
+            console.warn('Backend unavailable, saving folder locally:', e);
         }
+
+        // Static host / offline fallback
+        const folders = JSON.parse(localStorage.getItem('cliento_static_folders') || '[]');
+        folders.push({
+            id: 'folder_' + Date.now(),
+            name: name,
+            parent_id: this.currentFolderId || null
+        });
+        localStorage.setItem('cliento_static_folders', JSON.stringify(folders));
+        document.getElementById('modal-create-folder')?.classList.remove('active');
+        await this.loadCollectionsView(this.currentFolderId);
+        this.showToast(`✓ Folder "${name}" berhasil dibuat!`);
     },
 
     /**
@@ -459,17 +512,25 @@ const ArchiveManager = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ folder_id: folderId })
             });
-            const data = await res.json();
-            if (data.success) {
-                await this.loadCollectionsView(this.currentFolderId);
-                if (window.App) window.App.refreshDashboardStats();
-                this.showToast('✓ Folder berhasil dihapus.');
-            } else {
-                alert('Gagal menghapus folder: ' + data.message);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success) {
+                    await this.loadCollectionsView(this.currentFolderId);
+                    if (window.App) window.App.refreshDashboardStats();
+                    this.showToast('✓ Folder berhasil dihapus.');
+                    return;
+                }
             }
         } catch (e) {
-            alert('Kesalahan jaringan: ' + e.message);
+            console.warn('Backend unavailable, deleting folder locally:', e);
         }
+
+        let folders = JSON.parse(localStorage.getItem('cliento_static_folders') || '[]');
+        folders = folders.filter(f => String(f.id) !== String(folderId));
+        localStorage.setItem('cliento_static_folders', JSON.stringify(folders));
+        await this.loadCollectionsView(this.currentFolderId);
+        if (window.App) window.App.refreshDashboardStats();
+        this.showToast('✓ Folder berhasil dihapus.');
     },
 
     /**
@@ -488,15 +549,27 @@ const ArchiveManager = {
         if (titleEl) titleEl.textContent = archiveName;
 
         try {
-            const res = await fetch(`api/archives.php?action=get_archive_items&archive_id=${archiveId}`);
-            const data = await res.json();
-            if (data.success) {
-                this.currentItems = data.items || [];
-                this.renderCollectionItems();
+            const isStaticHost = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+            if (!isStaticHost) {
+                const res = await fetch(`api/archives.php?action=get_archive_items&archive_id=${archiveId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success) {
+                        this.currentItems = data.items || [];
+                        this.renderCollectionItems();
+                        return;
+                    }
+                }
             }
         } catch (e) {
-            console.error('Failed to load collection items:', e);
+            console.warn('Backend unavailable, loading items from localStorage:', e);
         }
+
+        // Static host / offline fallback
+        const staticArchives = JSON.parse(localStorage.getItem('cliento_static_archives') || '[]');
+        const target = staticArchives.find(a => String(a.id) === String(archiveId));
+        this.currentItems = (target && target.items) ? target.items : [];
+        this.renderCollectionItems();
     },
 
     /**
@@ -656,15 +729,32 @@ const ArchiveManager = {
 
     async updateItemStatus(itemId, newStatus) {
         try {
-            await fetch('api/archives.php?action=update_status', {
+            const res = await fetch('api/archives.php?action=update_status', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ item_id: itemId, status: newStatus })
             });
-            if (window.App) window.App.refreshDashboardStats();
+            if (res.ok) {
+                if (window.App) window.App.refreshDashboardStats();
+                return;
+            }
         } catch (e) {
-            console.error('Failed to update item status:', e);
+            console.warn('Backend unavailable, updating status locally:', e);
         }
+
+        // Static host / offline fallback
+        let archives = JSON.parse(localStorage.getItem('cliento_static_archives') || '[]');
+        archives.forEach(arch => {
+            if (arch.items) {
+                arch.items.forEach(it => {
+                    if (String(it.id) === String(itemId)) {
+                        it.status = newStatus;
+                    }
+                });
+            }
+        });
+        localStorage.setItem('cliento_static_archives', JSON.stringify(archives));
+        if (window.App) window.App.refreshDashboardStats();
     },
 
     async deleteCollection(archiveId) {
@@ -674,15 +764,25 @@ const ArchiveManager = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ archive_id: archiveId })
             });
-            const data = await res.json();
-            if (data.success) {
-                await this.loadCollectionsView(this.currentFolderId);
-                if (window.App) window.App.refreshDashboardStats();
-                this.showToast('✓ File data berhasil dihapus.');
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success) {
+                    await this.loadCollectionsView(this.currentFolderId);
+                    if (window.App) window.App.refreshDashboardStats();
+                    this.showToast('✓ File data berhasil dihapus.');
+                    return;
+                }
             }
         } catch (e) {
-            console.error('Failed to delete collection:', e);
+            console.warn('Backend unavailable, deleting collection locally:', e);
         }
+
+        let archives = JSON.parse(localStorage.getItem('cliento_static_archives') || '[]');
+        archives = archives.filter(a => String(a.id) !== String(archiveId));
+        localStorage.setItem('cliento_static_archives', JSON.stringify(archives));
+        await this.loadCollectionsView(this.currentFolderId);
+        if (window.App) window.App.refreshDashboardStats();
+        this.showToast('✓ File data berhasil dihapus.');
     },
 
     exportCollectionToExcel() {
