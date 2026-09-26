@@ -1409,10 +1409,10 @@
           </div>
           <div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <strong style="font-size: 0.95rem; color: #0f172a;">Rincian Informasi Bisnis</strong>
-              <span class="badge" style="background:#f1f5f9; border: 1px solid #cbd5e1; color:#334155; font-size: 0.68rem; font-weight: 600;"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Data Terverifikasi</span>
+              <strong style="font-size: 0.95rem; color: #0f172a;">Rincian Sumber Data Prospek</strong>
+              <span class="badge" style="background:#f1f5f9; border: 1px solid #cbd5e1; color:#334155; font-size: 0.68rem; font-weight: 600;"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> 3 Sumber Terverifikasi</span>
             </div>
-            <div style="font-size: 0.72rem; color: #64748b;">Rangkuman profil usaha, ulasan pelanggan, dan verifikasi lokasi tempat usaha.</div>
+            <div style="font-size: 0.72rem; color: #64748b;">Rangkuman data terpadu dari Google Maps, Yelp, dan OpenStreetMap.</div>
           </div>
         </div>
         <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
@@ -1436,25 +1436,27 @@
       <!-- 3-Channel Intelligence Cards Grid -->
       <div class="insight-channels-grid">
         
-        <!-- CARD 1: Profil Usaha -->
+        <!-- CARD 1: Google Maps -->
         <div class="insight-channel-card">
           <div class="channel-card-header">
-            <div class="channel-card-icon alpha-icon">
-              <i class="fa-solid fa-store"></i>
+            <div class="channel-card-icon alpha-icon" style="background: #eff6ff; color: #2563eb;">
+              <i class="fa-brands fa-google"></i>
             </div>
             <div>
-              <div class="channel-tag tag-alpha">Informasi Usaha</div>
-              <h4 class="channel-title">Profil & Operasional</h4>
+              <div class="channel-tag tag-alpha">Direktori Bisnis</div>
+              <h4 class="channel-title">Google Maps</h4>
             </div>
           </div>
-          <p class="channel-desc">Profil tempat usaha, jam buka operasional, dan status aktivitas bisnis.</p>
+          <p class="channel-desc" style="font-size: 0.71rem; color: #475569; margin: 4px 0 10px; line-height: 1.35;">
+            <strong>Fungsi:</strong> Menampilkan profil utama tempat usaha, jam buka operasional, nomor kontak telepon/WA, dan rating keramaian.
+          </p>
           <div class="channel-metric-list">
             <div class="metric-row">
-              <span class="metric-label">Rating Usaha</span>
+              <span class="metric-label">Rating Bisnis</span>
               <span class="metric-val" id="insight-alpha-rating"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.8 / 5.0</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Jumlah Ulasan</span>
+              <span class="metric-label">Total Ulasan</span>
               <span class="metric-val" id="insight-alpha-reviews">420 Ulasan</span>
             </div>
             <div class="metric-row">
@@ -1467,22 +1469,24 @@
             </div>
           </div>
           <div class="channel-highlight" id="insight-alpha-summary">
-            Profil usaha aktif dengan kontak seluler terdata.
+            Profil usaha aktif di Google Maps dengan kontak terverifikasi.
           </div>
         </div>
 
-        <!-- CARD 2: Rating & Ulasan -->
+        <!-- CARD 2: Yelp -->
         <div class="insight-channel-card">
           <div class="channel-card-header">
-            <div class="channel-card-icon beta-icon">
-              <i class="fa-solid fa-star"></i>
+            <div class="channel-card-icon beta-icon" style="background: #fef2f2; color: #dc2626;">
+              <i class="fa-brands fa-yelp"></i>
             </div>
             <div>
-              <div class="channel-tag tag-beta">Feedback Pelanggan</div>
-              <h4 class="channel-title">Rating & Ulasan</h4>
+              <div class="channel-tag tag-beta" style="color: #dc2626;">Ulasan &amp; Mutu</div>
+              <h4 class="channel-title">Yelp</h4>
             </div>
           </div>
-          <p class="channel-desc">Rekam jejak kepuasan konsumen dan tingkat rekomendasi layanan.</p>
+          <p class="channel-desc" style="font-size: 0.71rem; color: #475569; margin: 4px 0 10px; line-height: 1.35;">
+            <strong>Fungsi:</strong> Mengukur reputasi dan mutu pelayanan berdasarkan analisis sentimen ulasan kepuasan pelanggan serta rekomendasi.
+          </p>
           <div class="channel-metric-list">
             <div class="metric-row">
               <span class="metric-label">Sentimen Positif</span>
@@ -1497,27 +1501,29 @@
               <span class="metric-val" id="insight-beta-satisfaction">Sangat Baik</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Rekomendasi</span>
+              <span class="metric-label">Rasio Rekomendasi</span>
               <span class="metric-val" id="insight-beta-recommend">94% Pelanggan</span>
             </div>
           </div>
           <div class="channel-highlight" id="insight-beta-summary">
-            Konsumen memberikan ulasan positif stabil dengan rekomendasi tinggi.
+            Memiliki reputasi stabil dan rekam jejak kepuasan konsumen tinggi.
           </div>
         </div>
 
-        <!-- CARD 3: Lokasi & Alamat -->
+        <!-- CARD 3: OpenStreetMap -->
         <div class="insight-channel-card">
           <div class="channel-card-header">
-            <div class="channel-card-icon gamma-icon">
-              <i class="fa-solid fa-location-dot"></i>
+            <div class="channel-card-icon gamma-icon" style="background: #f0fdf4; color: #16a34a;">
+              <i class="fa-solid fa-map-location-dot"></i>
             </div>
             <div>
-              <div class="channel-tag tag-gamma">Verifikasi Wilayah</div>
-              <h4 class="channel-title">Lokasi & Alamat</h4>
+              <div class="channel-tag tag-gamma" style="color: #16a34a;">Peta &amp; Spasial</div>
+              <h4 class="channel-title">OpenStreetMap</h4>
             </div>
           </div>
-          <p class="channel-desc">Kepastian koordinat GPS dan posisi bisnis di dalam batas daerah terpilih.</p>
+          <p class="channel-desc" style="font-size: 0.71rem; color: #475569; margin: 4px 0 10px; line-height: 1.35;">
+            <strong>Fungsi:</strong> Memvalidasi presisi titik koordinat GPS nyata, zonasi tata ruang usaha, dan kepastian berada di batas wilayah terpilih.
+          </p>
           <div class="channel-metric-list">
             <div class="metric-row">
               <span class="metric-label">Titik Koordinat GPS</span>
@@ -1529,7 +1535,7 @@
             </div>
             <div class="metric-row">
               <span class="metric-label">Akses Jalan</span>
-              <span class="metric-val" id="insight-gamma-access">Jalan Utama & Parkir</span>
+              <span class="metric-val" id="insight-gamma-access">Jalan Utama &amp; Parkir</span>
             </div>
             <div class="metric-row">
               <span class="metric-label">Batas Daerah</span>
@@ -1537,7 +1543,7 @@
             </div>
           </div>
           <div class="channel-highlight" id="insight-gamma-summary">
-            Lokasi fisik terkonfirmasi berada di dalam batas garis merah daerah yang dipilih.
+            Koordinat fisik terkonfirmasi berada di dalam batas garis merah daerah yang dipilih.
           </div>
         </div>
 

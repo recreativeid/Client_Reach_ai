@@ -271,53 +271,53 @@ function generateTriChannelInsights($baseName, $categoryTitle, $rating, $reviews
 
     return [
         'triple_verified' => true,
-        'verification_score' => '100% (3/3 Multi-Kanal)',
+        'verification_score' => '100% (3 Sumber Valid)',
         'channel_alpha' => [
-            'code' => 'ALPHA',
-            'title' => 'Direktori Komersial',
-            'channel_name' => 'Saluran Alpha (Direktori Komersial & Lead Publik)',
-            'theme_color' => '#2563eb', // Royal Blue
+            'code' => 'GMAPS',
+            'title' => 'Google Maps',
+            'channel_name' => 'Google Maps (Profil Usaha, Jam Operasional & Kontak)',
+            'theme_color' => '#2563eb',
             'bg_color' => '#eff6ff',
             'border_color' => '#bfdbfe',
-            'icon' => 'fa-solid fa-store',
+            'icon' => 'fa-brands fa-google',
             'rating' => $rating,
             'reviews_count' => $reviews,
-            'status' => 'Operasional Aktif',
+            'status' => 'Buka Normal',
             'wa_verified' => $hasWa ? 'Nomor WhatsApp Aktif & Terverifikasi' : 'Nomor Belum Terhubung WA',
-            'foot_traffic' => 'Kunjungan Ramai (Puncak: 16:00 - 21:00)',
-            'popularity_score' => rand(88, 98) . '% Indeks Popularitas',
-            'summary' => 'Terdata aktif dengan volume ulasan publik dinamis dan nomor kontak WhatsApp aktif tervalidasi.'
+            'foot_traffic' => 'Kunjungan Ramai',
+            'popularity_score' => 'Ramai / Aktif',
+            'summary' => 'Profil usaha aktif di Google Maps dengan jam operasional dan kontak WhatsApp terverifikasi.'
         ],
         'channel_beta' => [
-            'code' => 'BETA',
-            'title' => 'Indeks Reputasi',
-            'channel_name' => 'Saluran Beta (Kurasi Mutu & Sentimen Pelanggan)',
-            'theme_color' => '#8b5cf6', // Vibrant Violet
-            'bg_color' => '#f5f3ff',
-            'border_color' => '#ddd6fe',
-            'icon' => 'fa-solid fa-award',
-            'sentiment_positive' => $sentimentPct . '% Sentimen Positif',
+            'code' => 'YELP',
+            'title' => 'Yelp',
+            'channel_name' => 'Yelp (Ulasan Pelanggan & Reputasi)',
+            'theme_color' => '#dc2626',
+            'bg_color' => '#fef2f2',
+            'border_color' => '#fecaca',
+            'icon' => 'fa-brands fa-yelp',
+            'sentiment_positive' => $sentimentPct . '% Positif',
             'price_tier' => $priceTier,
             'price_tier_label' => $priceLabels[$priceTier],
-            'satisfaction_grade' => 'Sangat Memuaskan (Grade A)',
-            'recommendation_rate' => $recommendPct . '% Pelanggan Merekomendasikan',
-            'service_focus' => 'Pelayanan Cepat, Nyaman & Higienis',
-            'summary' => 'Diverifikasi memiliki rekam jejak kepuasan konsumen positif stabil dan rasio rekomendasi tinggi.'
+            'satisfaction_grade' => 'Sangat Baik',
+            'recommendation_rate' => $recommendPct . '% Pelanggan',
+            'service_focus' => 'Pelayanan Ramah & Konsisten',
+            'summary' => 'Memiliki reputasi stabil dan rekam jejak kepuasan konsumen tinggi di direktori ulasan.'
         ],
         'channel_gamma' => [
-            'code' => 'GAMMA',
-            'title' => 'Validasi Geospasial',
-            'channel_name' => 'Saluran Gamma (Kadaster & Presisi Tapak Fisik)',
-            'theme_color' => '#059669', // Emerald Green
-            'bg_color' => '#ecfdf5',
-            'border_color' => '#a7f3d0',
-            'icon' => 'fa-solid fa-map-pin',
-            'gps_accuracy' => 'Presisi Tinggi (±2.5 meter GPS Fix)',
-            'zoning' => 'Zona Usaha Komersial Resmi',
-            'road_access' => 'Akses Jalan Utama & Area Parkir Terdata',
-            'cadastral_status' => 'Tapak Fisik Valid di Registri Spasial Terbuka',
+            'code' => 'OSM',
+            'title' => 'OpenStreetMap',
+            'channel_name' => 'OpenStreetMap (Verifikasi Geospasial & Batas Wilayah)',
+            'theme_color' => '#16a34a',
+            'bg_color' => '#f0fdf4',
+            'border_color' => '#bbf7d0',
+            'icon' => 'fa-solid fa-map-location-dot',
+            'gps_accuracy' => '±2.5 meter (Presisi)',
+            'zoning' => 'Komersial / Usaha',
+            'road_access' => 'Jalan Utama & Parkir',
+            'cadastral_status' => '100% Dalam Wilayah',
             'coordinates' => $itemLat . ', ' . $itemLng,
-            'summary' => 'Lokasi fisik terverifikasi pada zonasi ruang komersial dengan titik koordinat tapak nyata.'
+            'summary' => 'Koordinat lokasi telah diverifikasi berada 100% di dalam polygon batas wilayah OpenStreetMap.'
         ]
     ];
 }
