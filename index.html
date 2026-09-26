@@ -23,7 +23,7 @@
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 
   <!-- App Custom Stylesheet -->
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=2.2">
 </head>
 <body>
 
@@ -46,18 +46,18 @@
       <div id="gate-pane-user-login" class="gate-pane">
         <form id="gate-form-user-login">
           <div class="form-group" style="margin-bottom: 14px;">
-            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Username atau Email *</label>
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Email / Username *</label>
             <div style="position: relative;">
               <i class="fa-solid fa-user-tag" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
-              <input type="text" id="gate-user-login-account" class="form-input" placeholder="contoh: budi_pratama atau budi@gmail.com" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="username">
+              <input type="text" id="gate-user-login-account" class="form-input" placeholder="Masukkan email/username" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="username">
             </div>
           </div>
 
           <div class="form-group" style="margin-bottom: 16px;">
-            <label class="form-label" style="font-size: 0.78rem; font-weight: 600; margin-bottom: 5px;">Kata Sandi *</label>
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600; margin-bottom: 5px;">Password *</label>
             <div style="position: relative;">
               <i class="fa-solid fa-lock" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
-              <input type="password" id="gate-user-login-password" class="form-input" placeholder="Masukkan kata sandi..." style="padding-left: 40px; padding-right: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="current-password">
+              <input type="password" id="gate-user-login-password" class="form-input" placeholder="Masukkan password" style="padding-left: 40px; padding-right: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="current-password">
               <button type="button" class="btn-toggle-password" data-target="gate-user-login-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px;">
                 <i class="fa-solid fa-eye"></i>
               </button>
@@ -121,7 +121,7 @@
             <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Alamat Email Aktif *</label>
             <div style="position: relative;">
               <i class="fa-solid fa-envelope" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
-              <input type="email" id="gate-reg-email" class="form-input" placeholder="nama@gmail.com" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="email">
+              <input type="email" id="gate-reg-email" class="form-input" placeholder="Masukkan alamat email aktif" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="email">
             </div>
             <div style="font-size: 0.68rem; color: #2563eb; margin-top: 4px; font-weight: 500;">
               <i class="fa-solid fa-circle-info"></i> Wajib diisi untuk pengiriman kode OTP verifikasi & pemulihan jika Anda lupa username atau kata sandi.
@@ -218,10 +218,10 @@
         <!-- STEP 1: REQUEST OTP FOR FORGOT PASSWORD -->
         <form id="gate-form-forgot-request">
           <div class="form-group" style="margin-bottom: 14px;">
-            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Username atau Email Akun User *</label>
+            <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">Email / Username Akun User *</label>
             <div style="position: relative;">
               <i class="fa-solid fa-user-tag" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
-              <input type="text" id="gate-forgot-email" class="form-input" placeholder="contoh: budi_pratama atau nama@gmail.com" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="username">
+              <input type="text" id="gate-forgot-email" class="form-input" placeholder="Masukkan email/username" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required autocomplete="username">
             </div>
             <div style="text-align: right; margin-top: 6px;">
               <a href="#" id="gate-link-from-forgot-to-email" style="font-size: 0.74rem; color: #2563eb; text-decoration: none; font-weight: 500;">
@@ -303,7 +303,7 @@
             <label class="form-label" style="font-size: 0.78rem; font-weight: 600;">No. WhatsApp atau Nama Lengkap *</label>
             <div style="position: relative;">
               <i class="fa-brands fa-whatsapp" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
-              <input type="text" id="gate-forgot-email-query" class="form-input" placeholder="contoh: 085712345678 atau Budi Pratama" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required>
+              <input type="text" id="gate-forgot-email-query" class="form-input" placeholder="Masukkan no. WhatsApp atau nama lengkap" style="padding-left: 40px; font-size: 0.85rem; height: 42px;" required>
             </div>
             <div style="font-size: 0.68rem; color: #64748b; margin-top: 4px;">Pencarian akun khusus pengguna/customer terdaftar.</div>
           </div>
@@ -659,7 +659,7 @@
          ============================================================== -->
     <section id="view-templates" class="page-view">
       <div class="card">
-        <div class="card-header">
+        <div class="card-header template-card-header">
           <div class="card-title">
             <i class="fa-solid fa-message"></i> Kelola Template Pesan WhatsApp
           </div>
@@ -673,7 +673,7 @@
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+        <div class="template-split-grid">
           <!-- Left Column: Template Editor -->
           <div>
             <div class="form-group">
@@ -1849,6 +1849,10 @@
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Supabase Cloud SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase.js"></script>
 
   <!-- Application Modules -->
   <script src="assets/js/regions_data.js"></script>

@@ -2187,5 +2187,259 @@ body:not(.authenticated) .mobile-bottom-nav {
   color: #64748b;
 }
 
+/* ==================================================
+   Specialized Mobile-Verse Responsive Polish & Clean UI
+   ================================================== */
+.template-split-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.template-split-grid > div {
+  min-width: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.template-split-grid textarea,
+#template-body-input {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+@media (min-width: 992px) {
+  .template-split-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form-textarea, .form-input, .form-select {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.wa-mockup-frame {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Tablet & Mobile Card Header Polish */
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .card-title {
+    font-size: 1rem !important;
+    line-height: 1.35 !important;
+    white-space: normal !important;
+    width: 100% !important;
+  }
+  .card-header > div:last-child {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  .card-header > div:last-child .btn {
+    flex: 1 1 auto;
+    justify-content: center;
+    padding: 8px 12px;
+  }
+  .prospects-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Dedicated Mobile Verse Optimization (< 576px) */
+@media (max-width: 576px) {
+  .app-container {
+    padding: 12px 10px 80px 10px !important;
+  }
+
+  .card {
+    padding: 14px 12px !important;
+    border-radius: 14px !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* Compact 2x2 Stats Grid */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .stat-box {
+    padding: 10px 12px !important;
+    border-radius: 12px !important;
+  }
+
+  .stat-header {
+    margin-bottom: 4px !important;
+  }
+
+  .stat-label {
+    font-size: 0.68rem !important;
+    line-height: 1.25 !important;
+    font-weight: 600 !important;
+  }
+
+  .stat-icon {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 0.75rem !important;
+    border-radius: 6px !important;
+    flex-shrink: 0;
+  }
+
+  .stat-value {
+    font-size: 1.25rem !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+  }
+
+  .stat-hint {
+    font-size: 0.62rem !important;
+    margin-top: 2px !important;
+  }
+
+  /* Compact Analytics Chart */
+  .charts-grid {
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .chart-card {
+    padding: 14px 12px !important;
+    border-radius: 14px !important;
+  }
+
+  .chart-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .chart-title {
+    font-size: 0.82rem !important;
+  }
+
+  .chart-canvas-container {
+    height: 200px !important;
+  }
+
+  /* Clean App Header on Mobile */
+  .app-header {
+    padding: 8px 12px !important;
+    height: 52px !important;
+  }
+
+  .brand-logo-img {
+    height: 28px !important;
+    max-width: 110px !important;
+  }
+
+  .user-profile-widget {
+    padding: 3px 8px 3px 4px !important;
+    gap: 6px !important;
+  }
+
+  .user-avatar-badge {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.72rem !important;
+  }
+
+  .user-info-text {
+    max-width: 80px !important;
+  }
+
+  .user-name {
+    font-size: 0.74rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 80px !important;
+  }
+
+  .user-role-badge {
+    display: none !important;
+  }
+
+  .user-dropdown-arrow {
+    font-size: 0.65rem !important;
+  }
+
+  /* Scraper Controls Mobile */
+  .scraper-split-container {
+    gap: 12px !important;
+  }
+
+  .map-container-unified {
+    height: 260px !important;
+    min-height: 260px !important;
+    border-radius: 12px !important;
+  }
+
+  /* Mobile Bottom Navigation Bar: Blur Floating Feel */
+  .mobile-bottom-nav {
+    height: 56px !important;
+    padding: 5px 6px calc(5px + env(safe-area-inset-bottom, 0px)) 6px !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    backdrop-filter: blur(12px) !important;
+    border-top: 1px solid rgba(226, 232, 240, 0.9) !important;
+    box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  .mobile-nav-item {
+    font-size: 0.64rem !important;
+    padding: 4px 0 !important;
+    border-radius: 8px !important;
+  }
+
+  .mobile-nav-item i {
+    font-size: 1.15rem !important;
+    margin-bottom: 2px !important;
+  }
+
+  .mobile-nav-item.active {
+    font-weight: 700 !important;
+    color: #2563eb !important;
+  }
+
+  /* Variable Chips in Template Editor */
+  .variable-chips {
+    gap: 5px !important;
+  }
+
+  .var-chip {
+    padding: 3px 8px !important;
+    font-size: 0.68rem !important;
+  }
+
+  /* Modals on Mobile */
+  .modal-sheet {
+    padding: 16px 14px !important;
+    border-radius: 16px !important;
+    max-height: 88vh !important;
+    overflow-y: auto !important;
+  }
+
+  /* Lead Filters */
+  .lead-filter-pill {
+    padding: 4px 10px !important;
+    font-size: 0.68rem !important;
+  }
+}
+
 
 

@@ -27,32 +27,59 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS
     exit(0);
 }
 
-// Database Connection (SQLite)
-$dbDir = __DIR__ . '/database';
-if (!is_dir($dbDir)) {
-    mkdir($dbDir, 0777, true);
-}
-
-$dbPath = $dbDir . '/client_reach.db';
-
-try {
-    $pdo = new PDO("sqlite:" . $dbPath);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    // Enable foreign keys and WAL mode for better concurrency
-    $pdo->exec("PRAGMA foreign_keys = ON;");
-    $pdo->exec("PRAGMA journal_mode = WAL;");
-} catch (PDOException $e) {
-    jsonResponse([
-        'success' => false,
-        'message' => 'Gagal terhubung ke database: ' . $e->getMessage()
-    ], 500);
-}
-
 // Load local overrides or environment variables securely
 $localConfig = [];
 if (file_exists(__DIR__ . '/config.local.php')) {
     $localConfig = require __DIR__ . '/config.local.php';
+}
+
+// Supabase Cloud PostgreSQL & API Configuration
+$supabaseHost = $localConfig['SUPABASE_DB_HOST'] ?? (getenv('SUPABASE_DB_HOST') ?: '');
+$supabasePass = $localConfig['SUPABASE_DB_PASSWORD'] ?? (getenv('SUPABASE_DB_PASSWORD') ?: '');
+$supabaseUser = $localConfig['SUPABASE_DB_USER'] ?? (getenv('SUPABASE_DB_USER') ?: 'postgres');
+$supabasePort = $localConfig['SUPABASE_DB_PORT'] ?? (getenv('SUPABASE_DB_PORT') ?: '5432');
+$supabaseDb   = $localConfig['SUPABASE_DB_NAME'] ?? (getenv('SUPABASE_DB_NAME') ?: 'postgres');
+$supabaseUrl  = $localConfig['SUPABASE_URL'] ?? (getenv('SUPABASE_URL') ?: '');
+$supabaseKey  = $localConfig['SUPABASE_KEY'] ?? (getenv('SUPABASE_KEY') ?: '');
+
+define('SUPABASE_URL', $supabaseUrl);
+define('SUPABASE_KEY', $supabaseKey);
+
+$dbConnected = false;
+
+// 1. Try Supabase Cloud PostgreSQL Connection (if credentials provided)
+if (!empty($supabaseHost) && extension_loaded('pdo_pgsql')) {
+    try {
+        $dsn = "pgsql:host={$supabaseHost};port={$supabasePort};dbname={$supabaseDb};sslmode=require";
+        $pdo = new PDO($dsn, $supabaseUser, $supabasePass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]);
+        $dbConnected = true;
+    } catch (PDOException $e) {
+        // Fall back to SQLite if Supabase connection fails
+    }
+}
+
+// 2. Default Zero-Config Local SQLite Connection
+if (!$dbConnected) {
+    $dbDir = __DIR__ . '/database';
+    if (!is_dir($dbDir)) {
+        mkdir($dbDir, 0777, true);
+    }
+    $dbPath = $dbDir . '/client_reach.db';
+    try {
+        $pdo = new PDO("sqlite:" . $dbPath);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        $pdo->exec("PRAGMA foreign_keys = ON;");
+        $pdo->exec("PRAGMA journal_mode = WAL;");
+    } catch (PDOException $e) {
+        jsonResponse([
+            'success' => false,
+            'message' => 'Gagal terhubung ke database: ' . $e->getMessage()
+        ], 500);
+    }
 }
 
 $geminiKey = $localConfig['GEMINI_API_KEY'] ?? (getenv('GEMINI_API_KEY') ?: '');
