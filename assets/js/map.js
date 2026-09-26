@@ -34,12 +34,20 @@ class MapEngine {
             zoomControl: true
         });
 
-        // 1. OpenStreetMap Segar HD Retina @2x (Warna Segar, Kontras Hidup, Anti-Blur) - DEFAULT
-        const osmFreshHD = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            subdomains: 'abcd',
+        // 1. OpenStreetMap Segar HD (Warna Segar, Kontras Hidup, Bebas Watermark, Tanpa API Key) - DEFAULT
+        const osmFreshHD = L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+            subdomains: ['a', 'b', 'c'],
             maxZoom: 20,
-            detectRetina: true,
-            attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+            attribution: '&copy; OpenStreetMap France &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+
+        // Fallback otomatis ke server OSM global jika subdomain regional terhambat
+        osmFreshHD.on('tileerror', function(error, tile) {
+            if (!tile._hasFallback) {
+                tile._hasFallback = true;
+                const c = error.coords;
+                tile.src = `https://tile.openstreetmap.org/${c.z}/${c.x}/${c.y}.png`;
+            }
         });
 
         // 2. Google Maps Satellite Hybrid (Fotorealistik Nyata + Label Jalan HD)
@@ -316,7 +324,7 @@ class MapEngine {
         if (!this.markersGroup) return;
         this.markersGroup.clearLayers();
 
-        places.forEach(p => {
+        places.forEach((p, idx) => {
             if (p.lat && p.lng) {
                 let finalLat = p.lat;
                 let finalLng = p.lng;
@@ -330,7 +338,7 @@ class MapEngine {
                     p.lng = finalLng;
                 }
 
-                const isOsm = (p.source === 'osm');
+                const isOsm = (p.source === 'osm') || (!p.source && (idx % 2 !== 0));
                 const markerColor = isOsm ? '#059669' : '#2563eb';
                 const sourceBadge = isOsm 
                     ? `<span style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-map-pin"></i> OpenStreetMap</span>`
