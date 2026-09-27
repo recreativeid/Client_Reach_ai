@@ -587,19 +587,95 @@
                 </small>
               </div>
 
-              <!-- Option 2: Category Dropdown Box -->
+              <!-- Option 2: Category Dropdown Box (Expanded with Complete Institutions & Sectors) -->
               <div id="target-preset-box" style="display: none;">
-                <select id="target-category-select" class="form-select">
-                  <option value="cafe">Cafe & Coffee Shop</option>
-                  <option value="resto">Restoran, Kuliner & Rumah Makan</option>
-                  <option value="bengkel">Bengkel Mobil, Motor & Otomotif</option>
-                  <option value="laundry">Jasa Laundry & Cuci</option>
-                  <option value="salon">Salon, Barbershop & Perawatan</option>
-                  <option value="sekolah">Sekolah, Bimbel & Edukasi</option>
-                  <option value="klinik">Klinik, Apotek & Rumah Sakit</option>
-                  <option value="hotel">Hotel, Villa & Penginapan</option>
-                  <option value="studio">Studio Foto & Jasa Kreatif</option>
-                  <option value="toko">Toko, Minimarket & Retail</option>
+                <select id="target-category-select" class="form-select" style="font-size: 0.78rem;">
+                  <optgroup label="🎓 Instansi Pendidikan & Edukasi">
+                    <option value="sekolah" selected>Semua Instansi Pendidikan & Sekolah</option>
+                    <option value="sd">Sekolah Dasar (SD / MI)</option>
+                    <option value="smp">SMP & MTs</option>
+                    <option value="sma">SMA, MA & SMK Kejuruan</option>
+                    <option value="universitas">Universitas, Kampus & Institut</option>
+                    <option value="bimbel">Bimbingan Belajar (Bimbel) & Kursus</option>
+                    <option value="tk_paud">TK, PAUD & Penitipan Anak</option>
+                    <option value="pesantren">Pondok Pesantren & Islamic School</option>
+                  </optgroup>
+                  <optgroup label="🏥 Instansi Kesehatan & Medis">
+                    <option value="kesehatan">Semua Layanan Kesehatan & Medis</option>
+                    <option value="rumah_sakit">Rumah Sakit (RSUD & RS Swasta)</option>
+                    <option value="klinik">Klinik Kesehatan, Pratama & Gigi</option>
+                    <option value="puskesmas">Puskesmas & Balai Pengobatan</option>
+                    <option value="apotek">Apotek, Farmasi & Toko Obat</option>
+                    <option value="praktik_dokter">Praktik Dokter & Bidan Mandiri</option>
+                    <option value="laboratorium">Laboratorium Klinik & Diagnostik</option>
+                  </optgroup>
+                  <optgroup label="🏛️ Instansi Pemerintah & Layanan Publik">
+                    <option value="pemerintah">Semua Instansi Pemerintah & Publik</option>
+                    <option value="kantor_dinas">Kantor Dinas & Instansi Pemda</option>
+                    <option value="kecamatan_kelurahan">Kantor Kecamatan, Kelurahan & Desa</option>
+                    <option value="kantor_pajak">Kantor Pajak (KPP Pratama & Samsat)</option>
+                    <option value="kepolisian_tni">Kantor Polisi (Polsek, Polres) & Koramil</option>
+                    <option value="kantor_pos">Kantor Pos & Pusat Logistik</option>
+                  </optgroup>
+                  <optgroup label="☕ Kuliner, Makanan & Minuman">
+                    <option value="kuliner">Semua Kuliner & Makanan</option>
+                    <option value="cafe">Kafe, Kedai Kopi & Coffee Shop</option>
+                    <option value="resto">Restoran, Rumah Makan & Kuliner Khas</option>
+                    <option value="fast_food">Kuliner Cepat Saji / Fried Chicken</option>
+                    <option value="bakery">Bakery, Toko Roti & Kue</option>
+                    <option value="warung">Warung Makan, Bakso & Soto</option>
+                  </optgroup>
+                  <optgroup label="🏨 Akomodasi, Properti & Wisata">
+                    <option value="akomodasi">Semua Hotel & Akomodasi</option>
+                    <option value="hotel">Hotel Berbintang & Budget</option>
+                    <option value="penginapan">Penginapan, Guesthouse & Homestay</option>
+                    <option value="villa">Villa & Resort</option>
+                    <option value="kost">Rumah Kost & Kontrakan</option>
+                    <option value="wisata">Tempat Wisata, Taman & Rekreasi</option>
+                  </optgroup>
+                  <optgroup label="🔧 Otomotif & Transportasi">
+                    <option value="otomotif">Semua Layanan Otomotif</option>
+                    <option value="bengkel_motor">Bengkel Motor & Servis Resmi</option>
+                    <option value="bengkel_mobil">Bengkel Mobil & Ganti Oli</option>
+                    <option value="toko_ban_aki">Toko Ban, Velg & Aki Kendaraan</option>
+                    <option value="cuci_kendaraan">Cuci Mobil & Cuci Motor</option>
+                    <option value="spbu">SPBU & Pengisian Bahan Bakar</option>
+                  </optgroup>
+                  <optgroup label="💈 Kecantikan, Kebugaran & Perawatan">
+                    <option value="kecantikan">Semua Layanan Kecantikan & Estetika</option>
+                    <option value="salon">Salon Kecantikan & Perawatan Rambut</option>
+                    <option value="barbershop">Barbershop & Pangkas Rambut Pria</option>
+                    <option value="klinik_estetika">Klinik Kecantikan, Skincare & Spa</option>
+                    <option value="gym">Pusat Kebugaran, Gym & Fitness</option>
+                  </optgroup>
+                  <optgroup label="💼 Jasa & Layanan Bisnis">
+                    <option value="jasa_profesional">Semua Jasa Profesional</option>
+                    <option value="notaris">Kantor Notaris & PPAT</option>
+                    <option value="kantor_hukum">Kantor Advokat & Konsultan Hukum</option>
+                    <option value="studio_foto">Studio Foto & Jasa Kreatif</option>
+                    <option value="laundry">Jasa Laundry Kiloan & Satuan</option>
+                    <option value="percetakan">Percetakan, Sablon & Fotokopi</option>
+                  </optgroup>
+                  <optgroup label="🛍️ Retail, Toko & Perdagangan">
+                    <option value="retail">Semua Toko & Retail</option>
+                    <option value="minimarket">Minimarket, Swalayan & Supermarket</option>
+                    <option value="toko_kelontong">Toko Sembako & Kelontong</option>
+                    <option value="elektronik">Toko Elektronik, Gadget & Servis HP</option>
+                    <option value="fashion">Toko Pakaian, Butik & Distro</option>
+                    <option value="toko_bangunan">Toko Bangunan & Material</option>
+                    <option value="petshop">Pet Shop & Perawatan Hewan</option>
+                  </optgroup>
+                  <optgroup label="🏦 Lembaga Keuangan">
+                    <option value="bank">Kantor Cabang Bank & Kas</option>
+                    <option value="atm">Galeri ATM</option>
+                    <option value="koperasi_pegadaian">Koperasi Simpan Pinjam & Pegadaian</option>
+                  </optgroup>
+                  <optgroup label="🕌 Tempat Ibadah">
+                    <option value="tempat_ibadah">Semua Tempat Ibadah</option>
+                    <option value="masjid">Masjid & Mushola</option>
+                    <option value="gereja">Gereja Kristen & Katolik</option>
+                    <option value="pura_vihara">Pura, Vihara & Klenteng</option>
+                  </optgroup>
                 </select>
               </div>
             </div>

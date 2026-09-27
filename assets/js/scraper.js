@@ -677,9 +677,14 @@ const ScraperClient = {
             clinic: 'Klinik Kesehatan',
             pharmacy: 'Apotek & Farmasi',
             doctors: 'Praktik Dokter',
+            dentist: 'Praktik Dokter Gigi',
             school: 'Sekolah',
             college: 'Kampus / Akademi',
             university: 'Universitas',
+            kindergarten: 'Taman Kanak-kanak / PAUD',
+            driving_school: 'Sekolah Mengemudi',
+            language_school: 'Kursus Bahasa',
+            music_school: 'Sekolah Musik',
             post_office: 'Kantor Pos',
             police: 'Kantor Polisi',
             townhall: 'Kantor Pemerintahan / Kelurahan',
@@ -689,19 +694,260 @@ const ScraperClient = {
             restaurant: 'Restoran & Kuliner',
             cafe: 'Cafe & Coffee Shop',
             fast_food: 'Kuliner Cepat Saji',
+            bakery: 'Toko Roti & Bakery',
             car_repair: 'Bengkel Mobil',
             motorcycle_repair: 'Bengkel Motor',
             hotel: 'Hotel & Penginapan',
+            guest_house: 'Penginapan / Homestay',
             supermarket: 'Supermarket',
             convenience: 'Minimarket',
-            marketplace: 'Pasar Tradisional'
+            marketplace: 'Pasar Tradisional',
+            clothes: 'Toko Pakaian & Fashion',
+            laundry: 'Jasa Laundry',
+            hairdresser: 'Salon & Barbershop',
+            beauty: 'Klinik Kecantikan & Spa'
         };
         if (map[type]) return map[type];
         return type ? (type.charAt(0).toUpperCase() + type.slice(1).replace(/_/g, ' ')) : 'Usaha Lokal';
     },
 
+    getCategoryTaxonomy(keyword) {
+        const k = (keyword || '').toLowerCase().trim();
+
+        if (['sd', 'sekolah dasar'].includes(k) || /\b(sd|sekolah dasar|mi|madrasah ibtidaiyah)\b/i.test(k)) {
+            return {
+                title: 'Sekolah Dasar (SD / MI)',
+                amenities: ['school'],
+                tourism: [],
+                keywords: ['SD', 'Sekolah Dasar', 'MI']
+            };
+        }
+        if (['smp', 'sekolah menengah'].includes(k) || /\b(smp|mts|madrasah tsanawiyah)\b/i.test(k)) {
+            return {
+                title: 'SMP & MTs',
+                amenities: ['school'],
+                tourism: [],
+                keywords: ['SMP', 'MTs']
+            };
+        }
+        if (['sma', 'smk'].includes(k) || /\b(sma|smk|kejuruan|ma|madrasah aliyah)\b/i.test(k)) {
+            return {
+                title: 'SMA, MA & SMK Kejuruan',
+                amenities: ['school'],
+                tourism: [],
+                keywords: ['SMA', 'SMK', 'Madrasah Aliyah']
+            };
+        }
+        if (['universitas', 'kampus'].includes(k) || /\b(universitas|kampus|institut|politeknik|akademi)\b/i.test(k)) {
+            return {
+                title: 'Universitas & Perguruan Tinggi',
+                amenities: ['university', 'college'],
+                tourism: [],
+                keywords: ['Universitas', 'Institut', 'Politeknik', 'Kampus']
+            };
+        }
+        if (['bimbel', 'kursus'].includes(k) || /\b(bimbel|kursus|les|lpk|bimbingan belajar)\b/i.test(k)) {
+            return {
+                title: 'Bimbingan Belajar & Kursus',
+                amenities: ['language_school', 'music_school', 'driving_school'],
+                tourism: [],
+                keywords: ['Bimbel', 'Kursus', 'LPK', 'Bimbingan Belajar']
+            };
+        }
+        if (['tk_paud', 'tk', 'paud'].includes(k) || /\b(tk|paud|taman kanak|ra)\b/i.test(k)) {
+            return {
+                title: 'TK & PAUD',
+                amenities: ['kindergarten'],
+                tourism: [],
+                keywords: ['TK', 'PAUD', 'Taman Kanak-kanak']
+            };
+        }
+        if (['pesantren'].includes(k) || /\b(pesantren|pondok pesantren|ponpes)\b/i.test(k)) {
+            return {
+                title: 'Pondok Pesantren',
+                amenities: ['school'],
+                tourism: [],
+                keywords: ['Pondok Pesantren', 'Ponpes', 'Pesantren']
+            };
+        }
+        if (/(sekolah|edukasi|pendidikan|school|education)/i.test(k)) {
+            return {
+                title: 'Semua Instansi Pendidikan',
+                amenities: ['school', 'kindergarten', 'college', 'university'],
+                tourism: [],
+                keywords: ['sekolah', 'SD', 'SMP', 'SMA', 'SMK', 'Madrasah', 'Bimbel', 'Universitas', 'Ponpes']
+            };
+        }
+
+        // Kesehatan & Medis
+        if (['rumah_sakit'].includes(k) || /\b(rumah sakit|rs|rsud|hospital)\b/i.test(k)) {
+            return {
+                title: 'Rumah Sakit',
+                amenities: ['hospital'],
+                tourism: [],
+                keywords: ['Rumah Sakit', 'RSUD', 'RS']
+            };
+        }
+        if (['klinik'].includes(k) || /\b(klinik|clinic)\b/i.test(k)) {
+            return {
+                title: 'Klinik Kesehatan',
+                amenities: ['clinic', 'doctors', 'dentist'],
+                tourism: [],
+                keywords: ['Klinik', 'Klinik Pratama', 'Klinik Gigi']
+            };
+        }
+        if (['puskesmas'].includes(k) || /\b(puskesmas)\b/i.test(k)) {
+            return {
+                title: 'Puskesmas',
+                amenities: ['clinic', 'hospital'],
+                tourism: [],
+                keywords: ['Puskesmas']
+            };
+        }
+        if (['apotek'].includes(k) || /\b(apotek|farmasi|obat|pharmacy)\b/i.test(k)) {
+            return {
+                title: 'Apotek & Toko Obat',
+                amenities: ['pharmacy'],
+                tourism: [],
+                keywords: ['Apotek', 'Farmasi', 'Toko Obat']
+            };
+        }
+        if (/(kesehatan|medis|health|dokter|bidan)/i.test(k)) {
+            return {
+                title: 'Layanan Kesehatan & Medis',
+                amenities: ['hospital', 'clinic', 'pharmacy', 'doctors', 'dentist'],
+                tourism: [],
+                keywords: ['Rumah Sakit', 'RSUD', 'Klinik', 'Apotek', 'Puskesmas', 'Dokter']
+            };
+        }
+
+        // Pemerintah
+        if (/(kantor_dinas|dinas|pemda)/i.test(k)) {
+            return {
+                title: 'Kantor Dinas & Instansi',
+                amenities: ['townhall'],
+                tourism: [],
+                keywords: ['Dinas', 'Kantor Dinas', 'BPKAD', 'Bappeda']
+            };
+        }
+        if (/(kecamatan_kelurahan|kecamatan|kelurahan|desa)/i.test(k)) {
+            return {
+                title: 'Kecamatan & Kelurahan',
+                amenities: ['townhall'],
+                tourism: [],
+                keywords: ['Kantor Kecamatan', 'Kantor Kelurahan', 'Balai Desa']
+            };
+        }
+        if (/(kantor_pajak|pajak|kpp|samsat)/i.test(k)) {
+            return {
+                title: 'Kantor Pajak & Samsat',
+                amenities: ['townhall'],
+                tourism: [],
+                keywords: ['KPP', 'Kantor Pajak', 'Samsat']
+            };
+        }
+        if (/(kepolisian_tni|polisi|polsek|polres|tni|koramil)/i.test(k)) {
+            return {
+                title: 'Kantor Polisi & TNI',
+                amenities: ['police'],
+                tourism: [],
+                keywords: ['Polsek', 'Polres', 'Kantor Polisi', 'Koramil']
+            };
+        }
+        if (/(kantor_pos|pos)/i.test(k)) {
+            return {
+                title: 'Kantor Pos & Logistik',
+                amenities: ['post_office'],
+                tourism: [],
+                keywords: ['Kantor Pos', 'Pos Indonesia', 'JNE']
+            };
+        }
+        if (/(pemerintah|instansi|kantor|office|government)/i.test(k)) {
+            return {
+                title: 'Instansi Pemerintah & Kantor',
+                amenities: ['townhall', 'police', 'post_office', 'courthouse'],
+                tourism: [],
+                keywords: ['Kantor', 'Dinas', 'Kecamatan', 'Kelurahan', 'Polsek', 'Polres']
+            };
+        }
+
+        // Kuliner
+        if (['cafe'].includes(k) || /\b(cafe|kafe|kopi|coffee|warkop)\b/i.test(k)) {
+            return {
+                title: 'Kafe & Coffee Shop',
+                amenities: ['cafe'],
+                tourism: [],
+                keywords: ['Cafe', 'Kopi', 'Coffee', 'Kafe', 'Warkop']
+            };
+        }
+        if (['resto'].includes(k) || /\b(resto|restoran|rumah makan|kuliner)\b/i.test(k)) {
+            return {
+                title: 'Restoran & Rumah Makan',
+                amenities: ['restaurant', 'fast_food', 'food_court'],
+                tourism: [],
+                keywords: ['Restoran', 'Rumah Makan', 'Resto', 'Kuliner']
+            };
+        }
+        if (/(kuliner|makan|warung|bakso|mie|soto)/i.test(k)) {
+            return {
+                title: 'Kuliner & Tempat Makan',
+                amenities: ['restaurant', 'fast_food', 'cafe'],
+                tourism: [],
+                keywords: ['Warung', 'Rumah Makan', 'Bakso', 'Mie', 'Soto', 'Kuliner']
+            };
+        }
+
+        // Otomotif
+        if (/(bengkel|otomotif|motor|mobil|servis)/i.test(k)) {
+            return {
+                title: 'Otomotif & Bengkel',
+                amenities: ['fuel', 'car_wash'],
+                tourism: [],
+                keywords: ['Bengkel', 'Servis Motor', 'Servis Mobil', 'Toko Ban', 'Cuci Mobil']
+            };
+        }
+
+        // Hotel & Wisata
+        if (/(hotel|penginapan|homestay|villa|kost|wisata)/i.test(k)) {
+            return {
+                title: 'Hotel, Penginapan & Wisata',
+                amenities: [],
+                tourism: ['hotel', 'guest_house', 'hostel', 'motel', 'theme_park'],
+                keywords: ['Hotel', 'Penginapan', 'Homestay', 'Villa', 'Kost', 'Wisata']
+            };
+        }
+
+        // Salon & Kecantikan
+        if (/(salon|barber|barbershop|rambut|kecantikan|skincare|spa|gym)/i.test(k)) {
+            return {
+                title: 'Kecantikan & Salon',
+                amenities: [],
+                tourism: [],
+                keywords: ['Salon', 'Barbershop', 'Pangkas Rambut', 'Skincare', 'Spa', 'Gym']
+            };
+        }
+
+        // Toko & Retail
+        if (/(toko|retail|minimarket|supermarket|swalayan|elektronik)/i.test(k)) {
+            return {
+                title: 'Retail & Toko',
+                amenities: [],
+                tourism: [],
+                keywords: ['Minimarket', 'Toko', 'Swalayan', 'Elektronik']
+            };
+        }
+
+        // Default
+        return {
+            title: k.charAt(0).toUpperCase() + k.slice(1),
+            amenities: [],
+            tourism: [],
+            keywords: [k]
+        };
+    },
+
     async fetchRealMapPlaces(queryObj) {
-        const q = ((queryObj && queryObj.category) || 'usaha').trim();
+        const q = ((queryObj && queryObj.category) || 'sekolah').trim();
         const loc = (queryObj && queryObj.location) || 'Indonesia';
         const centerLat = parseFloat(queryObj && queryObj.lat) || -7.4705;
         const centerLng = parseFloat(queryObj && queryObj.lng) || 110.2178;
@@ -728,28 +974,68 @@ const ScraperClient = {
         }
 
         const viewbox = `${minLng.toFixed(5)},${maxLat.toFixed(5)},${maxLng.toFixed(5)},${minLat.toFixed(5)}`;
+        const taxonomy = this.getCategoryTaxonomy(q);
 
         try {
-            // 1. Fetch live real places from Nominatim OpenStreetMap
-            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&bounded=1&viewbox=${viewbox}&addressdetails=1&extratags=1&limit=25`;
-            const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-
             let rawList = [];
-            if (res.ok) {
-                rawList = await res.json();
+            const seenOsmIds = new Set();
+
+            const fetchPromises = [];
+
+            // 1. Query structured amenities
+            if (taxonomy.amenities && taxonomy.amenities.length > 0) {
+                taxonomy.amenities.forEach(amenity => {
+                    const u = `https://nominatim.openstreetmap.org/search?amenity=${encodeURIComponent(amenity)}&format=json&bounded=1&viewbox=${viewbox}&addressdetails=1&extratags=1&limit=20`;
+                    fetchPromises.push(fetch(u, { headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : []).catch(() => []));
+                });
             }
 
-            // 2. If bounded viewbox returns 0, try with location context "$q, $loc"
-            if ((!rawList || rawList.length === 0) && loc && loc !== 'Indonesia') {
-                const url2 = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q + ', ' + loc)}&format=json&addressdetails=1&extratags=1&limit=25`;
+            // 2. Query tourism / lodging
+            if (taxonomy.tourism && taxonomy.tourism.length > 0) {
+                taxonomy.tourism.forEach(tour => {
+                    const u = `https://nominatim.openstreetmap.org/search?tourism=${encodeURIComponent(tour)}&format=json&bounded=1&viewbox=${viewbox}&addressdetails=1&extratags=1&limit=20`;
+                    fetchPromises.push(fetch(u, { headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : []).catch(() => []));
+                });
+            }
+
+            // 3. Query text keywords
+            const kwList = (taxonomy.keywords && taxonomy.keywords.length > 0) ? taxonomy.keywords.slice(0, 4) : [q];
+            kwList.forEach(kw => {
+                const u = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(kw)}&format=json&bounded=1&viewbox=${viewbox}&addressdetails=1&extratags=1&limit=15`;
+                fetchPromises.push(fetch(u, { headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : []).catch(() => []));
+            });
+
+            const results = await Promise.allSettled(fetchPromises);
+            results.forEach(res => {
+                if (res.status === 'fulfilled' && Array.isArray(res.value)) {
+                    res.value.forEach(item => {
+                        const id = item.osm_id || `${item.lat},${item.lon}`;
+                        if (!seenOsmIds.has(id)) {
+                            seenOsmIds.add(id);
+                            rawList.push(item);
+                        }
+                    });
+                }
+            });
+
+            // 4. Fallback search with location context if bounded viewbox returned 0
+            if (rawList.length === 0 && loc && loc !== 'Indonesia') {
+                const primaryTerm = (taxonomy.keywords && taxonomy.keywords[0]) || q;
+                const url2 = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(primaryTerm + ', ' + loc)}&format=json&addressdetails=1&extratags=1&limit=25`;
                 const res2 = await fetch(url2, { headers: { 'Accept': 'application/json' } });
                 if (res2.ok) {
                     const data2 = await res2.json();
                     if (Array.isArray(data2)) {
-                        rawList = data2.filter(it => {
+                        data2.forEach(it => {
                             const dLat = Math.abs(parseFloat(it.lat) - centerLat);
                             const dLng = Math.abs(parseFloat(it.lon) - centerLng);
-                            return (dLat < 0.15 && dLng < 0.15);
+                            if (dLat < 0.15 && dLng < 0.15) {
+                                const id = it.osm_id || `${it.lat},${it.lon}`;
+                                if (!seenOsmIds.has(id)) {
+                                    seenOsmIds.add(id);
+                                    rawList.push(it);
+                                }
+                            }
                         });
                     }
                 }

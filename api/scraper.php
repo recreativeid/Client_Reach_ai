@@ -71,11 +71,313 @@ function humanizeOsmType($type, $class = '', $name = '') {
     return ucwords(str_replace('_', ' ', $type ?: ($class ?: 'Usaha Lokal')));
 }
 
+// SEMANTIC CATEGORY TAXONOMY & SYNONYM DICTIONARY
+function getCategoryTaxonomy($keyword) {
+    $k = strtolower(trim($keyword));
+
+    // 1. Pendidikan & Edukasi
+    if (in_array($k, ['sd', 'sekolah dasar']) || preg_match('/\b(sd|sekolah dasar|mi|madrasah ibtidaiyah)\b/i', $k)) {
+        return [
+            'title' => 'Sekolah Dasar (SD / MI)',
+            'amenities' => ['school'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['SD', 'Sekolah Dasar', 'MI', 'Madrasah Ibtidaiyah']
+        ];
+    }
+    if (in_array($k, ['smp', 'sekolah menengah']) || preg_match('/\b(smp|mts|madrasah tsanawiyah)\b/i', $k)) {
+        return [
+            'title' => 'SMP & MTs',
+            'amenities' => ['school'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['SMP', 'MTs', 'Sekolah Menengah Pertama']
+        ];
+    }
+    if (in_array($k, ['sma', 'smk']) || preg_match('/\b(sma|smk|kejuruan|ma|madrasah aliyah)\b/i', $k)) {
+        return [
+            'title' => 'SMA, MA & SMK Kejuruan',
+            'amenities' => ['school'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['SMA', 'SMK', 'Madrasah Aliyah', 'Sekolah Menengah Atas']
+        ];
+    }
+    if (in_array($k, ['universitas', 'kampus']) || preg_match('/\b(universitas|kampus|institut|politeknik|akademi|stmik|stie)\b/i', $k)) {
+        return [
+            'title' => 'Universitas & Perguruan Tinggi',
+            'amenities' => ['university', 'college'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Universitas', 'Institut', 'Politeknik', 'Kampus', 'Akademi']
+        ];
+    }
+    if (in_array($k, ['bimbel', 'kursus']) || preg_match('/\b(bimbel|kursus|les|lpk|bimbingan belajar)\b/i', $k)) {
+        return [
+            'title' => 'Bimbingan Belajar & Kursus',
+            'amenities' => ['language_school', 'music_school', 'driving_school'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Bimbel', 'Kursus', 'LPK', 'Bimbingan Belajar', 'Les Privat']
+        ];
+    }
+    if (in_array($k, ['tk_paud', 'tk', 'paud']) || preg_match('/\b(tk|paud|taman kanak|ra|raudhatul athfal)\b/i', $k)) {
+        return [
+            'title' => 'TK & PAUD',
+            'amenities' => ['kindergarten'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['TK', 'PAUD', 'Taman Kanak-kanak', 'Playgroup']
+        ];
+    }
+    if (in_array($k, ['pesantren']) || preg_match('/\b(pesantren|pondok pesantren|ponpes)\b/i', $k)) {
+        return [
+            'title' => 'Pondok Pesantren',
+            'amenities' => ['school'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Pondok Pesantren', 'Ponpes', 'Pesantren', 'Islamic Boarding School']
+        ];
+    }
+    if (preg_match('/(sekolah|edukasi|pendidikan|school|education)/i', $k)) {
+        return [
+            'title' => 'Semua Instansi Pendidikan',
+            'amenities' => ['school', 'kindergarten', 'college', 'university'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['sekolah', 'SD', 'SMP', 'SMA', 'SMK', 'Madrasah', 'Bimbel', 'Universitas', 'Ponpes', 'TK']
+        ];
+    }
+
+    // 2. Kesehatan & Medis
+    if (in_array($k, ['rumah_sakit']) || preg_match('/\b(rumah sakit|rs|rsud|hospital)\b/i', $k)) {
+        return [
+            'title' => 'Rumah Sakit',
+            'amenities' => ['hospital'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Rumah Sakit', 'RSUD', 'RS', 'Hospital']
+        ];
+    }
+    if (in_array($k, ['klinik']) || preg_match('/\b(klinik|clinic)\b/i', $k)) {
+        return [
+            'title' => 'Klinik Kesehatan & Pratama',
+            'amenities' => ['clinic', 'doctors', 'dentist'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Klinik', 'Klinik Pratama', 'Klinik Gigi', 'Balai Pengobatan']
+        ];
+    }
+    if (in_array($k, ['puskesmas']) || preg_match('/\b(puskesmas)\b/i', $k)) {
+        return [
+            'title' => 'Puskesmas',
+            'amenities' => ['clinic', 'hospital'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Puskesmas', 'Puskesmas Pembantu']
+        ];
+    }
+    if (in_array($k, ['apotek']) || preg_match('/\b(apotek|farmasi|obat|pharmacy)\b/i', $k)) {
+        return [
+            'title' => 'Apotek & Toko Obat',
+            'amenities' => ['pharmacy'],
+            'shops' => ['chemist'],
+            'tourism' => [],
+            'keywords' => ['Apotek', 'Farmasi', 'Toko Obat']
+        ];
+    }
+    if (preg_match('/(kesehatan|medis|health|medical|dokter|bidan)/i', $k)) {
+        return [
+            'title' => 'Layanan Kesehatan & Medis',
+            'amenities' => ['hospital', 'clinic', 'pharmacy', 'doctors', 'dentist'],
+            'shops' => ['chemist', 'optician'],
+            'tourism' => [],
+            'keywords' => ['Rumah Sakit', 'RSUD', 'Klinik', 'Apotek', 'Puskesmas', 'Dokter']
+        ];
+    }
+
+    // 3. Pemerintah & Layanan Publik
+    if (in_array($k, ['kantor_dinas']) || preg_match('/\b(dinas|bumn|pemda|balai kota|bappeda)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Dinas & Instansi',
+            'amenities' => ['townhall'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Dinas', 'Kantor Dinas', 'Inspektorat', 'BPKAD', 'Bappeda']
+        ];
+    }
+    if (in_array($k, ['kecamatan_kelurahan']) || preg_match('/\b(kecamatan|kelurahan|desa|kepala desa)\b/i', $k)) {
+        return [
+            'title' => 'Kecamatan & Kelurahan',
+            'amenities' => ['townhall'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Kantor Kecamatan', 'Kantor Kelurahan', 'Balai Desa', 'Kecamatan', 'Kelurahan']
+        ];
+    }
+    if (in_array($k, ['kantor_pajak']) || preg_match('/\b(pajak|kpp|samsat)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Pajak & Samsat',
+            'amenities' => ['townhall'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['KPP', 'Kantor Pajak', 'Samsat', 'KPP Pratama']
+        ];
+    }
+    if (in_array($k, ['kepolisian_tni']) || preg_match('/\b(polisi|polsek|polres|polda|tni|koramil|kodim)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Polisi & TNI',
+            'amenities' => ['police'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Polsek', 'Polres', 'Kantor Polisi', 'Koramil', 'Kodim']
+        ];
+    }
+    if (in_array($k, ['kantor_pos']) || preg_match('/\b(kantor pos|pos indonesia|ekspedisi)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Pos & Logistik',
+            'amenities' => ['post_office'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Kantor Pos', 'Pos Indonesia', 'JNE', 'J&T']
+        ];
+    }
+    if (preg_match('/(pemerintah|instansi|kantor|government|office)/i', $k)) {
+        return [
+            'title' => 'Instansi Pemerintah & Kantor',
+            'amenities' => ['townhall', 'police', 'post_office', 'courthouse'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Kantor', 'Dinas', 'Kecamatan', 'Kelurahan', 'Polsek', 'Polres', 'KPP']
+        ];
+    }
+
+    // 4. Kuliner & F&B
+    if (in_array($k, ['cafe']) || preg_match('/\b(cafe|kafe|kopi|coffee|warkop)\b/i', $k)) {
+        return [
+            'title' => 'Kafe & Coffee Shop',
+            'amenities' => ['cafe'],
+            'shops' => ['coffee'],
+            'tourism' => [],
+            'keywords' => ['Cafe', 'Kopi', 'Coffee', 'Kafe', 'Warkop']
+        ];
+    }
+    if (in_array($k, ['resto']) || preg_match('/\b(resto|restoran|rumah makan|kuliner)\b/i', $k)) {
+        return [
+            'title' => 'Restoran & Rumah Makan',
+            'amenities' => ['restaurant', 'fast_food', 'food_court'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Restoran', 'Rumah Makan', 'Resto', 'Kuliner', 'Dapur']
+        ];
+    }
+    if (in_array($k, ['bakery']) || preg_match('/\b(bakery|roti|kue|pastry)\b/i', $k)) {
+        return [
+            'title' => 'Bakery & Toko Roti',
+            'amenities' => [],
+            'shops' => ['bakery'],
+            'tourism' => [],
+            'keywords' => ['Bakery', 'Roti', 'Toko Roti', 'Kue']
+        ];
+    }
+    if (preg_match('/(makan|warung|kuliner|bakso|mie|soto|food)/i', $k)) {
+        return [
+            'title' => 'Kuliner & Tempat Makan',
+            'amenities' => ['restaurant', 'fast_food', 'cafe', 'food_court'],
+            'shops' => ['bakery'],
+            'tourism' => [],
+            'keywords' => ['Warung', 'Rumah Makan', 'Bakso', 'Mie', 'Soto', 'Kuliner']
+        ];
+    }
+
+    // 5. Otomotif & Bengkel
+    if (in_array($k, ['bengkel_motor']) || preg_match('/\b(bengkel motor|servis motor|ahass)\b/i', $k)) {
+        return [
+            'title' => 'Bengkel Motor',
+            'amenities' => [],
+            'shops' => ['motorcycle_repair', 'motorcycle_parts'],
+            'tourism' => [],
+            'keywords' => ['Bengkel Motor', 'Servis Motor', 'AHASS', 'Yamaha', 'Honda']
+        ];
+    }
+    if (in_array($k, ['bengkel_mobil']) || preg_match('/\b(bengkel mobil|servis mobil|ganti oli)\b/i', $k)) {
+        return [
+            'title' => 'Bengkel Mobil',
+            'amenities' => [],
+            'shops' => ['car_repair', 'car_parts', 'tyres'],
+            'tourism' => [],
+            'keywords' => ['Bengkel Mobil', 'Servis Mobil', 'Bengkel Las', 'Body Repair']
+        ];
+    }
+    if (preg_match('/(bengkel|otomotif|motor|mobil|automotive)/i', $k)) {
+        return [
+            'title' => 'Otomotif & Bengkel',
+            'amenities' => ['fuel', 'car_wash'],
+            'shops' => ['car_repair', 'motorcycle_repair', 'tyres', 'car_parts'],
+            'tourism' => [],
+            'keywords' => ['Bengkel', 'Servis Motor', 'Servis Mobil', 'Toko Ban', 'Cuci Mobil']
+        ];
+    }
+
+    // 6. Akomodasi & Hotel
+    if (preg_match('/(hotel|penginapan|homestay|villa|kost|resort|akomodasi)/i', $k)) {
+        return [
+            'title' => 'Hotel & Penginapan',
+            'amenities' => [],
+            'shops' => [],
+            'tourism' => ['hotel', 'guest_house', 'hostel', 'motel'],
+            'keywords' => ['Hotel', 'Penginapan', 'Homestay', 'Villa', 'Guesthouse', 'Kost']
+        ];
+    }
+
+    // 7. Kecantikan & Salon
+    if (preg_match('/(salon|barber|barbershop|pangkas|rambut|kecantikan|skincare|spa|gym)/i', $k)) {
+        return [
+            'title' => 'Kecantikan & Salon',
+            'amenities' => [],
+            'shops' => ['hairdresser', 'beauty'],
+            'tourism' => [],
+            'keywords' => ['Salon', 'Barbershop', 'Pangkas Rambut', 'Skincare', 'Spa', 'Gym']
+        ];
+    }
+
+    // 8. Laundry
+    if (preg_match('/(laundry|cuci|dry clean)/i', $k)) {
+        return [
+            'title' => 'Jasa Laundry',
+            'amenities' => [],
+            'shops' => ['laundry'],
+            'tourism' => [],
+            'keywords' => ['Laundry', 'Cuci Kiloan', 'Dry Clean']
+        ];
+    }
+
+    // 9. Retail & Toko
+    if (preg_match('/(toko|retail|minimarket|supermarket|swalayan|sembako|elektronik)/i', $k)) {
+        return [
+            'title' => 'Retail & Toko',
+            'amenities' => [],
+            'shops' => ['supermarket', 'convenience', 'clothes', 'electronics', 'hardware'],
+            'tourism' => [],
+            'keywords' => ['Minimarket', 'Toko', 'Swalayan', 'Elektronik', 'Toko Bangunan']
+        ];
+    }
+
+    // 10. Default Custom
+    return [
+        'title' => ucwords($k),
+        'amenities' => [],
+        'shops' => [],
+        'tourism' => [],
+        'keywords' => [$k]
+    ];
+}
+
 // REAL MAP SCRAPING ENGINE (Live data from OpenStreetMap / Nominatim)
 // If no places exist in the selected boundary, it returns an empty array. Does NOT generate fake data.
-function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $radiusKm = 5, $count = 15, $bbox = null) {
+function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $radiusKm = 5, $count = 20, $bbox = null) {
     $q = trim($rawQuery);
-    if (empty($q)) $q = 'usaha';
+    if (empty($q)) $q = 'sekolah';
 
     $hasBbox = (!empty($bbox) && is_array($bbox) && count($bbox) >= 4);
     if ($hasBbox) {
@@ -94,38 +396,120 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
 
     $viewbox = sprintf('%.5f,%.5f,%.5f,%.5f', $minLng, $maxLat, $maxLng, $minLat);
     $results = [];
+    $seenIds = [];
 
-    // 1. Primary query: Strictly bounded within the viewbox
-    $url = "https://nominatim.openstreetmap.org/search?" . http_build_query([
-        'q' => $q,
-        'format' => 'json',
-        'bounded' => 1,
-        'viewbox' => $viewbox,
-        'addressdetails' => 1,
-        'extratags' => 1,
-        'limit' => max(20, $count)
-    ]);
+    // Analyze semantic category taxonomy
+    $taxonomy = getCategoryTaxonomy($q);
 
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'ClientReachAI/3.0 (info@recreative.id)');
-    curl_setopt($ch, CURLOPT_TIMEOUT, 6);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $res = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+    // 1. Structured query: Amenities in viewbox
+    if (!empty($taxonomy['amenities'])) {
+        foreach ($taxonomy['amenities'] as $amenity) {
+            if (count($results) >= 30) break;
+            $url = "https://nominatim.openstreetmap.org/search?" . http_build_query([
+                'amenity' => $amenity,
+                'format' => 'json',
+                'bounded' => 1,
+                'viewbox' => $viewbox,
+                'addressdetails' => 1,
+                'extratags' => 1,
+                'limit' => 20
+            ]);
 
-    if ($httpCode === 200 && !empty($res)) {
-        $data = json_decode($res, true);
-        if (is_array($data)) {
-            $results = $data;
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'ClientReachAI/3.0 (info@recreative.id)');
+            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            $res = curl_exec($ch);
+            curl_close($ch);
+
+            $arr = json_decode($res, true);
+            if (is_array($arr)) {
+                foreach ($arr as $item) {
+                    $id = $item['osm_id'] ?? ($item['lat'] . ',' . $item['lon']);
+                    if (!isset($seenIds[$id])) {
+                        $seenIds[$id] = true;
+                        $results[] = $item;
+                    }
+                }
+            }
         }
     }
 
-    // 2. Fallback search: with location context if viewbox returned 0
+    // 2. Structured query: Tourism / Lodging in viewbox
+    if (!empty($taxonomy['tourism'])) {
+        foreach ($taxonomy['tourism'] as $tour) {
+            if (count($results) >= 30) break;
+            $url = "https://nominatim.openstreetmap.org/search?" . http_build_query([
+                'tourism' => $tour,
+                'format' => 'json',
+                'bounded' => 1,
+                'viewbox' => $viewbox,
+                'addressdetails' => 1,
+                'extratags' => 1,
+                'limit' => 20
+            ]);
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'ClientReachAI/3.0 (info@recreative.id)');
+            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            $res = curl_exec($ch);
+            curl_close($ch);
+
+            $arr = json_decode($res, true);
+            if (is_array($arr)) {
+                foreach ($arr as $item) {
+                    $id = $item['osm_id'] ?? ($item['lat'] . ',' . $item['lon']);
+                    if (!isset($seenIds[$id])) {
+                        $seenIds[$id] = true;
+                        $results[] = $item;
+                    }
+                }
+            }
+        }
+    }
+
+    // 3. Synonym & Text queries bounded in viewbox
+    $keywordsToSearch = !empty($taxonomy['keywords']) ? $taxonomy['keywords'] : [$q];
+    foreach ($keywordsToSearch as $kw) {
+        if (count($results) >= 35) break;
+        $url = "https://nominatim.openstreetmap.org/search?" . http_build_query([
+            'q' => $kw,
+            'format' => 'json',
+            'bounded' => 1,
+            'viewbox' => $viewbox,
+            'addressdetails' => 1,
+            'extratags' => 1,
+            'limit' => 15
+        ]);
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'ClientReachAI/3.0 (info@recreative.id)');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $res = curl_exec($ch);
+        curl_close($ch);
+
+        $arr = json_decode($res, true);
+        if (is_array($arr)) {
+            foreach ($arr as $item) {
+                $id = $item['osm_id'] ?? ($item['lat'] . ',' . $item['lon']);
+                if (!isset($seenIds[$id])) {
+                    $seenIds[$id] = true;
+                    $results[] = $item;
+                }
+            }
+        }
+    }
+
+    // 4. Fallback search: with location context if viewbox returned 0
     if (empty($results) && !empty($locationName) && $locationName !== 'Indonesia') {
+        $primaryKeyword = !empty($taxonomy['keywords'][0]) ? $taxonomy['keywords'][0] : $q;
         $url2 = "https://nominatim.openstreetmap.org/search?" . http_build_query([
-            'q' => $q . ', ' . $locationName,
+            'q' => $primaryKeyword . ', ' . $locationName,
             'format' => 'json',
             'addressdetails' => 1,
             'extratags' => 1,
@@ -149,7 +533,11 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
                     $itemLng = (float)($item['lon'] ?? 0);
                     $distKm = hypot($itemLat - $centerLat, $itemLng - $centerLng) * 111.0;
                     if ($distKm <= max(12, $radiusKm * 1.5)) {
-                        $results[] = $item;
+                        $id = $item['osm_id'] ?? ($item['lat'] . ',' . $item['lon']);
+                        if (!isset($seenIds[$id])) {
+                            $seenIds[$id] = true;
+                            $results[] = $item;
+                        }
                     }
                 }
             }
@@ -313,9 +701,13 @@ if ($action === 'preview') {
     // Extract bbox if provided (e.g. from administrative boundary)
     $bbox = null;
     if (!empty($_GET['bbox'])) {
-        $parts = explode(',', $_GET['bbox']);
-        if (count($parts) >= 4) {
-            $bbox = array_map('floatval', $parts);
+        if (is_array($_GET['bbox'])) {
+            $bbox = array_map('floatval', array_values($_GET['bbox']));
+        } elseif (is_string($_GET['bbox'])) {
+            $parts = explode(',', $_GET['bbox']);
+            if (count($parts) >= 4) {
+                $bbox = array_map('floatval', $parts);
+            }
         }
     }
 
