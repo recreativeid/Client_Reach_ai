@@ -136,6 +136,55 @@ const ScraperClient = {
     // 2. TARGET PARAMETER (KEYWORD vs CASCADING CATEGORY PRESETS)
     // ----------------------------------------------------
     SECTORS_DATA: {
+        perusahaan: {
+            name: '🏢 Perusahaan, Korporasi & Industri (PT / CV)',
+            items: [
+                { value: 'semua_perusahaan', label: 'Semua Kantor Perusahaan & PT/CV' },
+                { value: 'kantor_pt', label: 'Kantor PT (Perseroan Terbatas)' },
+                { value: 'kantor_cv', label: 'Kantor CV (Persekutuan Komanditer)' },
+                { value: 'pabrik_manufaktur', label: 'Pabrik, Manufaktur & Industri' },
+                { value: 'distributor_supplier', label: 'Distributor, Supplier & Agen Grosir' },
+                { value: 'pergudangan_logistik', label: 'Pergudangan (Warehouse) & Depo' },
+                { value: 'holding_corporate', label: 'Kantor Pusat / Holding Corporate' },
+                { value: 'ekspor_impor', label: 'Eksportir & Importir' }
+            ]
+        },
+        konstruksi: {
+            name: '🏗️ Konstruksi, Arsitektur & Properti',
+            items: [
+                { value: 'semua_konstruksi', label: 'Semua Bidang Konstruksi & Properti' },
+                { value: 'kontraktor', label: 'Kontraktor Bangunan & Gedung' },
+                { value: 'arsitek_desain', label: 'Biro Arsitek & Desain Interior' },
+                { value: 'developer_perumahan', label: 'Developer Perumahan & Real Estate' },
+                { value: 'jasa_renovasi', label: 'Jasa Renovasi & Mandor Konstruksi' },
+                { value: 'distributor_material', label: 'Distributor Material & Bahan Bangunan' }
+            ]
+        },
+        jasa: {
+            name: '💼 Jasa Bisnis, Legal & Profesional',
+            items: [
+                { value: 'jasa_profesional', label: 'Semua Jasa & Layanan Bisnis' },
+                { value: 'notaris', label: 'Kantor Notaris & PPAT' },
+                { value: 'kantor_hukum', label: 'Kantor Advokat & Konsultan Hukum' },
+                { value: 'konsultan_akuntan', label: 'Kantor Akuntan Publik (KAP) & Pajak' },
+                { value: 'konsultan_bisnis', label: 'Konsultan Bisnis & Manajemen' },
+                { value: 'outsourcing_hrd', label: 'Jasa Outsourcing & HRD / Headhunter' },
+                { value: 'percetakan', label: 'Percetakan, Printing, Sablon & Fotokopi' },
+                { value: 'laundry', label: 'Jasa Laundry Kiloan & Satuan' },
+                { value: 'ekspedisi_kurir', label: 'Ekspedisi, Cargo & Jasa Kirim' }
+            ]
+        },
+        it: {
+            name: '💻 Teknologi, IT & Telekomunikasi',
+            items: [
+                { value: 'semua_it', label: 'Semua Bidang IT & Digital' },
+                { value: 'software_house', label: 'Software House & Startup Digital' },
+                { value: 'agency_digital', label: 'Digital Marketing & SEO Agency' },
+                { value: 'isp_telekomunikasi', label: 'ISP & Provider Telekomunikasi' },
+                { value: 'service_komputer', label: 'Servis Komputer, Laptop & Jaringan' },
+                { value: 'toko_komputer', label: 'Toko Komputer & Sparepart PC' }
+            ]
+        },
         pendidikan: {
             name: '🎓 Pendidikan & Edukasi',
             items: [
@@ -147,24 +196,27 @@ const ScraperClient = {
                 { value: 'universitas', label: 'Universitas & Institut' },
                 { value: 'sekolah_tinggi', label: 'Sekolah Tinggi, Politeknik & Akademi' },
                 { value: 'bimbel', label: 'Bimbingan Belajar (Bimbel) & Les Privat' },
-                { value: 'kursus_lpk', label: 'LPK & Kursus Pelatihan' },
+                { value: 'kursus_lpk', label: 'LPK & Balai Kursus / Pelatihan' },
                 { value: 'tk_paud', label: 'TK, PAUD & Penitipan Anak' },
                 { value: 'pesantren', label: 'Pondok Pesantren & Islamic School' },
                 { value: 'slb', label: 'Sekolah Luar Biasa (SLB)' }
             ]
         },
         kesehatan: {
-            name: '🏥 Kesehatan & Medis',
+            name: '🏥 Kesehatan, Medis & Farmasi',
             items: [
                 { value: 'kesehatan', label: 'Semua Layanan Kesehatan & Medis' },
                 { value: 'rumah_sakit', label: 'Rumah Sakit Umum & Swasta' },
+                { value: 'rsia', label: 'RSIA (Rumah Sakit Ibu & Anak)' },
+                { value: 'puskesmas', label: 'Puskesmas & Balai Pengobatan' },
                 { value: 'klinik', label: 'Klinik Pratama & Umum' },
                 { value: 'klinik_gigi', label: 'Klinik Gigi & Praktik Dokter Gigi' },
-                { value: 'puskesmas', label: 'Puskesmas & Balai Pengobatan' },
-                { value: 'apotek', label: 'Apotek & Toko Obat' },
-                { value: 'praktik_dokter', label: 'Praktik Dokter Mandiri' },
+                { value: 'apotek', label: 'Apotek & Toko Obat Berizin' },
+                { value: 'praktik_dokter', label: 'Praktik Dokter Mandiri & Spesialis' },
                 { value: 'praktik_bidan', label: 'Praktik Bidan Mandiri' },
-                { value: 'laboratorium', label: 'Laboratorium Medis & Cek Darah' }
+                { value: 'laboratorium', label: 'Laboratorium Medis & Diagnostic' },
+                { value: 'optik', label: 'Optik & Toko Kacamata' },
+                { value: 'distributor_alkes', label: 'Distributor Alat Kesehatan & Farmasi' }
             ]
         },
         pemerintah: {
@@ -177,8 +229,9 @@ const ScraperClient = {
                 { value: 'kantor_pajak', label: 'Kantor Pajak (KPP Pratama & Samsat)' },
                 { value: 'kepolisian', label: 'Kantor Polisi (Polsek & Polres)' },
                 { value: 'tni_militer', label: 'Kantor Militer / TNI (Koramil & Kodim)' },
-                { value: 'kantor_pos', label: 'Kantor Pos & Pusat Logistik' },
-                { value: 'layanan_publik', label: 'Layanan Sosial & BPJS' }
+                { value: 'kantor_pos', label: 'Kantor Pos & Pusat Logistik BUMN' },
+                { value: 'bpjs', label: 'Kantor BPJS Kesehatan & Ketenagakerjaan' },
+                { value: 'kantor_bpn', label: 'Kantor Pertanahan (BPN)' }
             ]
         },
         kuliner: {
@@ -187,21 +240,28 @@ const ScraperClient = {
                 { value: 'kuliner', label: 'Semua Kuliner & Makanan' },
                 { value: 'cafe', label: 'Kafe, Kedai Kopi & Coffee Shop' },
                 { value: 'resto', label: 'Restoran & Rumah Makan' },
-                { value: 'warung', label: 'Warung Makan Tradisional' },
-                { value: 'bakso_mie_soto', label: 'Bakso, Soto & Mie' },
+                { value: 'warung', label: 'Warung Makan & Warteg' },
+                { value: 'bakso_mie_soto', label: 'Bakso, Soto & Mie Ayam' },
                 { value: 'fast_food', label: 'Kuliner Cepat Saji (Fast Food)' },
-                { value: 'bakery', label: 'Bakery & Toko Roti / Kue' }
+                { value: 'bakery', label: 'Bakery & Toko Roti / Kue' },
+                { value: 'catering', label: 'Jasa Catering & Prasmanan' },
+                { value: 'depot_air', label: 'Depot Air Minum Isi Ulang' }
             ]
         },
-        akomodasi: {
-            name: '🏨 Akomodasi, Properti & Wisata',
+        retail: {
+            name: '🛍️ Perdagangan, Retail & Toko',
             items: [
-                { value: 'akomodasi', label: 'Semua Akomodasi & Wisata' },
-                { value: 'hotel', label: 'Hotel Berbintang & Budget' },
-                { value: 'penginapan', label: 'Penginapan, Guesthouse & Homestay' },
-                { value: 'villa', label: 'Villa & Resort' },
-                { value: 'kost', label: 'Rumah Kost & Kontrakan' },
-                { value: 'wisata', label: 'Tempat Wisata & Rekreasi' }
+                { value: 'retail', label: 'Semua Toko & Retail' },
+                { value: 'minimarket', label: 'Minimarket, Swalayan & Supermarket' },
+                { value: 'toko_kelontong', label: 'Toko Sembako & Kelontong' },
+                { value: 'elektronik', label: 'Toko Elektronik, Gadget & Servis HP' },
+                { value: 'fashion', label: 'Toko Pakaian, Butik & Distro' },
+                { value: 'toko_bangunan', label: 'Toko Bangunan & Material' },
+                { value: 'petshop', label: 'Pet Shop & Pakan Hewan' },
+                { value: 'toko_buku_atk', label: 'Toko Buku & Alat Tulis (ATK)' },
+                { value: 'toko_emas', label: 'Toko Emas & Perhiasan' },
+                { value: 'furniture_mebel', label: 'Toko Furniture, Mebel & Dekorasi' },
+                { value: 'pasar_tradisional', label: 'Pasar Tradisional & Kios Pasar' }
             ]
         },
         otomotif: {
@@ -211,62 +271,69 @@ const ScraperClient = {
                 { value: 'bengkel_motor', label: 'Bengkel Motor & Servis Resmi' },
                 { value: 'bengkel_mobil', label: 'Bengkel Mobil & Ganti Oli' },
                 { value: 'toko_ban_aki', label: 'Toko Ban, Velg & Aki' },
-                { value: 'cuci_kendaraan', label: 'Cuci Mobil & Cuci Motor' },
-                { value: 'spbu', label: 'SPBU & Pengisian Bahan Bakar' }
+                { value: 'cuci_kendaraan', label: 'Cuci Mobil & Motor (Doorsmeer)' },
+                { value: 'spbu', label: 'SPBU & Pengisian Bahan Bakar' },
+                { value: 'dealer_showroom', label: 'Dealer Mobil & Showroom Motor' },
+                { value: 'rental_travel', label: 'Rental Mobil & Travel Antar Kota' }
+            ]
+        },
+        akomodasi: {
+            name: '🏨 Akomodasi, Pariwisata & Hiburan',
+            items: [
+                { value: 'akomodasi', label: 'Semua Akomodasi & Wisata' },
+                { value: 'hotel', label: 'Hotel Berbintang & Budget' },
+                { value: 'penginapan', label: 'Penginapan, Guesthouse & Homestay' },
+                { value: 'villa', label: 'Villa & Resort' },
+                { value: 'kost', label: 'Rumah Kost & Kontrakan' },
+                { value: 'wisata', label: 'Tempat Wisata & Rekreasi' },
+                { value: 'gedung_pertemuan', label: 'Gedung Pertemuan & Wedding Venue' }
             ]
         },
         kecantikan: {
-            name: '💈 Kecantikan & Kebugaran',
+            name: '💈 Kecantikan, Kebugaran & Relaksasi',
             items: [
                 { value: 'kecantikan', label: 'Semua Layanan Kecantikan' },
                 { value: 'salon', label: 'Salon Kecantikan & Rambut' },
                 { value: 'barbershop', label: 'Barbershop & Pangkas Pria' },
                 { value: 'klinik_estetika', label: 'Klinik Estetika & Skincare' },
                 { value: 'spa', label: 'Spa & Pijat Relaksasi' },
-                { value: 'gym', label: 'Pusat Kebugaran, Gym & Fitness' }
-            ]
-        },
-        jasa: {
-            name: '💼 Jasa & Layanan Bisnis',
-            items: [
-                { value: 'jasa_profesional', label: 'Semua Jasa Profesional' },
-                { value: 'notaris', label: 'Kantor Notaris & PPAT' },
-                { value: 'kantor_hukum', label: 'Kantor Advokat & Konsultan Hukum' },
-                { value: 'konsultan_akuntan', label: 'Kantor Akuntan & Konsultan Pajak' },
-                { value: 'studio_foto', label: 'Studio Foto & Video Kreatif' },
-                { value: 'laundry', label: 'Jasa Laundry Kiloan & Satuan' },
-                { value: 'percetakan', label: 'Percetakan, Sablon & Fotokopi' }
-            ]
-        },
-        retail: {
-            name: '🛍️ Retail, Toko & Perdagangan',
-            items: [
-                { value: 'retail', label: 'Semua Toko & Retail' },
-                { value: 'minimarket', label: 'Minimarket, Swalayan & Supermarket' },
-                { value: 'toko_kelontong', label: 'Toko Sembako & Kelontong' },
-                { value: 'elektronik', label: 'Toko Elektronik, Gadget & Servis HP' },
-                { value: 'fashion', label: 'Toko Pakaian, Butik & Distro' },
-                { value: 'toko_bangunan', label: 'Toko Bangunan & Material' },
-                { value: 'petshop', label: 'Pet Shop & Perawatan Hewan' }
+                { value: 'gym', label: 'Pusat Kebugaran, Gym & Fitness' },
+                { value: 'lapangan_olahraga', label: 'Lapangan Olahraga & Futsal' }
             ]
         },
         keuangan: {
-            name: '🏦 Lembaga Keuangan',
+            name: '🏦 Lembaga Keuangan & Asuransi',
             items: [
                 { value: 'keuangan', label: 'Semua Lembaga Keuangan' },
-                { value: 'bank', label: 'Kantor Cabang Bank & BPR' },
-                { value: 'atm', label: 'Galeri ATM' },
-                { value: 'koperasi', label: 'Koperasi Simpan Pinjam' },
-                { value: 'pegadaian', label: 'Pegadaian & Pembiayaan' }
+                { value: 'bank', label: 'Kantor Cabang Bank & Bank Syariah' },
+                { value: 'bpr_syariah', label: 'Bank Perkreditan Rakyat (BPR)' },
+                { value: 'atm', label: 'Galeri ATM & CDM' },
+                { value: 'koperasi', label: 'Koperasi Simpan Pinjam & BMT' },
+                { value: 'pegadaian', label: 'Kantor Pegadaian & Gadai' },
+                { value: 'kantor_asuransi', label: 'Kantor Asuransi Jiwa & Kendaraan' }
+            ]
+        },
+        pertanian: {
+            name: '🌾 Pertanian, Peternakan & Agribisnis',
+            items: [
+                { value: 'pertanian', label: 'Semua Bidang Pertanian & Agribisnis' },
+                { value: 'toko_tani', label: 'Toko Pertanian, Benih & Pupuk' },
+                { value: 'peternakan', label: 'Peternakan Ayam, Sapi & Kambing' },
+                { value: 'pakan_ternak', label: 'Toko Pakan Ternak & Poultry Shop' },
+                { value: 'pembibitan_tanaman', label: 'Pembibitan Tanaman & Toko Bibit' },
+                { value: 'penggilingan_padi', label: 'Penggilingan Padi & Gudang Gabah' },
+                { value: 'perikanan_tambak', label: 'Perikanan, Tambak & Pakan Ikan' }
             ]
         },
         ibadah: {
-            name: '🕌 Tempat Ibadah',
+            name: '🕌 Tempat Ibadah & Yayasan Sosial',
             items: [
-                { value: 'tempat_ibadah', label: 'Semua Tempat Ibadah' },
+                { value: 'tempat_ibadah', label: 'Semua Tempat Ibadah & Yayasan' },
                 { value: 'masjid', label: 'Masjid & Mushola' },
                 { value: 'gereja', label: 'Gereja Kristen & Katolik' },
-                { value: 'pura_vihara', label: 'Pura, Vihara & Klenteng' }
+                { value: 'pura_vihara', label: 'Pura, Vihara & Klenteng' },
+                { value: 'panti_asuhan', label: 'Panti Asuhan & Yayasan Sosial' },
+                { value: 'lembaga_zakat', label: 'Lembaga Zakat & Infaq (BAZNAS)' }
             ]
         }
     },
@@ -282,7 +349,7 @@ const ScraperClient = {
 
         const populateSubcategories = (sectorKey) => {
             if (!presetSelect) return;
-            const sector = this.SECTORS_DATA[sectorKey] || this.SECTORS_DATA['pendidikan'];
+            const sector = this.SECTORS_DATA[sectorKey] || this.SECTORS_DATA['perusahaan'] || this.SECTORS_DATA['pendidikan'];
             presetSelect.innerHTML = '';
             sector.items.forEach(item => {
                 const opt = document.createElement('option');
@@ -292,6 +359,11 @@ const ScraperClient = {
             });
             presetSelect.selectedIndex = 0;
         };
+
+        // Initialize subcategories on load
+        if (sectorSelect && presetSelect) {
+            populateSubcategories(sectorSelect.value || 'perusahaan');
+        }
 
         if (sectorSelect) {
             sectorSelect.addEventListener('change', () => {
@@ -336,7 +408,7 @@ const ScraperClient = {
                     populateSubcategories(sectorSelect.value);
                 }
 
-                this.currentQuery.category = presetSelect ? presetSelect.value : 'sekolah';
+                this.currentQuery.category = (presetSelect && presetSelect.value) ? presetSelect.value : 'semua_perusahaan';
                 this.loadPreScrapeCandidates();
             });
         }
@@ -879,10 +951,311 @@ const ScraperClient = {
     getCategoryTaxonomy(keyword) {
         const k = (keyword || '').toLowerCase().trim();
 
+        // 1. Perusahaan, Korporasi & Industri (PT / CV)
+        if (['kantor_pt'].includes(k) || /\b(kantor pt|pt |perseroan terbatas)\b/i.test(k)) {
+            return {
+                title: 'Kantor PT (Perseroan Terbatas)',
+                amenities: [],
+                offices: ['company', 'corporate'],
+                shops: [],
+                tourism: [],
+                keywords: ['PT', 'Perseroan Terbatas']
+            };
+        }
+        if (['kantor_cv'].includes(k) || /\b(kantor cv|cv |commanditaire vennootschap|persekutuan komanditer)\b/i.test(k)) {
+            return {
+                title: 'Kantor CV (Persekutuan Komanditer)',
+                amenities: [],
+                offices: ['company', 'commercial'],
+                shops: [],
+                tourism: [],
+                keywords: ['CV', 'Persekutuan Komanditer']
+            };
+        }
+        if (['pabrik_manufaktur'].includes(k) || /\b(pabrik|manufaktur|industri|factory|manufacture)\b/i.test(k)) {
+            return {
+                title: 'Pabrik & Industri Manufaktur',
+                amenities: [],
+                offices: ['company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Pabrik', 'Industri', 'Manufaktur']
+            };
+        }
+        if (['distributor_supplier'].includes(k) || /\b(distributor|supplier|agen grosir|suplier|wholesaler)\b/i.test(k)) {
+            return {
+                title: 'Distributor, Supplier & Agen Grosir',
+                amenities: [],
+                offices: ['commercial', 'company'],
+                shops: ['wholesale'],
+                tourism: [],
+                keywords: ['Distributor', 'Supplier', 'Grosir', 'Agen']
+            };
+        }
+        if (['pergudangan_logistik'].includes(k) || /\b(gudang|pergudangan|warehouse|depo|depot)\b/i.test(k)) {
+            return {
+                title: 'Pergudangan (Warehouse) & Depo',
+                amenities: [],
+                offices: ['logistics', 'company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Gudang', 'Pergudangan', 'Logistik', 'Depo']
+            };
+        }
+        if (['holding_corporate'].includes(k) || /\b(holding|head office|kantor pusat|corporate)\b/i.test(k)) {
+            return {
+                title: 'Kantor Pusat / Holding Corporate',
+                amenities: [],
+                offices: ['corporate', 'company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Holding', 'Kantor Pusat', 'Head Office']
+            };
+        }
+        if (['ekspor_impor'].includes(k) || /\b(ekspor|impor|export|import)\b/i.test(k)) {
+            return {
+                title: 'Eksportir & Importir',
+                amenities: [],
+                offices: ['company', 'commercial'],
+                shops: [],
+                tourism: [],
+                keywords: ['Ekspor', 'Impor', 'Export Import']
+            };
+        }
+        if (['semua_perusahaan', 'perusahaan'].includes(k) || /\b(perusahaan|korporasi|kantor pt|kantor cv)\b/i.test(k)) {
+            return {
+                title: 'Semua Kantor Perusahaan & PT/CV',
+                amenities: [],
+                offices: ['company', 'corporate', 'commercial'],
+                shops: [],
+                tourism: [],
+                keywords: ['PT', 'CV', 'Perusahaan', 'Kantor']
+            };
+        }
+
+        // 2. Konstruksi, Arsitektur & Properti
+        if (['kontraktor'].includes(k) || /\b(kontraktor|pemborong|general contractor)\b/i.test(k)) {
+            return {
+                title: 'Kontraktor Bangunan & Gedung',
+                amenities: [],
+                offices: ['company', 'engineer'],
+                shops: [],
+                tourism: [],
+                keywords: ['Kontraktor', 'Pemborong', 'Konstruksi']
+            };
+        }
+        if (['arsitek_desain'].includes(k) || /\b(arsitek|desain interior|arsitektur)\b/i.test(k)) {
+            return {
+                title: 'Biro Arsitek & Desain Interior',
+                amenities: [],
+                offices: ['architect', 'company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Arsitek', 'Desain Interior', 'Studio Arsitektur']
+            };
+        }
+        if (['developer_perumahan'].includes(k) || /\b(developer|pengembang perumahan|real estate|residence)\b/i.test(k)) {
+            return {
+                title: 'Developer Perumahan & Real Estate',
+                amenities: [],
+                offices: ['estate_agent', 'company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Developer', 'Perumahan', 'Property', 'Real Estate']
+            };
+        }
+        if (['jasa_renovasi'].includes(k) || /\b(renovasi|tukang bangunan|mandor)\b/i.test(k)) {
+            return {
+                title: 'Jasa Renovasi & Mandor',
+                amenities: [],
+                offices: ['company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Renovasi', 'Mandor', 'Tukang Bangunan']
+            };
+        }
+        if (['distributor_material'].includes(k) || /\b(distributor material|semen|besi baja|bahan bangunan)\b/i.test(k)) {
+            return {
+                title: 'Distributor Material Bangunan',
+                amenities: [],
+                offices: ['company'],
+                shops: ['hardware', 'trade'],
+                tourism: [],
+                keywords: ['Distributor Material', 'Besi Baja', 'Semen']
+            };
+        }
+        if (['semua_konstruksi', 'konstruksi'].includes(k) || /\b(konstruksi|properti|arsitektur)\b/i.test(k)) {
+            return {
+                title: 'Semua Bidang Konstruksi & Properti',
+                amenities: [],
+                offices: ['architect', 'engineer', 'company'],
+                shops: ['hardware'],
+                tourism: [],
+                keywords: ['Kontraktor', 'Konstruksi', 'Arsitek', 'Developer']
+            };
+        }
+
+        // 3. Jasa Bisnis, Legal & Profesional
+        if (['notaris'].includes(k) || /\b(notaris|ppat)\b/i.test(k)) {
+            return {
+                title: 'Kantor Notaris & PPAT',
+                amenities: [],
+                offices: ['notary', 'lawyer'],
+                shops: [],
+                tourism: [],
+                keywords: ['Notaris', 'PPAT']
+            };
+        }
+        if (['kantor_hukum'].includes(k) || /\b(advokat|pengacara|kantor hukum|law firm|konsultan hukum)\b/i.test(k)) {
+            return {
+                title: 'Kantor Advokat & Konsultan Hukum',
+                amenities: [],
+                offices: ['lawyer'],
+                shops: [],
+                tourism: [],
+                keywords: ['Advokat', 'Pengacara', 'Konsultan Hukum', 'Law Firm']
+            };
+        }
+        if (['konsultan_akuntan'].includes(k) || /\b(akuntan|kap|konsultan pajak|audit)\b/i.test(k)) {
+            return {
+                title: 'Kantor Akuntan Publik (KAP) & Pajak',
+                amenities: [],
+                offices: ['accountant'],
+                shops: [],
+                tourism: [],
+                keywords: ['Akuntan Publik', 'KAP', 'Konsultan Pajak']
+            };
+        }
+        if (['konsultan_bisnis'].includes(k) || /\b(konsultan bisnis|konsultan manajemen)\b/i.test(k)) {
+            return {
+                title: 'Konsultan Bisnis & Manajemen',
+                amenities: [],
+                offices: ['consulting', 'company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Konsultan Bisnis', 'Konsultan Manajemen']
+            };
+        }
+        if (['outsourcing_hrd'].includes(k) || /\b(outsourcing|hrd|headhunter|penyalur tenaga kerja)\b/i.test(k)) {
+            return {
+                title: 'Jasa Outsourcing & HRD',
+                amenities: [],
+                offices: ['employment_agency', 'company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Outsourcing', 'Penyalur Kerja', 'HRD']
+            };
+        }
+        if (['percetakan'].includes(k) || /\b(percetakan|digital printing|printing|sablon|fotokopi|fotocopy)\b/i.test(k)) {
+            return {
+                title: 'Percetakan & Digital Printing',
+                amenities: [],
+                offices: [],
+                shops: ['copyshop', 'print_shop'],
+                tourism: [],
+                keywords: ['Percetakan', 'Digital Printing', 'Sablon', 'Fotokopi']
+            };
+        }
+        if (['laundry'].includes(k) || /\b(laundry|cuci baju|dry cleaning|cuci kiloan)\b/i.test(k)) {
+            return {
+                title: 'Jasa Laundry Kiloan & Satuan',
+                amenities: [],
+                offices: [],
+                shops: ['laundry', 'dry_cleaning'],
+                tourism: [],
+                keywords: ['Laundry', 'Cuci Kering', 'Laundry Kiloan']
+            };
+        }
+        if (['ekspedisi_kurir'].includes(k) || /\b(ekspedisi|cargo|jne|jnt|sicepat|pos|tiki|wahana|j&t)\b/i.test(k)) {
+            return {
+                title: 'Ekspedisi, Cargo & Jasa Kirim',
+                amenities: ['post_office'],
+                offices: ['logistics'],
+                shops: [],
+                tourism: [],
+                keywords: ['JNE', 'J&T', 'SiCepat', 'Cargo', 'Ekspedisi', 'Wahana']
+            };
+        }
+        if (['jasa_profesional', 'jasa'].includes(k) || /\b(jasa profesional|layanan bisnis)\b/i.test(k)) {
+            return {
+                title: 'Semua Jasa & Layanan Bisnis',
+                amenities: [],
+                offices: ['lawyer', 'notary', 'accountant', 'company'],
+                shops: ['copyshop', 'laundry'],
+                tourism: [],
+                keywords: ['Notaris', 'Advokat', 'Konsultan', 'Jasa', 'Percetakan']
+            };
+        }
+
+        // 4. Teknologi, IT & Telekomunikasi
+        if (['software_house'].includes(k) || /\b(software house|web dev|developer aplikasi|software)\b/i.test(k)) {
+            return {
+                title: 'Software House & Startup Digital',
+                amenities: [],
+                offices: ['it', 'company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Software House', 'Web Development', 'Aplikasi Mobile']
+            };
+        }
+        if (['agency_digital'].includes(k) || /\b(agency|digital marketing|seo agency|creative agency)\b/i.test(k)) {
+            return {
+                title: 'Digital Marketing & SEO Agency',
+                amenities: [],
+                offices: ['advertising', 'it'],
+                shops: [],
+                tourism: [],
+                keywords: ['Digital Marketing', 'Agency', 'SEO Agency', 'Creative Agency']
+            };
+        }
+        if (['isp_telekomunikasi'].includes(k) || /\b(isp|internet provider|indihome|biznet|myrepublic|telkomsel|xl|provider)\b/i.test(k)) {
+            return {
+                title: 'ISP & Provider Telekomunikasi',
+                amenities: [],
+                offices: ['telecommunication', 'company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Telkom', 'IndiHome', 'Biznet', 'MyRepublic', 'Internet Provider']
+            };
+        }
+        if (['service_komputer'].includes(k) || /\b(service komputer|servis laptop|perbaikan komputer)\b/i.test(k)) {
+            return {
+                title: 'Servis Komputer, Laptop & Jaringan',
+                amenities: [],
+                offices: [],
+                shops: ['computer'],
+                tourism: [],
+                keywords: ['Service Laptop', 'Servis Komputer', 'Perbaikan Komputer']
+            };
+        }
+        if (['toko_komputer'].includes(k) || /\b(toko komputer|rakitan pc|sparepart pc|laptop)\b/i.test(k)) {
+            return {
+                title: 'Toko Komputer & Sparepart PC',
+                amenities: [],
+                offices: [],
+                shops: ['computer'],
+                tourism: [],
+                keywords: ['Toko Komputer', 'Rakitan PC', 'Laptop Bekas']
+            };
+        }
+        if (['semua_it', 'it'].includes(k) || /\b(teknologi|informasi|startup)\b/i.test(k)) {
+            return {
+                title: 'Semua Bidang IT & Digital',
+                amenities: [],
+                offices: ['it', 'telecommunication', 'company'],
+                shops: ['computer'],
+                tourism: [],
+                keywords: ['Software House', 'IT Consultant', 'Digital Agency', 'Web Developer']
+            };
+        }
+
+        // 5. Pendidikan & Edukasi
         if (['sd', 'sekolah dasar'].includes(k) || /\b(sd|sekolah dasar|mi|madrasah ibtidaiyah)\b/i.test(k)) {
             return {
                 title: 'Sekolah Dasar (SD / MI)',
                 amenities: ['school'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['SD', 'Sekolah Dasar', 'MI']
             };
@@ -891,6 +1264,8 @@ const ScraperClient = {
             return {
                 title: 'SMP & MTs',
                 amenities: ['school'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['SMP', 'MTs']
             };
@@ -899,6 +1274,8 @@ const ScraperClient = {
             return {
                 title: 'SMA & MA',
                 amenities: ['school'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['SMA', 'Madrasah Aliyah', 'Sekolah Menengah Atas']
             };
@@ -907,6 +1284,8 @@ const ScraperClient = {
             return {
                 title: 'SMK Kejuruan',
                 amenities: ['school'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['SMK', 'Sekolah Menengah Kejuruan']
             };
@@ -915,6 +1294,8 @@ const ScraperClient = {
             return {
                 title: 'Sekolah Tinggi, Politeknik & Akademi',
                 amenities: ['college', 'university'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Sekolah Tinggi', 'STMIK', 'STIE', 'Politeknik', 'Akademi']
             };
@@ -923,6 +1304,8 @@ const ScraperClient = {
             return {
                 title: 'Universitas & Institut',
                 amenities: ['university', 'college'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Universitas', 'Institut', 'Kampus']
             };
@@ -931,6 +1314,8 @@ const ScraperClient = {
             return {
                 title: 'Bimbingan Belajar & Les Privat',
                 amenities: ['language_school', 'music_school'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Bimbel', 'Bimbingan Belajar', 'Les Privat', 'Kumon', 'Ganesha']
             };
@@ -939,6 +1324,8 @@ const ScraperClient = {
             return {
                 title: 'LPK & Kursus Pelatihan',
                 amenities: ['language_school', 'driving_school', 'music_school'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['LPK', 'Kursus', 'Pelatihan', 'Sekolah Mengemudi']
             };
@@ -947,6 +1334,8 @@ const ScraperClient = {
             return {
                 title: 'TK & PAUD',
                 amenities: ['kindergarten'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['TK', 'PAUD', 'Taman Kanak-kanak']
             };
@@ -955,6 +1344,8 @@ const ScraperClient = {
             return {
                 title: 'Pondok Pesantren',
                 amenities: ['school'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Pondok Pesantren', 'Ponpes', 'Pesantren']
             };
@@ -963,32 +1354,50 @@ const ScraperClient = {
             return {
                 title: 'Sekolah Luar Biasa (SLB)',
                 amenities: ['school'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['SLB', 'Sekolah Luar Biasa', 'Autis']
             };
         }
-        if (/(sekolah|edukasi|pendidikan|school|education)/i.test(k)) {
+        if (['sekolah', 'pendidikan'].includes(k) || /(sekolah|edukasi|pendidikan|school|education)/i.test(k)) {
             return {
                 title: 'Semua Instansi Pendidikan',
                 amenities: ['school', 'kindergarten', 'college', 'university'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['sekolah', 'SD', 'SMP', 'SMA', 'SMK', 'Madrasah', 'Bimbel', 'Universitas', 'Ponpes']
             };
         }
 
-        // Kesehatan & Medis
+        // 6. Kesehatan, Medis & Farmasi
         if (['rumah_sakit'].includes(k) || /\b(rumah sakit|rs|rsud|hospital)\b/i.test(k)) {
             return {
                 title: 'Rumah Sakit',
                 amenities: ['hospital'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Rumah Sakit', 'RSUD', 'RS']
+            };
+        }
+        if (['rsia'].includes(k) || /\b(rsia|ibu dan anak|rumah bersalin)\b/i.test(k)) {
+            return {
+                title: 'RSIA (Rumah Sakit Ibu & Anak)',
+                amenities: ['hospital', 'clinic'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['RSIA', 'Rumah Sakit Ibu dan Anak', 'Rumah Bersalin']
             };
         }
         if (['klinik_gigi'].includes(k) || /\b(klinik gigi|dokter gigi|dental)\b/i.test(k)) {
             return {
                 title: 'Klinik Gigi & Praktik Dokter Gigi',
                 amenities: ['dentist', 'clinic'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Klinik Gigi', 'Dokter Gigi', 'Dental']
             };
@@ -997,6 +1406,8 @@ const ScraperClient = {
             return {
                 title: 'Klinik Pratama & Umum',
                 amenities: ['clinic', 'doctors'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Klinik', 'Klinik Pratama', 'Balai Pengobatan']
             };
@@ -1005,6 +1416,8 @@ const ScraperClient = {
             return {
                 title: 'Puskesmas',
                 amenities: ['clinic', 'hospital'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Puskesmas', 'Puskesmas Pembantu']
             };
@@ -1013,6 +1426,8 @@ const ScraperClient = {
             return {
                 title: 'Apotek & Toko Obat',
                 amenities: ['pharmacy'],
+                offices: [],
+                shops: ['chemist'],
                 tourism: [],
                 keywords: ['Apotek', 'Farmasi', 'Toko Obat']
             };
@@ -1021,6 +1436,8 @@ const ScraperClient = {
             return {
                 title: 'Praktik Dokter Mandiri',
                 amenities: ['doctors'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Praktik Dokter', 'Dokter Spesialis', 'dr.']
             };
@@ -1029,6 +1446,8 @@ const ScraperClient = {
             return {
                 title: 'Praktik Bidan Mandiri',
                 amenities: ['clinic'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Bidan', 'Praktik Bidan', 'Rumah Bersalin']
             };
@@ -1037,24 +1456,50 @@ const ScraperClient = {
             return {
                 title: 'Laboratorium Medis',
                 amenities: ['clinic', 'hospital'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Laboratorium', 'Lab Klinik', 'Prodia']
             };
         }
-        if (/(kesehatan|medis|health|dokter|bidan)/i.test(k)) {
+        if (['optik'].includes(k) || /\b(optik|kacamata)\b/i.test(k)) {
+            return {
+                title: 'Optik & Toko Kacamata',
+                amenities: [],
+                offices: [],
+                shops: ['optician'],
+                tourism: [],
+                keywords: ['Optik', 'Toko Kacamata']
+            };
+        }
+        if (['distributor_alkes'].includes(k) || /\b(alkes|alat kesehatan|distributor farmasi)\b/i.test(k)) {
+            return {
+                title: 'Distributor Alat Kesehatan & Farmasi',
+                amenities: [],
+                offices: ['company'],
+                shops: ['medical_supply', 'wholesale'],
+                tourism: [],
+                keywords: ['Alkes', 'Alat Kesehatan', 'Distributor Farmasi']
+            };
+        }
+        if (['kesehatan'].includes(k) || /(kesehatan|medis|health|dokter|bidan)/i.test(k)) {
             return {
                 title: 'Layanan Kesehatan & Medis',
                 amenities: ['hospital', 'clinic', 'pharmacy', 'doctors', 'dentist'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Rumah Sakit', 'RSUD', 'Klinik', 'Apotek', 'Puskesmas', 'Dokter']
             };
         }
 
-        // Pemerintah
+        // 7. Instansi Pemerintah & Layanan Publik
         if (['kantor_dinas'].includes(k) || /(kantor_dinas|dinas|pemda)/i.test(k)) {
             return {
                 title: 'Kantor Dinas & Instansi',
                 amenities: ['townhall'],
+                offices: ['government'],
+                shops: [],
                 tourism: [],
                 keywords: ['Dinas', 'Kantor Dinas', 'BPKAD', 'Bappeda']
             };
@@ -1063,6 +1508,8 @@ const ScraperClient = {
             return {
                 title: 'Kantor Kecamatan',
                 amenities: ['townhall'],
+                offices: ['government'],
+                shops: [],
                 tourism: [],
                 keywords: ['Kantor Kecamatan', 'Kecamatan']
             };
@@ -1071,6 +1518,8 @@ const ScraperClient = {
             return {
                 title: 'Kantor Kelurahan & Desa',
                 amenities: ['townhall'],
+                offices: ['government'],
+                shops: [],
                 tourism: [],
                 keywords: ['Kantor Kelurahan', 'Balai Desa', 'Kelurahan', 'Desa']
             };
@@ -1079,6 +1528,8 @@ const ScraperClient = {
             return {
                 title: 'Kantor Pajak & Samsat',
                 amenities: ['townhall'],
+                offices: ['government'],
+                shops: [],
                 tourism: [],
                 keywords: ['KPP', 'Kantor Pajak', 'Samsat']
             };
@@ -1087,6 +1538,8 @@ const ScraperClient = {
             return {
                 title: 'Kantor Polisi (Polsek & Polres)',
                 amenities: ['police'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Polsek', 'Polres', 'Kantor Polisi', 'Polda']
             };
@@ -1095,6 +1548,8 @@ const ScraperClient = {
             return {
                 title: 'Kantor Militer & TNI',
                 amenities: ['police', 'townhall'],
+                offices: ['government'],
+                shops: [],
                 tourism: [],
                 keywords: ['Koramil', 'Kodim', 'TNI', 'Secaba', 'Rindam']
             };
@@ -1103,104 +1558,692 @@ const ScraperClient = {
             return {
                 title: 'Kantor Pos & Logistik',
                 amenities: ['post_office'],
+                offices: ['logistics'],
+                shops: [],
                 tourism: [],
-                keywords: ['Kantor Pos', 'Pos Indonesia', 'JNE']
+                keywords: ['Kantor Pos', 'Pos Indonesia']
             };
         }
-        if (['layanan_publik'].includes(k) || /(layanan_publik|bpjs|damkar)/i.test(k)) {
+        if (['bpjs'].includes(k) || /\b(bpjs|bpjs kesehatan|bpjs ketenagakerjaan)\b/i.test(k)) {
             return {
-                title: 'Layanan Sosial & BPJS',
-                amenities: ['townhall', 'fire_station'],
+                title: 'Kantor BPJS Kesehatan & Ketenagakerjaan',
+                amenities: ['townhall'],
+                offices: ['government', 'company'],
+                shops: [],
                 tourism: [],
-                keywords: ['BPJS', 'Damkar', 'Pemadam Kebakaran']
+                keywords: ['BPJS Kesehatan', 'BPJS Ketenagakerjaan', 'BPJS']
             };
         }
-        if (/(pemerintah|instansi|kantor|office|government)/i.test(k)) {
+        if (['kantor_bpn'].includes(k) || /\b(bpn|pertanahan)\b/i.test(k)) {
+            return {
+                title: 'Kantor Pertanahan (BPN)',
+                amenities: ['townhall'],
+                offices: ['government'],
+                shops: [],
+                tourism: [],
+                keywords: ['BPN', 'Badan Pertanahan', 'Kantor Pertanahan']
+            };
+        }
+        if (['pemerintah'].includes(k) || /(pemerintah|instansi|kantor|government)/i.test(k)) {
             return {
                 title: 'Instansi Pemerintah & Kantor',
                 amenities: ['townhall', 'police', 'post_office', 'courthouse'],
+                offices: ['government'],
+                shops: [],
                 tourism: [],
                 keywords: ['Kantor', 'Dinas', 'Kecamatan', 'Kelurahan', 'Polsek', 'Polres']
             };
         }
 
-        // Kuliner
+        // 8. Kuliner, Makanan & Minuman
         if (['cafe'].includes(k) || /\b(cafe|kafe|kopi|coffee|warkop)\b/i.test(k)) {
             return {
                 title: 'Kafe & Coffee Shop',
                 amenities: ['cafe'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Cafe', 'Kopi', 'Coffee', 'Kafe', 'Warkop']
             };
         }
-        if (['resto'].includes(k) || /\b(resto|restoran|rumah makan|kuliner)\b/i.test(k)) {
+        if (['resto'].includes(k) || /\b(resto|restoran|rumah makan)\b/i.test(k)) {
             return {
                 title: 'Restoran & Rumah Makan',
                 amenities: ['restaurant', 'fast_food', 'food_court'],
+                offices: [],
+                shops: [],
                 tourism: [],
-                keywords: ['Restoran', 'Rumah Makan', 'Resto', 'Kuliner']
+                keywords: ['Restoran', 'Rumah Makan', 'Resto']
             };
         }
-        if (/(kuliner|makan|warung|bakso|mie|soto)/i.test(k)) {
+        if (['warung'].includes(k) || /\b(warung|warteg|warung makan)\b/i.test(k)) {
+            return {
+                title: 'Warung Makan & Warteg',
+                amenities: ['restaurant', 'fast_food'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Warung Makan', 'Warteg', 'Warung Nasi']
+            };
+        }
+        if (['bakso_mie_soto'].includes(k) || /\b(bakso|soto|mie ayam|mie ramen)\b/i.test(k)) {
+            return {
+                title: 'Bakso, Soto & Mie Ayam',
+                amenities: ['restaurant', 'fast_food'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Bakso', 'Soto', 'Mie Ayam']
+            };
+        }
+        if (['fast_food'].includes(k) || /\b(fast food|fried chicken|burger)\b/i.test(k)) {
+            return {
+                title: 'Kuliner Cepat Saji (Fast Food)',
+                amenities: ['fast_food'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Fried Chicken', 'Burger', 'Fast Food', 'Rocket Chicken']
+            };
+        }
+        if (['bakery'].includes(k) || /\b(bakery|roti|kue|pastry)\b/i.test(k)) {
+            return {
+                title: 'Bakery & Toko Roti',
+                amenities: [],
+                offices: [],
+                shops: ['bakery', 'pastry'],
+                tourism: [],
+                keywords: ['Bakery', 'Toko Roti', 'Kue']
+            };
+        }
+        if (['catering'].includes(k) || /\b(catering|katering|prasmanan)\b/i.test(k)) {
+            return {
+                title: 'Jasa Catering & Prasmanan',
+                amenities: [],
+                offices: ['company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Catering', 'Katering', 'Prasmanan']
+            };
+        }
+        if (['depot_air'].includes(k) || /\b(depot air|air isi ulang|galon)\b/i.test(k)) {
+            return {
+                title: 'Depot Air Minum Isi Ulang',
+                amenities: [],
+                offices: [],
+                shops: ['water'],
+                tourism: [],
+                keywords: ['Depot Air', 'Air Isi Ulang', 'Depot Galon']
+            };
+        }
+        if (['kuliner'].includes(k) || /(kuliner|makan)/i.test(k)) {
             return {
                 title: 'Kuliner & Tempat Makan',
                 amenities: ['restaurant', 'fast_food', 'cafe'],
+                offices: [],
+                shops: [],
                 tourism: [],
                 keywords: ['Warung', 'Rumah Makan', 'Bakso', 'Mie', 'Soto', 'Kuliner']
             };
         }
 
-        // Otomotif
-        if (/(bengkel|otomotif|motor|mobil|servis)/i.test(k)) {
+        // 9. Perdagangan, Retail & Toko
+        if (['minimarket'].includes(k) || /\b(minimarket|indomaret|alfamart|supermarket|swalayan)\b/i.test(k)) {
             return {
-                title: 'Otomotif & Bengkel',
-                amenities: ['fuel', 'car_wash'],
+                title: 'Minimarket & Supermarket',
+                amenities: [],
+                offices: [],
+                shops: ['convenience', 'supermarket'],
                 tourism: [],
-                keywords: ['Bengkel', 'Servis Motor', 'Servis Mobil', 'Toko Ban', 'Cuci Mobil']
+                keywords: ['Indomaret', 'Alfamart', 'Minimarket', 'Supermarket', 'Swalayan']
+            };
+        }
+        if (['toko_kelontong'].includes(k) || /\b(kelontong|sembako|toko sembako)\b/i.test(k)) {
+            return {
+                title: 'Toko Sembako & Kelontong',
+                amenities: [],
+                offices: [],
+                shops: ['convenience', 'general'],
+                tourism: [],
+                keywords: ['Toko Sembako', 'Toko Kelontong', 'Agen Sembako']
+            };
+        }
+        if (['elektronik'].includes(k) || /\b(elektronik|gadget|toko hp|konter pulsa)\b/i.test(k)) {
+            return {
+                title: 'Toko Elektronik, Gadget & HP',
+                amenities: [],
+                offices: [],
+                shops: ['electronics', 'mobile_phone'],
+                tourism: [],
+                keywords: ['Toko Elektronik', 'Toko HP', 'Konter Pulsa', 'Servis HP']
+            };
+        }
+        if (['fashion'].includes(k) || /\b(fashion|baju|butik|distro|pakaian)\b/i.test(k)) {
+            return {
+                title: 'Toko Pakaian, Butik & Distro',
+                amenities: [],
+                offices: [],
+                shops: ['clothes', 'boutique'],
+                tourism: [],
+                keywords: ['Toko Baju', 'Butik', 'Distro', 'Fashion']
+            };
+        }
+        if (['toko_bangunan'].includes(k) || /\b(toko bangunan|material bangunan|tb )\b/i.test(k)) {
+            return {
+                title: 'Toko Bangunan & Material',
+                amenities: [],
+                offices: [],
+                shops: ['hardware', 'doityourself', 'trade'],
+                tourism: [],
+                keywords: ['Toko Bangunan', 'TB', 'Material Bangunan']
+            };
+        }
+        if (['petshop'].includes(k) || /\b(petshop|pet shop|pakan kucing|pakan burung)\b/i.test(k)) {
+            return {
+                title: 'Pet Shop & Pakan Hewan',
+                amenities: [],
+                offices: [],
+                shops: ['pet'],
+                tourism: [],
+                keywords: ['Pet Shop', 'Pakan Kucing', 'Pakan Burung']
+            };
+        }
+        if (['toko_buku_atk'].includes(k) || /\b(toko buku|atk|alat tulis)\b/i.test(k)) {
+            return {
+                title: 'Toko Buku & Alat Tulis (ATK)',
+                amenities: [],
+                offices: [],
+                shops: ['books', 'stationery'],
+                tourism: [],
+                keywords: ['Toko ATK', 'Toko Buku', 'Fotocopy & ATK']
+            };
+        }
+        if (['toko_emas'].includes(k) || /\b(toko emas|perhiasan)\b/i.test(k)) {
+            return {
+                title: 'Toko Emas & Perhiasan',
+                amenities: [],
+                offices: [],
+                shops: ['jewelry'],
+                tourism: [],
+                keywords: ['Toko Emas', 'Perhiasan Emas']
+            };
+        }
+        if (['furniture_mebel'].includes(k) || /\b(mebel|furniture|springbed)\b/i.test(k)) {
+            return {
+                title: 'Toko Furniture, Mebel & Dekorasi',
+                amenities: [],
+                offices: [],
+                shops: ['furniture'],
+                tourism: [],
+                keywords: ['Mebel', 'Toko Furniture', 'Kasur Springbed']
+            };
+        }
+        if (['pasar_tradisional'].includes(k) || /\b(pasar|pasar tradisional)\b/i.test(k)) {
+            return {
+                title: 'Pasar Tradisional & Kios Pasar',
+                amenities: ['marketplace'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Pasar', 'Pasar Tradisional']
+            };
+        }
+        if (['retail'].includes(k) || /(toko|retail)/i.test(k)) {
+            return {
+                title: 'Retail & Toko',
+                amenities: [],
+                offices: [],
+                shops: ['convenience', 'supermarket', 'general', 'clothes', 'electronics'],
+                tourism: [],
+                keywords: ['Toko', 'Minimarket', 'Supermarket', 'Grosir']
             };
         }
 
-        // Hotel & Wisata
-        if (/(hotel|penginapan|homestay|villa|kost|wisata)/i.test(k)) {
+        // 10. Otomotif & Transportasi
+        if (['bengkel_motor'].includes(k) || /\b(bengkel motor|ahass|servis motor|tambal ban)\b/i.test(k)) {
             return {
-                title: 'Hotel, Penginapan & Wisata',
+                title: 'Bengkel Motor & Servis Resmi',
                 amenities: [],
+                offices: [],
+                shops: ['motorcycle_repair', 'motorcycle'],
+                tourism: [],
+                keywords: ['Bengkel Motor', 'AHASS', 'Yamaha Servis', 'Tambal Ban']
+            };
+        }
+        if (['bengkel_mobil'].includes(k) || /\b(bengkel mobil|ganti oli|tune up|bengkel ac mobil)\b/i.test(k)) {
+            return {
+                title: 'Bengkel Mobil & Ganti Oli',
+                amenities: [],
+                offices: [],
+                shops: ['car_repair', 'car_parts'],
+                tourism: [],
+                keywords: ['Bengkel Mobil', 'Ganti Oli', 'Tune Up', 'Bengkel AC Mobil']
+            };
+        }
+        if (['toko_ban_aki'].includes(k) || /\b(toko ban|toko aki|spooring|balancing)\b/i.test(k)) {
+            return {
+                title: 'Toko Ban, Velg & Aki',
+                amenities: [],
+                offices: [],
+                shops: ['tyres', 'car_parts'],
+                tourism: [],
+                keywords: ['Toko Ban', 'Toko Aki', 'Spooring', 'Balancing']
+            };
+        }
+        if (['cuci_kendaraan'].includes(k) || /\b(cuci mobil|cuci motor|car wash|doorsmeer)\b/i.test(k)) {
+            return {
+                title: 'Cuci Mobil & Motor (Doorsmeer)',
+                amenities: ['car_wash'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Cuci Mobil', 'Cuci Motor', 'Car Wash', 'Doorsmeer']
+            };
+        }
+        if (['spbu'].includes(k) || /\b(spbu|pertamina|pom bensin|shell)\b/i.test(k)) {
+            return {
+                title: 'SPBU & Pengisian Bahan Bakar',
+                amenities: ['fuel'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['SPBU', 'Pertamina', 'Pom Bensin']
+            };
+        }
+        if (['dealer_showroom'].includes(k) || /\b(dealer|showroom mobil|showroom motor)\b/i.test(k)) {
+            return {
+                title: 'Dealer Mobil & Showroom Motor',
+                amenities: [],
+                offices: [],
+                shops: ['car', 'motorcycle'],
+                tourism: [],
+                keywords: ['Dealer', 'Showroom Motor', 'Showroom Mobil']
+            };
+        }
+        if (['rental_travel'].includes(k) || /\b(rental mobil|sewa mobil|travel antar kota)\b/i.test(k)) {
+            return {
+                title: 'Rental Mobil & Travel Antar Kota',
+                amenities: [],
+                offices: ['travel_agent'],
+                shops: [],
+                tourism: [],
+                keywords: ['Rental Mobil', 'Sewa Mobil', 'Agen Travel', 'Travel Antar Kota']
+            };
+        }
+        if (['otomotif'].includes(k) || /(otomotif|bengkel)/i.test(k)) {
+            return {
+                title: 'Semua Layanan Otomotif',
+                amenities: ['fuel', 'car_wash'],
+                offices: [],
+                shops: ['car_repair', 'motorcycle_repair', 'car', 'motorcycle'],
+                tourism: [],
+                keywords: ['Bengkel', 'Otomotif', 'Servis Mobil', 'Servis Motor', 'SPBU']
+            };
+        }
+
+        // 11. Akomodasi, Pariwisata & Hiburan
+        if (['hotel'].includes(k) || /\b(hotel|city hotel|hotel bintang)\b/i.test(k)) {
+            return {
+                title: 'Hotel Berbintang & Budget',
+                amenities: [],
+                offices: [],
+                shops: [],
+                tourism: ['hotel'],
+                keywords: ['Hotel', 'City Hotel', 'Hotel Bintang']
+            };
+        }
+        if (['penginapan'].includes(k) || /\b(penginapan|homestay|guesthouse|reddoorz|oyo)\b/i.test(k)) {
+            return {
+                title: 'Penginapan, Guesthouse & Homestay',
+                amenities: [],
+                offices: [],
+                shops: [],
+                tourism: ['guest_house', 'hostel', 'motel'],
+                keywords: ['Penginapan', 'Homestay', 'Guesthouse', 'RedDoorz', 'OYO']
+            };
+        }
+        if (['villa'].includes(k) || /\b(villa|resort|glamping)\b/i.test(k)) {
+            return {
+                title: 'Villa & Resort',
+                amenities: [],
+                offices: [],
+                shops: [],
+                tourism: ['chalet', 'hotel'],
+                keywords: ['Villa', 'Resort', 'Glamping']
+            };
+        }
+        if (['kost'].includes(k) || /\b(kost|kos|kontrakan)\b/i.test(k)) {
+            return {
+                title: 'Rumah Kost & Kontrakan',
+                amenities: [],
+                offices: [],
+                shops: [],
+                tourism: ['guest_house'],
+                keywords: ['Kost', 'Kos Putra', 'Kos Putri', 'Kontrakan']
+            };
+        }
+        if (['wisata'].includes(k) || /\b(wisata|taman rekreasi|objek wisata)\b/i.test(k)) {
+            return {
+                title: 'Tempat Wisata & Rekreasi',
+                amenities: [],
+                offices: [],
+                shops: [],
+                tourism: ['attraction', 'theme_park', 'viewpoint'],
+                keywords: ['Wisata', 'Objek Wisata', 'Taman Rekreasi']
+            };
+        }
+        if (['gedung_pertemuan'].includes(k) || /\b(gedung pertemuan|ballroom|convention hall|wedding venue)\b/i.test(k)) {
+            return {
+                title: 'Gedung Pertemuan & Wedding Venue',
+                amenities: ['events_venue', 'community_centre'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Gedung Pertemuan', 'Ballroom', 'Convention Hall', 'Wedding Venue']
+            };
+        }
+        if (['akomodasi'].includes(k) || /(hotel|penginapan|homestay|villa|kost|wisata)/i.test(k)) {
+            return {
+                title: 'Semua Akomodasi & Wisata',
+                amenities: [],
+                offices: [],
+                shops: [],
                 tourism: ['hotel', 'guest_house', 'hostel', 'motel', 'theme_park'],
                 keywords: ['Hotel', 'Penginapan', 'Homestay', 'Villa', 'Kost', 'Wisata']
             };
         }
 
-        // Salon & Kecantikan
-        if (/(salon|barber|barbershop|rambut|kecantikan|skincare|spa|gym)/i.test(k)) {
+        // 12. Kecantikan, Kebugaran & Relaksasi
+        if (['salon'].includes(k) || /\b(salon|salon rambut|mua)\b/i.test(k)) {
             return {
-                title: 'Kecantikan & Salon',
+                title: 'Salon Kecantikan & Rambut',
                 amenities: [],
+                offices: [],
+                shops: ['hairdresser', 'beauty'],
+                tourism: [],
+                keywords: ['Salon Kecantikan', 'Salon Rambut', 'MUA']
+            };
+        }
+        if (['barbershop'].includes(k) || /\b(barber|barbershop|pangkas pria|cukur)\b/i.test(k)) {
+            return {
+                title: 'Barbershop & Pangkas Pria',
+                amenities: [],
+                offices: [],
+                shops: ['hairdresser'],
+                tourism: [],
+                keywords: ['Barbershop', 'Pangkas Rambut', 'Cukur Rambut']
+            };
+        }
+        if (['klinik_estetika'].includes(k) || /\b(klinik estetika|klinik kecantikan|skincare|natasha|erha)\b/i.test(k)) {
+            return {
+                title: 'Klinik Estetika & Skincare',
+                amenities: ['clinic'],
+                offices: [],
+                shops: ['beauty'],
+                tourism: [],
+                keywords: ['Klinik Estetika', 'Klinik Kecantikan', 'Skincare', 'Natasha', 'Erha']
+            };
+        }
+        if (['spa'].includes(k) || /\b(spa|refleksi|reflexology|massage|pijat)\b/i.test(k)) {
+            return {
+                title: 'Spa & Pijat Relaksasi',
+                amenities: ['spa'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Spa', 'Pijat Refleksi', 'Reflexology', 'Massage']
+            };
+        }
+        if (['gym'].includes(k) || /\b(gym|fitness|pusat kebugaran)\b/i.test(k)) {
+            return {
+                title: 'Pusat Kebugaran, Gym & Fitness',
+                amenities: [],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Gym', 'Fitness', 'Pusat Kebugaran']
+            };
+        }
+        if (['lapangan_olahraga'].includes(k) || /\b(futsal|badminton|gor|lapangan)\b/i.test(k)) {
+            return {
+                title: 'Lapangan Olahraga & Futsal',
+                amenities: [],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Futsal', 'Badminton', 'Gor Olahraga']
+            };
+        }
+        if (['kecantikan'].includes(k) || /(salon|barber|barbershop|rambut|kecantikan|skincare|spa|gym)/i.test(k)) {
+            return {
+                title: 'Semua Layanan Kecantikan & Kebugaran',
+                amenities: ['spa'],
+                offices: [],
+                shops: ['beauty', 'hairdresser'],
                 tourism: [],
                 keywords: ['Salon', 'Barbershop', 'Pangkas Rambut', 'Skincare', 'Spa', 'Gym']
             };
         }
 
-        // Toko & Retail
-        if (/(toko|retail|minimarket|supermarket|swalayan|elektronik)/i.test(k)) {
+        // 13. Lembaga Keuangan & Asuransi
+        if (['bpr_syariah'].includes(k) || /\b(bpr|bank syariah|perkreditan rakyat)\b/i.test(k)) {
             return {
-                title: 'Retail & Toko',
-                amenities: [],
+                title: 'Bank Perkreditan Rakyat (BPR) & Syariah',
+                amenities: ['bank'],
+                offices: [],
+                shops: [],
                 tourism: [],
-                keywords: ['Minimarket', 'Toko', 'Swalayan', 'Elektronik']
+                keywords: ['BPR', 'Bank Perkreditan Rakyat', 'Bank Syariah']
+            };
+        }
+        if (['bank'].includes(k) || /\b(bank|mandiri|bca|bri|bni|bsi|jateng)\b/i.test(k)) {
+            return {
+                title: 'Kantor Cabang Bank',
+                amenities: ['bank'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Bank Mandiri', 'Bank BCA', 'Bank BRI', 'Bank BNI', 'Bank Jateng', 'Bank BSI']
+            };
+        }
+        if (['atm'].includes(k) || /\b(atm|tarik tunai|cdm)\b/i.test(k)) {
+            return {
+                title: 'Galeri ATM & CDM',
+                amenities: ['atm'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['ATM', 'Galeri ATM', 'Tarik Tunai']
+            };
+        }
+        if (['koperasi'].includes(k) || /\b(koperasi|ksp|bmt)\b/i.test(k)) {
+            return {
+                title: 'Koperasi Simpan Pinjam & BMT',
+                amenities: [],
+                offices: ['financial'],
+                shops: [],
+                tourism: [],
+                keywords: ['Koperasi', 'KSP', 'BMT', 'Koperasi Simpan Pinjam']
+            };
+        }
+        if (['pegadaian'].includes(k) || /\b(pegadaian|gadai|pusat gadai)\b/i.test(k)) {
+            return {
+                title: 'Kantor Pegadaian & Gadai',
+                amenities: [],
+                offices: ['financial'],
+                shops: [],
+                tourism: [],
+                keywords: ['Pegadaian', 'Gadai', 'Pusat Gadai']
+            };
+        }
+        if (['kantor_asuransi'].includes(k) || /\b(asuransi|prudential|allianz|axa|bumiputera)\b/i.test(k)) {
+            return {
+                title: 'Kantor Asuransi Jiwa & Kendaraan',
+                amenities: [],
+                offices: ['insurance'],
+                shops: [],
+                tourism: [],
+                keywords: ['Asuransi', 'Prudential', 'Allianz', 'AXA', 'Bumiputera']
+            };
+        }
+        if (['keuangan'].includes(k) || /(bank|keuangan|koperasi|pegadaian)/i.test(k)) {
+            return {
+                title: 'Semua Lembaga Keuangan',
+                amenities: ['bank', 'atm'],
+                offices: ['financial'],
+                shops: [],
+                tourism: [],
+                keywords: ['Bank', 'BPR', 'Koperasi', 'Pegadaian', 'Asuransi']
             };
         }
 
-        // Default
+        // 14. Pertanian, Peternakan & Agribisnis
+        if (['toko_tani'].includes(k) || /\b(toko tani|toko pertanian|pupuk|obat pertanian|benih)\b/i.test(k)) {
+            return {
+                title: 'Toko Pertanian, Benih & Pupuk',
+                amenities: [],
+                offices: [],
+                shops: ['agrarian', 'garden_centre'],
+                tourism: [],
+                keywords: ['Toko Tani', 'Toko Pertanian', 'Pupuk', 'Obat Pertanian', 'Benih']
+            };
+        }
+        if (['peternakan'].includes(k) || /\b(peternakan|kandang ayam|peternakan sapi|farm)\b/i.test(k)) {
+            return {
+                title: 'Peternakan Ayam, Sapi & Kambing',
+                amenities: [],
+                offices: ['company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Peternakan', 'Kandang Ayam', 'Peternakan Sapi', 'Farm']
+            };
+        }
+        if (['pakan_ternak'].includes(k) || /\b(pakan ternak|poultry shop|pakan ayam|konsentrat)\b/i.test(k)) {
+            return {
+                title: 'Toko Pakan Ternak & Poultry Shop',
+                amenities: [],
+                offices: [],
+                shops: ['animal_feed', 'pet'],
+                tourism: [],
+                keywords: ['Pakan Ternak', 'Poultry Shop', 'Pakan Ayam', 'Konsentrat']
+            };
+        }
+        if (['pembibitan_tanaman'].includes(k) || /\b(pembibitan|bibit tanaman|nursery|tanaman hias)\b/i.test(k)) {
+            return {
+                title: 'Pembibitan Tanaman & Toko Bibit',
+                amenities: [],
+                offices: [],
+                shops: ['garden_centre'],
+                tourism: [],
+                keywords: ['Bibit Tanaman', 'Nursery', 'Tanaman Hias', 'Bibit Buah']
+            };
+        }
+        if (['penggilingan_padi'].includes(k) || /\b(penggilingan padi|rice mill|selepan padi|gudang gabah)\b/i.test(k)) {
+            return {
+                title: 'Penggilingan Padi & Gudang Gabah',
+                amenities: [],
+                offices: ['company'],
+                shops: [],
+                tourism: [],
+                keywords: ['Penggilingan Padi', 'Rice Mill', 'Selepan Padi', 'Gudang Gabah']
+            };
+        }
+        if (['perikanan_tambak'].includes(k) || /\b(perikanan|tambak|budidaya ikan|pakan ikan)\b/i.test(k)) {
+            return {
+                title: 'Perikanan, Tambak & Pakan Ikan',
+                amenities: [],
+                offices: [],
+                shops: ['fishing', 'pet'],
+                tourism: [],
+                keywords: ['Budidaya Ikan', 'Tambak', 'Bibit Ikan', 'Pakan Ikan']
+            };
+        }
+        if (['pertanian'].includes(k) || /(tani|pertanian|peternakan|agribisnis)/i.test(k)) {
+            return {
+                title: 'Semua Bidang Pertanian & Agribisnis',
+                amenities: [],
+                offices: ['company'],
+                shops: ['agrarian', 'pet', 'garden_centre'],
+                tourism: [],
+                keywords: ['Toko Pertanian', 'Pupuk', 'Pakan Ternak', 'Peternakan', 'Penggilingan Padi']
+            };
+        }
+
+        // 15. Tempat Ibadah & Yayasan Sosial
+        if (['masjid'].includes(k) || /\b(masjid|mushola|masjid jami)\b/i.test(k)) {
+            return {
+                title: 'Masjid & Mushola',
+                amenities: ['place_of_worship'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Masjid', 'Mushola', 'Masjid Jami']
+            };
+        }
+        if (['gereja'].includes(k) || /\b(gereja|gbi|hkbp|katolik|protestan)\b/i.test(k)) {
+            return {
+                title: 'Gereja Kristen & Katolik',
+                amenities: ['place_of_worship'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Gereja', 'Gereja Katolik', 'Gereja Kristen', 'GBI', 'HKBP']
+            };
+        }
+        if (['pura_vihara'].includes(k) || /\b(pura|vihara|klenteng)\b/i.test(k)) {
+            return {
+                title: 'Pura, Vihara & Klenteng',
+                amenities: ['place_of_worship'],
+                offices: [],
+                shops: [],
+                tourism: [],
+                keywords: ['Pura', 'Vihara', 'Klenteng']
+            };
+        }
+        if (['panti_asuhan'].includes(k) || /\b(panti asuhan|yayasan yatim|lksa)\b/i.test(k)) {
+            return {
+                title: 'Panti Asuhan & Yayasan Sosial',
+                amenities: ['social_facility'],
+                offices: ['charity', 'ngo'],
+                shops: [],
+                tourism: [],
+                keywords: ['Panti Asuhan', 'Yayasan Yatim', 'LKSA']
+            };
+        }
+        if (['lembaga_zakat'].includes(k) || /\b(zakat|baznas|lazismu|lazisnu|dompet dhuafa|rumah zakat)\b/i.test(k)) {
+            return {
+                title: 'Lembaga Zakat & Infaq',
+                amenities: [],
+                offices: ['charity', 'ngo'],
+                shops: [],
+                tourism: [],
+                keywords: ['BAZNAS', 'LAZISMU', 'LAZISNU', 'Dompet Dhuafa', 'Rumah Zakat']
+            };
+        }
+        if (['tempat_ibadah', 'ibadah'].includes(k) || /(ibadah|religi|yayasan)/i.test(k)) {
+            return {
+                title: 'Semua Tempat Ibadah & Yayasan',
+                amenities: ['place_of_worship', 'social_facility'],
+                offices: ['charity'],
+                shops: [],
+                tourism: [],
+                keywords: ['Masjid', 'Gereja', 'Pura', 'Vihara', 'Panti Asuhan']
+            };
+        }
+
+        // Default Fallback
         return {
             title: k.charAt(0).toUpperCase() + k.slice(1),
             amenities: [],
+            offices: ['company'],
+            shops: [],
             tourism: [],
             keywords: [k]
         };
     },
 
     async fetchRealMapPlaces(queryObj) {
-        const q = ((queryObj && queryObj.category) || 'sekolah').trim();
+        const q = ((queryObj && queryObj.category) || 'semua_perusahaan').trim();
         const loc = (queryObj && queryObj.location) || 'Indonesia';
         const centerLat = parseFloat(queryObj && queryObj.lat) || -7.4705;
         const centerLng = parseFloat(queryObj && queryObj.lng) || 110.2178;
@@ -1243,7 +2286,23 @@ const ScraperClient = {
                 });
             }
 
-            // 2. Query tourism / lodging
+            // 2. Query structured offices (PT, CV, Corporate, Government, etc.)
+            if (taxonomy.offices && taxonomy.offices.length > 0) {
+                taxonomy.offices.forEach(off => {
+                    const u = `https://nominatim.openstreetmap.org/search?office=${encodeURIComponent(off)}&format=json&bounded=1&viewbox=${viewbox}&addressdetails=1&extratags=1&limit=20`;
+                    fetchPromises.push(fetch(u, { headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : []).catch(() => []));
+                });
+            }
+
+            // 3. Query structured shops (Retail, Minimarket, Hardware, etc.)
+            if (taxonomy.shops && taxonomy.shops.length > 0) {
+                taxonomy.shops.forEach(shp => {
+                    const u = `https://nominatim.openstreetmap.org/search?shop=${encodeURIComponent(shp)}&format=json&bounded=1&viewbox=${viewbox}&addressdetails=1&extratags=1&limit=20`;
+                    fetchPromises.push(fetch(u, { headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : []).catch(() => []));
+                });
+            }
+
+            // 4. Query tourism / lodging
             if (taxonomy.tourism && taxonomy.tourism.length > 0) {
                 taxonomy.tourism.forEach(tour => {
                     const u = `https://nominatim.openstreetmap.org/search?tourism=${encodeURIComponent(tour)}&format=json&bounded=1&viewbox=${viewbox}&addressdetails=1&extratags=1&limit=20`;
@@ -1251,7 +2310,7 @@ const ScraperClient = {
                 });
             }
 
-            // 3. Query text keywords
+            // 5. Query targeted Indonesian keywords
             const kwList = (taxonomy.keywords && taxonomy.keywords.length > 0) ? taxonomy.keywords.slice(0, 4) : [q];
             kwList.forEach(kw => {
                 const u = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(kw)}&format=json&bounded=1&viewbox=${viewbox}&addressdetails=1&extratags=1&limit=15`;

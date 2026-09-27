@@ -75,29 +75,330 @@ function humanizeOsmType($type, $class = '', $name = '') {
 function getCategoryTaxonomy($keyword) {
     $k = strtolower(trim($keyword));
 
-    // 1. Pendidikan & Edukasi
+    // 1. Perusahaan, Korporasi & Industri (PT / CV)
+    if (in_array($k, ['kantor_pt']) || preg_match('/\b(kantor pt|pt |perseroan terbatas)\b/i', $k)) {
+        return [
+            'title' => 'Kantor PT (Perseroan Terbatas)',
+            'amenities' => [],
+            'offices' => ['company', 'corporate'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['PT', 'Perseroan Terbatas']
+        ];
+    }
+    if (in_array($k, ['kantor_cv']) || preg_match('/\b(kantor cv|cv |commanditaire vennootschap|persekutuan komanditer)\b/i', $k)) {
+        return [
+            'title' => 'Kantor CV (Persekutuan Komanditer)',
+            'amenities' => [],
+            'offices' => ['company', 'commercial'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['CV', 'Persekutuan Komanditer']
+        ];
+    }
+    if (in_array($k, ['pabrik_manufaktur']) || preg_match('/\b(pabrik|manufaktur|industri|factory|manufacture)\b/i', $k)) {
+        return [
+            'title' => 'Pabrik & Industri Manufaktur',
+            'amenities' => [],
+            'offices' => ['company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Pabrik', 'Industri', 'Manufaktur']
+        ];
+    }
+    if (in_array($k, ['distributor_supplier']) || preg_match('/\b(distributor|supplier|agen grosir|suplier|wholesaler)\b/i', $k)) {
+        return [
+            'title' => 'Distributor, Supplier & Agen Grosir',
+            'amenities' => [],
+            'offices' => ['commercial', 'company'],
+            'shops' => ['wholesale'],
+            'tourism' => [],
+            'keywords' => ['Distributor', 'Supplier', 'Grosir', 'Agen']
+        ];
+    }
+    if (in_array($k, ['pergudangan_logistik']) || preg_match('/\b(gudang|pergudangan|warehouse|depo|depot)\b/i', $k)) {
+        return [
+            'title' => 'Pergudangan (Warehouse) & Depo',
+            'amenities' => [],
+            'offices' => ['logistics', 'company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Gudang', 'Pergudangan', 'Logistik', 'Depo']
+        ];
+    }
+    if (in_array($k, ['holding_corporate']) || preg_match('/\b(holding|head office|kantor pusat|corporate)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Pusat / Holding Corporate',
+            'amenities' => [],
+            'offices' => ['corporate', 'company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Holding', 'Kantor Pusat', 'Head Office']
+        ];
+    }
+    if (in_array($k, ['ekspor_impor']) || preg_match('/\b(ekspor|impor|export|import)\b/i', $k)) {
+        return [
+            'title' => 'Eksportir & Importir',
+            'amenities' => [],
+            'offices' => ['company', 'commercial'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Ekspor', 'Impor', 'Export Import']
+        ];
+    }
+    if (in_array($k, ['semua_perusahaan', 'perusahaan']) || preg_match('/\b(perusahaan|korporasi|kantor pt|kantor cv)\b/i', $k)) {
+        return [
+            'title' => 'Semua Kantor Perusahaan & PT/CV',
+            'amenities' => [],
+            'offices' => ['company', 'corporate', 'commercial'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['PT', 'CV', 'Perusahaan', 'Kantor']
+        ];
+    }
+
+    // 2. Konstruksi, Arsitektur & Properti
+    if (in_array($k, ['kontraktor']) || preg_match('/\b(kontraktor|pemborong|general contractor)\b/i', $k)) {
+        return [
+            'title' => 'Kontraktor Bangunan & Gedung',
+            'amenities' => [],
+            'offices' => ['company', 'engineer'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Kontraktor', 'Pemborong', 'Konstruksi']
+        ];
+    }
+    if (in_array($k, ['arsitek_desain']) || preg_match('/\b(arsitek|desain interior|arsitektur)\b/i', $k)) {
+        return [
+            'title' => 'Biro Arsitek & Desain Interior',
+            'amenities' => [],
+            'offices' => ['architect', 'company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Arsitek', 'Desain Interior', 'Studio Arsitektur']
+        ];
+    }
+    if (in_array($k, ['developer_perumahan']) || preg_match('/\b(developer|pengembang perumahan|real estate|residence)\b/i', $k)) {
+        return [
+            'title' => 'Developer Perumahan & Real Estate',
+            'amenities' => [],
+            'offices' => ['estate_agent', 'company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Developer', 'Perumahan', 'Property', 'Real Estate']
+        ];
+    }
+    if (in_array($k, ['jasa_renovasi']) || preg_match('/\b(renovasi|tukang bangunan|mandor)\b/i', $k)) {
+        return [
+            'title' => 'Jasa Renovasi & Mandor',
+            'amenities' => [],
+            'offices' => ['company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Renovasi', 'Mandor', 'Tukang Bangunan']
+        ];
+    }
+    if (in_array($k, ['distributor_material']) || preg_match('/\b(distributor material|semen|besi baja|bahan bangunan)\b/i', $k)) {
+        return [
+            'title' => 'Distributor Material Bangunan',
+            'amenities' => [],
+            'offices' => ['company'],
+            'shops' => ['hardware', 'trade'],
+            'tourism' => [],
+            'keywords' => ['Distributor Material', 'Besi Baja', 'Semen']
+        ];
+    }
+    if (in_array($k, ['semua_konstruksi', 'konstruksi']) || preg_match('/\b(konstruksi|properti|arsitektur)\b/i', $k)) {
+        return [
+            'title' => 'Semua Bidang Konstruksi & Properti',
+            'amenities' => [],
+            'offices' => ['architect', 'engineer', 'company'],
+            'shops' => ['hardware'],
+            'tourism' => [],
+            'keywords' => ['Kontraktor', 'Konstruksi', 'Arsitek', 'Developer']
+        ];
+    }
+
+    // 3. Jasa Bisnis, Legal & Profesional
+    if (in_array($k, ['notaris']) || preg_match('/\b(notaris|ppat)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Notaris & PPAT',
+            'amenities' => [],
+            'offices' => ['notary', 'lawyer'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Notaris', 'PPAT']
+        ];
+    }
+    if (in_array($k, ['kantor_hukum']) || preg_match('/\b(advokat|pengacara|kantor hukum|law firm|konsultan hukum)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Advokat & Konsultan Hukum',
+            'amenities' => [],
+            'offices' => ['lawyer'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Advokat', 'Pengacara', 'Konsultan Hukum', 'Law Firm']
+        ];
+    }
+    if (in_array($k, ['konsultan_akuntan']) || preg_match('/\b(akuntan|kap|konsultan pajak|audit)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Akuntan Publik (KAP) & Pajak',
+            'amenities' => [],
+            'offices' => ['accountant'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Akuntan Publik', 'KAP', 'Konsultan Pajak']
+        ];
+    }
+    if (in_array($k, ['konsultan_bisnis']) || preg_match('/\b(konsultan bisnis|konsultan manajemen)\b/i', $k)) {
+        return [
+            'title' => 'Konsultan Bisnis & Manajemen',
+            'amenities' => [],
+            'offices' => ['consulting', 'company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Konsultan Bisnis', 'Konsultan Manajemen']
+        ];
+    }
+    if (in_array($k, ['outsourcing_hrd']) || preg_match('/\b(outsourcing|hrd|headhunter|penyalur tenaga kerja)\b/i', $k)) {
+        return [
+            'title' => 'Jasa Outsourcing & HRD',
+            'amenities' => [],
+            'offices' => ['employment_agency', 'company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Outsourcing', 'Penyalur Kerja', 'HRD']
+        ];
+    }
+    if (in_array($k, ['percetakan']) || preg_match('/\b(percetakan|digital printing|printing|sablon|fotokopi|fotocopy)\b/i', $k)) {
+        return [
+            'title' => 'Percetakan & Digital Printing',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['copyshop', 'print_shop'],
+            'tourism' => [],
+            'keywords' => ['Percetakan', 'Digital Printing', 'Sablon', 'Fotokopi']
+        ];
+    }
+    if (in_array($k, ['laundry']) || preg_match('/\b(laundry|cuci baju|dry cleaning|cuci kiloan)\b/i', $k)) {
+        return [
+            'title' => 'Jasa Laundry Kiloan & Satuan',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['laundry', 'dry_cleaning'],
+            'tourism' => [],
+            'keywords' => ['Laundry', 'Cuci Kering', 'Laundry Kiloan']
+        ];
+    }
+    if (in_array($k, ['ekspedisi_kurir']) || preg_match('/\b(ekspedisi|cargo|jne|jnt|sicepat|pos|tiki|wahana|j&t)\b/i', $k)) {
+        return [
+            'title' => 'Ekspedisi, Cargo & Jasa Kirim',
+            'amenities' => ['post_office'],
+            'offices' => ['logistics'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['JNE', 'J&T', 'SiCepat', 'Cargo', 'Ekspedisi', 'Wahana']
+        ];
+    }
+    if (in_array($k, ['jasa_profesional', 'jasa']) || preg_match('/\b(jasa profesional|layanan bisnis)\b/i', $k)) {
+        return [
+            'title' => 'Semua Jasa & Layanan Bisnis',
+            'amenities' => [],
+            'offices' => ['lawyer', 'notary', 'accountant', 'company'],
+            'shops' => ['copyshop', 'laundry'],
+            'tourism' => [],
+            'keywords' => ['Notaris', 'Advokat', 'Konsultan', 'Jasa', 'Percetakan']
+        ];
+    }
+
+    // 4. Teknologi, IT & Telekomunikasi
+    if (in_array($k, ['software_house']) || preg_match('/\b(software house|web dev|developer aplikasi|software)\b/i', $k)) {
+        return [
+            'title' => 'Software House & Startup Digital',
+            'amenities' => [],
+            'offices' => ['it', 'company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Software House', 'Web Development', 'Aplikasi Mobile']
+        ];
+    }
+    if (in_array($k, ['agency_digital']) || preg_match('/\b(agency|digital marketing|seo agency|creative agency)\b/i', $k)) {
+        return [
+            'title' => 'Digital Marketing & SEO Agency',
+            'amenities' => [],
+            'offices' => ['advertising', 'it'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Digital Marketing', 'Agency', 'SEO Agency', 'Creative Agency']
+        ];
+    }
+    if (in_array($k, ['isp_telekomunikasi']) || preg_match('/\b(isp|internet provider|indihome|biznet|myrepublic|telkomsel|xl|provider)\b/i', $k)) {
+        return [
+            'title' => 'ISP & Provider Telekomunikasi',
+            'amenities' => [],
+            'offices' => ['telecommunication', 'company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Telkom', 'IndiHome', 'Biznet', 'MyRepublic', 'Internet Provider']
+        ];
+    }
+    if (in_array($k, ['service_komputer']) || preg_match('/\b(service komputer|servis laptop|perbaikan komputer)\b/i', $k)) {
+        return [
+            'title' => 'Servis Komputer, Laptop & Jaringan',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['computer'],
+            'tourism' => [],
+            'keywords' => ['Service Laptop', 'Servis Komputer', 'Perbaikan Komputer']
+        ];
+    }
+    if (in_array($k, ['toko_komputer']) || preg_match('/\b(toko komputer|rakitan pc|sparepart pc|laptop)\b/i', $k)) {
+        return [
+            'title' => 'Toko Komputer & Sparepart PC',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['computer'],
+            'tourism' => [],
+            'keywords' => ['Toko Komputer', 'Rakitan PC', 'Laptop Bekas']
+        ];
+    }
+    if (in_array($k, ['semua_it', 'it']) || preg_match('/\b(teknologi|informasi|startup)\b/i', $k)) {
+        return [
+            'title' => 'Semua Bidang IT & Digital',
+            'amenities' => [],
+            'offices' => ['it', 'telecommunication', 'company'],
+            'shops' => ['computer'],
+            'tourism' => [],
+            'keywords' => ['Software House', 'IT Consultant', 'Digital Agency', 'Web Developer']
+        ];
+    }
+
+    // 5. Pendidikan & Edukasi
     if (in_array($k, ['sd', 'sekolah dasar']) || preg_match('/\b(sd|sekolah dasar|mi|madrasah ibtidaiyah)\b/i', $k)) {
         return [
             'title' => 'Sekolah Dasar (SD / MI)',
             'amenities' => ['school'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['SD', 'Sekolah Dasar', 'MI', 'Madrasah Ibtidaiyah']
+            'keywords' => ['SD', 'Sekolah Dasar', 'MI']
         ];
     }
     if (in_array($k, ['smp', 'sekolah menengah']) || preg_match('/\b(smp|mts|madrasah tsanawiyah)\b/i', $k)) {
         return [
             'title' => 'SMP & MTs',
             'amenities' => ['school'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['SMP', 'MTs', 'Sekolah Menengah Pertama']
+            'keywords' => ['SMP', 'MTs']
         ];
     }
     if (in_array($k, ['sma']) || preg_match('/\b(sma|madrasah aliyah|ma)\b/i', $k)) {
         return [
             'title' => 'SMA & MA',
             'amenities' => ['school'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['SMA', 'Madrasah Aliyah', 'Sekolah Menengah Atas']
@@ -107,6 +408,7 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'SMK Kejuruan',
             'amenities' => ['school'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['SMK', 'Sekolah Menengah Kejuruan']
@@ -116,6 +418,7 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Sekolah Tinggi, Politeknik & Akademi',
             'amenities' => ['college', 'university'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Sekolah Tinggi', 'STMIK', 'STIE', 'Politeknik', 'Akademi']
@@ -125,6 +428,7 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Universitas & Institut',
             'amenities' => ['university', 'college'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Universitas', 'Institut', 'Kampus']
@@ -134,6 +438,7 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Bimbingan Belajar & Les Privat',
             'amenities' => ['language_school', 'music_school'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Bimbel', 'Bimbingan Belajar', 'Les Privat', 'Kumon', 'Ganesha']
@@ -143,62 +448,79 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'LPK & Kursus Pelatihan',
             'amenities' => ['language_school', 'driving_school', 'music_school'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['LPK', 'Kursus', 'Pelatihan', 'Sekolah Mengemudi']
         ];
     }
-    if (in_array($k, ['tk_paud', 'tk', 'paud']) || preg_match('/\b(tk|paud|taman kanak|ra|raudhatul athfal)\b/i', $k)) {
+    if (in_array($k, ['tk_paud', 'tk', 'paud']) || preg_match('/\b(tk|paud|taman kanak|ra)\b/i', $k)) {
         return [
             'title' => 'TK & PAUD',
             'amenities' => ['kindergarten'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['TK', 'PAUD', 'Taman Kanak-kanak', 'Playgroup']
+            'keywords' => ['TK', 'PAUD', 'Taman Kanak-kanak']
         ];
     }
     if (in_array($k, ['pesantren']) || preg_match('/\b(pesantren|pondok pesantren|ponpes)\b/i', $k)) {
         return [
             'title' => 'Pondok Pesantren',
             'amenities' => ['school'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['Pondok Pesantren', 'Ponpes', 'Pesantren', 'Islamic Boarding School']
+            'keywords' => ['Pondok Pesantren', 'Ponpes', 'Pesantren']
         ];
     }
     if (in_array($k, ['slb']) || preg_match('/\b(slb|luar biasa)\b/i', $k)) {
         return [
             'title' => 'Sekolah Luar Biasa (SLB)',
             'amenities' => ['school'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['SLB', 'Sekolah Luar Biasa', 'Autis']
         ];
     }
-    if (preg_match('/(sekolah|edukasi|pendidikan|school|education)/i', $k)) {
+    if (in_array($k, ['sekolah', 'pendidikan']) || preg_match('/(sekolah|edukasi|pendidikan|school|education)/i', $k)) {
         return [
             'title' => 'Semua Instansi Pendidikan',
             'amenities' => ['school', 'kindergarten', 'college', 'university'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['sekolah', 'SD', 'SMP', 'SMA', 'SMK', 'Madrasah', 'Bimbel', 'Universitas', 'Ponpes', 'TK']
+            'keywords' => ['sekolah', 'SD', 'SMP', 'SMA', 'SMK', 'Madrasah', 'Bimbel', 'Universitas', 'Ponpes']
         ];
     }
 
-    // 2. Kesehatan & Medis
+    // 6. Kesehatan, Medis & Farmasi
     if (in_array($k, ['rumah_sakit']) || preg_match('/\b(rumah sakit|rs|rsud|hospital)\b/i', $k)) {
         return [
             'title' => 'Rumah Sakit',
             'amenities' => ['hospital'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['Rumah Sakit', 'RSUD', 'RS', 'Hospital']
+            'keywords' => ['Rumah Sakit', 'RSUD', 'RS']
+        ];
+    }
+    if (in_array($k, ['rsia']) || preg_match('/\b(rsia|ibu dan anak|rumah bersalin)\b/i', $k)) {
+        return [
+            'title' => 'RSIA (Rumah Sakit Ibu & Anak)',
+            'amenities' => ['hospital', 'clinic'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['RSIA', 'Rumah Sakit Ibu dan Anak', 'Rumah Bersalin']
         ];
     }
     if (in_array($k, ['klinik_gigi']) || preg_match('/\b(klinik gigi|dokter gigi|dental)\b/i', $k)) {
         return [
             'title' => 'Klinik Gigi & Praktik Dokter Gigi',
             'amenities' => ['dentist', 'clinic'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Klinik Gigi', 'Dokter Gigi', 'Dental']
@@ -208,6 +530,7 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Klinik Pratama & Umum',
             'amenities' => ['clinic', 'doctors'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Klinik', 'Klinik Pratama', 'Balai Pengobatan']
@@ -217,6 +540,7 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Puskesmas',
             'amenities' => ['clinic', 'hospital'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Puskesmas', 'Puskesmas Pembantu']
@@ -226,6 +550,7 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Apotek & Toko Obat',
             'amenities' => ['pharmacy'],
+            'offices' => [],
             'shops' => ['chemist'],
             'tourism' => [],
             'keywords' => ['Apotek', 'Farmasi', 'Toko Obat']
@@ -235,6 +560,7 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Praktik Dokter Mandiri',
             'amenities' => ['doctors'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Praktik Dokter', 'Dokter Spesialis', 'dr.']
@@ -244,6 +570,7 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Praktik Bidan Mandiri',
             'amenities' => ['clinic'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Bidan', 'Praktik Bidan', 'Rumah Bersalin']
@@ -253,35 +580,59 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Laboratorium Medis',
             'amenities' => ['clinic', 'hospital'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Laboratorium', 'Lab Klinik', 'Prodia']
         ];
     }
-    if (preg_match('/(kesehatan|medis|health|medical|dokter|bidan)/i', $k)) {
+    if (in_array($k, ['optik']) || preg_match('/\b(optik|kacamata)\b/i', $k)) {
+        return [
+            'title' => 'Optik & Toko Kacamata',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['optician'],
+            'tourism' => [],
+            'keywords' => ['Optik', 'Toko Kacamata']
+        ];
+    }
+    if (in_array($k, ['distributor_alkes']) || preg_match('/\b(alkes|alat kesehatan|distributor farmasi)\b/i', $k)) {
+        return [
+            'title' => 'Distributor Alat Kesehatan & Farmasi',
+            'amenities' => [],
+            'offices' => ['company'],
+            'shops' => ['medical_supply', 'wholesale'],
+            'tourism' => [],
+            'keywords' => ['Alkes', 'Alat Kesehatan', 'Distributor Farmasi']
+        ];
+    }
+    if (in_array($k, ['kesehatan']) || preg_match('/(kesehatan|medis|health|dokter|bidan)/i', $k)) {
         return [
             'title' => 'Layanan Kesehatan & Medis',
             'amenities' => ['hospital', 'clinic', 'pharmacy', 'doctors', 'dentist'],
-            'shops' => ['chemist', 'optician'],
+            'offices' => [],
+            'shops' => [],
             'tourism' => [],
             'keywords' => ['Rumah Sakit', 'RSUD', 'Klinik', 'Apotek', 'Puskesmas', 'Dokter']
         ];
     }
 
-    // 3. Pemerintah & Layanan Publik
+    // 7. Instansi Pemerintah & Layanan Publik
     if (in_array($k, ['kantor_dinas']) || preg_match('/\b(dinas|bumn|pemda|balai kota|bappeda)\b/i', $k)) {
         return [
             'title' => 'Kantor Dinas & Instansi',
             'amenities' => ['townhall'],
+            'offices' => ['government'],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['Dinas', 'Kantor Dinas', 'Inspektorat', 'BPKAD', 'Bappeda']
+            'keywords' => ['Dinas', 'Kantor Dinas', 'BPKAD', 'Bappeda']
         ];
     }
     if (in_array($k, ['kecamatan']) || preg_match('/\b(kecamatan|kantor camat)\b/i', $k)) {
         return [
             'title' => 'Kantor Kecamatan',
             'amenities' => ['townhall'],
+            'offices' => ['government'],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Kantor Kecamatan', 'Kecamatan']
@@ -291,6 +642,7 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Kantor Kelurahan & Desa',
             'amenities' => ['townhall'],
+            'offices' => ['government'],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Kantor Kelurahan', 'Balai Desa', 'Kelurahan', 'Desa']
@@ -300,15 +652,17 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Kantor Pajak & Samsat',
             'amenities' => ['townhall'],
+            'offices' => ['government'],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['KPP', 'Kantor Pajak', 'Samsat', 'KPP Pratama']
+            'keywords' => ['KPP', 'Kantor Pajak', 'Samsat']
         ];
     }
     if (in_array($k, ['kepolisian', 'polisi']) || preg_match('/\b(polisi|polsek|polres|polda)\b/i', $k)) {
         return [
             'title' => 'Kantor Polisi (Polsek & Polres)',
             'amenities' => ['police'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Polsek', 'Polres', 'Kantor Polisi', 'Polda']
@@ -318,6 +672,7 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Kantor Militer & TNI',
             'amenities' => ['police', 'townhall'],
+            'offices' => ['government'],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Koramil', 'Kodim', 'TNI', 'Secaba', 'Rindam']
@@ -327,145 +682,684 @@ function getCategoryTaxonomy($keyword) {
         return [
             'title' => 'Kantor Pos & Logistik',
             'amenities' => ['post_office'],
+            'offices' => ['logistics'],
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Kantor Pos', 'Pos Indonesia']
         ];
     }
-    if (in_array($k, ['layanan_publik']) || preg_match('/\b(bpjs|damkar|pemadam)\b/i', $k)) {
+    if (in_array($k, ['bpjs']) || preg_match('/\b(bpjs|bpjs kesehatan|bpjs ketenagakerjaan)\b/i', $k)) {
         return [
-            'title' => 'Layanan Sosial & BPJS',
-            'amenities' => ['townhall', 'fire_station'],
+            'title' => 'Kantor BPJS Kesehatan & Ketenagakerjaan',
+            'amenities' => ['townhall'],
+            'offices' => ['government', 'company'],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['BPJS', 'Damkar', 'Pemadam Kebakaran']
+            'keywords' => ['BPJS Kesehatan', 'BPJS Ketenagakerjaan', 'BPJS']
         ];
     }
-    if (preg_match('/(pemerintah|instansi|kantor|government|office)/i', $k)) {
+    if (in_array($k, ['kantor_bpn']) || preg_match('/\b(bpn|pertanahan)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Pertanahan (BPN)',
+            'amenities' => ['townhall'],
+            'offices' => ['government'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['BPN', 'Badan Pertanahan', 'Kantor Pertanahan']
+        ];
+    }
+    if (in_array($k, ['pemerintah']) || preg_match('/\b(pemerintah|instansi|kantor|government)\b/i', $k)) {
         return [
             'title' => 'Instansi Pemerintah & Kantor',
             'amenities' => ['townhall', 'police', 'post_office', 'courthouse'],
+            'offices' => ['government'],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['Kantor', 'Dinas', 'Kecamatan', 'Kelurahan', 'Polsek', 'Polres', 'KPP']
+            'keywords' => ['Kantor', 'Dinas', 'Kecamatan', 'Kelurahan', 'Polsek', 'Polres']
         ];
     }
 
-    // 4. Kuliner & F&B
+    // 8. Kuliner, Makanan & Minuman
     if (in_array($k, ['cafe']) || preg_match('/\b(cafe|kafe|kopi|coffee|warkop)\b/i', $k)) {
         return [
             'title' => 'Kafe & Coffee Shop',
             'amenities' => ['cafe'],
-            'shops' => ['coffee'],
+            'offices' => [],
+            'shops' => [],
             'tourism' => [],
             'keywords' => ['Cafe', 'Kopi', 'Coffee', 'Kafe', 'Warkop']
         ];
     }
-    if (in_array($k, ['resto']) || preg_match('/\b(resto|restoran|rumah makan|kuliner)\b/i', $k)) {
+    if (in_array($k, ['resto']) || preg_match('/\b(resto|restoran|rumah makan)\b/i', $k)) {
         return [
             'title' => 'Restoran & Rumah Makan',
             'amenities' => ['restaurant', 'fast_food', 'food_court'],
+            'offices' => [],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['Restoran', 'Rumah Makan', 'Resto', 'Kuliner', 'Dapur']
+            'keywords' => ['Restoran', 'Rumah Makan', 'Resto']
+        ];
+    }
+    if (in_array($k, ['warung']) || preg_match('/\b(warung|warteg|warung makan)\b/i', $k)) {
+        return [
+            'title' => 'Warung Makan & Warteg',
+            'amenities' => ['restaurant', 'fast_food'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Warung Makan', 'Warteg', 'Warung Nasi']
+        ];
+    }
+    if (in_array($k, ['bakso_mie_soto']) || preg_match('/\b(bakso|soto|mie ayam|mie ramen)\b/i', $k)) {
+        return [
+            'title' => 'Bakso, Soto & Mie Ayam',
+            'amenities' => ['restaurant', 'fast_food'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Bakso', 'Soto', 'Mie Ayam']
+        ];
+    }
+    if (in_array($k, ['fast_food']) || preg_match('/\b(fast food|fried chicken|burger)\b/i', $k)) {
+        return [
+            'title' => 'Kuliner Cepat Saji (Fast Food)',
+            'amenities' => ['fast_food'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Fried Chicken', 'Burger', 'Fast Food', 'Rocket Chicken']
         ];
     }
     if (in_array($k, ['bakery']) || preg_match('/\b(bakery|roti|kue|pastry)\b/i', $k)) {
         return [
             'title' => 'Bakery & Toko Roti',
             'amenities' => [],
-            'shops' => ['bakery'],
+            'offices' => [],
+            'shops' => ['bakery', 'pastry'],
             'tourism' => [],
-            'keywords' => ['Bakery', 'Roti', 'Toko Roti', 'Kue']
+            'keywords' => ['Bakery', 'Toko Roti', 'Kue']
         ];
     }
-    if (preg_match('/(makan|warung|kuliner|bakso|mie|soto|food)/i', $k)) {
+    if (in_array($k, ['catering']) || preg_match('/\b(catering|katering|prasmanan)\b/i', $k)) {
+        return [
+            'title' => 'Jasa Catering & Prasmanan',
+            'amenities' => [],
+            'offices' => ['company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Catering', 'Katering', 'Prasmanan']
+        ];
+    }
+    if (in_array($k, ['depot_air']) || preg_match('/\b(depot air|air isi ulang|galon)\b/i', $k)) {
+        return [
+            'title' => 'Depot Air Minum Isi Ulang',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['water'],
+            'tourism' => [],
+            'keywords' => ['Depot Air', 'Air Isi Ulang', 'Depot Galon']
+        ];
+    }
+    if (in_array($k, ['kuliner']) || preg_match('/(kuliner|makan)/i', $k)) {
         return [
             'title' => 'Kuliner & Tempat Makan',
-            'amenities' => ['restaurant', 'fast_food', 'cafe', 'food_court'],
-            'shops' => ['bakery'],
+            'amenities' => ['restaurant', 'fast_food', 'cafe'],
+            'offices' => [],
+            'shops' => [],
             'tourism' => [],
             'keywords' => ['Warung', 'Rumah Makan', 'Bakso', 'Mie', 'Soto', 'Kuliner']
         ];
     }
 
-    // 5. Otomotif & Bengkel
-    if (in_array($k, ['bengkel_motor']) || preg_match('/\b(bengkel motor|servis motor|ahass)\b/i', $k)) {
+    // 9. Perdagangan, Retail & Toko
+    if (in_array($k, ['minimarket']) || preg_match('/\b(minimarket|indomaret|alfamart|supermarket|swalayan)\b/i', $k)) {
         return [
-            'title' => 'Bengkel Motor',
+            'title' => 'Minimarket & Supermarket',
             'amenities' => [],
-            'shops' => ['motorcycle_repair', 'motorcycle_parts'],
+            'offices' => [],
+            'shops' => ['convenience', 'supermarket'],
             'tourism' => [],
-            'keywords' => ['Bengkel Motor', 'Servis Motor', 'AHASS', 'Yamaha', 'Honda']
+            'keywords' => ['Indomaret', 'Alfamart', 'Minimarket', 'Supermarket', 'Swalayan']
         ];
     }
-    if (in_array($k, ['bengkel_mobil']) || preg_match('/\b(bengkel mobil|servis mobil|ganti oli)\b/i', $k)) {
+    if (in_array($k, ['toko_kelontong']) || preg_match('/\b(kelontong|sembako|toko sembako)\b/i', $k)) {
         return [
-            'title' => 'Bengkel Mobil',
+            'title' => 'Toko Sembako & Kelontong',
             'amenities' => [],
-            'shops' => ['car_repair', 'car_parts', 'tyres'],
+            'offices' => [],
+            'shops' => ['convenience', 'general'],
             'tourism' => [],
-            'keywords' => ['Bengkel Mobil', 'Servis Mobil', 'Bengkel Las', 'Body Repair']
+            'keywords' => ['Toko Sembako', 'Toko Kelontong', 'Agen Sembako']
         ];
     }
-    if (preg_match('/(bengkel|otomotif|motor|mobil|automotive)/i', $k)) {
+    if (in_array($k, ['elektronik']) || preg_match('/\b(elektronik|gadget|toko hp|konter pulsa)\b/i', $k)) {
         return [
-            'title' => 'Otomotif & Bengkel',
-            'amenities' => ['fuel', 'car_wash'],
-            'shops' => ['car_repair', 'motorcycle_repair', 'tyres', 'car_parts'],
+            'title' => 'Toko Elektronik, Gadget & HP',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['electronics', 'mobile_phone'],
             'tourism' => [],
-            'keywords' => ['Bengkel', 'Servis Motor', 'Servis Mobil', 'Toko Ban', 'Cuci Mobil']
+            'keywords' => ['Toko Elektronik', 'Toko HP', 'Konter Pulsa', 'Servis HP']
         ];
     }
-
-    // 6. Akomodasi & Hotel
-    if (preg_match('/(hotel|penginapan|homestay|villa|kost|resort|akomodasi)/i', $k)) {
+    if (in_array($k, ['fashion']) || preg_match('/\b(fashion|baju|butik|distro|pakaian)\b/i', $k)) {
         return [
-            'title' => 'Hotel & Penginapan',
+            'title' => 'Toko Pakaian, Butik & Distro',
             'amenities' => [],
+            'offices' => [],
+            'shops' => ['clothes', 'boutique'],
+            'tourism' => [],
+            'keywords' => ['Toko Baju', 'Butik', 'Distro', 'Fashion']
+        ];
+    }
+    if (in_array($k, ['toko_bangunan']) || preg_match('/\b(toko bangunan|material bangunan|tb )\b/i', $k)) {
+        return [
+            'title' => 'Toko Bangunan & Material',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['hardware', 'doityourself', 'trade'],
+            'tourism' => [],
+            'keywords' => ['Toko Bangunan', 'TB', 'Material Bangunan']
+        ];
+    }
+    if (in_array($k, ['petshop']) || preg_match('/\b(petshop|pet shop|pakan kucing|pakan burung)\b/i', $k)) {
+        return [
+            'title' => 'Pet Shop & Pakan Hewan',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['pet'],
+            'tourism' => [],
+            'keywords' => ['Pet Shop', 'Pakan Kucing', 'Pakan Burung']
+        ];
+    }
+    if (in_array($k, ['toko_buku_atk']) || preg_match('/\b(toko buku|atk|alat tulis)\b/i', $k)) {
+        return [
+            'title' => 'Toko Buku & Alat Tulis (ATK)',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['books', 'stationery'],
+            'tourism' => [],
+            'keywords' => ['Toko ATK', 'Toko Buku', 'Fotocopy & ATK']
+        ];
+    }
+    if (in_array($k, ['toko_emas']) || preg_match('/\b(toko emas|perhiasan)\b/i', $k)) {
+        return [
+            'title' => 'Toko Emas & Perhiasan',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['jewelry'],
+            'tourism' => [],
+            'keywords' => ['Toko Emas', 'Perhiasan Emas']
+        ];
+    }
+    if (in_array($k, ['furniture_mebel']) || preg_match('/\b(mebel|furniture|springbed)\b/i', $k)) {
+        return [
+            'title' => 'Toko Furniture, Mebel & Dekorasi',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['furniture'],
+            'tourism' => [],
+            'keywords' => ['Mebel', 'Toko Furniture', 'Kasur Springbed']
+        ];
+    }
+    if (in_array($k, ['pasar_tradisional']) || preg_match('/\b(pasar|pasar tradisional)\b/i', $k)) {
+        return [
+            'title' => 'Pasar Tradisional & Kios Pasar',
+            'amenities' => ['marketplace'],
+            'offices' => [],
             'shops' => [],
-            'tourism' => ['hotel', 'guest_house', 'hostel', 'motel'],
-            'keywords' => ['Hotel', 'Penginapan', 'Homestay', 'Villa', 'Guesthouse', 'Kost']
+            'tourism' => [],
+            'keywords' => ['Pasar', 'Pasar Tradisional']
+        ];
+    }
+    if (in_array($k, ['retail']) || preg_match('/(toko|retail)/i', $k)) {
+        return [
+            'title' => 'Retail & Toko',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['convenience', 'supermarket', 'general', 'clothes', 'electronics'],
+            'tourism' => [],
+            'keywords' => ['Toko', 'Minimarket', 'Supermarket', 'Grosir']
         ];
     }
 
-    // 7. Kecantikan & Salon
-    if (preg_match('/(salon|barber|barbershop|pangkas|rambut|kecantikan|skincare|spa|gym)/i', $k)) {
+    // 10. Otomotif & Transportasi
+    if (in_array($k, ['bengkel_motor']) || preg_match('/\b(bengkel motor|ahass|servis motor|tambal ban)\b/i', $k)) {
         return [
-            'title' => 'Kecantikan & Salon',
+            'title' => 'Bengkel Motor & Servis Resmi',
             'amenities' => [],
+            'offices' => [],
+            'shops' => ['motorcycle_repair', 'motorcycle'],
+            'tourism' => [],
+            'keywords' => ['Bengkel Motor', 'AHASS', 'Yamaha Servis', 'Tambal Ban']
+        ];
+    }
+    if (in_array($k, ['bengkel_mobil']) || preg_match('/\b(bengkel mobil|ganti oli|tune up|bengkel ac mobil)\b/i', $k)) {
+        return [
+            'title' => 'Bengkel Mobil & Ganti Oli',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['car_repair', 'car_parts'],
+            'tourism' => [],
+            'keywords' => ['Bengkel Mobil', 'Ganti Oli', 'Tune Up', 'Bengkel AC Mobil']
+        ];
+    }
+    if (in_array($k, ['toko_ban_aki']) || preg_match('/\b(toko ban|toko aki|spooring|balancing)\b/i', $k)) {
+        return [
+            'title' => 'Toko Ban, Velg & Aki',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['tyres', 'car_parts'],
+            'tourism' => [],
+            'keywords' => ['Toko Ban', 'Toko Aki', 'Spooring', 'Balancing']
+        ];
+    }
+    if (in_array($k, ['cuci_kendaraan']) || preg_match('/\b(cuci mobil|cuci motor|car wash|doorsmeer)\b/i', $k)) {
+        return [
+            'title' => 'Cuci Mobil & Motor (Doorsmeer)',
+            'amenities' => ['car_wash'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Cuci Mobil', 'Cuci Motor', 'Car Wash', 'Doorsmeer']
+        ];
+    }
+    if (in_array($k, ['spbu']) || preg_match('/\b(spbu|pertamina|pom bensin|shell)\b/i', $k)) {
+        return [
+            'title' => 'SPBU & Pengisian Bahan Bakar',
+            'amenities' => ['fuel'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['SPBU', 'Pertamina', 'Pom Bensin']
+        ];
+    }
+    if (in_array($k, ['dealer_showroom']) || preg_match('/\b(dealer|showroom mobil|showroom motor)\b/i', $k)) {
+        return [
+            'title' => 'Dealer Mobil & Showroom Motor',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['car', 'motorcycle'],
+            'tourism' => [],
+            'keywords' => ['Dealer', 'Showroom Motor', 'Showroom Mobil']
+        ];
+    }
+    if (in_array($k, ['rental_travel']) || preg_match('/\b(rental mobil|sewa mobil|travel antar kota)\b/i', $k)) {
+        return [
+            'title' => 'Rental Mobil & Travel Antar Kota',
+            'amenities' => [],
+            'offices' => ['travel_agent'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Rental Mobil', 'Sewa Mobil', 'Agen Travel', 'Travel Antar Kota']
+        ];
+    }
+    if (in_array($k, ['otomotif']) || preg_match('/(otomotif|bengkel)/i', $k)) {
+        return [
+            'title' => 'Semua Layanan Otomotif',
+            'amenities' => ['fuel', 'car_wash'],
+            'offices' => [],
+            'shops' => ['car_repair', 'motorcycle_repair', 'car', 'motorcycle'],
+            'tourism' => [],
+            'keywords' => ['Bengkel', 'Otomotif', 'Servis Mobil', 'Servis Motor', 'SPBU']
+        ];
+    }
+
+    // 11. Akomodasi, Pariwisata & Hiburan
+    if (in_array($k, ['hotel']) || preg_match('/\b(hotel|city hotel|hotel bintang)\b/i', $k)) {
+        return [
+            'title' => 'Hotel Berbintang & Budget',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => ['hotel'],
+            'keywords' => ['Hotel', 'City Hotel', 'Hotel Bintang']
+        ];
+    }
+    if (in_array($k, ['penginapan']) || preg_match('/\b(penginapan|homestay|guesthouse|reddoorz|oyo)\b/i', $k)) {
+        return [
+            'title' => 'Penginapan, Guesthouse & Homestay',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => ['guest_house', 'hostel', 'motel'],
+            'keywords' => ['Penginapan', 'Homestay', 'Guesthouse', 'RedDoorz', 'OYO']
+        ];
+    }
+    if (in_array($k, ['villa']) || preg_match('/\b(villa|resort|glamping)\b/i', $k)) {
+        return [
+            'title' => 'Villa & Resort',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => ['chalet', 'hotel'],
+            'keywords' => ['Villa', 'Resort', 'Glamping']
+        ];
+    }
+    if (in_array($k, ['kost']) || preg_match('/\b(kost|kos|kontrakan)\b/i', $k)) {
+        return [
+            'title' => 'Rumah Kost & Kontrakan',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => ['guest_house'],
+            'keywords' => ['Kost', 'Kos Putra', 'Kos Putri', 'Kontrakan']
+        ];
+    }
+    if (in_array($k, ['wisata']) || preg_match('/\b(wisata|taman rekreasi|objek wisata)\b/i', $k)) {
+        return [
+            'title' => 'Tempat Wisata & Rekreasi',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => ['attraction', 'theme_park', 'viewpoint'],
+            'keywords' => ['Wisata', 'Objek Wisata', 'Taman Rekreasi']
+        ];
+    }
+    if (in_array($k, ['gedung_pertemuan']) || preg_match('/\b(gedung pertemuan|ballroom|convention hall|wedding venue)\b/i', $k)) {
+        return [
+            'title' => 'Gedung Pertemuan & Wedding Venue',
+            'amenities' => ['events_venue', 'community_centre'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Gedung Pertemuan', 'Ballroom', 'Convention Hall', 'Wedding Venue']
+        ];
+    }
+    if (in_array($k, ['akomodasi']) || preg_match('/(hotel|penginapan|homestay|villa|kost|wisata)/i', $k)) {
+        return [
+            'title' => 'Semua Akomodasi & Wisata',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => ['hotel', 'guest_house', 'hostel', 'motel', 'theme_park'],
+            'keywords' => ['Hotel', 'Penginapan', 'Homestay', 'Villa', 'Kost', 'Wisata']
+        ];
+    }
+
+    // 12. Kecantikan, Kebugaran & Relaksasi
+    if (in_array($k, ['salon']) || preg_match('/\b(salon|salon rambut|mua)\b/i', $k)) {
+        return [
+            'title' => 'Salon Kecantikan & Rambut',
+            'amenities' => [],
+            'offices' => [],
             'shops' => ['hairdresser', 'beauty'],
+            'tourism' => [],
+            'keywords' => ['Salon Kecantikan', 'Salon Rambut', 'MUA']
+        ];
+    }
+    if (in_array($k, ['barbershop']) || preg_match('/\b(barber|barbershop|pangkas pria|cukur)\b/i', $k)) {
+        return [
+            'title' => 'Barbershop & Pangkas Pria',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['hairdresser'],
+            'tourism' => [],
+            'keywords' => ['Barbershop', 'Pangkas Rambut', 'Cukur Rambut']
+        ];
+    }
+    if (in_array($k, ['klinik_estetika']) || preg_match('/\b(klinik estetika|klinik kecantikan|skincare|natasha|erha)\b/i', $k)) {
+        return [
+            'title' => 'Klinik Estetika & Skincare',
+            'amenities' => ['clinic'],
+            'offices' => [],
+            'shops' => ['beauty'],
+            'tourism' => [],
+            'keywords' => ['Klinik Estetika', 'Klinik Kecantikan', 'Skincare', 'Natasha', 'Erha']
+        ];
+    }
+    if (in_array($k, ['spa']) || preg_match('/\b(spa|refleksi|reflexology|massage|pijat)\b/i', $k)) {
+        return [
+            'title' => 'Spa & Pijat Relaksasi',
+            'amenities' => ['spa'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Spa', 'Pijat Refleksi', 'Reflexology', 'Massage']
+        ];
+    }
+    if (in_array($k, ['gym']) || preg_match('/\b(gym|fitness|pusat kebugaran)\b/i', $k)) {
+        return [
+            'title' => 'Pusat Kebugaran, Gym & Fitness',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Gym', 'Fitness', 'Pusat Kebugaran']
+        ];
+    }
+    if (in_array($k, ['lapangan_olahraga']) || preg_match('/\b(futsal|badminton|gor|lapangan)\b/i', $k)) {
+        return [
+            'title' => 'Lapangan Olahraga & Futsal',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Futsal', 'Badminton', 'Gor Olahraga']
+        ];
+    }
+    if (in_array($k, ['kecantikan']) || preg_match('/(salon|barber|barbershop|rambut|kecantikan|skincare|spa|gym)/i', $k)) {
+        return [
+            'title' => 'Semua Layanan Kecantikan & Kebugaran',
+            'amenities' => ['spa'],
+            'offices' => [],
+            'shops' => ['beauty', 'hairdresser'],
             'tourism' => [],
             'keywords' => ['Salon', 'Barbershop', 'Pangkas Rambut', 'Skincare', 'Spa', 'Gym']
         ];
     }
 
-    // 8. Laundry
-    if (preg_match('/(laundry|cuci|dry clean)/i', $k)) {
+    // 13. Lembaga Keuangan & Asuransi
+    if (in_array($k, ['bpr_syariah']) || preg_match('/\b(bpr|bank syariah|perkreditan rakyat)\b/i', $k)) {
         return [
-            'title' => 'Jasa Laundry',
-            'amenities' => [],
-            'shops' => ['laundry'],
+            'title' => 'Bank Perkreditan Rakyat (BPR) & Syariah',
+            'amenities' => ['bank'],
+            'offices' => [],
+            'shops' => [],
             'tourism' => [],
-            'keywords' => ['Laundry', 'Cuci Kiloan', 'Dry Clean']
+            'keywords' => ['BPR', 'Bank Perkreditan Rakyat', 'Bank Syariah']
+        ];
+    }
+    if (in_array($k, ['bank']) || preg_match('/\b(bank|mandiri|bca|bri|bni|bsi|jateng)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Cabang Bank',
+            'amenities' => ['bank'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Bank Mandiri', 'Bank BCA', 'Bank BRI', 'Bank BNI', 'Bank Jateng', 'Bank BSI']
+        ];
+    }
+    if (in_array($k, ['atm']) || preg_match('/\b(atm|tarik tunai|cdm)\b/i', $k)) {
+        return [
+            'title' => 'Galeri ATM & CDM',
+            'amenities' => ['atm'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['ATM', 'Galeri ATM', 'Tarik Tunai']
+        ];
+    }
+    if (in_array($k, ['koperasi']) || preg_match('/\b(koperasi|ksp|bmt)\b/i', $k)) {
+        return [
+            'title' => 'Koperasi Simpan Pinjam & BMT',
+            'amenities' => [],
+            'offices' => ['financial'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Koperasi', 'KSP', 'BMT', 'Koperasi Simpan Pinjam']
+        ];
+    }
+    if (in_array($k, ['pegadaian']) || preg_match('/\b(pegadaian|gadai|pusat gadai)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Pegadaian & Gadai',
+            'amenities' => [],
+            'offices' => ['financial'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Pegadaian', 'Gadai', 'Pusat Gadai']
+        ];
+    }
+    if (in_array($k, ['kantor_asuransi']) || preg_match('/\b(asuransi|prudential|allianz|axa|bumiputera)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Asuransi Jiwa & Kendaraan',
+            'amenities' => [],
+            'offices' => ['insurance'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Asuransi', 'Prudential', 'Allianz', 'AXA', 'Bumiputera']
+        ];
+    }
+    if (in_array($k, ['keuangan']) || preg_match('/(bank|keuangan|koperasi|pegadaian)/i', $k)) {
+        return [
+            'title' => 'Semua Lembaga Keuangan',
+            'amenities' => ['bank', 'atm'],
+            'offices' => ['financial'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Bank', 'BPR', 'Koperasi', 'Pegadaian', 'Asuransi']
         ];
     }
 
-    // 9. Retail & Toko
-    if (preg_match('/(toko|retail|minimarket|supermarket|swalayan|sembako|elektronik)/i', $k)) {
+    // 14. Pertanian, Peternakan & Agribisnis
+    if (in_array($k, ['toko_tani']) || preg_match('/\b(toko tani|toko pertanian|pupuk|obat pertanian|benih)\b/i', $k)) {
         return [
-            'title' => 'Retail & Toko',
+            'title' => 'Toko Pertanian, Benih & Pupuk',
             'amenities' => [],
-            'shops' => ['supermarket', 'convenience', 'clothes', 'electronics', 'hardware'],
+            'offices' => [],
+            'shops' => ['agrarian', 'garden_centre'],
             'tourism' => [],
-            'keywords' => ['Minimarket', 'Toko', 'Swalayan', 'Elektronik', 'Toko Bangunan']
+            'keywords' => ['Toko Tani', 'Toko Pertanian', 'Pupuk', 'Obat Pertanian', 'Benih']
+        ];
+    }
+    if (in_array($k, ['peternakan']) || preg_match('/\b(peternakan|kandang ayam|peternakan sapi|farm)\b/i', $k)) {
+        return [
+            'title' => 'Peternakan Ayam, Sapi & Kambing',
+            'amenities' => [],
+            'offices' => ['company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Peternakan', 'Kandang Ayam', 'Peternakan Sapi', 'Farm']
+        ];
+    }
+    if (in_array($k, ['pakan_ternak']) || preg_match('/\b(pakan ternak|poultry shop|pakan ayam|konsentrat)\b/i', $k)) {
+        return [
+            'title' => 'Toko Pakan Ternak & Poultry Shop',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['animal_feed', 'pet'],
+            'tourism' => [],
+            'keywords' => ['Pakan Ternak', 'Poultry Shop', 'Pakan Ayam', 'Konsentrat']
+        ];
+    }
+    if (in_array($k, ['pembibitan_tanaman']) || preg_match('/\b(pembibitan|bibit tanaman|nursery|tanaman hias)\b/i', $k)) {
+        return [
+            'title' => 'Pembibitan Tanaman & Toko Bibit',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['garden_centre'],
+            'tourism' => [],
+            'keywords' => ['Bibit Tanaman', 'Nursery', 'Tanaman Hias', 'Bibit Buah']
+        ];
+    }
+    if (in_array($k, ['penggilingan_padi']) || preg_match('/\b(penggilingan padi|rice mill|selepan padi|gudang gabah)\b/i', $k)) {
+        return [
+            'title' => 'Penggilingan Padi & Gudang Gabah',
+            'amenities' => [],
+            'offices' => ['company'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Penggilingan Padi', 'Rice Mill', 'Selepan Padi', 'Gudang Gabah']
+        ];
+    }
+    if (in_array($k, ['perikanan_tambak']) || preg_match('/\b(perikanan|tambak|budidaya ikan|pakan ikan)\b/i', $k)) {
+        return [
+            'title' => 'Perikanan, Tambak & Pakan Ikan',
+            'amenities' => [],
+            'offices' => [],
+            'shops' => ['fishing', 'pet'],
+            'tourism' => [],
+            'keywords' => ['Budidaya Ikan', 'Tambak', 'Bibit Ikan', 'Pakan Ikan']
+        ];
+    }
+    if (in_array($k, ['pertanian']) || preg_match('/(tani|pertanian|peternakan|agribisnis)/i', $k)) {
+        return [
+            'title' => 'Semua Bidang Pertanian & Agribisnis',
+            'amenities' => [],
+            'offices' => ['company'],
+            'shops' => ['agrarian', 'pet', 'garden_centre'],
+            'tourism' => [],
+            'keywords' => ['Toko Pertanian', 'Pupuk', 'Pakan Ternak', 'Peternakan', 'Penggilingan Padi']
         ];
     }
 
-    // 10. Default Custom
+    // 15. Tempat Ibadah & Yayasan Sosial
+    if (in_array($k, ['masjid']) || preg_match('/\b(masjid|mushola|masjid jami)\b/i', $k)) {
+        return [
+            'title' => 'Masjid & Mushola',
+            'amenities' => ['place_of_worship'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Masjid', 'Mushola', 'Masjid Jami']
+        ];
+    }
+    if (in_array($k, ['gereja']) || preg_match('/\b(gereja|gbi|hkbp|katolik|protestan)\b/i', $k)) {
+        return [
+            'title' => 'Gereja Kristen & Katolik',
+            'amenities' => ['place_of_worship'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Gereja', 'Gereja Katolik', 'Gereja Kristen', 'GBI', 'HKBP']
+        ];
+    }
+    if (in_array($k, ['pura_vihara']) || preg_match('/\b(pura|vihara|klenteng)\b/i', $k)) {
+        return [
+            'title' => 'Pura, Vihara & Klenteng',
+            'amenities' => ['place_of_worship'],
+            'offices' => [],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Pura', 'Vihara', 'Klenteng']
+        ];
+    }
+    if (in_array($k, ['panti_asuhan']) || preg_match('/\b(panti asuhan|yayasan yatim|lksa)\b/i', $k)) {
+        return [
+            'title' => 'Panti Asuhan & Yayasan Sosial',
+            'amenities' => ['social_facility'],
+            'offices' => ['charity', 'ngo'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Panti Asuhan', 'Yayasan Yatim', 'LKSA']
+        ];
+    }
+    if (in_array($k, ['lembaga_zakat']) || preg_match('/\b(zakat|baznas|lazismu|lazisnu|dompet dhuafa|rumah zakat)\b/i', $k)) {
+        return [
+            'title' => 'Lembaga Zakat & Infaq',
+            'amenities' => [],
+            'offices' => ['charity', 'ngo'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['BAZNAS', 'LAZISMU', 'LAZISNU', 'Dompet Dhuafa', 'Rumah Zakat']
+        ];
+    }
+    if (in_array($k, ['tempat_ibadah', 'ibadah']) || preg_match('/(ibadah|religi|yayasan)/i', $k)) {
+        return [
+            'title' => 'Semua Tempat Ibadah & Yayasan',
+            'amenities' => ['place_of_worship', 'social_facility'],
+            'offices' => ['charity'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Masjid', 'Gereja', 'Pura', 'Vihara', 'Panti Asuhan']
+        ];
+    }
+
+    // Default Fallback
     return [
         'title' => ucwords($k),
         'amenities' => [],
+        'offices' => ['company'],
         'shops' => [],
         'tourism' => [],
         'keywords' => [$k]
@@ -525,7 +1419,7 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
             $arr = json_decode($res, true);
             if (is_array($arr)) {
                 foreach ($arr as $item) {
-                    $id = $item['osm_id'] ?? ($item['lat'] . ',' . $item['lon']);
+                    $id = $item['osm_id'] ?? (($item['lat'] ?? '') . ',' . ($item['lon'] ?? ''));
                     if (!isset($seenIds[$id])) {
                         $seenIds[$id] = true;
                         $results[] = $item;
@@ -535,7 +1429,77 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
         }
     }
 
-    // 2. Structured query: Tourism / Lodging in viewbox
+    // 2. Structured query: Offices (PT, CV, Corporate, Government, etc.) in viewbox
+    if (!empty($taxonomy['offices'])) {
+        foreach ($taxonomy['offices'] as $off) {
+            if (count($results) >= 30) break;
+            $url = "https://nominatim.openstreetmap.org/search?" . http_build_query([
+                'office' => $off,
+                'format' => 'json',
+                'bounded' => 1,
+                'viewbox' => $viewbox,
+                'addressdetails' => 1,
+                'extratags' => 1,
+                'limit' => 20
+            ]);
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'ClientReachAI/3.0 (info@recreative.id)');
+            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            $res = curl_exec($ch);
+            curl_close($ch);
+
+            $arr = json_decode($res, true);
+            if (is_array($arr)) {
+                foreach ($arr as $item) {
+                    $id = $item['osm_id'] ?? (($item['lat'] ?? '') . ',' . ($item['lon'] ?? ''));
+                    if (!isset($seenIds[$id])) {
+                        $seenIds[$id] = true;
+                        $results[] = $item;
+                    }
+                }
+            }
+        }
+    }
+
+    // 3. Structured query: Shops (Retail, Minimarket, Hardware, etc.) in viewbox
+    if (!empty($taxonomy['shops'])) {
+        foreach ($taxonomy['shops'] as $shp) {
+            if (count($results) >= 30) break;
+            $url = "https://nominatim.openstreetmap.org/search?" . http_build_query([
+                'shop' => $shp,
+                'format' => 'json',
+                'bounded' => 1,
+                'viewbox' => $viewbox,
+                'addressdetails' => 1,
+                'extratags' => 1,
+                'limit' => 20
+            ]);
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'ClientReachAI/3.0 (info@recreative.id)');
+            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            $res = curl_exec($ch);
+            curl_close($ch);
+
+            $arr = json_decode($res, true);
+            if (is_array($arr)) {
+                foreach ($arr as $item) {
+                    $id = $item['osm_id'] ?? (($item['lat'] ?? '') . ',' . ($item['lon'] ?? ''));
+                    if (!isset($seenIds[$id])) {
+                        $seenIds[$id] = true;
+                        $results[] = $item;
+                    }
+                }
+            }
+        }
+    }
+
+    // 4. Structured query: Tourism / Lodging in viewbox
     if (!empty($taxonomy['tourism'])) {
         foreach ($taxonomy['tourism'] as $tour) {
             if (count($results) >= 30) break;
@@ -560,7 +1524,7 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
             $arr = json_decode($res, true);
             if (is_array($arr)) {
                 foreach ($arr as $item) {
-                    $id = $item['osm_id'] ?? ($item['lat'] . ',' . $item['lon']);
+                    $id = $item['osm_id'] ?? (($item['lat'] ?? '') . ',' . ($item['lon'] ?? ''));
                     if (!isset($seenIds[$id])) {
                         $seenIds[$id] = true;
                         $results[] = $item;
@@ -595,7 +1559,7 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
         $arr = json_decode($res, true);
         if (is_array($arr)) {
             foreach ($arr as $item) {
-                $id = $item['osm_id'] ?? ($item['lat'] . ',' . $item['lon']);
+                $id = $item['osm_id'] ?? (($item['lat'] ?? '') . ',' . ($item['lon'] ?? ''));
                 if (!isset($seenIds[$id])) {
                     $seenIds[$id] = true;
                     $results[] = $item;
@@ -632,7 +1596,7 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
                     $itemLng = (float)($item['lon'] ?? 0);
                     $distKm = hypot($itemLat - $centerLat, $itemLng - $centerLng) * 111.0;
                     if ($distKm <= max(12, $radiusKm * 1.5)) {
-                        $id = $item['osm_id'] ?? ($item['lat'] . ',' . $item['lon']);
+                        $id = $item['osm_id'] ?? (($item['lat'] ?? '') . ',' . ($item['lon'] ?? ''));
                         if (!isset($seenIds[$id])) {
                             $seenIds[$id] = true;
                             $results[] = $item;
