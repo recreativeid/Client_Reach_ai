@@ -132,15 +132,176 @@ const ScraperClient = {
     },
 
     // ----------------------------------------------------
-    // 2. TARGET PARAMETER (KEYWORD vs CATEGORY PRESET)
     // ----------------------------------------------------
+    // 2. TARGET PARAMETER (KEYWORD vs CASCADING CATEGORY PRESETS)
+    // ----------------------------------------------------
+    SECTORS_DATA: {
+        pendidikan: {
+            name: '🎓 Pendidikan & Edukasi',
+            items: [
+                { value: 'sekolah', label: 'Semua Instansi Pendidikan & Sekolah' },
+                { value: 'sd', label: 'Sekolah Dasar (SD / MI)' },
+                { value: 'smp', label: 'SMP & MTs' },
+                { value: 'sma', label: 'SMA & MA' },
+                { value: 'smk', label: 'SMK Kejuruan' },
+                { value: 'universitas', label: 'Universitas & Institut' },
+                { value: 'sekolah_tinggi', label: 'Sekolah Tinggi, Politeknik & Akademi' },
+                { value: 'bimbel', label: 'Bimbingan Belajar (Bimbel) & Les Privat' },
+                { value: 'kursus_lpk', label: 'LPK & Kursus Pelatihan' },
+                { value: 'tk_paud', label: 'TK, PAUD & Penitipan Anak' },
+                { value: 'pesantren', label: 'Pondok Pesantren & Islamic School' },
+                { value: 'slb', label: 'Sekolah Luar Biasa (SLB)' }
+            ]
+        },
+        kesehatan: {
+            name: '🏥 Kesehatan & Medis',
+            items: [
+                { value: 'kesehatan', label: 'Semua Layanan Kesehatan & Medis' },
+                { value: 'rumah_sakit', label: 'Rumah Sakit Umum & Swasta' },
+                { value: 'klinik', label: 'Klinik Pratama & Umum' },
+                { value: 'klinik_gigi', label: 'Klinik Gigi & Praktik Dokter Gigi' },
+                { value: 'puskesmas', label: 'Puskesmas & Balai Pengobatan' },
+                { value: 'apotek', label: 'Apotek & Toko Obat' },
+                { value: 'praktik_dokter', label: 'Praktik Dokter Mandiri' },
+                { value: 'praktik_bidan', label: 'Praktik Bidan Mandiri' },
+                { value: 'laboratorium', label: 'Laboratorium Medis & Cek Darah' }
+            ]
+        },
+        pemerintah: {
+            name: '🏛️ Instansi Pemerintah & Layanan Publik',
+            items: [
+                { value: 'pemerintah', label: 'Semua Instansi Pemerintah & Publik' },
+                { value: 'kantor_dinas', label: 'Kantor Dinas & Instansi Pemda' },
+                { value: 'kecamatan', label: 'Kantor Kecamatan' },
+                { value: 'kelurahan_desa', label: 'Kantor Kelurahan & Balai Desa' },
+                { value: 'kantor_pajak', label: 'Kantor Pajak (KPP Pratama & Samsat)' },
+                { value: 'kepolisian', label: 'Kantor Polisi (Polsek & Polres)' },
+                { value: 'tni_militer', label: 'Kantor Militer / TNI (Koramil & Kodim)' },
+                { value: 'kantor_pos', label: 'Kantor Pos & Pusat Logistik' },
+                { value: 'layanan_publik', label: 'Layanan Sosial & BPJS' }
+            ]
+        },
+        kuliner: {
+            name: '☕ Kuliner, Makanan & Minuman',
+            items: [
+                { value: 'kuliner', label: 'Semua Kuliner & Makanan' },
+                { value: 'cafe', label: 'Kafe, Kedai Kopi & Coffee Shop' },
+                { value: 'resto', label: 'Restoran & Rumah Makan' },
+                { value: 'warung', label: 'Warung Makan Tradisional' },
+                { value: 'bakso_mie_soto', label: 'Bakso, Soto & Mie' },
+                { value: 'fast_food', label: 'Kuliner Cepat Saji (Fast Food)' },
+                { value: 'bakery', label: 'Bakery & Toko Roti / Kue' }
+            ]
+        },
+        akomodasi: {
+            name: '🏨 Akomodasi, Properti & Wisata',
+            items: [
+                { value: 'akomodasi', label: 'Semua Akomodasi & Wisata' },
+                { value: 'hotel', label: 'Hotel Berbintang & Budget' },
+                { value: 'penginapan', label: 'Penginapan, Guesthouse & Homestay' },
+                { value: 'villa', label: 'Villa & Resort' },
+                { value: 'kost', label: 'Rumah Kost & Kontrakan' },
+                { value: 'wisata', label: 'Tempat Wisata & Rekreasi' }
+            ]
+        },
+        otomotif: {
+            name: '🔧 Otomotif & Transportasi',
+            items: [
+                { value: 'otomotif', label: 'Semua Layanan Otomotif' },
+                { value: 'bengkel_motor', label: 'Bengkel Motor & Servis Resmi' },
+                { value: 'bengkel_mobil', label: 'Bengkel Mobil & Ganti Oli' },
+                { value: 'toko_ban_aki', label: 'Toko Ban, Velg & Aki' },
+                { value: 'cuci_kendaraan', label: 'Cuci Mobil & Cuci Motor' },
+                { value: 'spbu', label: 'SPBU & Pengisian Bahan Bakar' }
+            ]
+        },
+        kecantikan: {
+            name: '💈 Kecantikan & Kebugaran',
+            items: [
+                { value: 'kecantikan', label: 'Semua Layanan Kecantikan' },
+                { value: 'salon', label: 'Salon Kecantikan & Rambut' },
+                { value: 'barbershop', label: 'Barbershop & Pangkas Pria' },
+                { value: 'klinik_estetika', label: 'Klinik Estetika & Skincare' },
+                { value: 'spa', label: 'Spa & Pijat Relaksasi' },
+                { value: 'gym', label: 'Pusat Kebugaran, Gym & Fitness' }
+            ]
+        },
+        jasa: {
+            name: '💼 Jasa & Layanan Bisnis',
+            items: [
+                { value: 'jasa_profesional', label: 'Semua Jasa Profesional' },
+                { value: 'notaris', label: 'Kantor Notaris & PPAT' },
+                { value: 'kantor_hukum', label: 'Kantor Advokat & Konsultan Hukum' },
+                { value: 'konsultan_akuntan', label: 'Kantor Akuntan & Konsultan Pajak' },
+                { value: 'studio_foto', label: 'Studio Foto & Video Kreatif' },
+                { value: 'laundry', label: 'Jasa Laundry Kiloan & Satuan' },
+                { value: 'percetakan', label: 'Percetakan, Sablon & Fotokopi' }
+            ]
+        },
+        retail: {
+            name: '🛍️ Retail, Toko & Perdagangan',
+            items: [
+                { value: 'retail', label: 'Semua Toko & Retail' },
+                { value: 'minimarket', label: 'Minimarket, Swalayan & Supermarket' },
+                { value: 'toko_kelontong', label: 'Toko Sembako & Kelontong' },
+                { value: 'elektronik', label: 'Toko Elektronik, Gadget & Servis HP' },
+                { value: 'fashion', label: 'Toko Pakaian, Butik & Distro' },
+                { value: 'toko_bangunan', label: 'Toko Bangunan & Material' },
+                { value: 'petshop', label: 'Pet Shop & Perawatan Hewan' }
+            ]
+        },
+        keuangan: {
+            name: '🏦 Lembaga Keuangan',
+            items: [
+                { value: 'keuangan', label: 'Semua Lembaga Keuangan' },
+                { value: 'bank', label: 'Kantor Cabang Bank & BPR' },
+                { value: 'atm', label: 'Galeri ATM' },
+                { value: 'koperasi', label: 'Koperasi Simpan Pinjam' },
+                { value: 'pegadaian', label: 'Pegadaian & Pembiayaan' }
+            ]
+        },
+        ibadah: {
+            name: '🕌 Tempat Ibadah',
+            items: [
+                { value: 'tempat_ibadah', label: 'Semua Tempat Ibadah' },
+                { value: 'masjid', label: 'Masjid & Mushola' },
+                { value: 'gereja', label: 'Gereja Kristen & Katolik' },
+                { value: 'pura_vihara', label: 'Pura, Vihara & Klenteng' }
+            ]
+        }
+    },
+
     bindTargetModeToggle() {
         const btnKeyword = document.getElementById('btn-toggle-keyword');
         const btnPreset = document.getElementById('btn-toggle-preset');
         const boxKeyword = document.getElementById('target-keyword-box');
         const boxPreset = document.getElementById('target-preset-box');
         const keywordInput = document.getElementById('target-keyword-input');
+        const sectorSelect = document.getElementById('target-sector-select');
         const presetSelect = document.getElementById('target-category-select');
+
+        const populateSubcategories = (sectorKey) => {
+            if (!presetSelect) return;
+            const sector = this.SECTORS_DATA[sectorKey] || this.SECTORS_DATA['pendidikan'];
+            presetSelect.innerHTML = '';
+            sector.items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.value;
+                opt.textContent = item.label;
+                presetSelect.appendChild(opt);
+            });
+            presetSelect.selectedIndex = 0;
+        };
+
+        if (sectorSelect) {
+            sectorSelect.addEventListener('change', () => {
+                populateSubcategories(sectorSelect.value);
+                if (this.currentQuery.targetMode === 'preset') {
+                    this.currentQuery.category = presetSelect ? presetSelect.value : sectorSelect.value;
+                    this.loadPreScrapeCandidates();
+                }
+            });
+        }
 
         if (btnKeyword && btnPreset) {
             btnKeyword.addEventListener('click', () => {
@@ -155,7 +316,7 @@ const ScraperClient = {
                 if (boxKeyword) boxKeyword.style.display = 'block';
                 if (boxPreset) boxPreset.style.display = 'none';
 
-                this.currentQuery.category = keywordInput ? keywordInput.value.trim() : 'cafe';
+                this.currentQuery.category = keywordInput ? keywordInput.value.trim() : 'sekolah';
                 this.loadPreScrapeCandidates();
             });
 
@@ -171,7 +332,11 @@ const ScraperClient = {
                 if (boxPreset) boxPreset.style.display = 'block';
                 if (boxKeyword) boxKeyword.style.display = 'none';
 
-                this.currentQuery.category = presetSelect ? presetSelect.value : 'cafe';
+                if (sectorSelect && presetSelect && presetSelect.options.length === 0) {
+                    populateSubcategories(sectorSelect.value);
+                }
+
+                this.currentQuery.category = presetSelect ? presetSelect.value : 'sekolah';
                 this.loadPreScrapeCandidates();
             });
         }
@@ -730,28 +895,52 @@ const ScraperClient = {
                 keywords: ['SMP', 'MTs']
             };
         }
-        if (['sma', 'smk'].includes(k) || /\b(sma|smk|kejuruan|ma|madrasah aliyah)\b/i.test(k)) {
+        if (['sma'].includes(k) || /\b(sma|madrasah aliyah|ma)\b/i.test(k)) {
             return {
-                title: 'SMA, MA & SMK Kejuruan',
+                title: 'SMA & MA',
                 amenities: ['school'],
                 tourism: [],
-                keywords: ['SMA', 'SMK', 'Madrasah Aliyah']
+                keywords: ['SMA', 'Madrasah Aliyah', 'Sekolah Menengah Atas']
             };
         }
-        if (['universitas', 'kampus'].includes(k) || /\b(universitas|kampus|institut|politeknik|akademi)\b/i.test(k)) {
+        if (['smk'].includes(k) || /\b(smk|kejuruan)\b/i.test(k)) {
             return {
-                title: 'Universitas & Perguruan Tinggi',
+                title: 'SMK Kejuruan',
+                amenities: ['school'],
+                tourism: [],
+                keywords: ['SMK', 'Sekolah Menengah Kejuruan']
+            };
+        }
+        if (['sekolah_tinggi', 'politeknik', 'akademi'].includes(k) || /\b(sekolah tinggi|stmik|stie|politeknik|akademi)\b/i.test(k)) {
+            return {
+                title: 'Sekolah Tinggi, Politeknik & Akademi',
+                amenities: ['college', 'university'],
+                tourism: [],
+                keywords: ['Sekolah Tinggi', 'STMIK', 'STIE', 'Politeknik', 'Akademi']
+            };
+        }
+        if (['universitas', 'kampus'].includes(k) || /\b(universitas|kampus|institut)\b/i.test(k)) {
+            return {
+                title: 'Universitas & Institut',
                 amenities: ['university', 'college'],
                 tourism: [],
-                keywords: ['Universitas', 'Institut', 'Politeknik', 'Kampus']
+                keywords: ['Universitas', 'Institut', 'Kampus']
             };
         }
-        if (['bimbel', 'kursus'].includes(k) || /\b(bimbel|kursus|les|lpk|bimbingan belajar)\b/i.test(k)) {
+        if (['bimbel'].includes(k) || /\b(bimbel|les|bimbingan belajar)\b/i.test(k)) {
             return {
-                title: 'Bimbingan Belajar & Kursus',
-                amenities: ['language_school', 'music_school', 'driving_school'],
+                title: 'Bimbingan Belajar & Les Privat',
+                amenities: ['language_school', 'music_school'],
                 tourism: [],
-                keywords: ['Bimbel', 'Kursus', 'LPK', 'Bimbingan Belajar']
+                keywords: ['Bimbel', 'Bimbingan Belajar', 'Les Privat', 'Kumon', 'Ganesha']
+            };
+        }
+        if (['kursus_lpk', 'kursus', 'lpk'].includes(k) || /\b(kursus|lpk|pelatihan)\b/i.test(k)) {
+            return {
+                title: 'LPK & Kursus Pelatihan',
+                amenities: ['language_school', 'driving_school', 'music_school'],
+                tourism: [],
+                keywords: ['LPK', 'Kursus', 'Pelatihan', 'Sekolah Mengemudi']
             };
         }
         if (['tk_paud', 'tk', 'paud'].includes(k) || /\b(tk|paud|taman kanak|ra)\b/i.test(k)) {
@@ -768,6 +957,14 @@ const ScraperClient = {
                 amenities: ['school'],
                 tourism: [],
                 keywords: ['Pondok Pesantren', 'Ponpes', 'Pesantren']
+            };
+        }
+        if (['slb'].includes(k) || /\b(slb|luar biasa)\b/i.test(k)) {
+            return {
+                title: 'Sekolah Luar Biasa (SLB)',
+                amenities: ['school'],
+                tourism: [],
+                keywords: ['SLB', 'Sekolah Luar Biasa', 'Autis']
             };
         }
         if (/(sekolah|edukasi|pendidikan|school|education)/i.test(k)) {
@@ -788,12 +985,20 @@ const ScraperClient = {
                 keywords: ['Rumah Sakit', 'RSUD', 'RS']
             };
         }
+        if (['klinik_gigi'].includes(k) || /\b(klinik gigi|dokter gigi|dental)\b/i.test(k)) {
+            return {
+                title: 'Klinik Gigi & Praktik Dokter Gigi',
+                amenities: ['dentist', 'clinic'],
+                tourism: [],
+                keywords: ['Klinik Gigi', 'Dokter Gigi', 'Dental']
+            };
+        }
         if (['klinik'].includes(k) || /\b(klinik|clinic)\b/i.test(k)) {
             return {
-                title: 'Klinik Kesehatan',
-                amenities: ['clinic', 'doctors', 'dentist'],
+                title: 'Klinik Pratama & Umum',
+                amenities: ['clinic', 'doctors'],
                 tourism: [],
-                keywords: ['Klinik', 'Klinik Pratama', 'Klinik Gigi']
+                keywords: ['Klinik', 'Klinik Pratama', 'Balai Pengobatan']
             };
         }
         if (['puskesmas'].includes(k) || /\b(puskesmas)\b/i.test(k)) {
@@ -801,7 +1006,7 @@ const ScraperClient = {
                 title: 'Puskesmas',
                 amenities: ['clinic', 'hospital'],
                 tourism: [],
-                keywords: ['Puskesmas']
+                keywords: ['Puskesmas', 'Puskesmas Pembantu']
             };
         }
         if (['apotek'].includes(k) || /\b(apotek|farmasi|obat|pharmacy)\b/i.test(k)) {
@@ -810,6 +1015,30 @@ const ScraperClient = {
                 amenities: ['pharmacy'],
                 tourism: [],
                 keywords: ['Apotek', 'Farmasi', 'Toko Obat']
+            };
+        }
+        if (['praktik_dokter'].includes(k) || /\b(praktik dokter|dokter spesialis)\b/i.test(k)) {
+            return {
+                title: 'Praktik Dokter Mandiri',
+                amenities: ['doctors'],
+                tourism: [],
+                keywords: ['Praktik Dokter', 'Dokter Spesialis', 'dr.']
+            };
+        }
+        if (['praktik_bidan'].includes(k) || /\b(praktik bidan|bidan mandiri)\b/i.test(k)) {
+            return {
+                title: 'Praktik Bidan Mandiri',
+                amenities: ['clinic'],
+                tourism: [],
+                keywords: ['Bidan', 'Praktik Bidan', 'Rumah Bersalin']
+            };
+        }
+        if (['laboratorium'].includes(k) || /\b(laboratorium|lab medis|prodia)\b/i.test(k)) {
+            return {
+                title: 'Laboratorium Medis',
+                amenities: ['clinic', 'hospital'],
+                tourism: [],
+                keywords: ['Laboratorium', 'Lab Klinik', 'Prodia']
             };
         }
         if (/(kesehatan|medis|health|dokter|bidan)/i.test(k)) {
@@ -822,7 +1051,7 @@ const ScraperClient = {
         }
 
         // Pemerintah
-        if (/(kantor_dinas|dinas|pemda)/i.test(k)) {
+        if (['kantor_dinas'].includes(k) || /(kantor_dinas|dinas|pemda)/i.test(k)) {
             return {
                 title: 'Kantor Dinas & Instansi',
                 amenities: ['townhall'],
@@ -830,15 +1059,23 @@ const ScraperClient = {
                 keywords: ['Dinas', 'Kantor Dinas', 'BPKAD', 'Bappeda']
             };
         }
-        if (/(kecamatan_kelurahan|kecamatan|kelurahan|desa)/i.test(k)) {
+        if (['kecamatan'].includes(k) || /\b(kecamatan|kantor camat)\b/i.test(k)) {
             return {
-                title: 'Kecamatan & Kelurahan',
+                title: 'Kantor Kecamatan',
                 amenities: ['townhall'],
                 tourism: [],
-                keywords: ['Kantor Kecamatan', 'Kantor Kelurahan', 'Balai Desa']
+                keywords: ['Kantor Kecamatan', 'Kecamatan']
             };
         }
-        if (/(kantor_pajak|pajak|kpp|samsat)/i.test(k)) {
+        if (['kelurahan_desa'].includes(k) || /\b(kelurahan|desa|balai desa)\b/i.test(k)) {
+            return {
+                title: 'Kantor Kelurahan & Desa',
+                amenities: ['townhall'],
+                tourism: [],
+                keywords: ['Kantor Kelurahan', 'Balai Desa', 'Kelurahan', 'Desa']
+            };
+        }
+        if (['kantor_pajak'].includes(k) || /(kantor_pajak|pajak|kpp|samsat)/i.test(k)) {
             return {
                 title: 'Kantor Pajak & Samsat',
                 amenities: ['townhall'],
@@ -846,20 +1083,36 @@ const ScraperClient = {
                 keywords: ['KPP', 'Kantor Pajak', 'Samsat']
             };
         }
-        if (/(kepolisian_tni|polisi|polsek|polres|tni|koramil)/i.test(k)) {
+        if (['kepolisian', 'polisi'].includes(k) || /(kepolisian|polisi|polsek|polres)/i.test(k)) {
             return {
-                title: 'Kantor Polisi & TNI',
+                title: 'Kantor Polisi (Polsek & Polres)',
                 amenities: ['police'],
                 tourism: [],
-                keywords: ['Polsek', 'Polres', 'Kantor Polisi', 'Koramil']
+                keywords: ['Polsek', 'Polres', 'Kantor Polisi', 'Polda']
             };
         }
-        if (/(kantor_pos|pos)/i.test(k)) {
+        if (['tni_militer', 'tni'].includes(k) || /(tni|koramil|kodim|secaba|rindam)/i.test(k)) {
+            return {
+                title: 'Kantor Militer & TNI',
+                amenities: ['police', 'townhall'],
+                tourism: [],
+                keywords: ['Koramil', 'Kodim', 'TNI', 'Secaba', 'Rindam']
+            };
+        }
+        if (['kantor_pos'].includes(k) || /(kantor_pos|pos)/i.test(k)) {
             return {
                 title: 'Kantor Pos & Logistik',
                 amenities: ['post_office'],
                 tourism: [],
                 keywords: ['Kantor Pos', 'Pos Indonesia', 'JNE']
+            };
+        }
+        if (['layanan_publik'].includes(k) || /(layanan_publik|bpjs|damkar)/i.test(k)) {
+            return {
+                title: 'Layanan Sosial & BPJS',
+                amenities: ['townhall', 'fire_station'],
+                tourism: [],
+                keywords: ['BPJS', 'Damkar', 'Pemadam Kebakaran']
             };
         }
         if (/(pemerintah|instansi|kantor|office|government)/i.test(k)) {

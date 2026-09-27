@@ -94,31 +94,58 @@ function getCategoryTaxonomy($keyword) {
             'keywords' => ['SMP', 'MTs', 'Sekolah Menengah Pertama']
         ];
     }
-    if (in_array($k, ['sma', 'smk']) || preg_match('/\b(sma|smk|kejuruan|ma|madrasah aliyah)\b/i', $k)) {
+    if (in_array($k, ['sma']) || preg_match('/\b(sma|madrasah aliyah|ma)\b/i', $k)) {
         return [
-            'title' => 'SMA, MA & SMK Kejuruan',
+            'title' => 'SMA & MA',
             'amenities' => ['school'],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['SMA', 'SMK', 'Madrasah Aliyah', 'Sekolah Menengah Atas']
+            'keywords' => ['SMA', 'Madrasah Aliyah', 'Sekolah Menengah Atas']
         ];
     }
-    if (in_array($k, ['universitas', 'kampus']) || preg_match('/\b(universitas|kampus|institut|politeknik|akademi|stmik|stie)\b/i', $k)) {
+    if (in_array($k, ['smk']) || preg_match('/\b(smk|kejuruan)\b/i', $k)) {
         return [
-            'title' => 'Universitas & Perguruan Tinggi',
+            'title' => 'SMK Kejuruan',
+            'amenities' => ['school'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['SMK', 'Sekolah Menengah Kejuruan']
+        ];
+    }
+    if (in_array($k, ['sekolah_tinggi', 'politeknik', 'akademi']) || preg_match('/\b(sekolah tinggi|stmik|stie|politeknik|akademi)\b/i', $k)) {
+        return [
+            'title' => 'Sekolah Tinggi, Politeknik & Akademi',
+            'amenities' => ['college', 'university'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Sekolah Tinggi', 'STMIK', 'STIE', 'Politeknik', 'Akademi']
+        ];
+    }
+    if (in_array($k, ['universitas', 'kampus']) || preg_match('/\b(universitas|kampus|institut)\b/i', $k)) {
+        return [
+            'title' => 'Universitas & Institut',
             'amenities' => ['university', 'college'],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['Universitas', 'Institut', 'Politeknik', 'Kampus', 'Akademi']
+            'keywords' => ['Universitas', 'Institut', 'Kampus']
         ];
     }
-    if (in_array($k, ['bimbel', 'kursus']) || preg_match('/\b(bimbel|kursus|les|lpk|bimbingan belajar)\b/i', $k)) {
+    if (in_array($k, ['bimbel']) || preg_match('/\b(bimbel|les|bimbingan belajar)\b/i', $k)) {
         return [
-            'title' => 'Bimbingan Belajar & Kursus',
-            'amenities' => ['language_school', 'music_school', 'driving_school'],
+            'title' => 'Bimbingan Belajar & Les Privat',
+            'amenities' => ['language_school', 'music_school'],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['Bimbel', 'Kursus', 'LPK', 'Bimbingan Belajar', 'Les Privat']
+            'keywords' => ['Bimbel', 'Bimbingan Belajar', 'Les Privat', 'Kumon', 'Ganesha']
+        ];
+    }
+    if (in_array($k, ['kursus_lpk', 'kursus', 'lpk']) || preg_match('/\b(kursus|lpk|pelatihan)\b/i', $k)) {
+        return [
+            'title' => 'LPK & Kursus Pelatihan',
+            'amenities' => ['language_school', 'driving_school', 'music_school'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['LPK', 'Kursus', 'Pelatihan', 'Sekolah Mengemudi']
         ];
     }
     if (in_array($k, ['tk_paud', 'tk', 'paud']) || preg_match('/\b(tk|paud|taman kanak|ra|raudhatul athfal)\b/i', $k)) {
@@ -137,6 +164,15 @@ function getCategoryTaxonomy($keyword) {
             'shops' => [],
             'tourism' => [],
             'keywords' => ['Pondok Pesantren', 'Ponpes', 'Pesantren', 'Islamic Boarding School']
+        ];
+    }
+    if (in_array($k, ['slb']) || preg_match('/\b(slb|luar biasa)\b/i', $k)) {
+        return [
+            'title' => 'Sekolah Luar Biasa (SLB)',
+            'amenities' => ['school'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['SLB', 'Sekolah Luar Biasa', 'Autis']
         ];
     }
     if (preg_match('/(sekolah|edukasi|pendidikan|school|education)/i', $k)) {
@@ -159,13 +195,22 @@ function getCategoryTaxonomy($keyword) {
             'keywords' => ['Rumah Sakit', 'RSUD', 'RS', 'Hospital']
         ];
     }
-    if (in_array($k, ['klinik']) || preg_match('/\b(klinik|clinic)\b/i', $k)) {
+    if (in_array($k, ['klinik_gigi']) || preg_match('/\b(klinik gigi|dokter gigi|dental)\b/i', $k)) {
         return [
-            'title' => 'Klinik Kesehatan & Pratama',
-            'amenities' => ['clinic', 'doctors', 'dentist'],
+            'title' => 'Klinik Gigi & Praktik Dokter Gigi',
+            'amenities' => ['dentist', 'clinic'],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['Klinik', 'Klinik Pratama', 'Klinik Gigi', 'Balai Pengobatan']
+            'keywords' => ['Klinik Gigi', 'Dokter Gigi', 'Dental']
+        ];
+    }
+    if (in_array($k, ['klinik']) || preg_match('/\b(klinik|clinic)\b/i', $k)) {
+        return [
+            'title' => 'Klinik Pratama & Umum',
+            'amenities' => ['clinic', 'doctors'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Klinik', 'Klinik Pratama', 'Balai Pengobatan']
         ];
     }
     if (in_array($k, ['puskesmas']) || preg_match('/\b(puskesmas)\b/i', $k)) {
@@ -184,6 +229,33 @@ function getCategoryTaxonomy($keyword) {
             'shops' => ['chemist'],
             'tourism' => [],
             'keywords' => ['Apotek', 'Farmasi', 'Toko Obat']
+        ];
+    }
+    if (in_array($k, ['praktik_dokter']) || preg_match('/\b(praktik dokter|dokter spesialis)\b/i', $k)) {
+        return [
+            'title' => 'Praktik Dokter Mandiri',
+            'amenities' => ['doctors'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Praktik Dokter', 'Dokter Spesialis', 'dr.']
+        ];
+    }
+    if (in_array($k, ['praktik_bidan']) || preg_match('/\b(praktik bidan|bidan mandiri)\b/i', $k)) {
+        return [
+            'title' => 'Praktik Bidan Mandiri',
+            'amenities' => ['clinic'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Bidan', 'Praktik Bidan', 'Rumah Bersalin']
+        ];
+    }
+    if (in_array($k, ['laboratorium']) || preg_match('/\b(laboratorium|lab medis|prodia)\b/i', $k)) {
+        return [
+            'title' => 'Laboratorium Medis',
+            'amenities' => ['clinic', 'hospital'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Laboratorium', 'Lab Klinik', 'Prodia']
         ];
     }
     if (preg_match('/(kesehatan|medis|health|medical|dokter|bidan)/i', $k)) {
@@ -206,13 +278,22 @@ function getCategoryTaxonomy($keyword) {
             'keywords' => ['Dinas', 'Kantor Dinas', 'Inspektorat', 'BPKAD', 'Bappeda']
         ];
     }
-    if (in_array($k, ['kecamatan_kelurahan']) || preg_match('/\b(kecamatan|kelurahan|desa|kepala desa)\b/i', $k)) {
+    if (in_array($k, ['kecamatan']) || preg_match('/\b(kecamatan|kantor camat)\b/i', $k)) {
         return [
-            'title' => 'Kecamatan & Kelurahan',
+            'title' => 'Kantor Kecamatan',
             'amenities' => ['townhall'],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['Kantor Kecamatan', 'Kantor Kelurahan', 'Balai Desa', 'Kecamatan', 'Kelurahan']
+            'keywords' => ['Kantor Kecamatan', 'Kecamatan']
+        ];
+    }
+    if (in_array($k, ['kelurahan_desa']) || preg_match('/\b(kelurahan|desa|balai desa)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Kelurahan & Desa',
+            'amenities' => ['townhall'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Kantor Kelurahan', 'Balai Desa', 'Kelurahan', 'Desa']
         ];
     }
     if (in_array($k, ['kantor_pajak']) || preg_match('/\b(pajak|kpp|samsat)\b/i', $k)) {
@@ -224,22 +305,40 @@ function getCategoryTaxonomy($keyword) {
             'keywords' => ['KPP', 'Kantor Pajak', 'Samsat', 'KPP Pratama']
         ];
     }
-    if (in_array($k, ['kepolisian_tni']) || preg_match('/\b(polisi|polsek|polres|polda|tni|koramil|kodim)\b/i', $k)) {
+    if (in_array($k, ['kepolisian', 'polisi']) || preg_match('/\b(polisi|polsek|polres|polda)\b/i', $k)) {
         return [
-            'title' => 'Kantor Polisi & TNI',
+            'title' => 'Kantor Polisi (Polsek & Polres)',
             'amenities' => ['police'],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['Polsek', 'Polres', 'Kantor Polisi', 'Koramil', 'Kodim']
+            'keywords' => ['Polsek', 'Polres', 'Kantor Polisi', 'Polda']
         ];
     }
-    if (in_array($k, ['kantor_pos']) || preg_match('/\b(kantor pos|pos indonesia|ekspedisi)\b/i', $k)) {
+    if (in_array($k, ['tni_militer', 'tni']) || preg_match('/\b(tni|koramil|kodim|rindam|secaba)\b/i', $k)) {
+        return [
+            'title' => 'Kantor Militer & TNI',
+            'amenities' => ['police', 'townhall'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['Koramil', 'Kodim', 'TNI', 'Secaba', 'Rindam']
+        ];
+    }
+    if (in_array($k, ['kantor_pos']) || preg_match('/\b(kantor pos|pos indonesia)\b/i', $k)) {
         return [
             'title' => 'Kantor Pos & Logistik',
             'amenities' => ['post_office'],
             'shops' => [],
             'tourism' => [],
-            'keywords' => ['Kantor Pos', 'Pos Indonesia', 'JNE', 'J&T']
+            'keywords' => ['Kantor Pos', 'Pos Indonesia']
+        ];
+    }
+    if (in_array($k, ['layanan_publik']) || preg_match('/\b(bpjs|damkar|pemadam)\b/i', $k)) {
+        return [
+            'title' => 'Layanan Sosial & BPJS',
+            'amenities' => ['townhall', 'fire_station'],
+            'shops' => [],
+            'tourism' => [],
+            'keywords' => ['BPJS', 'Damkar', 'Pemadam Kebakaran']
         ];
     }
     if (preg_match('/(pemerintah|instansi|kantor|government|office)/i', $k)) {
