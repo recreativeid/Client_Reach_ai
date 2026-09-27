@@ -10,14 +10,16 @@
 const ScraperClient = {
     currentQuery: {
         zoneMode: 'boundary', // 'boundary' or 'radius'
-        targetMode: 'keyword', // 'keyword' or 'preset'
-        category: 'cafe',
-        location: 'Magelang Utara',
+        targetMode: 'preset', // 'keyword' or 'preset'
+        category: 'sekolah',
+        location: 'Kedungsari, Magelang Utara',
         lat: -7.4589,
         lng: 110.2251,
         radius: 3
     },
 
+    territoryData: null,
+    isScanningTerritory: false,
     candidatePlaces: [],
     scrapedResults: [],
     activeFilter: 'all',
@@ -69,7 +71,7 @@ const ScraperClient = {
                     const coordEl = document.getElementById('display-selected-coord');
                     if (coordEl) coordEl.textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)} (${nearestName})`;
 
-                    this.loadPreScrapeCandidates();
+                    this.scanTerritory();
                 }
             };
         }
@@ -137,7 +139,7 @@ const ScraperClient = {
     // ----------------------------------------------------
     SECTORS_DATA: {
         perusahaan: {
-            name: '🏢 Perusahaan, Korporasi & Industri (PT / CV)',
+            name: 'Perusahaan, Korporasi & Industri (PT / CV)',
             items: [
                 { value: 'semua_perusahaan', label: 'Semua Kantor Perusahaan & PT/CV' },
                 { value: 'kantor_pt', label: 'Kantor PT (Perseroan Terbatas)' },
@@ -150,7 +152,7 @@ const ScraperClient = {
             ]
         },
         konstruksi: {
-            name: '🏗️ Konstruksi, Arsitektur & Properti',
+            name: 'Konstruksi, Arsitektur & Properti',
             items: [
                 { value: 'semua_konstruksi', label: 'Semua Bidang Konstruksi & Properti' },
                 { value: 'kontraktor', label: 'Kontraktor Bangunan & Gedung' },
@@ -161,7 +163,7 @@ const ScraperClient = {
             ]
         },
         jasa: {
-            name: '💼 Jasa Bisnis, Legal & Profesional',
+            name: 'Jasa Bisnis, Legal & Profesional',
             items: [
                 { value: 'jasa_profesional', label: 'Semua Jasa & Layanan Bisnis' },
                 { value: 'notaris', label: 'Kantor Notaris & PPAT' },
@@ -175,7 +177,7 @@ const ScraperClient = {
             ]
         },
         it: {
-            name: '💻 Teknologi, IT & Telekomunikasi',
+            name: 'Teknologi, IT & Telekomunikasi',
             items: [
                 { value: 'semua_it', label: 'Semua Bidang IT & Digital' },
                 { value: 'software_house', label: 'Software House & Startup Digital' },
@@ -186,7 +188,7 @@ const ScraperClient = {
             ]
         },
         pendidikan: {
-            name: '🎓 Pendidikan & Edukasi',
+            name: 'Pendidikan & Edukasi',
             items: [
                 { value: 'sekolah', label: 'Semua Instansi Pendidikan & Sekolah' },
                 { value: 'sd', label: 'Sekolah Dasar (SD / MI)' },
@@ -203,7 +205,7 @@ const ScraperClient = {
             ]
         },
         kesehatan: {
-            name: '🏥 Kesehatan, Medis & Farmasi',
+            name: 'Kesehatan, Medis & Farmasi',
             items: [
                 { value: 'kesehatan', label: 'Semua Layanan Kesehatan & Medis' },
                 { value: 'rumah_sakit', label: 'Rumah Sakit Umum & Swasta' },
@@ -220,7 +222,7 @@ const ScraperClient = {
             ]
         },
         pemerintah: {
-            name: '🏛️ Instansi Pemerintah & Layanan Publik',
+            name: 'Instansi Pemerintah & Layanan Publik',
             items: [
                 { value: 'pemerintah', label: 'Semua Instansi Pemerintah & Publik' },
                 { value: 'kantor_dinas', label: 'Kantor Dinas & Instansi Pemda' },
@@ -235,7 +237,7 @@ const ScraperClient = {
             ]
         },
         kuliner: {
-            name: '☕ Kuliner, Makanan & Minuman',
+            name: 'Kuliner, Makanan & Minuman',
             items: [
                 { value: 'kuliner', label: 'Semua Kuliner & Makanan' },
                 { value: 'cafe', label: 'Kafe, Kedai Kopi & Coffee Shop' },
@@ -249,7 +251,7 @@ const ScraperClient = {
             ]
         },
         retail: {
-            name: '🛍️ Perdagangan, Retail & Toko',
+            name: 'Perdagangan, Retail & Toko',
             items: [
                 { value: 'retail', label: 'Semua Toko & Retail' },
                 { value: 'minimarket', label: 'Minimarket, Swalayan & Supermarket' },
@@ -265,7 +267,7 @@ const ScraperClient = {
             ]
         },
         otomotif: {
-            name: '🔧 Otomotif & Transportasi',
+            name: 'Otomotif & Transportasi',
             items: [
                 { value: 'otomotif', label: 'Semua Layanan Otomotif' },
                 { value: 'bengkel_motor', label: 'Bengkel Motor & Servis Resmi' },
@@ -278,7 +280,7 @@ const ScraperClient = {
             ]
         },
         akomodasi: {
-            name: '🏨 Akomodasi, Pariwisata & Hiburan',
+            name: 'Akomodasi, Pariwisata & Hiburan',
             items: [
                 { value: 'akomodasi', label: 'Semua Akomodasi & Wisata' },
                 { value: 'hotel', label: 'Hotel Berbintang & Budget' },
@@ -290,7 +292,7 @@ const ScraperClient = {
             ]
         },
         kecantikan: {
-            name: '💈 Kecantikan, Kebugaran & Relaksasi',
+            name: 'Kecantikan, Kebugaran & Relaksasi',
             items: [
                 { value: 'kecantikan', label: 'Semua Layanan Kecantikan' },
                 { value: 'salon', label: 'Salon Kecantikan & Rambut' },
@@ -302,7 +304,7 @@ const ScraperClient = {
             ]
         },
         keuangan: {
-            name: '🏦 Lembaga Keuangan & Asuransi',
+            name: 'Lembaga Keuangan & Asuransi',
             items: [
                 { value: 'keuangan', label: 'Semua Lembaga Keuangan' },
                 { value: 'bank', label: 'Kantor Cabang Bank & Bank Syariah' },
@@ -314,7 +316,7 @@ const ScraperClient = {
             ]
         },
         pertanian: {
-            name: '🌾 Pertanian, Peternakan & Agribisnis',
+            name: 'Pertanian, Peternakan & Agribisnis',
             items: [
                 { value: 'pertanian', label: 'Semua Bidang Pertanian & Agribisnis' },
                 { value: 'toko_tani', label: 'Toko Pertanian, Benih & Pupuk' },
@@ -326,7 +328,7 @@ const ScraperClient = {
             ]
         },
         ibadah: {
-            name: '🕌 Tempat Ibadah & Yayasan Sosial',
+            name: 'Tempat Ibadah & Yayasan Sosial',
             items: [
                 { value: 'tempat_ibadah', label: 'Semua Tempat Ibadah & Yayasan' },
                 { value: 'masjid', label: 'Masjid & Mushola' },
@@ -338,6 +340,674 @@ const ScraperClient = {
         }
     },
 
+    // ----------------------------------------------------
+    // BOUNDING BOX & SECTOR CLASSIFICATION UTILITIES
+    // ----------------------------------------------------
+    normalizeBoundingBox(bbox, centerLat = -7.47, centerLng = 110.22) {
+        if (!bbox || !Array.isArray(bbox) || bbox.length < 4) {
+            const delta = 0.03;
+            return {
+                minLat: centerLat - delta,
+                maxLat: centerLat + delta,
+                minLng: centerLng - delta,
+                maxLng: centerLng + delta,
+                viewbox: `${(centerLng - delta).toFixed(5)},${(centerLat + delta).toFixed(5)},${(centerLng + delta).toFixed(5)},${(centerLat - delta).toFixed(5)}`
+            };
+        }
+        const nums = bbox.map(Number);
+        let lats = [];
+        let lngs = [];
+        nums.forEach(n => {
+            if (Math.abs(n) <= 35.0) {
+                lats.push(n);
+            } else {
+                lngs.push(n);
+            }
+        });
+
+        if (lats.length !== 2 || lngs.length !== 2) {
+            nums.sort((a, b) => Math.abs(a - centerLat) - Math.abs(b - centerLat));
+            lats = [nums[0], nums[1]];
+            lngs = [nums[2], nums[3]];
+        }
+
+        const minLat = Math.min(...lats);
+        const maxLat = Math.max(...lats);
+        const minLng = Math.min(...lngs);
+        const maxLng = Math.max(...lngs);
+
+        return {
+            minLat,
+            maxLat,
+            minLng,
+            maxLng,
+            viewbox: `${minLng.toFixed(5)},${maxLat.toFixed(5)},${maxLng.toFixed(5)},${minLat.toFixed(5)}`
+        };
+    },
+
+    classifyPlaceToSector(item) {
+        let name = (item.name || '').trim();
+        if (!name) {
+            const parts = (item.display_name || '').split(',');
+            name = (parts[0] || '').trim();
+        }
+        const type = (item.type || '').toLowerCase();
+        const cls = (item.class || '').toLowerCase();
+
+        // 1. Pendidikan & Edukasi
+        if (type === 'school' || type === 'college' || type === 'university' || type === 'kindergarten' ||
+            /\b(sd|smp|sma|smk|madrasah|mi|mts|ma|sekolah|kampus|universitas|pesantren|ponpes|bimbel|lpk|paud|tk|slb|kursus)\b/i.test(name)) {
+            let sub = 'sekolah';
+            if (/\b(sd|sekolah dasar|mi)\b/i.test(name)) sub = 'sd';
+            else if (/\b(smp|mts)\b/i.test(name)) sub = 'smp';
+            else if (/\b(smk|kejuruan)\b/i.test(name)) sub = 'smk';
+            else if (/\b(sma|ma)\b/i.test(name)) sub = 'sma';
+            else if (/\b(universitas|kampus|institut)\b/i.test(name)) sub = 'universitas';
+            else if (/\b(sekolah tinggi|stmik|stie|politeknik|akademi)\b/i.test(name)) sub = 'sekolah_tinggi';
+            else if (/\b(tk|paud|taman kanak)\b/i.test(name)) sub = 'tk_paud';
+            else if (/\b(pesantren|ponpes)\b/i.test(name)) sub = 'pesantren';
+            else if (/\b(slb|luar biasa|autis)\b/i.test(name)) sub = 'slb';
+            else if (/\b(bimbel|les|kumon)\b/i.test(name)) sub = 'bimbel';
+            else if (/\b(kursus|lpk|pelatihan)\b/i.test(name)) sub = 'kursus_lpk';
+            return { sector: 'pendidikan', sub };
+        }
+
+        // 2. Kesehatan, Medis & Farmasi
+        if (type === 'hospital' || type === 'clinic' || type === 'pharmacy' || type === 'doctors' || type === 'dentist' ||
+            /\b(rs|rsi|rsia|rumah sakit|klinik|apotek|puskesmas|dokter|bidan|laboratorium|optik|alkes)\b/i.test(name)) {
+            let sub = 'kesehatan';
+            if (/\b(rsia)\b/i.test(name)) sub = 'rsia';
+            else if (/\b(rumah sakit|rs |rsi )\b/i.test(name)) sub = 'rumah_sakit';
+            else if (/\b(puskesmas)\b/i.test(name)) sub = 'puskesmas';
+            else if (/\b(klinik gigi|dokter gigi)\b/i.test(name)) sub = 'klinik_gigi';
+            else if (/\b(klinik)\b/i.test(name)) sub = 'klinik';
+            else if (/\b(apotek|farmasi)\b/i.test(name)) sub = 'apotek';
+            else if (/\b(bidan)\b/i.test(name)) sub = 'praktik_bidan';
+            else if (/\b(dokter)\b/i.test(name)) sub = 'praktik_dokter';
+            else if (/\b(lab|laboratorium)\b/i.test(name)) sub = 'laboratorium';
+            else if (/\b(optik|kacamata)\b/i.test(name)) sub = 'optik';
+            return { sector: 'kesehatan', sub };
+        }
+
+        // 3. Tempat Ibadah & Yayasan Sosial
+        if (type === 'place_of_worship' || /\b(masjid|mushola|gereja|pura|vihara|klenteng|panti asuhan|yayasan|baznas|zakat)\b/i.test(name)) {
+            let sub = 'tempat_ibadah';
+            if (/\b(masjid|mushola)\b/i.test(name)) sub = 'masjid';
+            else if (/\b(gereja)\b/i.test(name)) sub = 'gereja';
+            else if (/\b(pura|vihara|klenteng)\b/i.test(name)) sub = 'pura_vihara';
+            else if (/\b(panti asuhan)\b/i.test(name)) sub = 'panti_asuhan';
+            else if (/\b(zakat|infaq|baznas)\b/i.test(name)) sub = 'lembaga_zakat';
+            return { sector: 'ibadah', sub };
+        }
+
+        // 4. Kuliner, Makanan & Minuman
+        if (['restaurant', 'cafe', 'fast_food', 'food_court', 'bakery'].includes(type) ||
+            /\b(cafe|kafe|kopi|coffee|resto|restoran|warung|warteg|bakso|mie|soto|catering|depot|nasi goreng|angkringan|bakery|roti|kue)\b/i.test(name)) {
+            let sub = 'kuliner';
+            if (/\b(cafe|kafe|coffee|kopi)\b/i.test(name)) sub = 'cafe';
+            else if (/\b(bakery|roti|kue)\b/i.test(name)) sub = 'bakery';
+            else if (/\b(bakso|mie|soto)\b/i.test(name)) sub = 'bakso_mie_soto';
+            else if (/\b(fast food|burger|fried chicken|pizza)\b/i.test(name)) sub = 'fast_food';
+            else if (/\b(catering|prasmanan)\b/i.test(name)) sub = 'catering';
+            else if (/\b(depot air|isi ulang)\b/i.test(name)) sub = 'depot_air';
+            else if (/\b(resto|restoran)\b/i.test(name)) sub = 'resto';
+            else if (/\b(warung|warteg|depot|nasi)\b/i.test(name)) sub = 'warung';
+            return { sector: 'kuliner', sub };
+        }
+
+        // 5. Perdagangan, Retail & Toko
+        if (['convenience', 'supermarket', 'clothes', 'marketplace', 'electronics', 'furniture', 'hardware', 'pet'].includes(type) || cls === 'shop' ||
+            /\b(toko|minimarket|supermarket|swalayan|indomaret|alfamart|sembako|butik|distro|pasar|petshop|kelontong|atk|emas|mebel|furniture)\b/i.test(name)) {
+            let sub = 'retail';
+            if (/\b(minimarket|indomaret|alfamart|supermarket|swalayan)\b/i.test(name)) sub = 'minimarket';
+            else if (/\b(pakaian|baju|butik|distro|fashion)\b/i.test(name)) sub = 'fashion';
+            else if (/\b(elektronik|gadget|hp|handphone|servis hp)\b/i.test(name)) sub = 'elektronik';
+            else if (/\b(bangunan|material)\b/i.test(name)) sub = 'toko_bangunan';
+            else if (/\b(petshop|pakan hewan)\b/i.test(name)) sub = 'petshop';
+            else if (/\b(atk|buku|alat tulis)\b/i.test(name)) sub = 'toko_buku_atk';
+            else if (/\b(emas|perhiasan)\b/i.test(name)) sub = 'toko_emas';
+            else if (/\b(furniture|mebel)\b/i.test(name)) sub = 'furniture_mebel';
+            else if (/\b(pasar)\b/i.test(name)) sub = 'pasar_tradisional';
+            else if (/\b(sembako|kelontong)\b/i.test(name)) sub = 'toko_kelontong';
+            return { sector: 'retail', sub };
+        }
+
+        // 6. Otomotif & Transportasi
+        if (['car_repair', 'motorcycle_repair', 'fuel', 'car_wash', 'car', 'motorcycle'].includes(type) ||
+            /\b(bengkel|spbu|cuci motor|cuci mobil|doorsmeer|tambal ban|variasi motor|dealer|showroom|rental|travel)\b/i.test(name)) {
+            let sub = 'otomotif';
+            if (/\b(bengkel mobil)\b/i.test(name)) sub = 'bengkel_mobil';
+            else if (/\b(bengkel)\b/i.test(name)) sub = 'bengkel_motor';
+            else if (/\b(spbu|bensin|pertamina)\b/i.test(name)) sub = 'spbu';
+            else if (/\b(cuci|doorsmeer)\b/i.test(name)) sub = 'cuci_kendaraan';
+            else if (/\b(ban|aki|velg)\b/i.test(name)) sub = 'toko_ban_aki';
+            else if (/\b(dealer|showroom)\b/i.test(name)) sub = 'dealer_showroom';
+            else if (/\b(rental|travel)\b/i.test(name)) sub = 'rental_travel';
+            return { sector: 'otomotif', sub };
+        }
+
+        // 7. Instansi Pemerintah & Layanan Publik
+        if (type === 'government' || type === 'townhall' || type === 'police' || type === 'post_office' || type === 'courthouse' ||
+            /\b(kantor desa|kelurahan|kecamatan|polsek|polres|koramil|kodim|dinas|pemerintah|balai desa|kantor pos|bpjs|samsat|kpp|pajak|bpn)\b/i.test(name)) {
+            let sub = 'pemerintah';
+            if (/\b(kelurahan|desa|balai desa)\b/i.test(name)) sub = 'kelurahan_desa';
+            else if (/\b(kecamatan)\b/i.test(name)) sub = 'kecamatan';
+            else if (/\b(polisi|polsek|polres)\b/i.test(name)) sub = 'kepolisian';
+            else if (/\b(tni|koramil|kodim|militer)\b/i.test(name)) sub = 'tni_militer';
+            else if (/\b(pos)\b/i.test(name)) sub = 'kantor_pos';
+            else if (/\b(pajak|samsat|kpp)\b/i.test(name)) sub = 'kantor_pajak';
+            else if (/\b(bpjs)\b/i.test(name)) sub = 'bpjs';
+            else if (/\b(bpn|pertanahan)\b/i.test(name)) sub = 'kantor_bpn';
+            else if (/\b(dinas)\b/i.test(name)) sub = 'kantor_dinas';
+            return { sector: 'pemerintah', sub };
+        }
+
+        // 8. Lembaga Keuangan & Asuransi
+        if (type === 'bank' || type === 'atm' || /\b(bank|atm|koperasi|bpr|pegadaian|bmt|asuransi)\b/i.test(name)) {
+            let sub = 'bank';
+            if (/\b(atm)\b/i.test(name)) sub = 'atm';
+            else if (/\b(bpr)\b/i.test(name)) sub = 'bpr_syariah';
+            else if (/\b(koperasi|bmt)\b/i.test(name)) sub = 'koperasi';
+            else if (/\b(pegadaian)\b/i.test(name)) sub = 'pegadaian';
+            else if (/\b(asuransi)\b/i.test(name)) sub = 'kantor_asuransi';
+            return { sector: 'keuangan', sub };
+        }
+
+        // 9. Akomodasi, Pariwisata & Hiburan
+        if (type === 'hotel' || type === 'guest_house' || type === 'motel' || type === 'hostel' ||
+            /\b(hotel|penginapan|guesthouse|homestay|villa|kost|kos|wisata|resort|gedung pertemuan)\b/i.test(name)) {
+            let sub = 'hotel';
+            if (/\b(villa|resort)\b/i.test(name)) sub = 'villa';
+            else if (/\b(kost|kos)\b/i.test(name)) sub = 'kost';
+            else if (/\b(wisata|rekreasi)\b/i.test(name)) sub = 'wisata';
+            else if (/\b(gedung pertemuan|venue)\b/i.test(name)) sub = 'gedung_pertemuan';
+            else if (!/\b(hotel)\b/i.test(name)) sub = 'penginapan';
+            return { sector: 'akomodasi', sub };
+        }
+
+        // 10. Jasa Bisnis, Legal & Profesional
+        if (type === 'notary' || type === 'lawyer' || type === 'laundry' || type === 'accountant' ||
+            /\b(laundry|notaris|ppat|advokat|hukum|fotokopi|percetakan|print|ekspedisi|jne|jnt|sicepat|akuntan|kap|outsourcing)\b/i.test(name)) {
+            let sub = 'jasa_profesional';
+            if (/\b(laundry)\b/i.test(name)) sub = 'laundry';
+            else if (/\b(notaris|ppat)\b/i.test(name)) sub = 'notaris';
+            else if (/\b(advokat|hukum|pengacara)\b/i.test(name)) sub = 'kantor_hukum';
+            else if (/\b(percetakan|fotokopi|printing|sablon)\b/i.test(name)) sub = 'percetakan';
+            else if (/\b(jne|jnt|ekspedisi|cargo|kurir)\b/i.test(name)) sub = 'ekspedisi_kurir';
+            else if (/\b(akuntan|kap)\b/i.test(name)) sub = 'konsultan_akuntan';
+            else if (/\b(outsourcing|hrd)\b/i.test(name)) sub = 'outsourcing_hrd';
+            return { sector: 'jasa', sub };
+        }
+
+        // 11. Kecantikan, Kebugaran & Relaksasi
+        if (/\b(barber|salon|pangkas|skincare|estetika|spa|reflexology|pijat|gym|fitness|yoga)\b/i.test(name)) {
+            let sub = 'kecantikan';
+            if (/\b(barber|pangkas)\b/i.test(name)) sub = 'barbershop';
+            else if (/\b(skincare|estetika)\b/i.test(name)) sub = 'klinik_kecantikan';
+            else if (/\b(spa|reflexology|pijat)\b/i.test(name)) sub = 'spa_massage';
+            else if (/\b(gym|fitness|yoga)\b/i.test(name)) sub = 'gym_fitness';
+            else if (/\b(salon)\b/i.test(name)) sub = 'salon';
+            return { sector: 'kecantikan', sub };
+        }
+
+        // 12. Teknologi, IT & Telekomunikasi
+        if (/\b(software|startup|digital|seo|agency|isp|telekomunikasi|komputer|laptop|servis komputer)\b/i.test(name)) {
+            let sub = 'semua_it';
+            if (/\b(software|startup)\b/i.test(name)) sub = 'software_house';
+            else if (/\b(agency|digital marketing|seo)\b/i.test(name)) sub = 'agency_digital';
+            else if (/\b(isp|telkom|indihome|wifi)\b/i.test(name)) sub = 'isp_telekomunikasi';
+            else if (/\b(servis|service)\b/i.test(name)) sub = 'service_komputer';
+            else if (/\b(toko komputer|sparepart)\b/i.test(name)) sub = 'toko_komputer';
+            return { sector: 'it', sub };
+        }
+
+        // 13. Konstruksi, Arsitektur & Properti
+        if (type === 'architect' || /\b(kontraktor|arsitek|interior|developer|perumahan|residence|renovasi|mandor)\b/i.test(name)) {
+            let sub = 'semua_konstruksi';
+            if (/\b(kontraktor|pemborong)\b/i.test(name)) sub = 'kontraktor';
+            else if (/\b(arsitek|desain interior)\b/i.test(name)) sub = 'arsitek_desain';
+            else if (/\b(developer|perumahan|residence)\b/i.test(name)) sub = 'developer_perumahan';
+            else if (/\b(renovasi|mandor)\b/i.test(name)) sub = 'jasa_renovasi';
+            return { sector: 'konstruksi', sub };
+        }
+
+        // 14. Pertanian, Peternakan & Agribisnis
+        if (/\b(tani|pertanian|pupuk|peternakan|kandang|ayam|sapi|pakan|poultry|bibit|nursery|padi|rice mill|tambak|ikan)\b/i.test(name)) {
+            let sub = 'pertanian';
+            if (/\b(tani|pupuk|obat pertanian)\b/i.test(name)) sub = 'toko_tani';
+            else if (/\b(peternakan|kandang)\b/i.test(name)) sub = 'peternakan';
+            else if (/\b(pakan|poultry)\b/i.test(name)) sub = 'pakan_ternak';
+            else if (/\b(bibit|nursery)\b/i.test(name)) sub = 'pembibitan_tanaman';
+            else if (/\b(padi|rice mill|selepan)\b/i.test(name)) sub = 'penggilingan_padi';
+            else if (/\b(tambak|perikanan|ikan)\b/i.test(name)) sub = 'perikanan_tambak';
+            return { sector: 'pertanian', sub };
+        }
+
+        // 15. Default: Perusahaan / Usaha Lainnya
+        let sub = 'semua_perusahaan';
+        if (/\bpt\b/i.test(name)) sub = 'kantor_pt';
+        else if (/\bcv\b/i.test(name)) sub = 'kantor_cv';
+        else if (/\b(pabrik|industri)\b/i.test(name)) sub = 'pabrik_manufaktur';
+        else if (/\b(distributor|supplier|grosir)\b/i.test(name)) sub = 'distributor_supplier';
+        else if (/\b(gudang|warehouse|depo)\b/i.test(name)) sub = 'pergudangan_logistik';
+        return { sector: 'perusahaan', sub };
+    },
+
+    // ----------------------------------------------------
+    // POPULATE DROPDOWNS WITH PLACE COUNTS (NO EMOJIS)
+    // ----------------------------------------------------
+    populateSectorsWithCounts() {
+        const sectorSelect = document.getElementById('target-sector-select');
+        if (!sectorSelect) return;
+
+        const sectorCounts = (this.territoryData && this.territoryData.sector_counts) || {};
+        const previousSelected = sectorSelect.value || 'perusahaan';
+
+        const keys = Object.keys(this.SECTORS_DATA);
+        // Sort sectors descending by place count so sectors with active businesses are prominent
+        keys.sort((a, b) => {
+            const countA = sectorCounts[a] || 0;
+            const countB = sectorCounts[b] || 0;
+            return countB - countA;
+        });
+
+        sectorSelect.innerHTML = '';
+        let topKeyWithData = null;
+
+        keys.forEach((key, idx) => {
+            const sectorInfo = this.SECTORS_DATA[key];
+            const count = sectorCounts[key] || 0;
+            const opt = document.createElement('option');
+            opt.value = key;
+            // Clean format: [Sector Name] ([Count]) - strictly without emojis!
+            opt.textContent = `${sectorInfo.name} (${count})`;
+            sectorSelect.appendChild(opt);
+
+            if (count > 0 && !topKeyWithData) {
+                topKeyWithData = key;
+            }
+        });
+
+        // Select previously selected sector if it has places > 0, otherwise select top sector with places
+        if (previousSelected && (sectorCounts[previousSelected] || 0) > 0) {
+            sectorSelect.value = previousSelected;
+        } else if (topKeyWithData) {
+            sectorSelect.value = topKeyWithData;
+        } else {
+            sectorSelect.value = previousSelected || keys[0];
+        }
+
+        this.populateSubcategoriesWithCounts(sectorSelect.value);
+    },
+
+    populateSubcategoriesWithCounts(sectorKey) {
+        const presetSelect = document.getElementById('target-category-select');
+        if (!presetSelect) return;
+
+        const sector = this.SECTORS_DATA[sectorKey] || this.SECTORS_DATA['perusahaan'];
+        const sectorCounts = (this.territoryData && this.territoryData.sector_counts) || {};
+        const subCounts = (this.territoryData && this.territoryData.sub_counts) || {};
+        const totalSectorPlaces = sectorCounts[sectorKey] || 0;
+
+        presetSelect.innerHTML = '';
+
+        sector.items.forEach((item, idx) => {
+            const opt = document.createElement('option');
+            opt.value = item.value;
+
+            let count = 0;
+            if (idx === 0) {
+                count = totalSectorPlaces;
+            } else {
+                count = subCounts[item.value] || 0;
+            }
+
+            // Clean format: [Subcategory Label] ([Count]) - strictly without emojis!
+            opt.textContent = `${item.label} (${count})`;
+            presetSelect.appendChild(opt);
+        });
+
+        presetSelect.selectedIndex = 0;
+    },
+
+    // ----------------------------------------------------
+    // FILTER CANDIDATES FROM PRE-SCANNED TERRITORY
+    // ----------------------------------------------------
+    applyPresetFilter() {
+        const sectorSelect = document.getElementById('target-sector-select');
+        const presetSelect = document.getElementById('target-category-select');
+        if (!sectorSelect) return;
+
+        const sectorKey = sectorSelect.value;
+        const subKey = presetSelect ? presetSelect.value : '';
+
+        if (!this.territoryData || !this.territoryData.places || this.territoryData.places.length === 0) {
+            this.currentQuery.category = subKey || sectorKey;
+            this.loadPreScrapeCandidates();
+            return;
+        }
+
+        const allPlaces = this.territoryData.places;
+        const sector = this.SECTORS_DATA[sectorKey];
+        const firstSubVal = (sector && sector.items && sector.items[0]) ? sector.items[0].value : null;
+
+        let filtered = [];
+        if (!subKey || subKey === firstSubVal || subKey.startsWith('semua_')) {
+            filtered = allPlaces.filter(p => p.sector === sectorKey);
+        } else {
+            filtered = allPlaces.filter(p => p.sector === sectorKey && p.sub === subKey);
+            if (filtered.length === 0) {
+                const term = subKey.replace(/_/g, ' ').toLowerCase();
+                filtered = allPlaces.filter(p => p.sector === sectorKey && (
+                    (p.name && p.name.toLowerCase().includes(term)) ||
+                    (p.category && p.category.toLowerCase().includes(term))
+                ));
+            }
+        }
+
+        const subObj = sector && sector.items ? sector.items.find(i => i.value === subKey) : null;
+        const label = subObj ? subObj.label : (sector ? sector.name : 'kategori terpilih');
+        this.renderCandidatePlaces(filtered, label);
+    },
+
+    renderCandidatePlaces(placesList, contextLabel = '') {
+        const countBadge = document.getElementById('preview-count-badge');
+        const listContainer = document.getElementById('pre-scrape-places-list');
+
+        if (this.currentQuery.zoneMode === 'boundary' && window.mapEngine) {
+            this.candidatePlaces = placesList.map(p => {
+                const safe = window.mapEngine.ensurePointInsideBoundary(p.lat, p.lng);
+                p.lat = safe[0];
+                p.lng = safe[1];
+                return p;
+            });
+        } else {
+            this.candidatePlaces = placesList;
+        }
+
+        if (countBadge) {
+            countBadge.textContent = `${this.candidatePlaces.length} Calon Terdeteksi (Dalam Batas)`;
+        }
+
+        if (listContainer) {
+            if (this.candidatePlaces.length === 0) {
+                listContainer.innerHTML = `
+                    <div style="padding: 24px 16px; text-align: center; color: #64748b;">
+                        <i class="fa-solid fa-circle-exclamation" style="font-size: 1.4rem; color: #94a3b8; margin-bottom: 6px;"></i>
+                        <div style="font-weight: 600; color: #0f172a; margin-bottom: 4px; font-size: 0.78rem;">Tidak Ada Data Bisnis untuk Pilihan Ini</div>
+                        <div style="font-size: 0.70rem; line-height: 1.4; color: #64748b;">
+                            Tidak ditemukan tempat untuk <strong>${contextLabel}</strong> di wilayah <strong>${this.currentQuery.location}</strong>.<br>
+                            Silakan pilih bidang atau jenis usaha yang memiliki angka tempat di menu pilihan.
+                        </div>
+                    </div>
+                `;
+            } else {
+                listContainer.innerHTML = '';
+                this.candidatePlaces.forEach(p => {
+                    const isOsm = (p.source === 'osm');
+                    const sourcePill = isOsm 
+                        ? `<span style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 5px; border-radius: 4px; font-size: 0.62rem; font-weight: 600;"><i class="fa-solid fa-map-pin"></i> OpenStreetMap</span>`
+                        : `<span style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 1px 5px; border-radius: 4px; font-size: 0.62rem; font-weight: 600;"><i class="fa-solid fa-location-dot"></i> Google Maps</span>`;
+
+                    const row = document.createElement('div');
+                    row.style.cssText = 'padding: 8px 10px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem;';
+                    row.innerHTML = `
+                        <div style="overflow: hidden; text-overflow: ellipsis; padding-right: 8px;">
+                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                                <strong style="color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px;" title="${p.name}">${p.name}</strong>
+                                ${sourcePill}
+                            </div>
+                            <div style="color: #64748b; font-size: 0.68rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px;" title="${p.address}">${p.address}</div>
+                        </div>
+                        <div style="text-align: right; white-space: nowrap;">
+                            <span class="badge badge-blue" style="font-size: 0.64rem;">${p.category}</span>
+                            <span style="font-weight: 700; color: #0f172a; margin-left: 4px;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> ${p.rating}</span>
+                        </div>
+                    `;
+                    listContainer.appendChild(row);
+                });
+            }
+        }
+
+        if (window.mapEngine) {
+            window.mapEngine.showPreviewMarkers(this.candidatePlaces);
+        }
+    },
+
+    // ----------------------------------------------------
+    // AUTOMATED TERRITORY SCANNING ACROSS ALL 15 SECTORS
+    // ----------------------------------------------------
+    async scanTerritory() {
+        if (this.isScanningTerritory) return;
+        this.isScanningTerritory = true;
+
+        const countBadge = document.getElementById('preview-count-badge');
+        if (countBadge) {
+            countBadge.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:#2563eb;"></i> Memindai seluruh sektor bisnis wilayah...';
+        }
+
+        const norm = this.normalizeBoundingBox(this.currentQuery.bbox, this.currentQuery.lat, this.currentQuery.lng);
+        const bboxParam = `${norm.minLat},${norm.maxLat},${norm.minLng},${norm.maxLng}`;
+
+        let data = null;
+        const isStaticHost = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+
+        if (!isStaticHost) {
+            try {
+                const queryParams = new URLSearchParams({
+                    action: 'scan_territory',
+                    lat: this.currentQuery.lat,
+                    lng: this.currentQuery.lng,
+                    location: this.currentQuery.location || '',
+                    bbox: bboxParam
+                });
+                const res = await fetch(`api/scraper.php?${queryParams.toString()}`);
+                if (res.ok) {
+                    data = await res.json();
+                }
+            } catch (e) {
+                console.warn('Backend territory scan error, falling back to client scan...', e);
+            }
+        }
+
+        // Static host / fallback client-side scan
+        if (!data || !data.success || !Array.isArray(data.places)) {
+            data = await this.scanTerritoryRealMap(norm);
+        }
+
+        this.isScanningTerritory = false;
+
+        if (data && data.success) {
+            this.territoryData = data;
+            this.populateSectorsWithCounts();
+
+            if (this.currentQuery.targetMode === 'preset') {
+                this.applyPresetFilter();
+            } else {
+                const kwInput = document.getElementById('target-keyword-input');
+                const kw = (kwInput ? kwInput.value.trim() : '') || this.currentQuery.category || '';
+                const matches = this.territoryData.places.filter(p => 
+                    (p.name && p.name.toLowerCase().includes(kw.toLowerCase())) || 
+                    (p.category && p.category.toLowerCase().includes(kw.toLowerCase()))
+                );
+                if (matches.length > 0) {
+                    this.renderCandidatePlaces(matches, `kata kunci "${kw}"`);
+                } else {
+                    this.loadPreScrapeCandidates();
+                }
+            }
+        } else {
+            if (countBadge) countBadge.textContent = 'Siap Ekstraksi';
+        }
+    },
+
+    async scanTerritoryRealMap(norm) {
+        const viewbox = norm.viewbox;
+        const queries = [
+            'amenity=school', 'amenity=place_of_worship', 'amenity=hospital',
+            'amenity=clinic', 'amenity=bank', 'amenity=restaurant',
+            'amenity=cafe', 'shop=convenience', 'shop=supermarket',
+            'office=government', 'amenity=fuel', 'shop=car_repair',
+            'amenity=pharmacy', 'amenity=college', 'amenity=kindergarten'
+        ];
+
+        const fetchPromises = queries.map(q => {
+            const u = `https://nominatim.openstreetmap.org/search?${q}&format=json&bounded=1&viewbox=${viewbox}&addressdetails=1&extratags=1&limit=25`;
+            return fetch(u, { headers: { 'Accept': 'application/json' } })
+                .then(r => r.ok ? r.json() : [])
+                .catch(() => []);
+        });
+
+        const results = await Promise.allSettled(fetchPromises);
+        const seenOsmIds = new Set();
+        const rawPlaces = [];
+
+        results.forEach(res => {
+            if (res.status === 'fulfilled' && Array.isArray(res.value)) {
+                res.value.forEach(item => {
+                    const id = item.osm_id || `${item.lat},${item.lon}`;
+                    if (!seenOsmIds.has(id)) {
+                        seenOsmIds.add(id);
+                        rawPlaces.push(item);
+                    }
+                });
+            }
+        });
+
+        // Resilient Fallback: If Nominatim is rate-limited (HTTP 429) or empty, query Photon Komoot OSM API
+        if (rawPlaces.length < 5) {
+            const photonKeywords = [
+                'sekolah', 'sd', 'smp', 'sma', 'smk', 'universitas', 'madrasah', 'pesantren',
+                'rumah sakit', 'klinik', 'puskesmas', 'apotek',
+                'masjid', 'mushola', 'gereja',
+                'bank', 'atm', 'koperasi',
+                'cafe', 'restoran', 'warung', 'bakso',
+                'toko', 'minimarket', 'supermarket', 'bengkel', 'spbu',
+                'kantor', 'dinas', 'kelurahan', 'polsek',
+                'hotel', 'laundry', 'salon'
+            ];
+            const centerLat = norm.minLat + (norm.maxLat - norm.minLat) / 2;
+            const centerLng = norm.minLng + (norm.maxLng - norm.minLng) / 2;
+
+            const pPromises = photonKeywords.map(kw => {
+                const u = `https://photon.komoot.io/api/?q=${encodeURIComponent(kw)}&lat=${centerLat}&lon=${centerLng}&bbox=${norm.minLng},${norm.minLat},${norm.maxLng},${norm.maxLat}&limit=25`;
+                return fetch(u, { headers: { 'Accept': 'application/json' } })
+                    .then(r => r.ok ? r.json() : null)
+                    .catch(() => null);
+            });
+            const pResults = await Promise.allSettled(pPromises);
+            pResults.forEach(res => {
+                if (res.status === 'fulfilled' && res.value && Array.isArray(res.value.features)) {
+                    res.value.features.forEach(f => {
+                        const props = f.properties || {};
+                        const pName = (props.name || '').trim();
+                        if (!pName) return;
+                        const pId = props.osm_id || `${pName}_${props.osm_value || ''}`;
+                        if (!seenOsmIds.has(pId)) {
+                            seenOsmIds.add(pId);
+                            const coords = (f.geometry && f.geometry.coordinates) || [0, 0];
+                            rawPlaces.push({
+                                osm_id: props.osm_id,
+                                name: pName,
+                                class: props.osm_key || '',
+                                type: props.osm_value || props.type || '',
+                                lat: coords[1],
+                                lon: coords[0],
+                                address: {
+                                    road: props.street || '',
+                                    village: props.district || '',
+                                    city: props.city || props.county || ''
+                                },
+                                display_name: [pName, props.street, props.district, props.city].filter(Boolean).join(', ')
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        const places = [];
+        const sectorCounts = {};
+        const subCounts = {};
+
+        Object.keys(this.SECTORS_DATA).forEach(k => { sectorCounts[k] = 0; });
+
+        rawPlaces.forEach(r => {
+            let name = (r.name || '').trim();
+            if (!name) {
+                const parts = (r.display_name || '').split(',');
+                name = (parts[0] || '').trim();
+            }
+            if (!name) return;
+
+            const classification = this.classifyPlaceToSector(r);
+            const sector = classification.sector;
+            const sub = classification.sub;
+
+            sectorCounts[sector] = (sectorCounts[sector] || 0) + 1;
+            subCounts[sub] = (subCounts[sub] || 0) + 1;
+
+            const lat = parseFloat(r.lat);
+            const lng = parseFloat(r.lon);
+
+            const addr = r.address || {};
+            const addrParts = [];
+            if (addr.road) addrParts.push(addr.road);
+            if (addr.village) addrParts.push('Kel. ' + addr.village);
+            else if (addr.suburb) addrParts.push('Kel. ' + addr.suburb);
+            if (addr.city_district) addrParts.push('Kec. ' + addr.city_district);
+            if (addr.city) addrParts.push(addr.city);
+            else if (addr.town) addrParts.push(addr.town);
+
+            const fullAddr = addrParts.length > 0 ? addrParts.join(', ') : (r.display_name || this.currentQuery.location);
+            const categoryTitle = this.humanizeCategoryName(r.type || r.class || sub, name);
+            const phone = (r.extratags && (r.extratags.phone || r.extratags['contact:phone'])) || '-';
+            const hours = (r.extratags && r.extratags.opening_hours) || '-';
+            const website = (r.extratags && (r.extratags.website || r.extratags['contact:website'])) || '-';
+
+            let rating = 4.6;
+            let reviews = 40;
+            if (r.importance) {
+                rating = parseFloat(Math.min(5.0, 4.0 + (parseFloat(r.importance) * 2)).toFixed(1));
+                reviews = Math.max(15, Math.round(parseFloat(r.importance) * 600));
+            }
+
+            const insights = this.generateTriChannelInsights(name, categoryTitle, rating, reviews, phone, lat, lng);
+
+            places.push({
+                id: places.length + 1,
+                osm_id: r.osm_id,
+                name: name,
+                sector: sector,
+                sub: sub,
+                category: categoryTitle,
+                address: fullAddr,
+                phone: phone,
+                lat: lat,
+                lng: lng,
+                social_media: website,
+                opening_hours: hours,
+                rating: rating,
+                reviews_count: reviews,
+                status: 'none',
+                source: 'osm',
+                source_name: 'OpenStreetMap',
+                source_type: 'Peta Spasial Nyata',
+                source_color: '#16a34a',
+                source_icon: 'fa-map-location-dot',
+                insights: insights
+            });
+        });
+
+        return {
+            success: true,
+            total_places: places.length,
+            sector_counts: sectorCounts,
+            sub_counts: subCounts,
+            places: places
+        };
+    },
+
     bindTargetModeToggle() {
         const btnKeyword = document.getElementById('btn-toggle-keyword');
         const btnPreset = document.getElementById('btn-toggle-preset');
@@ -347,30 +1017,26 @@ const ScraperClient = {
         const sectorSelect = document.getElementById('target-sector-select');
         const presetSelect = document.getElementById('target-category-select');
 
-        const populateSubcategories = (sectorKey) => {
-            if (!presetSelect) return;
-            const sector = this.SECTORS_DATA[sectorKey] || this.SECTORS_DATA['perusahaan'] || this.SECTORS_DATA['pendidikan'];
-            presetSelect.innerHTML = '';
-            sector.items.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.value;
-                opt.textContent = item.label;
-                presetSelect.appendChild(opt);
-            });
-            presetSelect.selectedIndex = 0;
-        };
-
-        // Initialize subcategories on load
+        // Populate initial categories
         if (sectorSelect && presetSelect) {
-            populateSubcategories(sectorSelect.value || 'perusahaan');
+            this.populateSectorsWithCounts();
         }
 
         if (sectorSelect) {
             sectorSelect.addEventListener('change', () => {
-                populateSubcategories(sectorSelect.value);
+                this.populateSubcategoriesWithCounts(sectorSelect.value);
                 if (this.currentQuery.targetMode === 'preset') {
                     this.currentQuery.category = presetSelect ? presetSelect.value : sectorSelect.value;
-                    this.loadPreScrapeCandidates();
+                    this.applyPresetFilter();
+                }
+            });
+        }
+
+        if (presetSelect) {
+            presetSelect.addEventListener('change', () => {
+                if (this.currentQuery.targetMode === 'preset') {
+                    this.currentQuery.category = presetSelect.value;
+                    this.applyPresetFilter();
                 }
             });
         }
@@ -380,7 +1046,7 @@ const ScraperClient = {
                 this.currentQuery.targetMode = 'keyword';
                 btnKeyword.classList.add('active');
                 btnPreset.classList.remove('active');
-                btnKeyword.style.background = '#2563eb';
+                btnKeyword.style.background = '#0f172a';
                 btnKeyword.style.color = '#ffffff';
                 btnPreset.style.background = 'transparent';
                 btnPreset.style.color = '#64748b';
@@ -396,7 +1062,7 @@ const ScraperClient = {
                 this.currentQuery.targetMode = 'preset';
                 btnPreset.classList.add('active');
                 btnKeyword.classList.remove('active');
-                btnPreset.style.background = '#2563eb';
+                btnPreset.style.background = '#0f172a';
                 btnPreset.style.color = '#ffffff';
                 btnKeyword.style.background = 'transparent';
                 btnKeyword.style.color = '#64748b';
@@ -404,20 +1070,10 @@ const ScraperClient = {
                 if (boxPreset) boxPreset.style.display = 'block';
                 if (boxKeyword) boxKeyword.style.display = 'none';
 
-                if (sectorSelect && presetSelect && presetSelect.options.length === 0) {
-                    populateSubcategories(sectorSelect.value);
-                }
-
-                this.currentQuery.category = (presetSelect && presetSelect.value) ? presetSelect.value : 'semua_perusahaan';
-                this.loadPreScrapeCandidates();
-            });
-        }
-
-        if (presetSelect) {
-            presetSelect.addEventListener('change', () => {
-                if (this.currentQuery.targetMode === 'preset') {
-                    this.currentQuery.category = presetSelect.value;
-                    this.loadPreScrapeCandidates();
+                if (this.territoryData) {
+                    this.applyPresetFilter();
+                } else {
+                    this.scanTerritory();
                 }
             });
         }
@@ -817,7 +1473,7 @@ const ScraperClient = {
             }
         }
 
-        this.loadPreScrapeCandidates();
+        await this.scanTerritory();
     },
 
     // ----------------------------------------------------
@@ -835,7 +1491,7 @@ const ScraperClient = {
                 if (this.currentQuery.zoneMode === 'radius' && window.mapEngine) {
                     window.mapEngine.updateRadius(val);
                 }
-                this.loadPreScrapeCandidates();
+                this.scanTerritory();
             });
         }
     },
@@ -2253,23 +2909,8 @@ const ScraperClient = {
         if (queryObj && queryObj.bbox) {
             bbox = typeof queryObj.bbox === 'string' ? queryObj.bbox.split(',').map(Number) : queryObj.bbox;
         }
-
-        let minLat, maxLat, minLng, maxLng;
-        if (bbox && bbox.length >= 4) {
-            minLat = Math.min(bbox[0], bbox[2]);
-            maxLat = Math.max(bbox[0], bbox[2]);
-            minLng = Math.min(bbox[1], bbox[3]);
-            maxLng = Math.max(bbox[1], bbox[3]);
-        } else {
-            const deltaLat = radius / 111.0;
-            const deltaLng = radius / (111.0 * Math.max(0.2, Math.cos(centerLat * Math.PI / 180)));
-            minLat = centerLat - deltaLat;
-            maxLat = centerLat + deltaLat;
-            minLng = centerLng - deltaLng;
-            maxLng = centerLng + deltaLng;
-        }
-
-        const viewbox = `${minLng.toFixed(5)},${maxLat.toFixed(5)},${maxLng.toFixed(5)},${minLat.toFixed(5)}`;
+        const norm = this.normalizeBoundingBox(bbox, centerLat, centerLng);
+        const viewbox = norm.viewbox;
         const taxonomy = this.getCategoryTaxonomy(q);
 
         try {

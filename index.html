@@ -568,13 +568,13 @@
                 <span style="font-size: 0.74rem; font-weight: 700; color: #0f172a;">Target Sasaran Usaha</span>
                 <!-- Target Mode Switcher -->
                 <div class="target-mode-toggle" style="display: flex; gap: 4px; background: #ffffff; border: 1px solid #e2e8f0; padding: 2px; border-radius: 6px;">
-                  <button type="button" class="target-toggle-btn active" id="btn-toggle-keyword" style="padding: 4px 8px; font-size: 0.68rem; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: #0f172a; color: #ffffff;">Cari Keyword</button>
-                  <button type="button" class="target-toggle-btn" id="btn-toggle-preset" style="padding: 4px 8px; font-size: 0.68rem; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: transparent; color: #64748b;">Pilih Kategori</button>
+                  <button type="button" class="target-toggle-btn" id="btn-toggle-keyword" style="padding: 4px 8px; font-size: 0.68rem; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: transparent; color: #64748b;">Cari Keyword</button>
+                  <button type="button" class="target-toggle-btn active" id="btn-toggle-preset" style="padding: 4px 8px; font-size: 0.68rem; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: #0f172a; color: #ffffff;">Pilih Kategori</button>
                 </div>
               </div>
 
               <!-- Option 1: Search Keyword Box -->
-              <div id="target-keyword-box">
+              <div id="target-keyword-box" style="display: none;">
                 <div style="display: flex; gap: 6px;">
                   <input type="text" id="target-keyword-input" class="form-input" 
                          placeholder="Ketik kata kunci (misal: cafe, laundry, bengkel, klinik, hotel)..." value="cafe">
@@ -588,7 +588,7 @@
               </div>
 
               <!-- Option 2: Cascading Two-Tier Category Dropdowns (1. Bidang Utama -> 2. Jenis Spesifik) -->
-              <div id="target-preset-box" style="display: none;">
+              <div id="target-preset-box" style="display: block;">
                 <div style="display: flex; flex-direction: column; gap: 8px;">
                   <!-- Tier 1: Bidang / Sektor Utama -->
                   <div>
@@ -596,21 +596,21 @@
                       1. Pilih Bidang Utama:
                     </label>
                     <select id="target-sector-select" class="form-select" style="font-size: 0.78rem; font-weight: 600; background: #f8fafc; border-color: #cbd5e1;">
-                      <option value="perusahaan" selected>🏢 Perusahaan, Korporasi & Industri (PT / CV)</option>
-                      <option value="konstruksi">🏗️ Konstruksi, Arsitektur & Properti</option>
-                      <option value="jasa">💼 Jasa Bisnis, Legal & Profesional</option>
-                      <option value="it">💻 Teknologi, IT & Telekomunikasi</option>
-                      <option value="pendidikan">🎓 Pendidikan & Edukasi</option>
-                      <option value="kesehatan">🏥 Kesehatan, Medis & Farmasi</option>
-                      <option value="pemerintah">🏛️ Instansi Pemerintah & Layanan Publik</option>
-                      <option value="kuliner">☕ Kuliner, Makanan & Minuman</option>
-                      <option value="retail">🛍️ Perdagangan, Retail & Toko</option>
-                      <option value="otomotif">🔧 Otomotif & Transportasi</option>
-                      <option value="akomodasi">🏨 Akomodasi, Pariwisata & Hiburan</option>
-                      <option value="kecantikan">💈 Kecantikan, Kebugaran & Relaksasi</option>
-                      <option value="keuangan">🏦 Lembaga Keuangan & Asuransi</option>
-                      <option value="pertanian">🌾 Pertanian, Peternakan & Agribisnis</option>
-                      <option value="ibadah">🕌 Tempat Ibadah & Yayasan Sosial</option>
+                      <option value="perusahaan" selected>Perusahaan, Korporasi & Industri (PT / CV)</option>
+                      <option value="konstruksi">Konstruksi, Arsitektur & Properti</option>
+                      <option value="jasa">Jasa Bisnis, Legal & Profesional</option>
+                      <option value="it">Teknologi, IT & Telekomunikasi</option>
+                      <option value="pendidikan">Pendidikan & Edukasi</option>
+                      <option value="kesehatan">Kesehatan, Medis & Farmasi</option>
+                      <option value="pemerintah">Instansi Pemerintah & Layanan Publik</option>
+                      <option value="kuliner">Kuliner, Makanan & Minuman</option>
+                      <option value="retail">Perdagangan, Retail & Toko</option>
+                      <option value="otomotif">Otomotif & Transportasi</option>
+                      <option value="akomodasi">Akomodasi, Pariwisata & Hiburan</option>
+                      <option value="kecantikan">Kecantikan, Kebugaran & Relaksasi</option>
+                      <option value="keuangan">Lembaga Keuangan & Asuransi</option>
+                      <option value="pertanian">Pertanian, Peternakan & Agribisnis</option>
+                      <option value="ibadah">Tempat Ibadah & Yayasan Sosial</option>
                     </select>
                   </div>
 
