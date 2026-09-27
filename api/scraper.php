@@ -1744,76 +1744,105 @@ function scanTerritoryAllSectors($bbox, $centerLat = -7.47, $centerLng = 110.22,
     }
     curl_multi_close($mh);
 
-    // Resilient Fallback: If Nominatim is rate-limited (HTTP 429) or empty, query Photon Komoot OSM API
-    if (count($uniqueRaw) < 5) {
-        $photonKeywords = [
-            'sekolah', 'sd', 'smp', 'sma', 'smk', 'universitas', 'madrasah', 'pesantren',
-            'rumah sakit', 'klinik', 'puskesmas', 'apotek',
-            'masjid', 'mushola', 'gereja',
-            'bank', 'atm', 'koperasi',
-            'cafe', 'restoran', 'warung', 'bakso',
-            'toko', 'minimarket', 'supermarket', 'bengkel', 'spbu',
-            'kantor', 'dinas', 'kelurahan', 'polsek',
-            'hotel', 'laundry', 'salon'
-        ];
+    // Multi-Sector Resilient Spatial Crawler via Photon Komoot OSM API (unconditional crawl to guarantee comprehensive business coverage)
+    $cleanCity = preg_replace('/^(kota|kabupaten|kab\.|kecamatan|kelurahan)\s+/i', '', trim($locationName));
+    $cleanCity = trim(explode(',', $cleanCity)[0]);
+    if (empty($cleanCity) || $cleanCity === 'Indonesia') $cleanCity = 'Magelang';
 
-        $pmh = curl_multi_init();
-        $pHandles = [];
+    $photonKeywords = [
+        // Pendidikan
+        "sekolah $cleanCity", "sma $cleanCity", "smk $cleanCity", "universitas $cleanCity", "kampus $cleanCity", "pesantren $cleanCity",
+        // Kesehatan
+        "rumah sakit $cleanCity", "klinik $cleanCity", "puskesmas $cleanCity", "apotek $cleanCity", "dokter $cleanCity",
+        // Ibadah
+        "masjid $cleanCity", "mushola $cleanCity", "gereja $cleanCity",
+        // Keuangan
+        "bank $cleanCity", "atm $cleanCity", "koperasi $cleanCity", "bpr $cleanCity",
+        // Kuliner
+        "cafe $cleanCity", "coffee $cleanCity", "kopi $cleanCity", "resto $cleanCity", "restoran $cleanCity", "warung $cleanCity", "bakso $cleanCity", "kuliner $cleanCity",
+        // Retail & Toko
+        "toko $cleanCity", "elektronik $cleanCity", "toko elektronik $cleanCity", "minimarket $cleanCity", "supermarket $cleanCity", "komputer $cleanCity", "cellular $cleanCity", "sembako $cleanCity",
+        // Otomotif
+        "bengkel $cleanCity", "bengkel motor $cleanCity", "bengkel mobil $cleanCity", "spbu $cleanCity",
+        // Pemerintah
+        "kelurahan $cleanCity", "kecamatan $cleanCity", "polsek $cleanCity", "koramil $cleanCity", "kantor pos $cleanCity", "dinas $cleanCity",
+        // Akomodasi
+        "hotel $cleanCity", "penginapan $cleanCity", "homestay $cleanCity", "villa $cleanCity", "kost $cleanCity",
+        // Jasa
+        "laundry $cleanCity", "notaris $cleanCity", "fotokopi $cleanCity", "percetakan $cleanCity", "ekspedisi $cleanCity",
+        // Kecantikan
+        "salon $cleanCity", "barbershop $cleanCity", "spa $cleanCity", "gym $cleanCity",
+        // Konstruksi
+        "bangunan $cleanCity", "kontraktor $cleanCity", "material $cleanCity", "arsitek $cleanCity",
+        // IT
+        "komputer $cleanCity", "laptop $cleanCity", "servis laptop $cleanCity", "wifi $cleanCity",
+        // Pertanian
+        "tani $cleanCity", "pupuk $cleanCity", "benih $cleanCity", "ternak $cleanCity",
+        // Perusahaan
+        "pt $cleanCity", "cv $cleanCity", "pabrik $cleanCity", "gudang $cleanCity", "distributor $cleanCity"
+    ];
 
-        foreach ($photonKeywords as $kw) {
-            $pUrl = "https://photon.komoot.io/api/?q=" . urlencode($kw) . "&lat={$centerLat}&lon={$centerLng}&bbox={$minLng},{$minLat},{$maxLng},{$maxLat}&limit=25";
-            $pch = curl_init($pUrl);
-            curl_setopt($pch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($pch, CURLOPT_USERAGENT, 'ClientReachAI/3.0 (info@recreative.id)');
-            curl_setopt($pch, CURLOPT_TIMEOUT, 6);
-            curl_setopt($pch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_multi_add_handle($pmh, $pch);
-            $pHandles[$kw] = $pch;
-        }
+    $pmh = curl_multi_init();
+    $pHandles = [];
 
-        $pRunning = null;
-        do {
-            curl_multi_exec($pmh, $pRunning);
-            curl_multi_select($pmh);
-        } while ($pRunning > 0);
-
-        foreach ($pHandles as $kw => $pch) {
-            $pContent = curl_multi_getcontent($pch);
-            $pArr = json_decode($pContent, true);
-            if (!empty($pArr['features']) && is_array($pArr['features'])) {
-                foreach ($pArr['features'] as $f) {
-                    $props = $f['properties'] ?? [];
-                    $pName = trim($props['name'] ?? '');
-                    if (empty($pName)) continue;
-                    $pId = $props['osm_id'] ?? ($pName . '_' . ($props['osm_value'] ?? ''));
-                    if (isset($seenIds[$pId])) continue;
-                    $seenIds[$pId] = true;
-
-                    $coords = $f['geometry']['coordinates'] ?? [0, 0];
-                    $pLon = (float)($coords[0] ?? 0);
-                    $pLat = (float)($coords[1] ?? 0);
-
-                    $uniqueRaw[] = [
-                        'osm_id' => $props['osm_id'] ?? null,
-                        'name' => $pName,
-                        'class' => $props['osm_key'] ?? '',
-                        'type' => $props['osm_value'] ?? ($props['type'] ?? ''),
-                        'lat' => $pLat,
-                        'lon' => $pLon,
-                        'address' => [
-                            'road' => $props['street'] ?? '',
-                            'village' => $props['district'] ?? '',
-                            'city' => $props['city'] ?? ($props['county'] ?? '')
-                        ],
-                        'display_name' => implode(', ', array_filter([$pName, $props['street'] ?? '', $props['district'] ?? '', $props['city'] ?? '']))
-                    ];
-                }
-            }
-            curl_multi_remove_handle($pmh, $pch);
-            curl_close($pch);
-        }
-        curl_multi_close($pmh);
+    foreach ($photonKeywords as $kw) {
+        $pUrl = "https://photon.komoot.io/api/?q=" . urlencode($kw) . "&lat={$centerLat}&lon={$centerLng}&limit=25";
+        $pch = curl_init($pUrl);
+        curl_setopt($pch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($pch, CURLOPT_USERAGENT, 'ClientReachAI/3.0 (info@recreative.id)');
+        curl_setopt($pch, CURLOPT_TIMEOUT, 6);
+        curl_setopt($pch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_multi_add_handle($pmh, $pch);
+        $pHandles[$kw] = $pch;
     }
+
+    $pRunning = null;
+    do {
+        curl_multi_exec($pmh, $pRunning);
+        curl_multi_select($pmh);
+    } while ($pRunning > 0);
+
+    foreach ($pHandles as $kw => $pch) {
+        $pContent = curl_multi_getcontent($pch);
+        $pArr = json_decode($pContent, true);
+        if (!empty($pArr['features']) && is_array($pArr['features'])) {
+            foreach ($pArr['features'] as $f) {
+                $props = $f['properties'] ?? [];
+                $pName = trim($props['name'] ?? '');
+                if (empty($pName)) continue;
+                $pId = $props['osm_id'] ?? ($pName . '_' . ($props['osm_value'] ?? ''));
+                if (isset($seenIds[$pId])) continue;
+                $seenIds[$pId] = true;
+
+                $coords = $f['geometry']['coordinates'] ?? [0, 0];
+                $pLon = (float)($coords[0] ?? 0);
+                $pLat = (float)($coords[1] ?? 0);
+
+                // Geographic distance check: radius up to 20km from territory center
+                $distKm = hypot($pLat - $centerLat, $pLon - $centerLng) * 111.0;
+                if ($distKm > 20.0) continue;
+
+                $uniqueRaw[] = [
+                    'osm_id' => $props['osm_id'] ?? null,
+                    'name' => $pName,
+                    'class' => $props['osm_key'] ?? '',
+                    'type' => $props['osm_value'] ?? ($props['type'] ?? ''),
+                    'lat' => $pLat,
+                    'lon' => $pLon,
+                    'importance' => 0.45,
+                    'address' => [
+                        'road' => $props['street'] ?? '',
+                        'village' => $props['district'] ?? '',
+                        'city' => $props['city'] ?? ($props['county'] ?? $cleanCity)
+                    ],
+                    'display_name' => implode(', ', array_filter([$pName, $props['street'] ?? '', $props['district'] ?? '', $props['city'] ?? $cleanCity]))
+                ];
+            }
+        }
+        curl_multi_remove_handle($pmh, $pch);
+        curl_close($pch);
+    }
+    curl_multi_close($pmh);
 
     $sectorCounts = [
         'perusahaan' => 0,
@@ -2119,43 +2148,165 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
         }
     }
 
-    // 4. Fallback search: with location context if viewbox returned 0
-    if (empty($results) && !empty($locationName) && $locationName !== 'Indonesia') {
-        $primaryKeyword = !empty($taxonomy['keywords'][0]) ? $taxonomy['keywords'][0] : $q;
-        $url2 = "https://nominatim.openstreetmap.org/search?" . http_build_query([
-            'q' => $primaryKeyword . ', ' . $locationName,
-            'format' => 'json',
-            'addressdetails' => 1,
-            'extratags' => 1,
-            'limit' => max(20, $count)
-        ]);
+    // 4. Multi-Vector Photon Fallback Crawler (Ensures real cafes, electronics, and any business are always found)
+    if (count($results) < $count) {
+        $cleanCity = preg_replace('/^(kota|kabupaten|kab\.|kecamatan|kelurahan)\s+/i', '', trim($locationName));
+        $cleanCity = trim(explode(',', $cleanCity)[0]);
+        if (empty($cleanCity) || $cleanCity === 'Indonesia') $cleanCity = 'Magelang';
 
-        $ch = curl_init($url2);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'ClientReachAI/3.0 (info@recreative.id)');
-        curl_setopt($ch, CURLOPT_TIMEOUT, 6);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $res2 = curl_exec($ch);
-        $httpCode2 = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        $catLower = strtolower($q);
+        $searchTerms = [];
 
-        if ($httpCode2 === 200 && !empty($res2)) {
-            $data2 = json_decode($res2, true);
-            if (is_array($data2)) {
-                foreach ($data2 as $item) {
-                    $itemLat = (float)($item['lat'] ?? 0);
-                    $itemLng = (float)($item['lon'] ?? 0);
-                    $distKm = hypot($itemLat - $centerLat, $itemLng - $centerLng) * 111.0;
-                    if ($distKm <= max(12, $radiusKm * 1.5)) {
-                        $id = $item['osm_id'] ?? (($item['lat'] ?? '') . ',' . ($item['lon'] ?? ''));
-                        if (!isset($seenIds[$id])) {
-                            $seenIds[$id] = true;
-                            $results[] = $item;
-                        }
-                    }
+        if (preg_match('/\b(cafe|kafe|kopi|coffee|warkop)\b/i', $catLower)) {
+            $searchTerms = [
+                "cafe $cleanCity",
+                "coffee $cleanCity",
+                "kopi $cleanCity",
+                "kedai $cleanCity",
+                "kafe $cleanCity"
+            ];
+        } elseif (preg_match('/\b(elektronik|electronic|gadget|hp|handphone|komputer|laptop)\b/i', $catLower)) {
+            $searchTerms = [
+                "elektronik $cleanCity",
+                "toko elektronik $cleanCity",
+                "komputer $cleanCity",
+                "cellular $cleanCity",
+                "handphone $cleanCity",
+                "hp $cleanCity"
+            ];
+        } elseif (preg_match('/\b(bengkel|motor|mobil|otomotif)\b/i', $catLower)) {
+            $searchTerms = [
+                "bengkel $cleanCity",
+                "bengkel motor $cleanCity",
+                "bengkel mobil $cleanCity",
+                "spbu $cleanCity"
+            ];
+        } elseif (preg_match('/\b(laundry|cucian)\b/i', $catLower)) {
+            $searchTerms = [
+                "laundry $cleanCity",
+                "cuci $cleanCity"
+            ];
+        } elseif (preg_match('/\b(salon|barber|barbershop)\b/i', $catLower)) {
+            $searchTerms = [
+                "salon $cleanCity",
+                "barbershop $cleanCity"
+            ];
+        } elseif (preg_match('/\b(toko|retail|minimarket|supermarket)\b/i', $catLower)) {
+            $searchTerms = [
+                "toko $cleanCity",
+                "minimarket $cleanCity",
+                "supermarket $cleanCity",
+                "toko sembako $cleanCity"
+            ];
+        } elseif (preg_match('/\b(hotel|penginapan|homestay|villa|kost)\b/i', $catLower)) {
+            $searchTerms = [
+                "hotel $cleanCity",
+                "penginapan $cleanCity",
+                "homestay $cleanCity"
+            ];
+        } elseif (preg_match('/\b(klinik|apotek|rumah sakit|dokter)\b/i', $catLower)) {
+            $searchTerms = [
+                "klinik $cleanCity",
+                "apotek $cleanCity",
+                "rumah sakit $cleanCity",
+                "puskesmas $cleanCity"
+            ];
+        } elseif (preg_match('/\b(sekolah|sd|smp|sma|smk|kampus|universitas)\b/i', $catLower)) {
+            $searchTerms = [
+                "sekolah $cleanCity",
+                "sd $cleanCity",
+                "smp $cleanCity",
+                "sma $cleanCity",
+                "smk $cleanCity",
+                "universitas $cleanCity"
+            ];
+        } elseif (preg_match('/\b(pt|cv|pabrik|industri|gudang)\b/i', $catLower)) {
+            $searchTerms = [
+                "pt $cleanCity",
+                "cv $cleanCity",
+                "pabrik $cleanCity",
+                "gudang $cleanCity"
+            ];
+        } else {
+            $searchTerms = [
+                "$q $cleanCity",
+                "$q"
+            ];
+            if (!empty($taxonomy['keywords'])) {
+                foreach ($taxonomy['keywords'] as $kw) {
+                    $searchTerms[] = "$kw $cleanCity";
                 }
             }
         }
+
+        $pmh = curl_multi_init();
+        $pHandles = [];
+
+        foreach ($searchTerms as $st) {
+            $pUrl = "https://photon.komoot.io/api/?" . http_build_query([
+                'q' => $st,
+                'lat' => $centerLat,
+                'lon' => $centerLng,
+                'limit' => 25
+            ]);
+            $pch = curl_init($pUrl);
+            curl_setopt($pch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($pch, CURLOPT_USERAGENT, 'ClientReachAI/3.0 (info@recreative.id)');
+            curl_setopt($pch, CURLOPT_TIMEOUT, 6);
+            curl_setopt($pch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_multi_add_handle($pmh, $pch);
+            $pHandles[$st] = $pch;
+        }
+
+        $pRunning = null;
+        do {
+            curl_multi_exec($pmh, $pRunning);
+            curl_multi_select($pmh);
+        } while ($pRunning > 0);
+
+        foreach ($pHandles as $st => $pch) {
+            $res = curl_multi_getcontent($pch);
+            $data = json_decode($res, true);
+            $features = $data['features'] ?? [];
+            foreach ($features as $f) {
+                $props = $f['properties'] ?? [];
+                $name = trim($props['name'] ?? '');
+                if (empty($name)) continue;
+
+                $coords = $f['geometry']['coordinates'] ?? [0, 0];
+                $pLng = (float)($coords[0] ?? 0);
+                $pLat = (float)($coords[1] ?? 0);
+
+                // Geographic distance filter
+                $distKm = hypot($pLat - $centerLat, $pLng - $centerLng) * 111.0;
+                if ($distKm > max(18.0, $radiusKm * 1.5)) continue;
+
+                $id = $props['osm_id'] ?? ($name . '_' . ($props['osm_value'] ?? ''));
+                if (isset($seenIds[$id])) continue;
+                $seenIds[$id] = true;
+
+                $results[] = [
+                    'osm_id' => $props['osm_id'] ?? null,
+                    'name' => $name,
+                    'class' => $props['osm_key'] ?? '',
+                    'type' => $props['osm_value'] ?? ($props['type'] ?? ''),
+                    'lat' => $pLat,
+                    'lon' => $pLng,
+                    'importance' => 0.45,
+                    'address' => [
+                        'road' => $props['street'] ?? '',
+                        'village' => $props['district'] ?? '',
+                        'city' => $props['city'] ?? ($props['county'] ?? $cleanCity)
+                    ],
+                    'display_name' => implode(', ', array_filter([$name, $props['street'] ?? '', $props['district'] ?? '', $props['city'] ?? $cleanCity]))
+                ];
+
+                if (count($results) >= max(30, $count * 2)) break 2;
+            }
+            curl_multi_remove_handle($pmh, $pch);
+            curl_close($pch);
+        }
+        curl_multi_close($pmh);
     }
 
     // 3. Format real places. IF EMPTY, RETURN EMPTY! Do NOT invent fake mock places!
