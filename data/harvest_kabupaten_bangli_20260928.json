@@ -1,0 +1,17 @@
+{
+    "region": "Kabupaten Bangli",
+    "province_id": "bali",
+    "date": "2026-09-28 05:37:59",
+    "bbox": {
+        "minLat": -8.5253507,
+        "maxLat": -8.1417656,
+        "minLng": 115.2323202,
+        "maxLng": 115.4589828
+    },
+    "initial_count": 0,
+    "overpass_added": 2067,
+    "photon_added": 149,
+    "total_new": 2216,
+    "total_records": 2216,
+    "jsonl_file": "places_kabupaten_bangli_20260928.jsonl"
+}

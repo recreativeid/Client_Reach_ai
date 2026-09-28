@@ -1205,10 +1205,24 @@ const ScraperClient = {
         const regList = (typeof REGIONS_DATA !== 'undefined' && REGIONS_DATA.regencies[provId]) ? REGIONS_DATA.regencies[provId] : [];
         let defaultSelectedId = null;
 
+        // Map ready Master Database regions
+        const readyMap = {};
+        if (window.MasterDB && Array.isArray(window.MasterDB.readyRegions)) {
+            window.MasterDB.readyRegions.forEach(r => {
+                const clean = r.name.toLowerCase().replace(/^(kabupaten|kota)\s+/i, '').trim();
+                readyMap[clean] = r.total_places;
+            });
+        }
+
         regList.forEach((k, idx) => {
             const opt = document.createElement('option');
             opt.value = k.id;
-            opt.textContent = k.name;
+            const cleanK = k.name.toLowerCase().replace(/^(kabupaten|kota)\s+/i, '').trim();
+            if (readyMap[cleanK]) {
+                opt.textContent = `${k.name} [Database Siap: ${readyMap[cleanK].toLocaleString()}]`;
+            } else {
+                opt.textContent = k.name;
+            }
             if (provId === '33' && k.id === '3371') {
                 opt.selected = true;
                 defaultSelectedId = k.id;
@@ -1474,6 +1488,9 @@ const ScraperClient = {
         }
 
         await this.scanTerritory();
+
+        // 3. Check Master Database for existing harvested data
+        this.checkMasterDbStatus();
     },
 
     // ----------------------------------------------------
@@ -4392,4 +4409,568 @@ const ScraperClient = {
 };
 
 window.ScraperClient = ScraperClient;
+
+// ─────────────────────────────────────────────────────────────────────
+// MASTER DATABASE INTEGRATION MODULE (Deteksi Lengkap + Live Filter)
+// ─────────────────────────────────────────────────────────────────────
+(function() {
+    const MasterDB = {
+        currentRegion: '',
+        currentPage: 1,
+        perPage: 50,
+        totalPages: 0,
+        currentFilter: { keyword: '', category: '', has_phone: null },
+        cachedData: [],
+        categoriesSummary: {},
+        readyRegions: [],
+        detectionPollTimer: null,
+
+        init() {
+            this.bindEvents();
+            this.loadReadyRegions();
+        },
+
+        bindEvents() {
+            // Open Master DB
+            const btnOpen = document.getElementById('btn-open-master-db');
+            if (btnOpen) btnOpen.addEventListener('click', () => this.openDatabaseView());
+
+            // Back button from DB view
+            const btnBack = document.getElementById('btn-back-to-setup-from-db');
+            if (btnBack) btnBack.addEventListener('click', () => this.closeDatabaseView());
+
+            // Trigger Deteksi Seluruh Bisnis
+            const btnDetect = document.getElementById('btn-sapu-bersih');
+            if (btnDetect) btnDetect.addEventListener('click', () => this.startFullDetection());
+
+            // Refresh/re-harvest
+            const btnRefresh = document.getElementById('btn-refresh-sapu');
+            if (btnRefresh) btnRefresh.addEventListener('click', () => this.startFullDetection());
+
+            // Live keyword search with debounce
+            const keywordInput = document.getElementById('db-filter-keyword');
+            if (keywordInput) {
+                let debounce = null;
+                keywordInput.addEventListener('input', () => {
+                    clearTimeout(debounce);
+                    debounce = setTimeout(() => {
+                        this.currentFilter.keyword = keywordInput.value.trim();
+                        this.currentPage = 1;
+                        this.fetchData();
+                    }, 400);
+                });
+            }
+
+            // Category filter
+            const catSelect = document.getElementById('db-filter-category');
+            if (catSelect) {
+                catSelect.addEventListener('change', () => {
+                    this.currentFilter.category = catSelect.value;
+                    this.currentPage = 1;
+                    this.fetchData();
+                });
+            }
+
+            // Quick filter pills
+            document.querySelectorAll('.db-quick-filter').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.db-quick-filter').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filter = btn.dataset.dbfilter;
+                    if (filter === 'has_phone') this.currentFilter.has_phone = true;
+                    else if (filter === 'no_phone') this.currentFilter.has_phone = false;
+                    else this.currentFilter.has_phone = null;
+                    this.currentPage = 1;
+                    this.fetchData();
+                });
+            });
+
+            // Pagination
+            const btnPrev = document.getElementById('btn-db-prev-page');
+            const btnNext = document.getElementById('btn-db-next-page');
+            if (btnPrev) btnPrev.addEventListener('click', () => { if (this.currentPage > 1) { this.currentPage--; this.fetchData(); } });
+            if (btnNext) btnNext.addEventListener('click', () => { if (this.currentPage < this.totalPages) { this.currentPage++; this.fetchData(); } });
+
+            // Export DB Excel
+            const btnExcel = document.getElementById('btn-export-db-excel');
+            if (btnExcel) btnExcel.addEventListener('click', () => this.exportExcel());
+
+            // Save DB to Archive
+            const btnArchive = document.getElementById('btn-save-db-to-archive');
+            if (btnArchive) btnArchive.addEventListener('click', () => this.saveToArchive());
+        },
+
+        // ─── CHECK STATUS ───
+        async checkStatus(regionName) {
+            if (!regionName) {
+                this.hideAllStates();
+                return;
+            }
+            this.currentRegion = regionName;
+
+            try {
+                const res = await fetch(`api/master_db.php?action=status&region=${encodeURIComponent(regionName)}`);
+                const data = await res.json();
+
+                const statusBadge = document.getElementById('master-db-status-badge');
+                const statusCard = document.getElementById('master-db-status-card');
+                const emptyState = document.getElementById('master-db-empty-state');
+
+                if (data.available && data.total_places > 0) {
+                    // Data exists
+                    if (statusBadge) {
+                        statusBadge.textContent = `${data.total_places.toLocaleString()} data tersedia`;
+                        statusBadge.style.background = '#ecfdf5';
+                        statusBadge.style.borderColor = '#6ee7b7';
+                        statusBadge.style.color = '#059669';
+                    }
+                    if (statusCard) statusCard.style.display = 'block';
+                    if (emptyState) emptyState.style.display = 'none';
+
+                    document.getElementById('master-db-region-name').textContent = regionName;
+                    document.getElementById('master-db-total').textContent = `${data.total_places.toLocaleString()} bisnis & tempat`;
+
+                    // Show top categories
+                    const catPreview = document.getElementById('master-db-categories-preview');
+                    if (catPreview && data.categories_summary) {
+                        this.categoriesSummary = data.categories_summary;
+                        const topCats = Object.entries(data.categories_summary).slice(0, 5);
+                        catPreview.innerHTML = topCats.map(([cat, cnt]) => 
+                            `<span class="db-cat-chip">${cat} (${cnt})</span>`
+                        ).join('');
+                    }
+                } else {
+                    // No data
+                    if (statusBadge) {
+                        statusBadge.textContent = 'Belum ada data';
+                        statusBadge.style.background = '#fffbeb';
+                        statusBadge.style.borderColor = '#fde68a';
+                        statusBadge.style.color = '#92400e';
+                    }
+                    if (statusCard) statusCard.style.display = 'none';
+                    if (emptyState) emptyState.style.display = 'block';
+                }
+            } catch (e) {
+                console.warn('Master DB status check failed:', e);
+            }
+        },
+
+        hideAllStates() {
+            const el1 = document.getElementById('master-db-status-card');
+            const el2 = document.getElementById('master-db-empty-state');
+            const el3 = document.getElementById('sapu-bersih-progress');
+            if (el1) el1.style.display = 'none';
+            if (el2) el2.style.display = 'none';
+            if (el3) el3.style.display = 'none';
+        },
+
+        // ─── OPEN DATABASE VIEW ───
+        openDatabaseView() {
+            document.getElementById('scraper-setup-view').style.display = 'none';
+            document.getElementById('scraped-results-view').style.display = 'none';
+            document.getElementById('master-db-results-view').style.display = 'block';
+
+            document.getElementById('master-db-results-title').textContent = `Database: ${this.currentRegion}`;
+            this.currentPage = 1;
+            this.currentFilter = { keyword: '', category: '', has_phone: null };
+
+            // Reset filter inputs
+            const kw = document.getElementById('db-filter-keyword');
+            if (kw) kw.value = '';
+            const cat = document.getElementById('db-filter-category');
+            if (cat) cat.value = '';
+            document.querySelectorAll('.db-quick-filter').forEach(b => {
+                b.classList.toggle('active', b.dataset.dbfilter === 'all');
+            });
+
+            // Populate category dropdown
+            this.populateCategoryDropdown();
+            this.fetchData();
+        },
+
+        closeDatabaseView() {
+            document.getElementById('master-db-results-view').style.display = 'none';
+            document.getElementById('scraper-setup-view').style.display = 'block';
+        },
+
+        populateCategoryDropdown() {
+            const select = document.getElementById('db-filter-category');
+            if (!select) return;
+            select.innerHTML = '<option value="">Semua Kategori</option>';
+            if (this.categoriesSummary) {
+                Object.entries(this.categoriesSummary).forEach(([cat, cnt]) => {
+                    const opt = document.createElement('option');
+                    opt.value = cat;
+                    opt.textContent = `${cat} (${cnt})`;
+                    select.appendChild(opt);
+                });
+            }
+        },
+
+        // ─── FETCH DATA ───
+        async fetchData() {
+            if (!this.currentRegion) return;
+
+            let url = `api/master_db.php?action=query&region=${encodeURIComponent(this.currentRegion)}&page=${this.currentPage}&per_page=${this.perPage}`;
+            if (this.currentFilter.keyword) url += `&keyword=${encodeURIComponent(this.currentFilter.keyword)}`;
+            if (this.currentFilter.category) url += `&category=${encodeURIComponent(this.currentFilter.category)}`;
+            if (this.currentFilter.has_phone !== null) url += `&has_phone=${this.currentFilter.has_phone}`;
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+
+                this.cachedData = data.data || [];
+                this.totalPages = data.total_pages || 1;
+
+                // Update count badge
+                const countBadge = document.getElementById('master-db-results-count');
+                if (countBadge) countBadge.textContent = `${(data.total_filtered || 0).toLocaleString()} dari ${(data.total_raw || 0).toLocaleString()} data`;
+
+                // Update filter summary
+                const summaryText = document.getElementById('db-filter-summary-text');
+                if (summaryText) {
+                    const parts = [];
+                    if (this.currentFilter.keyword) parts.push(`Keyword: "${this.currentFilter.keyword}"`);
+                    if (this.currentFilter.category) parts.push(`Kategori: ${this.currentFilter.category}`);
+                    if (this.currentFilter.has_phone === true) parts.push('Hanya punya HP');
+                    if (this.currentFilter.has_phone === false) parts.push('Tanpa nomor HP');
+                    summaryText.textContent = parts.length ? parts.join(' | ') : `Menampilkan semua data (${(data.total_filtered || 0).toLocaleString()} hasil)`;
+                }
+
+                this.renderTable();
+                this.updatePagination(data);
+            } catch (e) {
+                console.error('Master DB query failed:', e);
+            }
+        },
+
+        // ─── RENDER TABLE ───
+        renderTable() {
+            const tbody = document.getElementById('master-db-table-body');
+            if (!tbody) return;
+
+            if (!this.cachedData.length) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 32px; color: #94a3b8;">
+                    <i class="fa-solid fa-search" style="font-size: 1.5rem; margin-bottom: 8px; display: block;"></i>
+                    Tidak ada data yang cocok dengan filter saat ini.
+                </td></tr>`;
+                return;
+            }
+
+            const startIdx = (this.currentPage - 1) * this.perPage;
+            tbody.innerHTML = this.cachedData.map((item, i) => {
+                const phone = item.phone || '-';
+                const hasPhone = phone && phone !== '-';
+                const phoneDisplay = hasPhone 
+                    ? `<a href="https://wa.me/${phone.replace(/[^0-9]/g, '')}" target="_blank" style="color: #16a34a; font-weight: 600; text-decoration: none;">${phone}</a>` 
+                    : '<span style="color: #cbd5e1;">-</span>';
+                const website = item.website || '';
+                const webDisplay = website 
+                    ? `<a href="${website.startsWith('http') ? website : 'https://' + website}" target="_blank" style="color: #2563eb; text-decoration: none; font-size: 0.74rem;" title="${website}">${website.replace(/https?:\/\//, '').substring(0, 25)}...</a>` 
+                    : '<span style="color: #cbd5e1;">-</span>';
+
+                return `<tr>
+                    <td style="color: #94a3b8; font-size: 0.72rem;">${startIdx + i + 1}</td>
+                    <td style="font-weight: 600; color: #0f172a;">${this.esc(item.name)}</td>
+                    <td><span class="db-cat-chip">${this.esc(item.category)}</span></td>
+                    <td style="font-size: 0.76rem; color: #475569; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${this.esc(item.address)}">${this.esc(item.address)}</td>
+                    <td>${phoneDisplay}</td>
+                    <td>${webDisplay}</td>
+                    <td style="font-size: 0.74rem; color: #64748b;">${this.esc(item.opening_hours || '-')}</td>
+                    <td style="text-align: right;">
+                        ${hasPhone ? `<a href="https://wa.me/${phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn btn-outline btn-sm" style="font-size: 0.68rem; padding: 3px 8px; color: #16a34a; border-color: #86efac;" title="Hubungi WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i> WA
+                        </a>` : ''}
+                    </td>
+                </tr>`;
+            }).join('');
+        },
+
+        // ─── PAGINATION ───
+        updatePagination(data) {
+            const info = document.getElementById('db-pagination-info');
+            const btnPrev = document.getElementById('btn-db-prev-page');
+            const btnNext = document.getElementById('btn-db-next-page');
+
+            if (info) info.textContent = `Halaman ${this.currentPage} dari ${this.totalPages}`;
+            if (btnPrev) btnPrev.disabled = this.currentPage <= 1;
+            if (btnNext) btnNext.disabled = this.currentPage >= this.totalPages;
+        },
+
+        // ─── READY REGIONS LOADER & QUICK CHIPS ───
+        async loadReadyRegions() {
+            const container = document.getElementById('ready-regions-chips-container');
+            try {
+                const res = await fetch('api/master_db.php?action=regions');
+                const data = await res.json();
+                if (data.regions && data.regions.length) {
+                    this.readyRegions = data.regions.filter(r => r.total_places > 0);
+                    if (container) {
+                        container.innerHTML = this.readyRegions.map(r => `
+                            <button type="button" class="btn-ready-region-chip" data-region="${this.esc(r.name)}" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 4px 8px; font-size: 0.68rem; font-weight: 600; color: #1e293b; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.15s ease;" title="Pilih ${this.esc(r.name)} langsung">
+                                <i class="fa-solid fa-location-dot" style="color: #2563eb; font-size: 0.65rem;"></i>
+                                <span>${this.esc(r.name)}</span>
+                                <span style="background: #ecfdf5; color: #059669; border-radius: 4px; padding: 1px 5px; font-size: 0.62rem; font-weight: 700;">${r.total_places.toLocaleString()}</span>
+                            </button>
+                        `).join('');
+
+                        container.querySelectorAll('.btn-ready-region-chip').forEach(btn => {
+                            btn.addEventListener('click', () => {
+                                const rName = btn.dataset.region;
+                                this.selectRegionDirectly(rName);
+                            });
+                        });
+                    }
+
+                    // Re-trigger populateRegencies if dropdown already has options so badges show up
+                    const provSelect = document.getElementById('filter-provinsi');
+                    if (provSelect && provSelect.value && window.ScraperClient) {
+                        const curKabVal = document.getElementById('filter-kabupaten')?.value;
+                        window.ScraperClient.populateRegencies(provSelect.value);
+                        if (curKabVal) {
+                            const kabSelect = document.getElementById('filter-kabupaten');
+                            if (kabSelect) kabSelect.value = curKabVal;
+                        }
+                    }
+                } else if (container) {
+                    container.innerHTML = '<span style="font-size: 0.68rem; color: #94a3b8;">Belum ada wilayah terpanen</span>';
+                }
+            } catch (e) {
+                console.warn('Gagal memuat wilayah siap pakai:', e);
+            }
+        },
+
+        selectRegionDirectly(regionName) {
+            if (!regionName || typeof REGIONS_DATA === 'undefined') return;
+
+            const cleanTarget = regionName.toLowerCase().replace(/^(kabupaten|kota)\s+/i, '').trim();
+            let targetProvId = null;
+            let targetRegId = null;
+
+            for (const pid in REGIONS_DATA.regencies) {
+                const regList = REGIONS_DATA.regencies[pid] || [];
+                const found = regList.find(r => {
+                    const cleanR = r.name.toLowerCase().replace(/^(kabupaten|kota)\s+/i, '').trim();
+                    return cleanR === cleanTarget || r.name.toLowerCase() === regionName.toLowerCase() || regionName.toLowerCase().includes(r.name.toLowerCase());
+                });
+                if (found) {
+                    targetProvId = pid;
+                    targetRegId = found.id;
+                    break;
+                }
+            }
+
+            if (targetProvId && targetRegId) {
+                const provSelect = document.getElementById('filter-provinsi');
+                const kabSelect = document.getElementById('filter-kabupaten');
+                if (provSelect) {
+                    provSelect.value = targetProvId;
+                    if (window.ScraperClient) {
+                        window.ScraperClient.populateRegencies(targetProvId);
+                    }
+                    if (kabSelect) {
+                        kabSelect.value = targetRegId;
+                    }
+                    if (window.ScraperClient) {
+                        window.ScraperClient.handleRegionChange();
+                    }
+                }
+            } else {
+                this.checkStatus(regionName);
+            }
+        },
+
+        // ─── DETEKSI SELURUH BISNIS DI WILAYAH INI ───
+        async startFullDetection() {
+            if (!this.currentRegion) return;
+            const kabName = this.currentRegion;
+
+            const emptyState = document.getElementById('master-db-empty-state');
+            const statusCard = document.getElementById('master-db-status-card');
+            const progressEl = document.getElementById('sapu-bersih-progress');
+            if (emptyState) emptyState.style.display = 'none';
+            if (statusCard) statusCard.style.display = 'none';
+            if (progressEl) progressEl.style.display = 'block';
+
+            this.updateDetectionProgress('Proses deteksi wilayah dimulai... Sistem sedang mengumpulkan seluruh data usaha.', 10);
+
+            try {
+                const payload = {
+                    action: 'add_and_run',
+                    region: kabName,
+                    mode: 'city'
+                };
+
+                const res = await fetch('api/harvest_queue.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (data.success || data.status === 'queued') {
+                    this.updateDetectionProgress('Deteksi wilayah aktif... Memindai sektor usaha.', 15);
+                    this.startDetectionPolling();
+                } else {
+                    this.updateDetectionProgress(`Info: ${data.error || 'Memulai deteksi...'}`, 15);
+                    this.startDetectionPolling();
+                }
+            } catch (e) {
+                try {
+                    const res2 = await fetch(`api/full_harvest.php?action=harvest&region=${encodeURIComponent(kabName)}`);
+                    const data2 = await res2.json();
+                    if (data2.success || data2.total_saved > 0) {
+                        this.updateDetectionProgress(`Deteksi selesai! ${(data2.total_saved || 0).toLocaleString()} bisnis berhasil dikumpulkan.`, 100);
+                        setTimeout(() => {
+                            this.checkStatus(this.currentRegion);
+                            this.loadReadyRegions();
+                        }, 2000);
+                    } else {
+                        this.updateDetectionProgress('Proses deteksi berjalan...', 15);
+                        this.startDetectionPolling();
+                    }
+                } catch (e2) {
+                    this.updateDetectionProgress('Gagal memulai proses. Periksa koneksi server.', 0);
+                }
+            }
+        },
+
+        startSapuBersih() {
+            return this.startFullDetection();
+        },
+
+        startDetectionPolling() {
+            if (this.detectionPollTimer) clearInterval(this.detectionPollTimer);
+            let pollCount = 0;
+
+            this.detectionPollTimer = setInterval(async () => {
+                pollCount++;
+                try {
+                    const res = await fetch(`api/master_db.php?action=status&region=${encodeURIComponent(this.currentRegion)}`);
+                    const data = await res.json();
+
+                    if (data.available && data.total_places > 0) {
+                        clearInterval(this.detectionPollTimer);
+                        this.detectionPollTimer = null;
+                        this.updateDetectionProgress(`Deteksi selesai! ${data.total_places.toLocaleString()} bisnis terkumpul.`, 100);
+                        setTimeout(() => {
+                            this.checkStatus(this.currentRegion);
+                            this.loadReadyRegions();
+                            const progressEl = document.getElementById('sapu-bersih-progress');
+                            if (progressEl) progressEl.style.display = 'none';
+                        }, 2000);
+                        return;
+                    }
+
+                    const pct = Math.min(90, 10 + pollCount * 5);
+                    this.updateDetectionProgress(`Memindai data bisnis wilayah... (siklus ke-${pollCount})`, pct);
+
+                    if (pollCount >= 60) {
+                        clearInterval(this.detectionPollTimer);
+                        this.detectionPollTimer = null;
+                        this.updateDetectionProgress('Proses deteksi berjalan di latar belakang.', 50);
+                    }
+                } catch (e) {
+                    // Keep polling
+                }
+            }, 5000);
+        },
+
+        startSapuPolling() {
+            return this.startDetectionPolling();
+        },
+
+        updateDetectionProgress(label, pct) {
+            const bar = document.getElementById('sapu-progress-bar');
+            const pctEl = document.getElementById('sapu-progress-pct');
+            const labelEl = document.getElementById('sapu-progress-label');
+            if (bar) bar.style.width = pct + '%';
+            if (pctEl) pctEl.textContent = pct + '%';
+            if (labelEl) labelEl.textContent = label;
+        },
+
+        updateSapuProgress(label, pct) {
+            return this.updateDetectionProgress(label, pct);
+        },
+
+        // ─── EXPORT EXCEL ───
+        exportExcel() {
+            if (!this.cachedData.length) return;
+            if (typeof XLSX === 'undefined') { alert('SheetJS library not loaded.'); return; }
+
+            const rows = this.cachedData.map((item, i) => ({
+                'No': i + 1,
+                'Nama Tempat': item.name,
+                'Kategori': item.category,
+                'Alamat': item.address,
+                'Nomor HP': item.phone || '-',
+                'Website': item.website || '-',
+                'Jam Operasional': item.opening_hours || '-',
+                'Latitude': item.lat,
+                'Longitude': item.lng
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(rows);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Database');
+            const filename = `Database_${this.currentRegion.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.xlsx`;
+            XLSX.writeFile(wb, filename);
+        },
+
+        // ─── SAVE TO ARCHIVE ───
+        saveToArchive() {
+            // Leverage the existing archive save modal from ScraperClient
+            if (window.ScraperClient && this.cachedData.length) {
+                // Convert to ScraperClient format
+                window.ScraperClient.scrapedResults = this.cachedData.map(item => ({
+                    name: item.name,
+                    address: item.address,
+                    phone: item.phone || '',
+                    category: item.category,
+                    social_media: item.website || '',
+                    opening_hours: item.opening_hours || '',
+                    rating: 0,
+                    reviews_count: 0,
+                    lat: item.lat,
+                    lng: item.lng
+                }));
+                // Open the save modal
+                const modal = document.getElementById('modal-save-archive');
+                if (modal) modal.style.display = 'flex';
+            }
+        },
+
+        esc(str) {
+            if (!str) return '-';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    };
+
+    // ─── HOOK INTO SCRAPER CLIENT ───
+    if (window.ScraperClient) {
+        window.ScraperClient.checkMasterDbStatus = function() {
+            const kabSelect = document.getElementById('filter-kabupaten');
+            if (!kabSelect || !kabSelect.value) {
+                MasterDB.hideAllStates();
+                return;
+            }
+            const kabName = kabSelect.options[kabSelect.selectedIndex]?.text || '';
+            if (kabName && !kabName.startsWith('--')) {
+                MasterDB.checkStatus(kabName);
+            }
+        };
+    }
+
+    // Initialize on DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => MasterDB.init());
+    } else {
+        MasterDB.init();
+    }
+
+    window.MasterDB = MasterDB;
+})();
 

@@ -104,6 +104,11 @@ const App = {
             window.CustomerManager.loadStats();
         }
 
+        // If navigating to harvest, refresh queue & stats
+        if (pageId === 'harvest' && window.HarvestManager) {
+            window.HarvestManager.onPageEnter();
+        }
+
         // If navigating to dashboard, refresh charts & stats
         if (pageId === 'dashboard') {
             this.refreshDashboardStats();
@@ -118,6 +123,7 @@ const App = {
         if (window.TemplateManager) window.TemplateManager.init();
         if (window.ArchiveManager) window.ArchiveManager.init();
         if (window.ScraperClient) window.ScraperClient.init();
+        if (window.HarvestManager) window.HarvestManager.init();
     },
 
     // ----------------------------------------------------

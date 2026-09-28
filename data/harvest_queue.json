@@ -1,0 +1,203 @@
+{
+    "created_at": "2026-09-27 19:37:33",
+    "updated_at": "2026-09-28 07:59:26",
+    "items": [
+        {
+            "id": "hq_6ab9545d18490",
+            "name": "Kota Magelang",
+            "type": "custom",
+            "province_id": "jawa_tengah",
+            "province_name": "Jawa Tengah",
+            "center": null,
+            "bbox": {
+                "minLat": -7.51,
+                "minLng": 110.2,
+                "maxLat": -7.44,
+                "maxLng": 110.24
+            },
+            "status": "done",
+            "queued_at": "2026-09-27 19:37:33",
+            "started_at": "2026-09-27 19:41:47",
+            "completed_at": "2026-09-27 19:46:14",
+            "places_found": 906,
+            "error": null,
+            "new_places": 0,
+            "file": "places_kota_magelang_20260927.jsonl"
+        },
+        {
+            "id": "hq_6ab9d159dec30",
+            "name": "Kota Denpasar",
+            "type": "kota",
+            "province_id": "bali",
+            "province_name": "Bali",
+            "center": {
+                "lat": -8.6653349,
+                "lng": 115.2176191
+            },
+            "bbox": {
+                "minLat": -8.746707,
+                "maxLat": -8.5915251,
+                "minLng": 115.1725084,
+                "maxLng": 115.274881
+            },
+            "status": "done",
+            "queued_at": "2026-09-28 04:30:49",
+            "started_at": "2026-09-28 04:33:27",
+            "completed_at": "2026-09-28 04:37:32",
+            "places_found": 5032,
+            "error": null,
+            "new_places": 5032,
+            "file": "places_kota_denpasar_20260928.jsonl"
+        },
+        {
+            "id": "hq_6ab9d159deee3",
+            "name": "Kabupaten Badung",
+            "type": "kabupaten",
+            "province_id": "bali",
+            "province_name": "Bali",
+            "center": {
+                "lat": -8.5445874,
+                "lng": 115.1985235
+            },
+            "bbox": {
+                "minLat": -8.849259,
+                "maxLat": -8.239441,
+                "minLng": 115.0838427,
+                "maxLng": 115.2513871
+            },
+            "status": "done",
+            "queued_at": "2026-09-28 04:30:49",
+            "started_at": "2026-09-28 04:37:34",
+            "completed_at": "2026-09-28 05:13:40",
+            "places_found": 4145,
+            "error": null,
+            "new_places": 4145,
+            "file": "places_kabupaten_badung_20260928.jsonl"
+        },
+        {
+            "id": "hq_6ab9d159deefc",
+            "name": "Kabupaten Bangli",
+            "type": "kabupaten",
+            "province_id": "bali",
+            "province_name": "Bali",
+            "center": {
+                "lat": -8.3336175,
+                "lng": 115.368046
+            },
+            "bbox": {
+                "minLat": -8.5253507,
+                "maxLat": -8.1417656,
+                "minLng": 115.2323202,
+                "maxLng": 115.4589828
+            },
+            "status": "done",
+            "queued_at": "2026-09-28 04:30:49",
+            "started_at": "2026-09-28 05:13:43",
+            "completed_at": "2026-09-28 05:37:59",
+            "places_found": 2216,
+            "error": null,
+            "new_places": 2216,
+            "file": "places_kabupaten_bangli_20260928.jsonl"
+        },
+        {
+            "id": "hq_6ab9d159def0e",
+            "name": "Kabupaten Buleleng",
+            "type": "kabupaten",
+            "province_id": "bali",
+            "province_name": "Bali",
+            "center": null,
+            "bbox": null,
+            "status": "processing",
+            "queued_at": "2026-09-28 04:30:49",
+            "started_at": "2026-09-28 05:38:01",
+            "completed_at": null,
+            "places_found": 0,
+            "error": null
+        },
+        {
+            "id": "hq_6ab9d159def21",
+            "name": "Kabupaten Gianyar",
+            "type": "kabupaten",
+            "province_id": "bali",
+            "province_name": "Bali",
+            "center": {
+                "lat": -8.4821436,
+                "lng": 115.2855901
+            },
+            "bbox": {
+                "minLat": -9.0295506,
+                "maxLat": -8.3140225,
+                "minLng": 115.2251351,
+                "maxLng": 115.5700063
+            },
+            "status": "done",
+            "queued_at": "2026-09-28 04:30:49",
+            "started_at": "2026-09-28 06:33:27",
+            "completed_at": "2026-09-28 07:59:26",
+            "places_found": 521,
+            "error": null,
+            "new_places": 521,
+            "file": "places_kabupaten_gianyar_20260928.jsonl"
+        },
+        {
+            "id": "hq_6ab9d159def37",
+            "name": "Kabupaten Jembrana",
+            "type": "kabupaten",
+            "province_id": "bali",
+            "province_name": "Bali",
+            "center": null,
+            "bbox": null,
+            "status": "processing",
+            "queued_at": "2026-09-28 04:30:49",
+            "started_at": "2026-09-28 07:59:26",
+            "completed_at": null,
+            "places_found": 0,
+            "error": null
+        },
+        {
+            "id": "hq_6ab9d159def4f",
+            "name": "Kabupaten Karangasem",
+            "type": "kabupaten",
+            "province_id": "bali",
+            "province_name": "Bali",
+            "center": null,
+            "bbox": null,
+            "status": "pending",
+            "queued_at": "2026-09-28 04:30:49",
+            "started_at": null,
+            "completed_at": null,
+            "places_found": 0,
+            "error": null
+        },
+        {
+            "id": "hq_6ab9d159def69",
+            "name": "Kabupaten Klungkung",
+            "type": "kabupaten",
+            "province_id": "bali",
+            "province_name": "Bali",
+            "center": null,
+            "bbox": null,
+            "status": "pending",
+            "queued_at": "2026-09-28 04:30:49",
+            "started_at": null,
+            "completed_at": null,
+            "places_found": 0,
+            "error": null
+        },
+        {
+            "id": "hq_6ab9d159def86",
+            "name": "Kabupaten Tabanan",
+            "type": "kabupaten",
+            "province_id": "bali",
+            "province_name": "Bali",
+            "center": null,
+            "bbox": null,
+            "status": "pending",
+            "queued_at": "2026-09-28 04:30:49",
+            "started_at": null,
+            "completed_at": null,
+            "places_found": 0,
+            "error": null
+        }
+    ]
+}

@@ -1,0 +1,13 @@
+{
+    "state": "processing",
+    "pid": 13988,
+    "message": "Memanen: Kabupaten Gianyar...",
+    "processed": 4,
+    "total_pending": 9,
+    "current_region": "Kabupaten Gianyar",
+    "current_province": "Bali",
+    "total_places": 12136,
+    "started_at": "2026-09-28 07:33:25",
+    "updated_at": "2026-09-28 07:33:25",
+    "updated_at_ts": 1790573605
+}

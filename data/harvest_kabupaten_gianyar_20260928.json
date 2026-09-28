@@ -1,0 +1,17 @@
+{
+    "region": "Kabupaten Gianyar",
+    "province_id": "bali",
+    "date": "2026-09-28 07:59:26",
+    "bbox": {
+        "minLat": -9.0295506,
+        "maxLat": -8.3140225,
+        "minLng": 115.2251351,
+        "maxLng": 115.5700063
+    },
+    "initial_count": 0,
+    "overpass_added": 0,
+    "photon_added": 521,
+    "total_new": 521,
+    "total_records": 521,
+    "jsonl_file": "places_kabupaten_gianyar_20260928.jsonl"
+}

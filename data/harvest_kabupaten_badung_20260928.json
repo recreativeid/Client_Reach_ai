@@ -1,0 +1,17 @@
+{
+    "region": "Kabupaten Badung",
+    "province_id": "bali",
+    "date": "2026-09-28 05:13:40",
+    "bbox": {
+        "minLat": -8.849259,
+        "maxLat": -8.239441,
+        "minLng": 115.0838427,
+        "maxLng": 115.2513871
+    },
+    "initial_count": 0,
+    "overpass_added": 3443,
+    "photon_added": 702,
+    "total_new": 4145,
+    "total_records": 4145,
+    "jsonl_file": "places_kabupaten_badung_20260928.jsonl"
+}

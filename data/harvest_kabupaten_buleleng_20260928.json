@@ -1,0 +1,17 @@
+{
+    "region": "Kabupaten Buleleng",
+    "province_id": "bali",
+    "date": "2026-09-28 07:33:23",
+    "bbox": {
+        "minLat": -8.3828133,
+        "maxLat": -8.0616216,
+        "minLng": 114.4322463,
+        "maxLng": 115.4571864
+    },
+    "initial_count": 0,
+    "overpass_added": 221,
+    "photon_added": 522,
+    "total_new": 743,
+    "total_records": 743,
+    "jsonl_file": "places_kabupaten_buleleng_20260928.jsonl"
+}

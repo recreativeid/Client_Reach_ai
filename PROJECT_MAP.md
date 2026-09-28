@@ -25,37 +25,48 @@
 
 ## 2. Struktur Direktori Proyek
 
-```
 c:\xampp\htdocs\Client_Reach_ai/
 ├── PROJECT_MAP.md             # Master file konteks menyeluruh (hemat token)
+├── SYSTEM_DOCS.md             # Dokumentasi teknis sistem & arsitektur
+├── LAPORAN_SISTEM_CLIENTO.md  # Dokumen laporan eksekutif resmi (siap salin)
 ├── config.php                 # Konfigurasi aplikasi, koneksi PDO SQLite, CORS & JSON helper
-├── index.html                 # Single Page Application (Centered nav, layout 2 kolom, Chart.js, Google Drive Explorer)
+├── index.html                 # Single Page Application (4 Menu Utama + Admin)
 ├── database/
-│   ├── schema.sql             # Definisi skema tabel SQLite (folders recursive parent_id, archives, scraped_items)
+│   ├── schema.sql             # Definisi skema tabel SQLite
 │   ├── init.php               # Skrip inisialisasi & migrasi tabel otomatis
 │   └── client_reach.db        # File database SQLite (WAL Mode enabled)
 ├── api/
-│   ├── auth.php               # Autentikasi Admin & Customer, Registrasi, Verifikasi OTP Email, & Session Me
-│   ├── customers.php          # CRUD Database Customer khusus Admin, Toggle Status, Reset Password & Stats
-│   ├── settings.php           # Pengaturan Profil Admin, Ganti Password Login, & Konfigurasi Sistem
-│   ├── regions.php            # Endpoint hierarki wilayah Indonesia & GeoJSON polygon pembatas
-│   ├── scraper.php            # Engine scraping cerdas (Keyword synonym matching & valid business generation)
-│   ├── gemini.php             # Google Gemini AI cold outreach copywriter & pitch generator (Vision + Text)
-│   ├── templates.php          # CRUD template WhatsApp per kategori & tambah kategori baru
-│   ├── archives.php           # CRUD Google Drive nested folders (parent_id), file archives, & status prospek
-│   └── history.php            # Endpoint riwayat scraping & simpan riwayat ke folder arsip Google Drive
+│   ├── master_db.php          # Query Master Database JSONL (status, query, regions, stats)
+│   ├── scraper.php            # Engine scraping cerdas (Keyword synonym matching)
+│   ├── harvest_queue.php      # Antrean & lifecycle manager background worker
+│   ├── harvest_worker.php     # Background worker process (Overpass harvester)
+│   ├── full_harvest.php       # Harvester lengkap Overpass OSM + Enrichment
+│   ├── auth.php               # Autentikasi Admin & Customer, OTP Email
+│   ├── customers.php          # CRUD Database Customer khusus Admin
+│   ├── settings.php           # Pengaturan Profil Admin
+│   ├── regions.php            # Endpoint hierarki wilayah & GeoJSON polygon
+│   ├── gemini.php             # Google Gemini AI cold outreach (Vision + Text)
+│   ├── templates.php          # CRUD template WhatsApp per kategori
+│   ├── archives.php           # CRUD Google Drive nested folders & file archives
+│   └── history.php            # Endpoint riwayat scraping
+├── data/
+│   ├── indonesia_regions.json  # Master list 509 Kab/Kota se-Indonesia
+│   ├── places_*.jsonl         # Data bisnis terpanen per wilayah (Master DB)
+│   ├── harvest_queue.json     # Status antrean worker
+│   └── harvest_worker.lock    # Lock file proses aktif
 └── assets/
     ├── css/
-    │   └── style.css          # Desain SaaS putih-biru, Poppins font, centered nav, split layout, Google Drive styling, Auth dropdown
+    │   └── style.css          # Desain SaaS putih-biru, Poppins font
     └── js/
-        ├── regions_data.js    # Data geospasial Provinsi & Kab/Kota Indonesia instan
-        ├── map.js             # Leaflet engine (Mode Wilayah Polygon Merah Penuh vs Mode Titik Peta & Radius)
-        ├── templates.js       # Template manager, tag `{nama_tempat}`, mockup WA, generator link
-        ├── archives.js        # Google Drive Style Folder Explorer, Breadcrumbs, Excel file cards, status prospek
-        ├── scraper.js         # 2 Mode zonasi independen, smart keyword search, lead qualification, Gemini AI pitch, history
-        ├── auth.js            # Controller Autentikasi, Login/Register modal, Verifikasi OTP email, User Dropdown
-        ├── customers.js       # Controller CRUD Basis Data Customer Admin, live search, status filters
-        └── app.js             # SPA router, Chart.js sales & marketing analytics, modal controller
+        ├── regions_data.js    # Data geospasial Provinsi & Kab/Kota Indonesia
+        ├── map.js             # Leaflet engine (Mode Wilayah vs Mode Radius)
+        ├── templates.js       # Template manager WhatsApp
+        ├── archives.js        # Google Drive Style Folder Explorer
+        ├── scraper.js         # Scraping Client + Master DB Module + Deteksi Lengkap
+        ├── harvest.js         # Background harvest worker manager
+        ├── auth.js            # Controller Autentikasi & OTP
+        ├── customers.js       # Controller CRUD Database Customer
+        └── app.js             # SPA router, Chart.js analytics
 ```
 
 ---
@@ -117,30 +128,30 @@ c:\xampp\htdocs\Client_Reach_ai/
 - **Metrik Utama:** Total Leads Terdeteksi, Prospek Terkualifikasi, Koleksi Tersimpan, WhatsApp Terhubung.
 - *(Catatan: Sesuai instruksi, card Kalkulator Penghematan Biaya Iklan dan 3 matriks konversi telah dihapus agar tampilan lebih bersih, profesional, dan fokus pada analitik prospek).*
 
-### Menu 2: Scraping Client (`#scraper`) — 2 Mode Zonasi Terpisah, Riwayat & Simpan Arsip
+### Menu 2: Scraping Client (`#scraper`) -- Unified Powerhouse
 - **2 Mode Penentuan Zona (Saling Eksklusif & Terpisah Tegas):**
-  - **Mode 1: Wilayah Administratif:** Wajib pilih Daerah berjenjang (Provinsi $\rightarrow$ Kab/Kota dipisah, Kecamatan, Kelurahan). Peta menampilkan **garis merah poligon penuh** melingkari wilayah sesungguhnya. **Tanpa slider radius / lingkaran radius!**
-  - **Mode 2: Titik Peta & Radius:** Cukup klik di peta preview atau set pin, atur slider radius (1 - 25 KM). **Tanpa perlu isi provinsi / kab / kota.** Peta menampilkan pin pusat + lingkaran merah radius transparan.
-- **Target Sasaran Usaha:**
-  - *Cari Keyword Bebas:* Cukup ketik kata kunci apa saja (`cafe`, `bengkel`, `laundry`, `klinik`, dll). Sistem cerdas memetakan sinonim dan nama tempat nyata.
-  - *Pilih Kategori Populer:* Dropdown preset pilihan langsung.
-- **Tombol Riwayat Scraping Terpadu:**
-  - Disediakan tombol **Riwayat Scraping** yang dapat diakses kapan saja: di form parameter pencarian (`#btn-show-history`) dan di header tabel hasil scraping (`#btn-show-history-results`).
-  - Modal Riwayat Scraping menampilkan seluruh sesi sebelumnya dengan 3 aksi langsung:
-    1. `[ 👁️ Buka Data ]`: Memuat seluruh kontak sesi tersebut ke tabel hasil scraping.
-    2. `[ 📥 Simpan ke Arsip ]`: Membuka dialog penyimpanan arsip Google Drive (memungkinkan penamaan kustom dan pemilihan folder/subfolder tujuan).
-    3. `[ 📊 Excel ]`: Mengunduh sesi tersebut langsung menjadi file `.xlsx`.
-- **Tabel Hasil Scraping & Outreach:**
-  - *Lead Qualification Filter Pills:* Filter cepat `[ Semua Leads ]`, `[ 🟢 Punya WhatsApp ]`, `[ 🟡 Rating < 4.2 (Target Jasa Review) ]`, `[ ⭐ Rating >= 4.5 (Bisnis Mapan) ]`, `[ 🌐 Belum Punya Website ]`.
-  - *Tombol Simpan ke Arsip (`#btn-save-to-archive-modal`):* Membuka modal penyimpanan dengan:
-    - Input nama simpanan arsip yang bebas dinamai pengguna (misal: "Data Cafe Magelang - 24 September").
-    - Pilihan folder tujuan dalam hierarki Google Drive (pohon bertingkat).
-    - Tombol cepat inline `+ Buat Folder Baru` langsung di dalam modal tanpa perlu keluar.
-  - *3 Tombol Aksi per Baris:*
-    1. **Salin Pesan WA (1-Klik):** Langsung menyalin penawaran terpersonalisasi ke clipboard + toast alert.
-    2. **✨ AI Pitch (Google Gemini AI):** Membuka modal outreach terpadu (Template Standar vs Racik AI Khusus).
-    3. **Hubungi WA:** Membuka WhatsApp langsung.
-  - Download Excel (.xlsx) langsung via SheetJS.
+  - **Mode 1: Wilayah Administratif:** Pilih Provinsi -> Kab/Kota -> Kecamatan -> Kelurahan. Peta menampilkan garis merah poligon penuh.
+  - **Mode 2: Titik Peta & Radius:** Klik di peta + atur slider radius (1-25 KM).
+- **Master Database Terintegrasi:**
+  - Otomatis cek ketersediaan data di Master DB saat wilayah dipilih.
+  - Badge status: hijau (data tersedia) / kuning (belum ada data).
+  - Preview kategori teratas dari data yang tersedia.
+- **Deteksi Lengkap Wilayah (Auto-Harvest):**
+  - Tombol "Deteksi Seluruh Bisnis di Wilayah Ini" untuk panen otomatis.
+  - Background worker memproses semua kategori (Toko, Kuliner, Kesehatan, Kantor, dll).
+  - Progress bar realtime + auto-refresh setelah selesai.
+- **Database Explorer:**
+  - Live Filter Bar: pencarian keyword (debounce), filter kategori dropdown, quick filter HP.
+  - Tabel data dengan pagination (50 per halaman).
+  - Download Excel (.xlsx) + Simpan ke Arsip.
+- **Scraping Targeted (Keyword/Kategori):**
+  - Cari keyword bebas atau pilih kategori preset cascading.
+  - Preview titik potensial di peta sebelum scrape.
+  - Tabel hasil dengan lead qualification filter pills.
+- **Riwayat Scraping & Aksi:**
+  - Modal riwayat dengan aksi: Buka Data, Simpan ke Arsip, Download Excel.
+- **Outreach Terpadu & Gemini AI Sales Closer:**
+  - Template standar + AI Racik Personal Gemini (multimodal vision).
 
 ### Modal Outreach Terpadu & Gemini AI Sales Closer (2 Mode Pilihan):
 - **Tab 1: 📋 Template Standar (Cepat):**

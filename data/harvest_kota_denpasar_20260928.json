@@ -1,0 +1,17 @@
+{
+    "region": "Kota Denpasar",
+    "province_id": "bali",
+    "date": "2026-09-28 04:37:32",
+    "bbox": {
+        "minLat": -8.746707,
+        "maxLat": -8.5915251,
+        "minLng": 115.1725084,
+        "maxLng": 115.274881
+    },
+    "initial_count": 0,
+    "overpass_added": 4675,
+    "photon_added": 357,
+    "total_new": 5032,
+    "total_records": 5032,
+    "jsonl_file": "places_kota_denpasar_20260928.jsonl"
+}

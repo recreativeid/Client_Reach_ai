@@ -1844,6 +1844,55 @@ function scanTerritoryAllSectors($bbox, $centerLat = -7.47, $centerLng = 110.22,
     }
     curl_multi_close($pmh);
 
+    // Integrate flat file harvest data from data/*.jsonl if within territory bounds
+    $dataDir = __DIR__ . '/../data';
+    if (is_dir($dataDir)) {
+        $jsonlFiles = glob($dataDir . '/*.jsonl');
+        foreach ($jsonlFiles as $jf) {
+            $h = @fopen($jf, 'r');
+            if ($h) {
+                while (($line = fgets($h)) !== false) {
+                    $item = json_decode(trim($line), true);
+                    if (!$item || empty($item['name'])) continue;
+                    $pLat = (float)($item['lat'] ?? 0);
+                    $pLon = (float)($item['lng'] ?? 0);
+                    if (!$pLat || !$pLon) continue;
+
+                    if ($pLat < ($minLat - 0.05) || $pLat > ($maxLat + 0.05) ||
+                        $pLon < ($minLng - 0.05) || $pLon > ($maxLng + 0.05)) {
+                        continue;
+                    }
+
+                    $pId = $item['osm_id'] ?? ($item['name'] . '_' . $pLat . '_' . $pLon);
+                    if (isset($seenIds[$pId])) continue;
+                    $seenIds[$pId] = true;
+
+                    $uniqueRaw[] = [
+                        'osm_id' => $item['osm_id'] ?? null,
+                        'name' => $item['name'],
+                        'class' => $item['sector'] ?? 'shop',
+                        'type' => $item['subsector'] ?? 'poi',
+                        'lat' => $pLat,
+                        'lon' => $pLon,
+                        'importance' => 0.5,
+                        'address' => [
+                            'road' => '',
+                            'village' => '',
+                            'city' => $cleanCity
+                        ],
+                        'display_name' => $item['address'] ?? $item['name'],
+                        'extratags' => [
+                            'phone' => $item['phone'] ?? null,
+                            'website' => $item['website'] ?? null,
+                            'opening_hours' => $item['opening_hours'] ?? null
+                        ]
+                    ];
+                }
+                fclose($h);
+            }
+        }
+    }
+
     $sectorCounts = [
         'perusahaan' => 0,
         'konstruksi' => 0,
@@ -1973,6 +2022,69 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
 
     // Analyze semantic category taxonomy
     $taxonomy = getCategoryTaxonomy($q);
+
+    // Integrate flat file harvest data from data/*.jsonl if available
+    $dataDir = __DIR__ . '/../data';
+    if (is_dir($dataDir)) {
+        $jsonlFiles = glob($dataDir . '/*.jsonl');
+        foreach ($jsonlFiles as $jf) {
+            $h = @fopen($jf, 'r');
+            if ($h) {
+                while (($line = fgets($h)) !== false) {
+                    $item = json_decode(trim($line), true);
+                    if (!$item || empty($item['name'])) continue;
+                    $pLat = (float)($item['lat'] ?? 0);
+                    $pLon = (float)($item['lng'] ?? 0);
+                    if (!$pLat || !$pLon) continue;
+
+                    if ($pLat < ($minLat - 0.05) || $pLat > ($maxLat + 0.05) ||
+                        $pLon < ($minLng - 0.05) || $pLon > ($maxLng + 0.05)) {
+                        continue;
+                    }
+
+                    $matched = false;
+                    if (stripos($item['name'], $q) !== false ||
+                        stripos($item['category_name'] ?? '', $q) !== false ||
+                        stripos($item['sector'] ?? '', $q) !== false ||
+                        stripos($item['subsector'] ?? '', $q) !== false) {
+                        $matched = true;
+                    } elseif (!empty($taxonomy['keywords'])) {
+                        foreach ($taxonomy['keywords'] as $kw) {
+                            if (stripos($item['name'], $kw) !== false) {
+                                $matched = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($matched) {
+                        $pId = $item['osm_id'] ?? ($item['name'] . '_' . $pLat . '_' . $pLon);
+                        if (!isset($seenIds[$pId])) {
+                            $seenIds[$pId] = true;
+                            $results[] = [
+                                'id' => count($results) + 1,
+                                'osm_id' => $item['osm_id'] ?? null,
+                                'name' => $item['name'],
+                                'category' => $item['category_name'] ?? humanizeOsmType($item['subsector'] ?? '', '', $item['name']),
+                                'sector' => $item['sector'] ?? 'lainnya',
+                                'sub' => $item['subsector'] ?? 'umum',
+                                'address' => $item['address'] ?? '',
+                                'phone' => $item['phone'] ?? '-',
+                                'lat' => $pLat,
+                                'lng' => $pLon,
+                                'social_media' => $item['website'] ?? '-',
+                                'opening_hours' => $item['opening_hours'] ?? '-',
+                                'rating' => 4.6,
+                                'reviews_count' => 35,
+                                'source' => $item['source'] ?? 'harvest'
+                            ];
+                        }
+                    }
+                }
+                fclose($h);
+            }
+        }
+    }
 
     // 1. Structured query: Amenities in viewbox
     if (!empty($taxonomy['amenities'])) {
@@ -2326,10 +2438,10 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
         $seenNames[$lowerName] = true;
 
         $lat = (float)($r['lat'] ?? 0);
-        $lng = (float)($r['lon'] ?? 0);
+        $lng = (float)($r['lng'] ?? ($r['lon'] ?? 0));
 
         // Build clean address
-        $addr = $r['address'] ?? [];
+        $addr = is_array($r['address'] ?? null) ? $r['address'] : [];
         $addrParts = [];
         if (!empty($addr['road'])) $addrParts[] = $addr['road'];
         if (!empty($addr['village'])) $addrParts[] = 'Kel. ' . $addr['village'];
@@ -2339,10 +2451,10 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
         elseif (!empty($addr['town'])) $addrParts[] = $addr['town'];
         elseif (!empty($addr['county'])) $addrParts[] = $addr['county'];
 
-        $formattedAddress = !empty($addrParts) ? implode(', ', $addrParts) : ($r['display_name'] ?? $locationName);
+        $formattedAddress = !empty($addrParts) ? implode(', ', $addrParts) : (is_string($r['address'] ?? null) && !empty($r['address']) ? $r['address'] : ($r['display_name'] ?? $locationName));
 
-        $categoryName = humanizeOsmType($r['type'] ?? '', $r['class'] ?? '', $name);
-        $phone = $r['extratags']['phone'] ?? ($r['extratags']['contact:phone'] ?? '-');
+        $categoryName = !empty($r['category']) && $r['category'] !== 'Usaha Lokal' ? $r['category'] : humanizeOsmType($r['type'] ?? '', $r['class'] ?? '', $name);
+        $phone = $r['phone'] ?? ($r['extratags']['phone'] ?? ($r['extratags']['contact:phone'] ?? '-'));
         $hours = $r['extratags']['opening_hours'] ?? '-';
         $website = $r['extratags']['website'] ?? ($r['extratags']['contact:website'] ?? '-');
 
@@ -2511,15 +2623,16 @@ if ($action === 'preview') {
 
     // Provide preview summary (name, category, address, rating)
     $previewList = array_map(function($p) {
+        $cat = !empty($p['category']) && $p['category'] !== 'Usaha Lokal' ? $p['category'] : ($p['category_name'] ?? ($p['category'] ?? 'Usaha Lokal'));
         return [
             'id' => $p['id'],
             'name' => $p['name'],
-            'category' => $p['category'],
+            'category' => $cat,
             'address' => $p['address'],
             'rating' => $p['rating'],
             'reviews_count' => $p['reviews_count'],
-            'lat' => $p['lat'],
-            'lng' => $p['lng'],
+            'lat' => (float)($p['lat'] ?? 0),
+            'lng' => (float)($p['lng'] ?? ($p['lon'] ?? 0)),
             'source' => $p['source'] ?? 'osm',
             'phone' => $p['phone'] ?? '-'
         ];
