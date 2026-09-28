@@ -120,6 +120,10 @@ const ScraperClient = {
 
                 if (boxRadius) boxRadius.style.display = 'block';
                 if (boxBoundary) boxBoundary.style.display = 'none';
+                const branchHarvested = document.getElementById('branch-harvested-city');
+                const branchUnharvested = document.getElementById('branch-unharvested-city');
+                if (branchHarvested) branchHarvested.style.display = 'none';
+                if (branchUnharvested) branchUnharvested.style.display = 'block';
                 if (mapIndicatorText) mapIndicatorText.textContent = 'Titik Pin & Lingkaran Merah: Jangkauan Radius';
 
                 const coordEl = document.getElementById('display-selected-coord');
@@ -4447,6 +4451,32 @@ window.ScraperClient = ScraperClient;
             const btnRefresh = document.getElementById('btn-refresh-sapu');
             if (btnRefresh) btnRefresh.addEventListener('click', () => this.startFullDetection());
 
+            // Toggle custom scrape in harvested view
+            const btnToggleCustom = document.getElementById('btn-toggle-custom-scrape');
+            const panelCustom = document.getElementById('harvested-custom-scrape-panel');
+            const chevronCustom = document.getElementById('custom-scrape-chevron');
+            if (btnToggleCustom && panelCustom) {
+                btnToggleCustom.addEventListener('click', () => {
+                    const isOpen = panelCustom.style.display === 'block';
+                    panelCustom.style.display = isOpen ? 'none' : 'block';
+                    if (chevronCustom) chevronCustom.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+                });
+            }
+
+            // Switch to targeted scrape from harvested city
+            const btnSwitchTargeted = document.getElementById('btn-switch-to-targeted');
+            if (btnSwitchTargeted) {
+                btnSwitchTargeted.addEventListener('click', () => {
+                    const branchHarvested = document.getElementById('branch-harvested-city');
+                    const branchUnharvested = document.getElementById('branch-unharvested-city');
+                    if (branchHarvested) branchHarvested.style.display = 'none';
+                    if (branchUnharvested) {
+                        branchUnharvested.style.display = 'block';
+                        branchUnharvested.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
+
             // Live keyword search with debounce
             const keywordInput = document.getElementById('db-filter-keyword');
             if (keywordInput) {
@@ -4513,12 +4543,36 @@ window.ScraperClient = ScraperClient;
                 const res = await fetch(`api/master_db.php?action=status&region=${encodeURIComponent(cleanRegion)}`);
                 const data = await res.json();
 
+                const branchHarvested = document.getElementById('branch-harvested-city');
+                const branchUnharvested = document.getElementById('branch-unharvested-city');
+                const harvestTitle = document.getElementById('harvested-region-title');
+                const harvestBadge = document.getElementById('harvested-region-total-badge');
+                const harvestBtnCount = document.getElementById('harvested-btn-count');
+                const harvestCats = document.getElementById('harvested-categories-chips');
+                const unharvestedName = document.getElementById('unharvested-region-name');
+
                 const statusBadge = document.getElementById('master-db-status-badge');
                 const statusCard = document.getElementById('master-db-status-card');
                 const emptyState = document.getElementById('master-db-empty-state');
 
                 if (data.available && data.total_places > 0) {
-                    // Data exists
+                    // JALUR KOTA SUDAH TERPANEN
+                    if (branchHarvested) branchHarvested.style.display = 'block';
+                    if (branchUnharvested) branchUnharvested.style.display = 'none';
+
+                    if (harvestTitle) harvestTitle.textContent = cleanRegion;
+                    if (harvestBadge) harvestBadge.textContent = `${data.total_places.toLocaleString()} Tempat`;
+                    if (harvestBtnCount) harvestBtnCount.textContent = `(${data.total_places.toLocaleString()} Data)`;
+
+                    if (harvestCats && data.categories_summary) {
+                        this.categoriesSummary = data.categories_summary;
+                        const topCats = Object.entries(data.categories_summary).slice(0, 6);
+                        harvestCats.innerHTML = topCats.map(([cat, cnt]) => 
+                            `<span class="badge" style="background:#ffffff; border:1px solid #cbd5e1; color:#334155; font-size:0.68rem; padding:2px 7px;">${this.esc(cat)} (${cnt})</span>`
+                        ).join('');
+                    }
+
+                    // Backward compatibility
                     if (statusBadge) {
                         statusBadge.textContent = `${data.total_places.toLocaleString()} data tersedia`;
                         statusBadge.style.background = '#ecfdf5';
@@ -4528,20 +4582,17 @@ window.ScraperClient = ScraperClient;
                     if (statusCard) statusCard.style.display = 'block';
                     if (emptyState) emptyState.style.display = 'none';
 
-                    document.getElementById('master-db-region-name').textContent = cleanRegion;
-                    document.getElementById('master-db-total').textContent = `${data.total_places.toLocaleString()} bisnis & tempat`;
-
-                    // Show top categories
-                    const catPreview = document.getElementById('master-db-categories-preview');
-                    if (catPreview && data.categories_summary) {
-                        this.categoriesSummary = data.categories_summary;
-                        const topCats = Object.entries(data.categories_summary).slice(0, 5);
-                        catPreview.innerHTML = topCats.map(([cat, cnt]) => 
-                            `<span class="db-cat-chip">${cat} (${cnt})</span>`
-                        ).join('');
-                    }
+                    const legacyRegion = document.getElementById('master-db-region-name');
+                    const legacyTotal = document.getElementById('master-db-total');
+                    if (legacyRegion) legacyRegion.textContent = cleanRegion;
+                    if (legacyTotal) legacyTotal.textContent = `${data.total_places.toLocaleString()} bisnis & tempat`;
                 } else {
-                    // No data
+                    // JALUR KOTA BELUM TERPANEN (2 Opsi Fleksibel)
+                    if (branchHarvested) branchHarvested.style.display = 'none';
+                    if (branchUnharvested) branchUnharvested.style.display = 'block';
+                    if (unharvestedName) unharvestedName.textContent = cleanRegion || 'Wilayah Belum Terpanen';
+
+                    // Backward compatibility
                     if (statusBadge) {
                         statusBadge.textContent = 'Belum ada data';
                         statusBadge.style.background = '#fffbeb';
@@ -4557,9 +4608,13 @@ window.ScraperClient = ScraperClient;
         },
 
         hideAllStates() {
+            const branchHarvested = document.getElementById('branch-harvested-city');
+            const branchUnharvested = document.getElementById('branch-unharvested-city');
             const el1 = document.getElementById('master-db-status-card');
             const el2 = document.getElementById('master-db-empty-state');
             const el3 = document.getElementById('sapu-bersih-progress');
+            if (branchHarvested) branchHarvested.style.display = 'none';
+            if (branchUnharvested) branchUnharvested.style.display = 'block';
             if (el1) el1.style.display = 'none';
             if (el2) el2.style.display = 'none';
             if (el3) el3.style.display = 'none';
@@ -4646,13 +4701,13 @@ window.ScraperClient = ScraperClient;
             }
         },
 
-        // ─── RENDER TABLE ───
+        // ─── RENDER TABLE (Lengkap dengan Salin, AI Pitch, dan WhatsApp) ───
         renderTable() {
             const tbody = document.getElementById('master-db-table-body');
             if (!tbody) return;
 
             if (!this.cachedData.length) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 32px; color: #94a3b8;">
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 36px 16px; color: #94a3b8;">
                     <i class="fa-solid fa-search" style="font-size: 1.5rem; margin-bottom: 8px; display: block;"></i>
                     Tidak ada data yang cocok dengan filter saat ini.
                 </td></tr>`;
@@ -4660,32 +4715,83 @@ window.ScraperClient = ScraperClient;
             }
 
             const startIdx = (this.currentPage - 1) * this.perPage;
-            tbody.innerHTML = this.cachedData.map((item, i) => {
+            tbody.innerHTML = '';
+
+            this.cachedData.forEach((item, i) => {
+                const tr = document.createElement('tr');
                 const phone = item.phone || '-';
                 const hasPhone = phone && phone !== '-';
+                const cleanPhone = phone.replace(/[^0-9]/g, '');
+                const waNumber = cleanPhone.startsWith('0') ? '62' + cleanPhone.substring(1) : cleanPhone;
+
+                const leadItem = {
+                    id: item.id || ('mdb_' + (startIdx + i)),
+                    name: item.name,
+                    category: item.category,
+                    address: item.address,
+                    phone: phone,
+                    social_media: item.website || '',
+                    website: item.website || '',
+                    opening_hours: item.opening_hours || '',
+                    rating: item.rating || 4.5,
+                    reviews_count: item.reviews_count || 15,
+                    lat: item.lat,
+                    lng: item.lng
+                };
+
+                const waUrl = window.TemplateManager ? window.TemplateManager.getWhatsAppUrl(leadItem) : (hasPhone ? `https://wa.me/${waNumber}` : '#');
+
                 const phoneDisplay = hasPhone 
-                    ? `<a href="https://wa.me/${phone.replace(/[^0-9]/g, '')}" target="_blank" style="color: #16a34a; font-weight: 600; text-decoration: none;">${phone}</a>` 
-                    : '<span style="color: #cbd5e1;">-</span>';
-                const website = item.website || '';
-                const webDisplay = website 
-                    ? `<a href="${website.startsWith('http') ? website : 'https://' + website}" target="_blank" style="color: #2563eb; text-decoration: none; font-size: 0.74rem;" title="${website}">${website.replace(/https?:\/\//, '').substring(0, 25)}...</a>` 
+                    ? `<a href="${waUrl}" target="_blank" style="color: #16a34a; font-weight: 600; text-decoration: none;"><i class="fa-brands fa-whatsapp"></i> ${phone}</a>` 
                     : '<span style="color: #cbd5e1;">-</span>';
 
-                return `<tr>
-                    <td style="color: #94a3b8; font-size: 0.72rem;">${startIdx + i + 1}</td>
-                    <td style="font-weight: 600; color: #0f172a;">${this.esc(item.name)}</td>
-                    <td><span class="db-cat-chip">${this.esc(item.category)}</span></td>
-                    <td style="font-size: 0.76rem; color: #475569; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${this.esc(item.address)}">${this.esc(item.address)}</td>
-                    <td>${phoneDisplay}</td>
-                    <td>${webDisplay}</td>
-                    <td style="font-size: 0.74rem; color: #64748b;">${this.esc(item.opening_hours || '-')}</td>
-                    <td style="text-align: right;">
-                        ${hasPhone ? `<a href="https://wa.me/${phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn btn-outline btn-sm" style="font-size: 0.68rem; padding: 3px 8px; color: #16a34a; border-color: #86efac;" title="Hubungi WhatsApp">
-                            <i class="fa-brands fa-whatsapp"></i> WA
-                        </a>` : ''}
+                const website = item.website || '';
+                const webDisplay = website 
+                    ? `<a href="${website.startsWith('http') ? website : 'https://' + website}" target="_blank" style="color: #2563eb; text-decoration: none; font-size: 0.74rem;" title="${website}">${website.replace(/https?:\/\//, '').substring(0, 22)}...</a>` 
+                    : '<span style="color: #cbd5e1;">-</span>';
+
+                tr.innerHTML = `
+                    <td style="color: #94a3b8; font-size: 0.72rem; text-align: center;">${startIdx + i + 1}</td>
+                    <td>
+                        <div style="font-weight: 700; color: #0f172a;">${this.esc(item.name)}</div>
+                        <div style="font-size: 0.70rem; color: #64748b;">${this.esc(item.category)}</div>
                     </td>
-                </tr>`;
-            }).join('');
+                    <td><span class="db-cat-chip" style="font-size:0.68rem;">${this.esc(item.category)}</span></td>
+                    <td style="font-size: 0.74rem; color: #475569; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${this.esc(item.address)}">${this.esc(item.address)}</td>
+                    <td style="white-space: nowrap; font-size: 0.76rem;">${phoneDisplay}</td>
+                    <td>${webDisplay}</td>
+                    <td style="font-size: 0.72rem; color: #64748b; white-space: nowrap;">${this.esc(item.opening_hours || '-')}</td>
+                    <td style="font-weight: 700; color: #0f172a; white-space: nowrap;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> ${item.rating || '4.5'} <span style="font-size: 0.65rem; color:#94a3b8;">(${item.reviews_count || 12})</span></td>
+                    <td style="text-align: right; white-space: nowrap;">
+                        <div style="display: inline-flex; gap: 4px;">
+                            <button class="btn btn-outline btn-sm btn-mdb-copy" title="Salin Pesan Penawaran Terpersonalisasi" style="font-size: 0.68rem; padding: 4px 7px;">
+                                <i class="fa-solid fa-copy"></i> Salin
+                            </button>
+                            <button class="btn btn-primary btn-sm btn-mdb-pitch" title="Buat Pesan Sales Otomatis dengan Gemini AI" style="font-size: 0.68rem; padding: 4px 7px; background: linear-gradient(135deg, #2563eb, #7c3aed); border: none;">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> AI Pitch
+                            </button>
+                            ${hasPhone ? `
+                            <a href="${waUrl}" target="_blank" class="btn btn-wa btn-sm" title="Chat WhatsApp Langsung" style="font-size: 0.68rem; padding: 4px 7px;">
+                                <i class="fa-brands fa-whatsapp"></i> WA
+                            </a>` : ''}
+                        </div>
+                    </td>
+                `;
+
+                // Quick Copy Handler
+                tr.querySelector('.btn-mdb-copy')?.addEventListener('click', () => {
+                    const pitch = window.TemplateManager ? window.TemplateManager.getPersonalizedMessage(leadItem) : `Halo ${leadItem.name}, kami dari tim cliento.`;
+                    navigator.clipboard.writeText(pitch);
+                    if (window.ScraperClient) window.ScraperClient.showToast(`Pesan penawaran untuk ${leadItem.name} berhasil disalin!`);
+                });
+
+                // Open Gemini AI Pitch Modal
+                tr.querySelector('.btn-mdb-pitch')?.addEventListener('click', () => {
+                    if (window.ScraperClient) window.ScraperClient.openAIPitchModal(leadItem);
+                });
+
+                tbody.appendChild(tr);
+            });
         },
 
         // ─── PAGINATION ───

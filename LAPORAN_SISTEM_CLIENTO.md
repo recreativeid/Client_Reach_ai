@@ -69,25 +69,33 @@ Sistem Cliento dibangun dengan fondasi teknologi yang stabil, efisien dalam peng
 
 ## 4. ALUR KERJA OPERASIONAL PENGGUNA
 
-Operasional Cliento dirancang dalam 4 menu utama yang terfokus:
+Operasional Cliento pada menu Scraping Client menerapkan arsitektur percabangan dinamis dua jalur (Dual-Path Architecture):
 
 ```
-[ Menu Utama Cliento ]
-       │
-       ├─► 1. Dashboard (Analitik & Ringkasan Pipeline)
-       │
-       ├─► 2. Scraping Client (Pusat Pencarian & Basis Data Wilayah)
-       │        ├─ Mode 1: Wilayah Administratif (Provinsi -> Kab/Kota -> Garis Batas)
-       │        ├─ Mode 2: Titik Peta & Radius Jangkauan (1 - 25 KM)
-       │        ├─ Pencarian Terarah (Kata Kunci / Kategori Usaha)
-       │        ├─ Fitur Deteksi Lengkap Wilayah (Perekaman Massal)
-       │        └─ Penjelajah Master Database (Live Filter Cepat)
-       │
-       ├─► 3. Template Pesan (Manajemen Skrip Penawaran WhatsApp)
-       │
-       ├─► 4. Koleksi Arsip (Penyimpanan Berstruktur Google Drive)
-       │
-       └─► Database Customer (Khusus Administrator)
+                           [ PENGGUNA MEMILIH WILAYAH ]
+                                       │
+            ┌──────────────────────────┴──────────────────────────┐
+            ▼                                                     ▼
+    [ KOTA SUDAH TERPANEN ]                               [ KOTA BELUM TERPANEN ]
+ (Denpasar, Badung, Magelang, dll)                  (Jakarta, Surabaya, Bandung, Medan, dll)
+            │                                                     │
+            ▼                                                     ▼
+ ┌──────────────────────┐                             ┌──────────────────────┐
+ │ Master Database Siap │                             │   2 Opsi Fleksibel   │
+ └──────────────────────┘                             └──────────────────────┘
+            │                                                     │
+  Klik "Buka Database"                        ┌───────────────────┴───────────────────┐
+  Hasil instan (0.05 detik)                   ▼                                       ▼
+  Filter: keyword, kategori, HP       [ JALUR 1: TARGETED SCRAPE ]            [ JALUR 2: DETEKSI LENGKAP ]
+  Ekspor Excel / WhatsApp Langsung     (Pencarian Instan 2-4 Detik)            (Perekaman Permanen)
+                                              │                                       │
+                                       Ketik kata kunci (misal: cafe)          Klik tombol:
+                                       atau pilih kategori (PT/CV)             "Deteksi Seluruh Bisnis
+                                       Klik "Scrape Data Lengkap"              di Wilayah Ini"
+                                              │                                       │
+                                       Data langsung keluar                    Worker memanen di background
+                                       Siap WhatsApp & Excel                   dan menyimpan ke Master DB
+                                       *Bisa untuk 509 Kab/Kota*               *Setelah selesai, masuk Jalur A*
 ```
 
 ---
@@ -95,30 +103,29 @@ Operasional Cliento dirancang dalam 4 menu utama yang terfokus:
 ## 5. LOGIKA MESIN SCRAPING DAN MASTER DATABASE
 
 ### A. Dua Mode Penentuan Wilayah Sasaran
-
 1. **Mode Wilayah Administratif (Batas Garis Merah):**
-   Pengguna memilih Provinsi, Kabupaten/Kota, dan secara opsional Kecamatan serta Kelurahan. Peta akan secara otomatis memusatkan tampilan dan menggambar garis batas resmi wilayah tersebut berwarna merah. Seluruh pencarian dan pengambilan data dikunci agar tidak melenceng keluar dari batas wilayah yang dipilih.
-
+   Pengguna memilih Provinsi dan Kabupaten/Kota. Sistem memeriksa ketersediaan data di Master Database secara real-time. Jika wilayah sudah terpanen, pengguna langsung diarahkan ke Master Database Siap. Jika belum, pengguna disajikan 2 opsi fleksibel: Jalur 1 Targeted Scrape instan atau Jalur 2 Deteksi Lengkap permanen.
 2. **Mode Titik Peta & Radius:**
-   Pengguna cukup mengeklik titik mana saja pada peta dan mengatur jarak jangkauan melalui penggeser radius (1 KM hingga 25 KM). Sistem akan membentuk lingkaran zona merah dan mengidentifikasi entitas bisnis dalam cakupan tersebut.
+   Pengguna mengeklik titik koordinat pada peta dan mengatur radius (1 KM hingga 25 KM) untuk pencarian sasaran terarah.
 
-### B. Mesin Deteksi Lengkap Wilayah (Perekaman Massal)
-Ketika suatu wilayah dipilih, sistem secara otomatis memeriksa ketersediaan data di Master Database lokal:
-- **Jika data sudah ada:** Kartu status hijau akan langsung menampilkan jumlah entitas bisnis yang tersedia, rincian kategori utama, dan menyediakan tombol instan "Buka Database".
-- **Jika data belum ada atau ingin diperbarui:** Tersedia tombol aksi "Deteksi Seluruh Bisnis di Wilayah Ini". Ketika diklik, sistem memicu proses pemanenan latar belakang yang mengumpulkan seluruh kategori usaha:
-  - Perusahaan, perkantoran, PT, CV, dan pabrik
-  - Pertokoan, ritel, dan pusat perbelanjaan
-  - Kuliner, restoran, kafe, dan warung
-  - Sarana kesehatan, klinik, apotek, dan rumah sakit
-  - Lembaga pendidikan, sekolah, dan bimbingan belajar
-  - Bengkel, otomotif, salon, dan jasa profesional
-  - Akomodasi, hotel, dan hiburan
+### B. Jalur A: Kota Sudah Terpanen (Master Database Siap)
+Ketika suatu wilayah yang telah dipanen dipilih (contoh: Kota Magelang 906 data, Kota Denpasar 1.012 data, Kab. Badung 1.450 data, dll):
+- Kartu hijau "Master Database Siap" langsung muncul di panel utama.
+- Tombol aksi utama "Buka Database Wilayah" membuka penjelajah data dalam 0.05 detik.
+- Tersedia bilah pencarian kata kunci live, penyaring kategori usaha, penyaring kepemilikan nomor telepon, serta tombol ekspor Excel dan kontak WhatsApp langsung.
 
-### C. Live Filter Bar pada Master Database Explorer
-Saat pengguna membuka Master Database, antarmuka menyediakan bilah filter interaktif:
-1. **Pencarian Kata Kunci Real-Time:** Mengetik nama usaha, alamat, atau aktivitas bisnis dengan mekanisme debounce halus 400 milidetik.
-2. **Penyaring Kategori Spesifik:** Memilih hanya sektor yang diminati (misalnya hanya Kuliner atau hanya Perusahaan).
-3. **Penyaring Kelayakan Kontak:** Tombol cepat untuk memilah bisnis yang memiliki nomor kontak aktif atau yang belum memiliki nomor kontak.
+### C. Jalur B: Kota Belum Terpanen (2 Opsi Fleksibel)
+Ketika memilih wilayah yang belum tersimpan di Master Database:
+1. **Jalur 1: Targeted Scrape Instan (2-4 Detik):**
+   Pengguna mengetik kata kunci atau memilih kategori usaha spesifik (misalnya kantor PT/CV, klinik, kafe), melihat pratinjau kandidat, lalu mengeklik "Scrape Data Lengkap". Data langsung diekstrak secara cepat dan siap digunakan untuk WhatsApp & Excel.
+2. **Jalur 2: Deteksi Lengkap (Perekaman Permanen):**
+   Pengguna mengeklik "Deteksi Seluruh Bisnis di Wilayah Ini". Worker latar belakang memanen seluruh kategori usaha dan menyimpannya secara permanen ke Master Database lokal. Setelah proses selesai, wilayah tersebut otomatis beralih menjadi status Kota Terpanen (Jalur A).
+
+### D. Fitur Bilah Saring (Live Filter Bar) pada Master Database
+1. **Pencarian Kata Kunci Real-Time:** Mengetik nama usaha, alamat, atau aktivitas bisnis dengan mekanisme debounce 400 milidetik.
+2. **Penyaring Kategori Spesifik:** Memilih hanya sektor yang diminati dari daftar kategori wilayah tersebut.
+3. **Penyaring Status Nomor Telepon:** Memilah antara bisnis yang memiliki nomor kontak aktif atau tanpa nomor.
+4. **Aksi Sales & Outreach Terpadu:** Setiap baris data dilengkapi tombol Salin Pesan Penawaran, AI Pitch Generator (Gemini), dan tautan WhatsApp langsung.
 
 ---
 
