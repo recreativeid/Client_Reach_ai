@@ -40,7 +40,8 @@ switch ($action) {
 // ACTION: status — Check data availability for a region
 // ─────────────────────────────────────────────────────────
 function handleStatus($dataDir) {
-    $region = $_GET['region'] ?? '';
+    $rawRegion = $_GET['region'] ?? '';
+    $region = trim(preg_replace('/\s*\[.*?\]\s*/', '', (string)$rawRegion));
     if (!$region) {
         echo json_encode(['error' => 'Parameter "region" is required']);
         return;
@@ -78,13 +79,14 @@ function handleStatus($dataDir) {
 // ACTION: query — Query data with filters and pagination
 // ─────────────────────────────────────────────────────────
 function handleQuery($dataDir) {
-    $region   = $_GET['region'] ?? '';
-    $keyword  = trim($_GET['keyword'] ?? '');
-    $category = trim($_GET['category'] ?? '');
-    $page     = max(1, intval($_GET['page'] ?? 1));
-    $perPage  = min(200, max(10, intval($_GET['per_page'] ?? 50)));
-    $sortBy   = $_GET['sort'] ?? 'name';
-    $hasPhone = isset($_GET['has_phone']) ? filter_var($_GET['has_phone'], FILTER_VALIDATE_BOOLEAN) : null;
+    $rawRegion = $_GET['region'] ?? '';
+    $region    = trim(preg_replace('/\s*\[.*?\]\s*/', '', (string)$rawRegion));
+    $keyword   = trim($_GET['keyword'] ?? '');
+    $category  = trim($_GET['category'] ?? '');
+    $page      = max(1, intval($_GET['page'] ?? 1));
+    $perPage   = min(200, max(10, intval($_GET['per_page'] ?? 50)));
+    $sortBy    = $_GET['sort'] ?? 'name';
+    $hasPhone  = isset($_GET['has_phone']) ? filter_var($_GET['has_phone'], FILTER_VALIDATE_BOOLEAN) : null;
 
     if (!$region) {
         echo json_encode(['error' => 'Parameter "region" is required']);
@@ -294,7 +296,9 @@ function handleStats($dataDir) {
  * Matches against slug patterns in filenames.
  */
 function findRegionFiles($dataDir, $regionName) {
-    $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '_', $regionName));
+    // Clean bracketed badges such as [Database Siap: 906] or other suffixes
+    $cleanName = preg_replace('/\s*\[.*?\]\s*/', '', (string)$regionName);
+    $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '_', $cleanName));
     $slug = trim($slug, '_');
     
     $pattern = $dataDir . '/places_*.jsonl';

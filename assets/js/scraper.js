@@ -4506,10 +4506,11 @@ window.ScraperClient = ScraperClient;
                 this.hideAllStates();
                 return;
             }
-            this.currentRegion = regionName;
+            const cleanRegion = (regionName || '').replace(/\s*\[.*?\]\s*/g, '').trim();
+            this.currentRegion = cleanRegion;
 
             try {
-                const res = await fetch(`api/master_db.php?action=status&region=${encodeURIComponent(regionName)}`);
+                const res = await fetch(`api/master_db.php?action=status&region=${encodeURIComponent(cleanRegion)}`);
                 const data = await res.json();
 
                 const statusBadge = document.getElementById('master-db-status-badge');
@@ -4527,7 +4528,7 @@ window.ScraperClient = ScraperClient;
                     if (statusCard) statusCard.style.display = 'block';
                     if (emptyState) emptyState.style.display = 'none';
 
-                    document.getElementById('master-db-region-name').textContent = regionName;
+                    document.getElementById('master-db-region-name').textContent = cleanRegion;
                     document.getElementById('master-db-total').textContent = `${data.total_places.toLocaleString()} bisnis & tempat`;
 
                     // Show top categories
@@ -4732,6 +4733,7 @@ window.ScraperClient = ScraperClient;
                             const kabSelect = document.getElementById('filter-kabupaten');
                             if (kabSelect) kabSelect.value = curKabVal;
                         }
+                        window.ScraperClient.checkMasterDbStatus();
                     }
                 } else if (container) {
                     container.innerHTML = '<span style="font-size: 0.68rem; color: #94a3b8;">Belum ada wilayah terpanen</span>';
@@ -4763,16 +4765,17 @@ window.ScraperClient = ScraperClient;
 
             if (targetProvId && targetRegId) {
                 const provSelect = document.getElementById('filter-provinsi');
-                const kabSelect = document.getElementById('filter-kabupaten');
                 if (provSelect) {
                     provSelect.value = targetProvId;
                     if (window.ScraperClient) {
                         window.ScraperClient.populateRegencies(targetProvId);
                     }
+                    const kabSelect = document.getElementById('filter-kabupaten');
                     if (kabSelect) {
                         kabSelect.value = targetRegId;
                     }
                     if (window.ScraperClient) {
+                        window.ScraperClient.populateDistricts(targetRegId);
                         window.ScraperClient.handleRegionChange();
                     }
                 }
@@ -4957,7 +4960,8 @@ window.ScraperClient = ScraperClient;
                 MasterDB.hideAllStates();
                 return;
             }
-            const kabName = kabSelect.options[kabSelect.selectedIndex]?.text || '';
+            const rawKabName = kabSelect.options[kabSelect.selectedIndex]?.text || '';
+            const kabName = rawKabName.replace(/\s*\[.*?\]\s*/g, '').trim();
             if (kabName && !kabName.startsWith('--')) {
                 MasterDB.checkStatus(kabName);
             }

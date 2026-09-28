@@ -53,6 +53,10 @@ const App = {
         });
     },
 
+    switchPage(pageId) {
+        return this.navigateTo(pageId);
+    },
+
     navigateTo(pageId) {
         const validPages = ['dashboard', 'scraper', 'templates', 'archives', 'customers'];
         if (!validPages.includes(pageId)) pageId = 'dashboard';
@@ -86,11 +90,19 @@ const App = {
             item.classList.toggle('active', item.getAttribute('data-page') === pageId);
         });
 
-        // Invalidate map size if scraper
-        if (pageId === 'scraper' && window.mapEngine && window.mapEngine.map) {
-            setTimeout(() => {
-                window.mapEngine.map.invalidateSize();
-            }, 200);
+        // Invalidate map size and refresh Master Database status if scraper
+        if (pageId === 'scraper') {
+            if (window.mapEngine && window.mapEngine.map) {
+                setTimeout(() => {
+                    window.mapEngine.map.invalidateSize();
+                }, 200);
+            }
+            if (window.MasterDB) {
+                window.MasterDB.loadReadyRegions();
+                if (window.ScraperClient) {
+                    window.ScraperClient.checkMasterDbStatus();
+                }
+            }
         }
 
         // If navigating to archives, refresh collections view
