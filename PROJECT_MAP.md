@@ -12,8 +12,9 @@
 - **Typografi:** **Poppins** (Google Fonts) di seluruh aplikasi.
 - **Navigasi Header:** Rata tengah (*centered*) di desktop, bottom navigation bar ergonomis di mobile.
 - **Fokus Desain:** *Mobile-Verse* (Mobile-First, thumb-friendly, responsif di desktop maupun smartphone).
-- **Teknologi Utama:** 
-  - Backend: PHP Native + SQLite (`database/client_reach.db`)
+  - Backend: PHP Native 8.x + Dual Engine Database:
+    - Centralized Cloud: Supabase PostgreSQL 17 (Pooler IPv4 Port 5432 / Direct IPv6)
+    - Local Fallback: Zero-Config SQLite 3 (`database/client_reach.db` dengan WAL Mode)
   - Frontend: Vanilla JavaScript ES6+ (SPA Architecture)
   - Map Engine: Leaflet.js + OpenStreetMap Tile Layer (Geocoding & Organic Bounding Polygons)
   - Visualisasi Analisis: Chart.js (Area Line Chart & Donut Chart untuk pipeline sales)
@@ -243,10 +244,36 @@ c:\xampp\htdocs\Client_Reach_ai/
 
 ---
 
-## 5. Cara Menjalankan & Verifikasi
-- Dev Server lokal: `http://127.0.0.1:8080/index.html` (atau Apache XAMPP di `http://localhost/Client_Reach_ai/index.html`).
-- Skrip inisialisasi basis data: `http://127.0.0.1:8080/database/init.php`.
-- Kredensial Uji Coba Default:
-  - **Super Admin:** `admin@cliento.id` / `admin123`
-  - **Customer:** `customer@demo.com` / `customer123`
+## 5. Cara Menjalankan, Database Cloud & Deployment
+
+### A. Lingkungan Lokal (Localhost)
+- Server PHP bawaan: Jalankan `php -S 0.0.0.0:8080` di root direktori proyek.
+- Akses aplikasi: Buka peramban ke `http://127.0.0.1:8080/index.html` atau `http://localhost:8080/index.html`.
+- Jika menggunakan Apache XAMPP: Akses langsung melalui `http://localhost/Client_Reach_ai/index.html`.
+- Kredensial Pengujian:
+  - Super Admin: `admin` / `admin123` (atau via email `admin@cliento.id`)
+  - Akun Customer: `customer` / `customer123` (atau `customer@demo.com`)
+
+### B. Database Terpusat Cloud (Supabase PostgreSQL 17)
+- Project Reference: `vxmxzciaaeqoamsskwhp`
+- Connection Pooler Host (IPv4 & IPv6): `aws-0-ap-southeast-1.pooler.supabase.com`
+- Port: `5432` (Session Mode) atau `6543` (Transaction Mode)
+- Username: `postgres.vxmxzciaaeqoamsskwhp`
+- Database: `postgres`
+- Konfigurasi disimpan di `config.local.php` (diabaikan oleh Git untuk keamanan).
+- Migrasi otomatis: `php database/migrate_supabase.php`.
+
+### C. Panduan Deploy ke cPanel Hosting
+1. Unggah seluruh file proyek (atau clone via Git cPanel dari `https://github.com/recreativeid/cliento.git` branch `cliento`) ke folder domain Anda (misal `public_html`).
+2. Buat file `config.local.php` di dalam root direktori cPanel Anda dengan isi kredensial Supabase.
+3. Di cPanel menu **Select PHP Version** > **Extensions**, pastikan ekstensi `pdo_pgsql` dan `pgsql` telah dicentang aktif.
+4. Selesai! Web di cPanel akan langsung terhubung ke database Supabase yang sama dengan laptop lokal Anda. Semua data sinkron secara real-time.
+
+---
+
+## 6. Riwayat Pembaruan Terkini
+- Penghapusan seluruh emotikon kecerdasan buatan demi tampilan bersih dan profesional.
+- Penyatuan modul Scraping Client dengan Master Database dan deteksi wilayah instan.
+- Perubahan terminologi operasional dari bahasa non-formal menjadi "Deteksi Seluruh Bisnis di Wilayah Ini".
+- Integrasi Dual-Engine Database dengan Supabase Cloud PostgreSQL 17.6 terpusat.
 

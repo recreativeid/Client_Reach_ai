@@ -59,7 +59,7 @@ if ($action === 'save') {
 
     try {
         // Ensure category exists in categories table
-        $catStmt = $pdo->prepare("INSERT OR IGNORE INTO categories (name) VALUES (?)");
+        $catStmt = $pdo->prepare("INSERT INTO categories (name) VALUES (?) ON CONFLICT DO NOTHING");
         $catStmt->execute([$categoryName]);
 
         // Upsert template
@@ -97,7 +97,7 @@ if ($action === 'create_category') {
 
         // Create default template for this new category
         $defaultBody = 'Hallo kak dgn pemilik/team manajemen {nama_tempat}? Kami dari Client Reach AI melihat perkembangan usaha kakak di {alamat} sangat menarik. Kami ingin berbagi solusi otomasi sales untuk memperluas jangkauan pelanggan. Apakah ada waktu luang sebentar kak? Terima kasih!';
-        $tplStmt = $pdo->prepare("INSERT OR IGNORE INTO templates (category_name, greeting_type, message_body) VALUES (?, 'formal', ?)");
+        $tplStmt = $pdo->prepare("INSERT INTO templates (category_name, greeting_type, message_body) VALUES (?, 'formal', ?) ON CONFLICT DO NOTHING");
         $tplStmt->execute([$categoryName, $defaultBody]);
 
         jsonResponse([

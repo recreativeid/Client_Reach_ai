@@ -54,9 +54,10 @@ Sistem Cliento dibangun dengan fondasi teknologi yang stabil, efisien dalam peng
 - **Visualisasi Data:** Chart.js untuk menampilkan diagram corong penjualan (funnel) dan komposisi sektor bisnis.
 - **Pemrosesan Berkas:** SheetJS (XLSX) untuk menghasilkan berkas Microsoft Excel (.xlsx) secara langsung di peramban pengguna tanpa membebani server.
 
-### B. Lapisan Backend (Logika & API)
+### B. Lapisan Backend & Dual-Engine Database
 - **Bahasa Pemrograman:** PHP Native versi 8.x dengan struktur modular berbasis REST API.
-- **Basis Data Transaksional:** SQLite 3 dengan mode Write-Ahead Logging (WAL) untuk menjamin kecepatan baca-tulis tinggi dan integritas data tanpa ketergantungan server database eksternal yang rumit.
+- **Basis Data Terpusat Cloud (Supabase PostgreSQL 17):** Berfungsi sebagai repositori data terpusat multi-perangkat. Memungkinkan sinkronisasi instan antara localhost di laptop, repositori GitHub, dan instalasi cPanel hosting tanpa konflik data.
+- **Basis Data Lokal Mandiri (Zero-Config SQLite 3 WAL):** Berfungsi sebagai mekanisme fallback otomatis apabila koneksi internet atau cloud database tidak aktif.
 - **Basis Data Penampung Massal (Master Database):** Berkas data terstruktur JSONL (JSON Lines) per wilayah yang memungkinkan pembacaan baris demi baris berkecepatan tinggi dengan penggunaan memori yang sangat rendah.
 
 ### C. Jaringan Ekstraksi Data Eksternal

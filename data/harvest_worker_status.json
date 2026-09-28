@@ -1,13 +1,13 @@
 {
     "state": "processing",
     "pid": 13988,
-    "message": "Memanen: Kabupaten Gianyar...",
-    "processed": 4,
+    "message": "Memanen: Kabupaten Jembrana...",
+    "processed": 5,
     "total_pending": 9,
-    "current_region": "Kabupaten Gianyar",
+    "current_region": "Kabupaten Jembrana",
     "current_province": "Bali",
-    "total_places": 12136,
-    "started_at": "2026-09-28 07:33:25",
-    "updated_at": "2026-09-28 07:33:25",
-    "updated_at_ts": 1790573605
+    "total_places": 12657,
+    "started_at": "2026-09-28 09:00:48",
+    "updated_at": "2026-09-28 09:00:48",
+    "updated_at_ts": 1790578848
 }

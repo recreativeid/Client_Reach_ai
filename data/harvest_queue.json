@@ -1,6 +1,6 @@
 {
     "created_at": "2026-09-27 19:37:33",
-    "updated_at": "2026-09-28 07:59:26",
+    "updated_at": "2026-09-28 09:00:48",
     "items": [
         {
             "id": "hq_6ab9545d18490",
@@ -105,14 +105,24 @@
             "type": "kabupaten",
             "province_id": "bali",
             "province_name": "Bali",
-            "center": null,
-            "bbox": null,
-            "status": "processing",
+            "center": {
+                "lat": -8.2222492,
+                "lng": 114.9950437
+            },
+            "bbox": {
+                "minLat": -8.3828133,
+                "maxLat": -8.0616216,
+                "minLng": 114.4322463,
+                "maxLng": 115.4571864
+            },
+            "status": "done",
             "queued_at": "2026-09-28 04:30:49",
             "started_at": "2026-09-28 05:38:01",
-            "completed_at": null,
-            "places_found": 0,
-            "error": null
+            "completed_at": "2026-09-28 07:33:23",
+            "places_found": 743,
+            "error": null,
+            "new_places": 743,
+            "file": "places_kabupaten_buleleng_20260928.jsonl"
         },
         {
             "id": "hq_6ab9d159def21",
@@ -132,8 +142,8 @@
             },
             "status": "done",
             "queued_at": "2026-09-28 04:30:49",
-            "started_at": "2026-09-28 06:33:27",
-            "completed_at": "2026-09-28 07:59:26",
+            "started_at": "2026-09-28 07:33:25",
+            "completed_at": "2026-09-28 09:00:46",
             "places_found": 521,
             "error": null,
             "new_places": 521,
@@ -149,7 +159,7 @@
             "bbox": null,
             "status": "processing",
             "queued_at": "2026-09-28 04:30:49",
-            "started_at": "2026-09-28 07:59:26",
+            "started_at": "2026-09-28 09:00:48",
             "completed_at": null,
             "places_found": 0,
             "error": null

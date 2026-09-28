@@ -63,7 +63,7 @@ External APIs:
 [Data Belum Ada]                                   [Buka Database]
     |                                               [Export Excel]
     v                                               [Simpan Arsip]
-[Sapu Bersih / Background Worker]
+[Deteksi Lengkap / Background Worker]
     |
     v
 [Overpass API + Nominatim + Photon]
@@ -263,37 +263,44 @@ Client_Reach_ai/
 - [x] AI Outreach Gemini Vision
 - [x] Template WhatsApp + Arsip Google Drive
 
+- [x] Integrasi Supabase Cloud PostgreSQL 17 (Terpusat & Multi-Platform)
+
 ### Fase 2 (Mendatang)
 - [ ] Analisis chat WhatsApp (respon prospek otomatis)
 - [ ] Scoring prospek berbasis AI (kualifikasi otomatis)
 - [ ] Auto-outreach: sistem kirim pesan otomatis berdasarkan jadwal
-- [ ] Dashboard analitik real (data dari database, bukan mock)
+- [ ] Dashboard analitik real-time dari Supabase
 
 ### Fase 3 (Jangka Panjang)
 - [ ] Multi-AI agent: AI karyawan yang berkolaborasi antar sesi
 - [ ] Auto-discovery pasar: sistem identifikasi peluang baru otomatis
-- [ ] CRM pipeline lengkap (follow-up tracking)
-- [ ] Integrasi Supabase / cloud database
+- [ ] CRM pipeline lengkap (follow-up tracking otomatis)
 - [ ] API publik untuk integrasi pihak ketiga
 
 ---
 
-## 9. Cara Menjalankan
+## 9. Cara Menjalankan & Integrasi Cloud Supabase
 
-### Prasyarat
-- XAMPP / PHP 8.x + SQLite3
-- Browser modern (Chrome/Firefox)
+### A. Akses Lokal
+1. Server lokal: `php -S 0.0.0.0:8080` di root folder proyek.
+2. Buka browser: `http://localhost:8080/index.html` atau Apache XAMPP `http://localhost/Client_Reach_ai/index.html`.
+3. Login Pengujian:
+   - Admin: `admin` / `admin123`
+   - Customer: `customer` / `customer123`
 
-### Langkah
-1. Clone/copy proyek ke `htdocs/Client_Reach_ai/`
-2. Akses `http://localhost/Client_Reach_ai/database/init.php` (inisialisasi DB)
-3. Akses `http://localhost/Client_Reach_ai/index.html`
-4. Login: `admin@cliento.id` / `admin123`
+### B. Konfigurasi Cloud Database (Supabase)
+- Project ID: `vxmxzciaaeqoamsskwhp`
+- Pooler Host: `aws-0-ap-southeast-1.pooler.supabase.com` (Port 5432)
+- User: `postgres.vxmxzciaaeqoamsskwhp`
+- Simpan kredensial di file privat `config.local.php`.
+- Skrip migrasi tabel otomatis: `php database/migrate_supabase.php`.
 
-### Port Alternatif
-- Jika menggunakan PHP built-in server: `php -S localhost:8080`
-- Akses: `http://localhost:8080/index.html`
+### C. Deploy ke cPanel Hosting
+1. Upload isi repository (atau clone via Git cPanel dari branch `cliento`).
+2. Buat file `config.local.php` di root cPanel dengan kredensial Supabase.
+3. Pastikan ekstensi `pdo_pgsql` aktif di menu PHP Selector cPanel.
+4. Aplikasi langsung terhubung ke database cloud yang sama secara tersinkronisasi.
 
 ---
 
-*Dokumen ini di-generate dan diperbarui secara berkala sebagai referensi teknis sistem Cliento.*
+*Dokumen ini diperbarui secara berkala sebagai referensi teknis sistem Cliento.*
