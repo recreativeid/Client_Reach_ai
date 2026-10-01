@@ -1,0 +1,18 @@
+name: Keep Supabase Alive (Auto-Ping)
+
+on:
+  schedule:
+    # Run every 3 days at 00:00 UTC (prevents Supabase 7-day auto-pause forever)
+    - cron: '0 0 */3 * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI anytime
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        run: |
+          echo "Sending keep-alive ping to Supabase Cloud..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://idvxwrpifquqnekzjtxo.supabase.co/rest/v1/")
+          echo "Supabase responded with HTTP status: $STATUS"
+          echo "Supabase auto-pause timer successfully reset!"
