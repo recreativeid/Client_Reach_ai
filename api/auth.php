@@ -12,6 +12,11 @@ $action = $_GET['action'] ?? ($input['action'] ?? 'me');
 
 // 1. LOGIN (Bisa pakai Email atau Username - Admin & Customer Terpisah)
 if ($action === 'login') {
+    // Rate limit: max 5 failed attempts per 5 minutes per IP
+    if (!checkRateLimit($pdo, 'login', 5, 300)) {
+        jsonResponse(['success' => false, 'message' => 'Terlalu banyak percobaan login gagal. Silakan coba lagi dalam 5 menit.'], 429);
+    }
+
     $account = strtolower(trim($input['account'] ?? ($input['email'] ?? ($input['username'] ?? ''))));
     $password = $input['password'] ?? '';
     $portal = trim($input['portal'] ?? ''); // 'admin' or 'user'
@@ -25,6 +30,7 @@ if ($action === 'login') {
     $user = $stmt->fetch();
 
     if (!$user || !password_verify($password, $user['password_hash'])) {
+        recordFailedAttempt($pdo, 'login');
         jsonResponse(['success' => false, 'message' => 'Username/email atau kata sandi tidak cocok.'], 401);
     }
 
@@ -57,16 +63,18 @@ if ($action === 'login') {
 
         sendEmailOtp($user['email'], $otpCode, $user['name']);
 
-        jsonResponse([
+        $otpResponse = [
             'success' => false,
             'otp_required' => true,
             'email' => $user['email'],
-            'message' => 'Akun Anda belum diverifikasi. Kode OTP baru telah dikirimkan ke email Anda.',
-            'otp_preview' => $otpCode
-        ], 200);
+            'message' => 'Akun Anda belum diverifikasi. Kode OTP baru telah dikirimkan ke email Anda.'
+        ];
+        if (isLocalDev()) $otpResponse['otp_preview'] = $otpCode;
+        jsonResponse($otpResponse, 200);
     }
 
     // Generate login token
+    clearFailedAttempts($pdo, 'login');
     $token = bin2hex(random_bytes(32));
     $upStmt = $pdo->prepare("UPDATE users SET token = ?, last_login = CURRENT_TIMESTAMP WHERE id = ?");
     $upStmt->execute([$token, $user['id']]);
@@ -144,17 +152,23 @@ if ($action === 'register') {
 
     $emailSent = sendEmailOtp($email, $otpCode, $name);
 
-    jsonResponse([
+    $regResponse = [
         'success' => true,
         'message' => 'Pendaftaran berhasil! Kode verifikasi OTP telah dikirimkan ke email ' . $email . '.',
         'email' => $email,
-        'otp_preview' => $otpCode, // Included for seamless testing in local / offline dev environments
         'email_sent' => $emailSent
-    ]);
+    ];
+    if (isLocalDev()) $regResponse['otp_preview'] = $otpCode;
+    jsonResponse($regResponse);
 }
 
 // 3. VERIFY OTP
 if ($action === 'verify_otp') {
+    // Rate limit OTP verification: max 10 attempts per 15 minutes per IP
+    if (!checkRateLimit($pdo, 'verify_otp', 10, 900)) {
+        jsonResponse(['success' => false, 'message' => 'Terlalu banyak percobaan verifikasi OTP. Silakan coba lagi dalam 15 menit.'], 429);
+    }
+
     $email = strtolower(trim($input['email'] ?? ''));
     $otpCode = trim($input['otp_code'] ?? '');
 
@@ -168,6 +182,7 @@ if ($action === 'verify_otp') {
     $otpRow = $stmt->fetch();
 
     if (!$otpRow) {
+        recordFailedAttempt($pdo, 'verify_otp');
         jsonResponse(['success' => false, 'message' => 'Kode OTP tidak valid atau telah kadaluarsa. Silakan kirim ulang kode baru.'], 400);
     }
 
@@ -221,12 +236,13 @@ if ($action === 'resend_otp') {
 
     $emailSent = sendEmailOtp($email, $otpCode, $user['name']);
 
-    jsonResponse([
+    $resendResponse = [
         'success' => true,
         'message' => 'Kode OTP baru berhasil dikirim ke ' . $email,
-        'otp_preview' => $otpCode,
         'email_sent' => $emailSent
-    ]);
+    ];
+    if (isLocalDev()) $resendResponse['otp_preview'] = $otpCode;
+    jsonResponse($resendResponse);
 }
 
 // 5. CURRENT USER PROFILE (ME)
@@ -366,15 +382,16 @@ if ($action === 'forgot_password') {
     $maskedName = ($uLen <= 3) ? substr($uNamePart, 0, 1) . '***' : substr($uNamePart, 0, 2) . str_repeat('*', max(3, $uLen - 3)) . substr($uNamePart, -1);
     $maskedEmail = $maskedName . '@' . $dPart;
 
-    jsonResponse([
+    $forgotResponse = [
         'success' => true,
         'message' => 'Kode OTP pemulihan kata sandi telah dikirimkan ke email terdaftar: ' . $maskedEmail,
         'email' => $userEmail,
         'masked_email' => $maskedEmail,
         'username' => $user['username'] ?? '',
-        'otp_preview' => $otpCode,
         'email_sent' => $emailSent
-    ]);
+    ];
+    if (isLocalDev()) $forgotResponse['otp_preview'] = $otpCode;
+    jsonResponse($forgotResponse);
 }
 
 // 8. RESET PASSWORD VIA OTP (HANYA UNTUK USER)
@@ -534,13 +551,14 @@ if ($action === 'request_email_change_otp') {
 
     $emailSent = sendEmailOtp($newEmail, $otpCode, $user['name'], 'change_email');
 
-    jsonResponse([
+    $changeEmailResponse = [
         'success' => true,
         'message' => 'Kode OTP verifikasi telah dikirimkan ke email baru ' . $newEmail . '.',
         'new_email' => $newEmail,
-        'otp_preview' => $otpCode,
         'email_sent' => $emailSent
-    ]);
+    ];
+    if (isLocalDev()) $changeEmailResponse['otp_preview'] = $otpCode;
+    jsonResponse($changeEmailResponse);
 }
 
 // 10. VERIFY EMAIL CHANGE OTP

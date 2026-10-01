@@ -364,15 +364,16 @@ class MapEngine {
                 let finalLat = p.lat;
                 let finalLng = p.lng;
 
-                // Enforce strict containment inside red boundary in boundary mode
+                // Enforce strict containment: Only display markers genuinely inside the administrative boundary
                 if (this.currentMode === 'boundary') {
-                    const safePt = this.ensurePointInsideBoundary(p.lat, p.lng);
-                    finalLat = safePt[0];
-                    finalLng = safePt[1];
-                    p.lat = finalLat;
-                    p.lng = finalLng;
+                    if (!this.isPointInsideBoundary(p.lat, p.lng)) {
+                        return; // Omit places that belong to other subdistricts or are outside
+                    }
+                    finalLat = p.lat;
+                    finalLng = p.lng;
                 }
 
+                const itemKey = String(p.id || p.osm_id || `${finalLat}_${finalLng}`);
                 const isOsm = (p.source === 'osm') || (!p.source && (idx % 2 !== 0));
                 const markerColor = isOsm ? '#059669' : '#2563eb';
                 const sourceBadge = isOsm 
@@ -390,20 +391,29 @@ class MapEngine {
                 });
 
                 marker.bindPopup(`
-                    <div style="font-size: 11px; font-family: 'Poppins', sans-serif; min-width: 175px;">
+                    <div style="font-size: 11px; font-family: 'Poppins', sans-serif; min-width: 185px; padding: 2px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px;">
                             ${sourceBadge}
                             <span style="font-size: 9px; color: #64748b; font-weight: 600;">${sourceDesc}</span>
                         </div>
                         <strong style="color: #0f172a; font-size: 12px; display: block; margin-bottom: 2px;">${p.name}</strong>
-                        <div style="color: #475569; font-size: 10px; margin-bottom: 2px;">${p.category}</div>
-                        <div style="color: #64748b; font-size: 10px; margin-bottom: 4px; line-height: 1.3;">${p.address}</div>
-                        <div style="display: flex; align-items: center; gap: 6px; font-size: 10px;">
-                            <span style="color: #0f172a; font-weight: 600;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> ${p.rating || '-'}</span>
-                            <span style="color: #94a3b8;">(${p.reviews_count || 0} ulasan)</span>
-                        </div>
+                        <div style="color: #475569; font-size: 10px; margin-bottom: 2px;">${p.category || 'Bisnis'}</div>
+                        <div style="color: #64748b; font-size: 10px; margin-bottom: 4px; line-height: 1.3;">${p.address || '-'}</div>
+                        <button type="button" onclick="const r = document.getElementById('scraped-row-${itemKey}') || document.getElementById('candidate-row-${itemKey}'); if(r) { r.scrollIntoView({behavior:'smooth',block:'center'}); r.classList.remove('dm-row-active-pulse'); void r.offsetWidth; r.classList.add('dm-row-active-pulse'); }" style="background: #2563eb; color: #ffffff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                            <i class="fa-solid fa-arrow-down"></i> Sorot ke Baris Tabel
+                        </button>
                     </div>
                 `);
+
+                marker.on('click', () => {
+                    const targetRow = document.getElementById('scraped-row-' + itemKey) || document.getElementById('candidate-row-' + itemKey);
+                    if (targetRow) {
+                        targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetRow.classList.remove('dm-row-active-pulse');
+                        void targetRow.offsetWidth;
+                        targetRow.classList.add('dm-row-active-pulse');
+                    }
+                });
 
                 this.markersGroup.addLayer(marker);
             }

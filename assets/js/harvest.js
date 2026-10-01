@@ -132,6 +132,13 @@ const HarvestManager = {
             });
         }
 
+        const btnSyncDb = document.getElementById('btn-sync-sqlite-db');
+        if (btnSyncDb) {
+            btnSyncDb.addEventListener('click', () => {
+                this.syncToDatabase();
+            });
+        }
+
         // Table tabs
         const tabBtnQueue = document.getElementById('tab-btn-queue');
         const tabBtnHistory = document.getElementById('tab-btn-history');
@@ -746,6 +753,44 @@ const HarvestManager = {
             }
         } catch (err) {
             this.toast(`Gagal membersihkan antrean: ${err.message}`, 'error');
+        }
+    },
+
+    // ─── SYNC TO DATABASE (SQLite & cPanel MySQL) ───
+    async syncToDatabase() {
+        const btn = document.getElementById('btn-sync-sqlite-db');
+        const originalHtml = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyinkronkan...';
+            btn.disabled = true;
+        }
+
+        this.toast('Menyinkronkan seluruh data hasil panen ke database SQLite dan cPanel dump...', 'info');
+        this.logTerminal('INFO', 'Memulai sinkronisasi massal seluruh file hasil panen ke database...');
+
+        try {
+            const res = await fetch('api/harvest_queue.php?action=sync_to_db');
+            const data = await res.json();
+
+            if (data.success) {
+                const totalPlaces = data.sync ? data.sync.total_places : 0;
+                const totalFiles = data.sync ? data.sync.total_files : 0;
+                this.toast(`Sinkronisasi sukses! ${totalPlaces.toLocaleString()} data tersimpan di database.`, 'success');
+                this.logTerminal('OK', `✓ Berhasil menyinkronkan ${totalPlaces.toLocaleString()} data bisnis dari ${totalFiles} file ke database.`);
+                this.loadHarvestHistory();
+                this.loadQueueStatus();
+            } else {
+                this.toast(`Gagal sinkronisasi: ${data.error || 'Terjadi kesalahan'}`, 'error');
+                this.logTerminal('ERR', `Sinkronisasi gagal: ${data.error || 'Unknown error'}`);
+            }
+        } catch (err) {
+            this.toast(`Error koneksi: ${err.message}`, 'error');
+            this.logTerminal('ERR', `Error jaringan saat sinkronisasi: ${err.message}`);
+        } finally {
+            if (btn) {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
         }
     },
 

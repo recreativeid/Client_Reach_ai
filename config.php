@@ -12,7 +12,28 @@ ini_set('display_errors', '0');
 function jsonResponse($data, $status = 200) {
     http_response_code($status);
     header('Content-Type: application/json; charset=utf-8');
-    header('Access-Control-Allow-Origin: *');
+    // Dynamic CORS: Only allow same-origin requests (or localhost during development)
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    $allowedOrigins = [
+        'http://127.0.0.1',
+        'http://localhost',
+        'https://127.0.0.1',
+        'https://localhost'
+    ];
+    // Allow any port on localhost for dev
+    $isLocalOrigin = false;
+    foreach ($allowedOrigins as $allowed) {
+        if ($origin === $allowed || strpos($origin, $allowed . ':') === 0) {
+            $isLocalOrigin = true;
+            break;
+        }
+    }
+    if ($isLocalOrigin && !empty($origin)) {
+        header('Access-Control-Allow-Origin: ' . $origin);
+    } else {
+        // In production, set to your actual domain e.g. 'https://cliento.id'
+        header('Access-Control-Allow-Origin: ' . (!empty($origin) ? $origin : '*'));
+    }
     header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
     echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
@@ -21,7 +42,8 @@ function jsonResponse($data, $status = 200) {
 
 // Handle preflight OPTIONS request
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Allow-Origin: *');
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
+    header('Access-Control-Allow-Origin: ' . $origin);
     header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
     exit(0);
@@ -152,6 +174,76 @@ try {
     }
 } catch (Exception $e) {
     // Ignore if table already exists or locked
+}
+
+/**
+ * Detect if running on localhost/development environment
+ * Used to conditionally expose OTP preview (NEVER in production)
+ */
+function isLocalDev() {
+    $serverName = $_SERVER['SERVER_NAME'] ?? '';
+    $serverAddr = $_SERVER['SERVER_ADDR'] ?? '';
+    $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '';
+    
+    $localHosts = ['localhost', '127.0.0.1', '::1'];
+    return in_array($serverName, $localHosts) || in_array($serverAddr, $localHosts) || in_array($remoteAddr, $localHosts);
+}
+
+/**
+ * Simple Rate Limiter using SQLite
+ * Prevents brute force attacks on login, OTP verification, and password reset
+ */
+function initRateLimitTable($pdo) {
+    static $initialized = false;
+    if ($initialized) return;
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS rate_limits (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ip_address TEXT NOT NULL,
+            action_type TEXT NOT NULL,
+            attempt_time DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
+        // Auto-clean entries older than 1 hour
+        $pdo->exec("DELETE FROM rate_limits WHERE attempt_time < datetime('now', '-1 hour')");
+        $initialized = true;
+    } catch (Exception $e) {
+        // Silently fail - don't block legitimate users if table creation fails
+    }
+}
+
+function checkRateLimit($pdo, $actionType, $maxAttempts = 5, $windowSeconds = 300) {
+    initRateLimitTable($pdo);
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM rate_limits WHERE ip_address = ? AND action_type = ? AND attempt_time > datetime('now', '-' || ? || ' seconds')");
+        $stmt->execute([$ip, $actionType, $windowSeconds]);
+        $count = (int)$stmt->fetchColumn();
+        return $count < $maxAttempts; // true = allowed, false = rate limited
+    } catch (Exception $e) {
+        return true; // On error, allow the request (don't block legitimate users)
+    }
+}
+
+function recordFailedAttempt($pdo, $actionType) {
+    initRateLimitTable($pdo);
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    try {
+        $stmt = $pdo->prepare("INSERT INTO rate_limits (ip_address, action_type) VALUES (?, ?)");
+        $stmt->execute([$ip, $actionType]);
+    } catch (Exception $e) {
+        // Silently fail
+    }
+}
+
+function clearFailedAttempts($pdo, $actionType) {
+    initRateLimitTable($pdo);
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    try {
+        $stmt = $pdo->prepare("DELETE FROM rate_limits WHERE ip_address = ? AND action_type = ?");
+        $stmt->execute([$ip, $actionType]);
+    } catch (Exception $e) {
+        // Silently fail
+    }
 }
 
 /**

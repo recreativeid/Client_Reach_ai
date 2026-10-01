@@ -1,0 +1,21 @@
+{
+    "region": "Kota Magelang",
+    "province": "Indonesia",
+    "date": "2026-09-30 19:23:28",
+    "total_places": 257,
+    "saved_to_db": 35,
+    "categories_summary": {
+        "pendidikan": 84,
+        "keagamaan": 68,
+        "kesehatan": 26,
+        "lainnya": 19,
+        "retail": 15,
+        "pemerintahan": 14,
+        "jasa": 11,
+        "kuliner": 8,
+        "akomodasi": 7,
+        "otomotif": 3,
+        "hiburan_wisata": 2
+    },
+    "jsonl_file": "places_kota_magelang_20260930.jsonl"
+}

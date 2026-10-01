@@ -1,0 +1,5585 @@
+{
+    "provinces": {
+        "aceh": {
+            "name": "Aceh",
+            "bbox": {
+                "minLat": 2,
+                "maxLat": 5.9,
+                "minLng": 95,
+                "maxLng": 98.3
+            },
+            "center": {
+                "lat": 4.7,
+                "lng": 96.75
+            }
+        },
+        "sumatera_utara": {
+            "name": "Sumatera Utara",
+            "bbox": {
+                "minLat": 1,
+                "maxLat": 4.5,
+                "minLng": 97,
+                "maxLng": 100.5
+            },
+            "center": {
+                "lat": 2.5,
+                "lng": 98.7
+            }
+        },
+        "sumatera_barat": {
+            "name": "Sumatera Barat",
+            "bbox": {
+                "minLat": -1.5,
+                "maxLat": 0.8,
+                "minLng": 98.4,
+                "maxLng": 101.8
+            },
+            "center": {
+                "lat": -0.95,
+                "lng": 100.35
+            }
+        },
+        "riau": {
+            "name": "Riau",
+            "bbox": {
+                "minLat": -1.1,
+                "maxLat": 2.5,
+                "minLng": 100,
+                "maxLng": 105
+            },
+            "center": {
+                "lat": 0.5,
+                "lng": 101.45
+            }
+        },
+        "jambi": {
+            "name": "Jambi",
+            "bbox": {
+                "minLat": -2.6,
+                "maxLat": -0.8,
+                "minLng": 101.4,
+                "maxLng": 104.6
+            },
+            "center": {
+                "lat": -1.6,
+                "lng": 103.6
+            }
+        },
+        "sumatera_selatan": {
+            "name": "Sumatera Selatan",
+            "bbox": {
+                "minLat": -4.3,
+                "maxLat": -1.5,
+                "minLng": 103,
+                "maxLng": 106
+            },
+            "center": {
+                "lat": -3.32,
+                "lng": 104.91
+            }
+        },
+        "bengkulu": {
+            "name": "Bengkulu",
+            "bbox": {
+                "minLat": -4.4,
+                "maxLat": -2.3,
+                "minLng": 101.1,
+                "maxLng": 103.9
+            },
+            "center": {
+                "lat": -3.8,
+                "lng": 102.26
+            }
+        },
+        "lampung": {
+            "name": "Lampung",
+            "bbox": {
+                "minLat": -6,
+                "maxLat": -3.8,
+                "minLng": 103.6,
+                "maxLng": 106
+            },
+            "center": {
+                "lat": -5.45,
+                "lng": 105.26
+            }
+        },
+        "kep_bangka_belitung": {
+            "name": "Kepulauan Bangka Belitung",
+            "bbox": {
+                "minLat": -3.5,
+                "maxLat": -1.4,
+                "minLng": 105,
+                "maxLng": 109
+            },
+            "center": {
+                "lat": -2.74,
+                "lng": 106.44
+            }
+        },
+        "kep_riau": {
+            "name": "Kepulauan Riau",
+            "bbox": {
+                "minLat": -0.5,
+                "maxLat": 4,
+                "minLng": 103.3,
+                "maxLng": 109
+            },
+            "center": {
+                "lat": 0.92,
+                "lng": 104.45
+            }
+        },
+        "dki_jakarta": {
+            "name": "DKI Jakarta",
+            "bbox": {
+                "minLat": -6.38,
+                "maxLat": -6.09,
+                "minLng": 106.68,
+                "maxLng": 107
+            },
+            "center": {
+                "lat": -6.21,
+                "lng": 106.85
+            }
+        },
+        "jawa_barat": {
+            "name": "Jawa Barat",
+            "bbox": {
+                "minLat": -7.8,
+                "maxLat": -5.9,
+                "minLng": 106.4,
+                "maxLng": 108.8
+            },
+            "center": {
+                "lat": -6.92,
+                "lng": 107.62
+            }
+        },
+        "jawa_tengah": {
+            "name": "Jawa Tengah",
+            "bbox": {
+                "minLat": -8,
+                "maxLat": -6.7,
+                "minLng": 108.5,
+                "maxLng": 111.1
+            },
+            "center": {
+                "lat": -7.15,
+                "lng": 110.14
+            }
+        },
+        "di_yogyakarta": {
+            "name": "DI Yogyakarta",
+            "bbox": {
+                "minLat": -8,
+                "maxLat": -7.56,
+                "minLng": 110,
+                "maxLng": 110.7
+            },
+            "center": {
+                "lat": -7.8,
+                "lng": 110.36
+            }
+        },
+        "jawa_timur": {
+            "name": "Jawa Timur",
+            "bbox": {
+                "minLat": -8.6,
+                "maxLat": -6.8,
+                "minLng": 111,
+                "maxLng": 114.6
+            },
+            "center": {
+                "lat": -7.54,
+                "lng": 112.24
+            }
+        },
+        "banten": {
+            "name": "Banten",
+            "bbox": {
+                "minLat": -7,
+                "maxLat": -5.8,
+                "minLng": 105.1,
+                "maxLng": 106.7
+            },
+            "center": {
+                "lat": -6.12,
+                "lng": 106.15
+            }
+        },
+        "bali": {
+            "name": "Bali",
+            "bbox": {
+                "minLat": -8.85,
+                "maxLat": -8.06,
+                "minLng": 114.4,
+                "maxLng": 115.72
+            },
+            "center": {
+                "lat": -8.41,
+                "lng": 115.19
+            }
+        },
+        "nusa_tenggara_barat": {
+            "name": "Nusa Tenggara Barat",
+            "bbox": {
+                "minLat": -9.2,
+                "maxLat": -7.9,
+                "minLng": 115.5,
+                "maxLng": 119.1
+            },
+            "center": {
+                "lat": -8.65,
+                "lng": 117.36
+            }
+        },
+        "nusa_tenggara_timur": {
+            "name": "Nusa Tenggara Timur",
+            "bbox": {
+                "minLat": -11,
+                "maxLat": -8.2,
+                "minLng": 118.9,
+                "maxLng": 125.2
+            },
+            "center": {
+                "lat": -8.66,
+                "lng": 121.08
+            }
+        },
+        "kalimantan_barat": {
+            "name": "Kalimantan Barat",
+            "bbox": {
+                "minLat": -3.1,
+                "maxLat": 2.1,
+                "minLng": 108,
+                "maxLng": 110.2
+            },
+            "center": {
+                "lat": -0.02,
+                "lng": 109.33
+            }
+        },
+        "kalimantan_tengah": {
+            "name": "Kalimantan Tengah",
+            "bbox": {
+                "minLat": -3.6,
+                "maxLat": -0.6,
+                "minLng": 111,
+                "maxLng": 116
+            },
+            "center": {
+                "lat": -1.68,
+                "lng": 113.38
+            }
+        },
+        "kalimantan_selatan": {
+            "name": "Kalimantan Selatan",
+            "bbox": {
+                "minLat": -4.2,
+                "maxLat": -2,
+                "minLng": 114.4,
+                "maxLng": 116.4
+            },
+            "center": {
+                "lat": -3.32,
+                "lng": 115.09
+            }
+        },
+        "kalimantan_timur": {
+            "name": "Kalimantan Timur",
+            "bbox": {
+                "minLat": -2.2,
+                "maxLat": 2.3,
+                "minLng": 115.5,
+                "maxLng": 118
+            },
+            "center": {
+                "lat": -0.5,
+                "lng": 116.42
+            }
+        },
+        "kalimantan_utara": {
+            "name": "Kalimantan Utara",
+            "bbox": {
+                "minLat": 1.6,
+                "maxLat": 4.3,
+                "minLng": 115,
+                "maxLng": 117.9
+            },
+            "center": {
+                "lat": 2.73,
+                "lng": 116.91
+            }
+        },
+        "sulawesi_utara": {
+            "name": "Sulawesi Utara",
+            "bbox": {
+                "minLat": 0.3,
+                "maxLat": 1.7,
+                "minLng": 123,
+                "maxLng": 127.1
+            },
+            "center": {
+                "lat": 1.49,
+                "lng": 124.84
+            }
+        },
+        "sulawesi_tengah": {
+            "name": "Sulawesi Tengah",
+            "bbox": {
+                "minLat": -2.3,
+                "maxLat": 0.7,
+                "minLng": 119.5,
+                "maxLng": 124
+            },
+            "center": {
+                "lat": -1.43,
+                "lng": 121.45
+            }
+        },
+        "sulawesi_selatan": {
+            "name": "Sulawesi Selatan",
+            "bbox": {
+                "minLat": -5.7,
+                "maxLat": -2.5,
+                "minLng": 119.3,
+                "maxLng": 121.5
+            },
+            "center": {
+                "lat": -3.67,
+                "lng": 119.97
+            }
+        },
+        "sulawesi_tenggara": {
+            "name": "Sulawesi Tenggara",
+            "bbox": {
+                "minLat": -5.5,
+                "maxLat": -2.8,
+                "minLng": 120.4,
+                "maxLng": 124.6
+            },
+            "center": {
+                "lat": -3.97,
+                "lng": 122.51
+            }
+        },
+        "gorontalo": {
+            "name": "Gorontalo",
+            "bbox": {
+                "minLat": 0.2,
+                "maxLat": 1.1,
+                "minLng": 121.2,
+                "maxLng": 123.1
+            },
+            "center": {
+                "lat": 0.54,
+                "lng": 123.06
+            }
+        },
+        "sulawesi_barat": {
+            "name": "Sulawesi Barat",
+            "bbox": {
+                "minLat": -3.4,
+                "maxLat": -1,
+                "minLng": 118.7,
+                "maxLng": 119.5
+            },
+            "center": {
+                "lat": -2.84,
+                "lng": 119.23
+            }
+        },
+        "maluku": {
+            "name": "Maluku",
+            "bbox": {
+                "minLat": -8.4,
+                "maxLat": -2.5,
+                "minLng": 124,
+                "maxLng": 135
+            },
+            "center": {
+                "lat": -3.24,
+                "lng": 130.14
+            }
+        },
+        "maluku_utara": {
+            "name": "Maluku Utara",
+            "bbox": {
+                "minLat": -1.2,
+                "maxLat": 3,
+                "minLng": 124,
+                "maxLng": 129.5
+            },
+            "center": {
+                "lat": 1.57,
+                "lng": 127.81
+            }
+        },
+        "papua": {
+            "name": "Papua",
+            "bbox": {
+                "minLat": -9.5,
+                "maxLat": -1.5,
+                "minLng": 138,
+                "maxLng": 141.05
+            },
+            "center": {
+                "lat": -2.53,
+                "lng": 140.72
+            }
+        },
+        "papua_barat": {
+            "name": "Papua Barat",
+            "bbox": {
+                "minLat": -4,
+                "maxLat": 0,
+                "minLng": 129.5,
+                "maxLng": 138.5
+            },
+            "center": {
+                "lat": -0.86,
+                "lng": 133.17
+            }
+        }
+    },
+    "cities": {
+        "awaengah": {
+            "name": "Jawa Tengah",
+            "lat": -7.150975,
+            "lng": 110.140259,
+            "bbox": {
+                "minLat": -8.2,
+                "maxLat": -6.4,
+                "minLng": 108.7,
+                "maxLng": 111.6
+            }
+        },
+        "akarta": {
+            "name": "DKI Jakarta",
+            "lat": -6.208763,
+            "lng": 106.845599,
+            "bbox": {
+                "minLat": -6.37,
+                "maxLat": -6.08,
+                "minLng": 106.68,
+                "maxLng": 106.97
+            }
+        },
+        "ogyakarta": {
+            "name": "DI Yogyakarta",
+            "lat": -7.79558,
+            "lng": 110.36949,
+            "bbox": {
+                "minLat": -8.2,
+                "maxLat": -7.5,
+                "minLng": 110,
+                "maxLng": 110.8
+            }
+        },
+        "awaarat": {
+            "name": "Jawa Barat",
+            "lat": -6.917464,
+            "lng": 107.619123,
+            "bbox": {
+                "minLat": -7.8,
+                "maxLat": -5.9,
+                "minLng": 106.3,
+                "maxLng": 108.8
+            }
+        },
+        "awaimur": {
+            "name": "Jawa Timur",
+            "lat": -7.536064,
+            "lng": 112.238402,
+            "bbox": {
+                "minLat": -8.8,
+                "maxLat": -6.7,
+                "minLng": 110.9,
+                "maxLng": 114.6
+            }
+        },
+        "anten": {
+            "name": "Banten",
+            "lat": -6.405817,
+            "lng": 106.064018,
+            "bbox": {
+                "minLat": -7,
+                "maxLat": -5.8,
+                "minLng": 105.1,
+                "maxLng": 106.7
+            }
+        },
+        "ali": {
+            "name": "Bali",
+            "lat": -8.409518,
+            "lng": 115.188916,
+            "bbox": {
+                "minLat": -8.9,
+                "maxLat": -8,
+                "minLng": 114.4,
+                "maxLng": 115.7
+            }
+        },
+        "ceh": {
+            "name": "Aceh",
+            "lat": 4.695135,
+            "lng": 96.749399,
+            "bbox": {
+                "minLat": 1.9,
+                "maxLat": 6.1,
+                "minLng": 94.9,
+                "maxLng": 98.3
+            }
+        },
+        "umateratara": {
+            "name": "Sumatera Utara",
+            "lat": 2.115355,
+            "lng": 99.545097,
+            "bbox": {
+                "minLat": 0.5,
+                "maxLat": 4.3,
+                "minLng": 97,
+                "maxLng": 100.7
+            }
+        },
+        "umateraarat": {
+            "name": "Sumatera Barat",
+            "lat": -0.73994,
+            "lng": 100.800005,
+            "bbox": {
+                "minLat": -3.4,
+                "maxLat": 0.9,
+                "minLng": 98.6,
+                "maxLng": 101.9
+            }
+        },
+        "iau": {
+            "name": "Riau",
+            "lat": 0.293347,
+            "lng": 101.706829,
+            "bbox": {
+                "minLat": -1.2,
+                "maxLat": 2.5,
+                "minLng": 100,
+                "maxLng": 103.8
+            }
+        },
+        "epulauaniau": {
+            "name": "Kepulauan Riau",
+            "lat": 3.945651,
+            "lng": 108.142867,
+            "bbox": {
+                "minLat": -0.8,
+                "maxLat": 4.8,
+                "minLng": 103.3,
+                "maxLng": 109.2
+            }
+        },
+        "ambi": {
+            "name": "Jambi",
+            "lat": -1.485183,
+            "lng": 102.438058,
+            "bbox": {
+                "minLat": -2.8,
+                "maxLat": -0.7,
+                "minLng": 101.1,
+                "maxLng": 104.5
+            }
+        },
+        "umateraelatan": {
+            "name": "Sumatera Selatan",
+            "lat": -3.319437,
+            "lng": 104.914712,
+            "bbox": {
+                "minLat": -4.9,
+                "maxLat": -1.6,
+                "minLng": 102.1,
+                "maxLng": 106.1
+            }
+        },
+        "epulauanangkaelitung": {
+            "name": "Kepulauan Bangka Belitung",
+            "lat": -2.741051,
+            "lng": 106.440587,
+            "bbox": {
+                "minLat": -3.8,
+                "maxLat": -1.3,
+                "minLng": 105,
+                "maxLng": 108.8
+            }
+        },
+        "engkulu": {
+            "name": "Bengkulu",
+            "lat": -3.577847,
+            "lng": 102.346388,
+            "bbox": {
+                "minLat": -5.5,
+                "maxLat": -2.3,
+                "minLng": 101,
+                "maxLng": 103.8
+            }
+        },
+        "ampung": {
+            "name": "Lampung",
+            "lat": -4.558585,
+            "lng": 105.406808,
+            "bbox": {
+                "minLat": -6,
+                "maxLat": -3.7,
+                "minLng": 103.5,
+                "maxLng": 106
+            }
+        },
+        "usaenggaraarat": {
+            "name": "Nusa Tenggara Barat",
+            "lat": -8.652933,
+            "lng": 117.361648,
+            "bbox": {
+                "minLat": -9.1,
+                "maxLat": -8.1,
+                "minLng": 115.8,
+                "maxLng": 119.3
+            }
+        },
+        "usaenggaraimur": {
+            "name": "Nusa Tenggara Timur",
+            "lat": -8.657382,
+            "lng": 121.079371,
+            "bbox": {
+                "minLat": -11,
+                "maxLat": -8,
+                "minLng": 118.9,
+                "maxLng": 125.2
+            }
+        },
+        "alimantanarat": {
+            "name": "Kalimantan Barat",
+            "lat": -0.278781,
+            "lng": 111.475285,
+            "bbox": {
+                "minLat": -3.1,
+                "maxLat": 2.1,
+                "minLng": 108.5,
+                "maxLng": 114.2
+            }
+        },
+        "alimantanengah": {
+            "name": "Kalimantan Tengah",
+            "lat": -1.681488,
+            "lng": 113.382355,
+            "bbox": {
+                "minLat": -3.6,
+                "maxLat": 0.8,
+                "minLng": 110.7,
+                "maxLng": 115.9
+            }
+        },
+        "alimantanelatan": {
+            "name": "Kalimantan Selatan",
+            "lat": -3.092642,
+            "lng": 115.283759,
+            "bbox": {
+                "minLat": -4.2,
+                "maxLat": -1.3,
+                "minLng": 114.3,
+                "maxLng": 116.6
+            }
+        },
+        "alimantanimur": {
+            "name": "Kalimantan Timur",
+            "lat": 0.538659,
+            "lng": 116.419389,
+            "bbox": {
+                "minLat": -2.5,
+                "maxLat": 2.6,
+                "minLng": 113.8,
+                "maxLng": 119
+            }
+        },
+        "alimantantara": {
+            "name": "Kalimantan Utara",
+            "lat": 3.073093,
+            "lng": 116.041388,
+            "bbox": {
+                "minLat": 1.1,
+                "maxLat": 4.4,
+                "minLng": 114.6,
+                "maxLng": 117.9
+            }
+        },
+        "ulawesitara": {
+            "name": "Sulawesi Utara",
+            "lat": 0.624693,
+            "lng": 123.975002,
+            "bbox": {
+                "minLat": 0.2,
+                "maxLat": 5.6,
+                "minLng": 123.1,
+                "maxLng": 125.6
+            }
+        },
+        "orontalo": {
+            "name": "Gorontalo",
+            "lat": 0.699937,
+            "lng": 122.446724,
+            "bbox": {
+                "minLat": 0.3,
+                "maxLat": 1.1,
+                "minLng": 121.1,
+                "maxLng": 123.6
+            }
+        },
+        "ulawesiengah": {
+            "name": "Sulawesi Tengah",
+            "lat": -1.430025,
+            "lng": 121.445618,
+            "bbox": {
+                "minLat": -3.4,
+                "maxLat": 1.4,
+                "minLng": 119.4,
+                "maxLng": 124.3
+            }
+        },
+        "ulawesiarat": {
+            "name": "Sulawesi Barat",
+            "lat": -2.844137,
+            "lng": 119.232078,
+            "bbox": {
+                "minLat": -3.7,
+                "maxLat": -0.8,
+                "minLng": 118.7,
+                "maxLng": 119.9
+            }
+        },
+        "ulawesielatan": {
+            "name": "Sulawesi Selatan",
+            "lat": -3.668799,
+            "lng": 119.974053,
+            "bbox": {
+                "minLat": -7.5,
+                "maxLat": -1.9,
+                "minLng": 118.7,
+                "maxLng": 121.7
+            }
+        },
+        "ulawesienggara": {
+            "name": "Sulawesi Tenggara",
+            "lat": -4.14491,
+            "lng": 122.174605,
+            "bbox": {
+                "minLat": -6.3,
+                "maxLat": -2.8,
+                "minLng": 120.8,
+                "maxLng": 124.7
+            }
+        },
+        "aluku": {
+            "name": "Maluku",
+            "lat": -3.238462,
+            "lng": 130.145273,
+            "bbox": {
+                "minLat": -8.4,
+                "maxLat": -1.3,
+                "minLng": 125.7,
+                "maxLng": 135
+            }
+        },
+        "alukutara": {
+            "name": "Maluku Utara",
+            "lat": 1.570999,
+            "lng": 127.808769,
+            "bbox": {
+                "minLat": -2.5,
+                "maxLat": 2.7,
+                "minLng": 124.2,
+                "maxLng": 129.7
+            }
+        },
+        "apua": {
+            "name": "Papua",
+            "lat": -2.53371,
+            "lng": 140.71813,
+            "bbox": {
+                "minLat": -4,
+                "maxLat": -1.5,
+                "minLng": 135.5,
+                "maxLng": 141
+            }
+        },
+        "apuaarat": {
+            "name": "Papua Barat",
+            "lat": -1.336115,
+            "lng": 133.174716,
+            "bbox": {
+                "minLat": -3.5,
+                "maxLat": -0.5,
+                "minLng": 131,
+                "maxLng": 135
+            }
+        },
+        "apuaelatan": {
+            "name": "Papua Selatan",
+            "lat": -7.5,
+            "lng": 139.5,
+            "bbox": {
+                "minLat": -9.1,
+                "maxLat": -5,
+                "minLng": 137.5,
+                "maxLng": 141
+            }
+        },
+        "apuaengah": {
+            "name": "Papua Tengah",
+            "lat": -3.8,
+            "lng": 136.5,
+            "bbox": {
+                "minLat": -5,
+                "maxLat": -2.5,
+                "minLng": 134.5,
+                "maxLng": 138.5
+            }
+        },
+        "apuaegunungan": {
+            "name": "Papua Pegunungan",
+            "lat": -4.1,
+            "lng": 139,
+            "bbox": {
+                "minLat": -5.2,
+                "maxLat": -3.2,
+                "minLng": 137.8,
+                "maxLng": 140.5
+            }
+        },
+        "apuaarataya": {
+            "name": "Papua Barat Daya",
+            "lat": -0.9,
+            "lng": 131.3,
+            "bbox": {
+                "minLat": -2.2,
+                "maxLat": 0.4,
+                "minLng": 129.8,
+                "maxLng": 133
+            }
+        },
+        "otaayapura": {
+            "name": "Kota Jayapura",
+            "lat": -2.5337,
+            "lng": 140.7181,
+            "bbox": {
+                "minLat": -2.67,
+                "maxLat": -2.48,
+                "minLng": 140.6,
+                "maxLng": 140.85
+            }
+        },
+        "ayapura": {
+            "name": "Kota Jayapura",
+            "lat": -2.5337,
+            "lng": 140.7181,
+            "bbox": {
+                "minLat": -2.67,
+                "maxLat": -2.48,
+                "minLng": 140.6,
+                "maxLng": 140.85
+            }
+        },
+        "abupatenayapuraentani": {
+            "name": "Kabupaten Jayapura (Sentani)",
+            "lat": -2.5694,
+            "lng": 140.5167,
+            "bbox": {
+                "minLat": -3.2,
+                "maxLat": -2.2,
+                "minLng": 139.8,
+                "maxLng": 140.7
+            }
+        },
+        "abupateneerom": {
+            "name": "Kabupaten Keerom",
+            "lat": -3.2842,
+            "lng": 140.7719,
+            "bbox": {
+                "minLat": -4,
+                "maxLat": -2.8,
+                "minLng": 140.3,
+                "maxLng": 141
+            }
+        },
+        "eerom": {
+            "name": "Kabupaten Keerom",
+            "lat": -3.2842,
+            "lng": 140.7719,
+            "bbox": {
+                "minLat": -4,
+                "maxLat": -2.8,
+                "minLng": 140.3,
+                "maxLng": 141
+            }
+        },
+        "abupatenarmi": {
+            "name": "Kabupaten Sarmi",
+            "lat": -1.8608,
+            "lng": 138.7478,
+            "bbox": {
+                "minLat": -2.6,
+                "maxLat": -1.5,
+                "minLng": 138.2,
+                "maxLng": 139.8
+            }
+        },
+        "armi": {
+            "name": "Kabupaten Sarmi",
+            "lat": -1.8608,
+            "lng": 138.7478,
+            "bbox": {
+                "minLat": -2.6,
+                "maxLat": -1.5,
+                "minLng": 138.2,
+                "maxLng": 139.8
+            }
+        },
+        "abupateniakumfor": {
+            "name": "Kabupaten Biak Numfor",
+            "lat": -1.0253,
+            "lng": 136.0125,
+            "bbox": {
+                "minLat": -1.25,
+                "maxLat": -0.75,
+                "minLng": 135.8,
+                "maxLng": 136.25
+            }
+        },
+        "iakumfor": {
+            "name": "Kabupaten Biak Numfor",
+            "lat": -1.0253,
+            "lng": 136.0125,
+            "bbox": {
+                "minLat": -1.25,
+                "maxLat": -0.75,
+                "minLng": 135.8,
+                "maxLng": 136.25
+            }
+        },
+        "abupatenupiori": {
+            "name": "Kabupaten Supiori",
+            "lat": -0.73,
+            "lng": 135.58,
+            "bbox": {
+                "minLat": -0.95,
+                "maxLat": -0.55,
+                "minLng": 135.4,
+                "maxLng": 135.85
+            }
+        },
+        "upiori": {
+            "name": "Kabupaten Supiori",
+            "lat": -0.73,
+            "lng": 135.58,
+            "bbox": {
+                "minLat": -0.95,
+                "maxLat": -0.55,
+                "minLng": 135.4,
+                "maxLng": 135.85
+            }
+        },
+        "abupatenepulauanapenerui": {
+            "name": "Kabupaten Kepulauan Yapen (Serui)",
+            "lat": -1.785,
+            "lng": 136.2367,
+            "bbox": {
+                "minLat": -1.95,
+                "maxLat": -1.6,
+                "minLng": 135.8,
+                "maxLng": 136.65
+            }
+        },
+        "epulauanapen": {
+            "name": "Kabupaten Kepulauan Yapen (Serui)",
+            "lat": -1.785,
+            "lng": 136.2367,
+            "bbox": {
+                "minLat": -1.95,
+                "maxLat": -1.6,
+                "minLng": 135.8,
+                "maxLng": 136.65
+            }
+        },
+        "abupatenaropen": {
+            "name": "Kabupaten Waropen",
+            "lat": -2.62,
+            "lng": 136.75,
+            "bbox": {
+                "minLat": -3.2,
+                "maxLat": -2.1,
+                "minLng": 136.2,
+                "maxLng": 137.3
+            }
+        },
+        "aropen": {
+            "name": "Kabupaten Waropen",
+            "lat": -2.62,
+            "lng": 136.75,
+            "bbox": {
+                "minLat": -3.2,
+                "maxLat": -2.1,
+                "minLng": 136.2,
+                "maxLng": 137.3
+            }
+        },
+        "abupatenamberamoaya": {
+            "name": "Kabupaten Mamberamo Raya",
+            "lat": -2.21,
+            "lng": 137.85,
+            "bbox": {
+                "minLat": -3,
+                "maxLat": -1.5,
+                "minLng": 137.1,
+                "maxLng": 138.6
+            }
+        },
+        "amberamoaya": {
+            "name": "Kabupaten Mamberamo Raya",
+            "lat": -2.21,
+            "lng": 137.85,
+            "bbox": {
+                "minLat": -3,
+                "maxLat": -1.5,
+                "minLng": 137.1,
+                "maxLng": 138.6
+            }
+        },
+        "abupatenanokwari": {
+            "name": "Kabupaten Manokwari",
+            "lat": -0.8615,
+            "lng": 134.062,
+            "bbox": {
+                "minLat": -1.1,
+                "maxLat": -0.65,
+                "minLng": 133.8,
+                "maxLng": 134.3
+            }
+        },
+        "anokwari": {
+            "name": "Kabupaten Manokwari",
+            "lat": -0.8615,
+            "lng": 134.062,
+            "bbox": {
+                "minLat": -1.1,
+                "maxLat": -0.65,
+                "minLng": 133.8,
+                "maxLng": 134.3
+            }
+        },
+        "abupatenanokwarielatan": {
+            "name": "Kabupaten Manokwari Selatan",
+            "lat": -1.38,
+            "lng": 134.12,
+            "bbox": {
+                "minLat": -1.65,
+                "maxLat": -1.15,
+                "minLng": 133.85,
+                "maxLng": 134.35
+            }
+        },
+        "anokwarielatan": {
+            "name": "Kabupaten Manokwari Selatan",
+            "lat": -1.38,
+            "lng": 134.12,
+            "bbox": {
+                "minLat": -1.65,
+                "maxLat": -1.15,
+                "minLng": 133.85,
+                "maxLng": 134.35
+            }
+        },
+        "abupatenegununganrfak": {
+            "name": "Kabupaten Pegunungan Arfak",
+            "lat": -1.33,
+            "lng": 133.91,
+            "bbox": {
+                "minLat": -1.6,
+                "maxLat": -1.05,
+                "minLng": 133.6,
+                "maxLng": 134.15
+            }
+        },
+        "egununganrfak": {
+            "name": "Kabupaten Pegunungan Arfak",
+            "lat": -1.33,
+            "lng": 133.91,
+            "bbox": {
+                "minLat": -1.6,
+                "maxLat": -1.05,
+                "minLng": 133.6,
+                "maxLng": 134.15
+            }
+        },
+        "abupatenelukintuni": {
+            "name": "Kabupaten Teluk Bintuni",
+            "lat": -2.1283,
+            "lng": 133.5283,
+            "bbox": {
+                "minLat": -2.8,
+                "maxLat": -1.5,
+                "minLng": 132.8,
+                "maxLng": 134.2
+            }
+        },
+        "elukintuni": {
+            "name": "Kabupaten Teluk Bintuni",
+            "lat": -2.1283,
+            "lng": 133.5283,
+            "bbox": {
+                "minLat": -2.8,
+                "maxLat": -1.5,
+                "minLng": 132.8,
+                "maxLng": 134.2
+            }
+        },
+        "abupatenelukondama": {
+            "name": "Kabupaten Teluk Wondama",
+            "lat": -2.71,
+            "lng": 134.5,
+            "bbox": {
+                "minLat": -3.2,
+                "maxLat": -2.2,
+                "minLng": 134,
+                "maxLng": 135
+            }
+        },
+        "elukondama": {
+            "name": "Kabupaten Teluk Wondama",
+            "lat": -2.71,
+            "lng": 134.5,
+            "bbox": {
+                "minLat": -3.2,
+                "maxLat": -2.2,
+                "minLng": 134,
+                "maxLng": 135
+            }
+        },
+        "abupatenakfak": {
+            "name": "Kabupaten Fakfak",
+            "lat": -2.925,
+            "lng": 132.2961,
+            "bbox": {
+                "minLat": -3.5,
+                "maxLat": -2.4,
+                "minLng": 131.8,
+                "maxLng": 133.1
+            }
+        },
+        "akfak": {
+            "name": "Kabupaten Fakfak",
+            "lat": -2.925,
+            "lng": 132.2961,
+            "bbox": {
+                "minLat": -3.5,
+                "maxLat": -2.4,
+                "minLng": 131.8,
+                "maxLng": 133.1
+            }
+        },
+        "abupatenaimana": {
+            "name": "Kabupaten Kaimana",
+            "lat": -3.6625,
+            "lng": 133.7719,
+            "bbox": {
+                "minLat": -4.2,
+                "maxLat": -3.1,
+                "minLng": 133.1,
+                "maxLng": 134.5
+            }
+        },
+        "aimana": {
+            "name": "Kabupaten Kaimana",
+            "lat": -3.6625,
+            "lng": 133.7719,
+            "bbox": {
+                "minLat": -4.2,
+                "maxLat": -3.1,
+                "minLng": 133.1,
+                "maxLng": 134.5
+            }
+        },
+        "abupatenerauke": {
+            "name": "Kabupaten Merauke",
+            "lat": -8.4991,
+            "lng": 140.4018,
+            "bbox": {
+                "minLat": -9.1,
+                "maxLat": -7.5,
+                "minLng": 139.5,
+                "maxLng": 141
+            }
+        },
+        "erauke": {
+            "name": "Kabupaten Merauke",
+            "lat": -8.4991,
+            "lng": 140.4018,
+            "bbox": {
+                "minLat": -9.1,
+                "maxLat": -7.5,
+                "minLng": 139.5,
+                "maxLng": 141
+            }
+        },
+        "abupatenovenigoelanaherah": {
+            "name": "Kabupaten Boven Digoel (Tanah Merah)",
+            "lat": -5.7483,
+            "lng": 140.3019,
+            "bbox": {
+                "minLat": -6.5,
+                "maxLat": -5,
+                "minLng": 139.8,
+                "maxLng": 141
+            }
+        },
+        "ovenigoel": {
+            "name": "Kabupaten Boven Digoel (Tanah Merah)",
+            "lat": -5.7483,
+            "lng": 140.3019,
+            "bbox": {
+                "minLat": -6.5,
+                "maxLat": -5,
+                "minLng": 139.8,
+                "maxLng": 141
+            }
+        },
+        "abupatenappiepi": {
+            "name": "Kabupaten Mappi (Kepi)",
+            "lat": -6.5,
+            "lng": 139.3,
+            "bbox": {
+                "minLat": -7.2,
+                "maxLat": -5.8,
+                "minLng": 138.8,
+                "maxLng": 139.9
+            }
+        },
+        "appi": {
+            "name": "Kabupaten Mappi (Kepi)",
+            "lat": -6.5,
+            "lng": 139.3,
+            "bbox": {
+                "minLat": -7.2,
+                "maxLat": -5.8,
+                "minLng": 138.8,
+                "maxLng": 139.9
+            }
+        },
+        "abupatensmatgats": {
+            "name": "Kabupaten Asmat (Agats)",
+            "lat": -5.5,
+            "lng": 138.1,
+            "bbox": {
+                "minLat": -6.2,
+                "maxLat": -4.8,
+                "minLng": 137.4,
+                "maxLng": 139
+            }
+        },
+        "smat": {
+            "name": "Kabupaten Asmat (Agats)",
+            "lat": -5.5,
+            "lng": 138.1,
+            "bbox": {
+                "minLat": -6.2,
+                "maxLat": -4.8,
+                "minLng": 137.4,
+                "maxLng": 139
+            }
+        },
+        "abupatenabire": {
+            "name": "Kabupaten Nabire",
+            "lat": -3.3667,
+            "lng": 135.4833,
+            "bbox": {
+                "minLat": -3.8,
+                "maxLat": -3,
+                "minLng": 134.9,
+                "maxLng": 136
+            }
+        },
+        "abire": {
+            "name": "Kabupaten Nabire",
+            "lat": -3.3667,
+            "lng": 135.4833,
+            "bbox": {
+                "minLat": -3.8,
+                "maxLat": -3,
+                "minLng": 134.9,
+                "maxLng": 136
+            }
+        },
+        "abupatenimikaimika": {
+            "name": "Kabupaten Mimika (Timika)",
+            "lat": -4.5467,
+            "lng": 136.8833,
+            "bbox": {
+                "minLat": -5.1,
+                "maxLat": -4,
+                "minLng": 136.2,
+                "maxLng": 137.5
+            }
+        },
+        "imika": {
+            "name": "Kabupaten Mimika (Timika)",
+            "lat": -4.5467,
+            "lng": 136.8833,
+            "bbox": {
+                "minLat": -5.1,
+                "maxLat": -4,
+                "minLng": 136.2,
+                "maxLng": 137.5
+            }
+        },
+        "abupatenuncakayaotamulia": {
+            "name": "Kabupaten Puncak Jaya (Kotamulia)",
+            "lat": -3.75,
+            "lng": 137.95,
+            "bbox": {
+                "minLat": -4.1,
+                "maxLat": -3.4,
+                "minLng": 137.5,
+                "maxLng": 138.4
+            }
+        },
+        "uncakaya": {
+            "name": "Kabupaten Puncak Jaya (Kotamulia)",
+            "lat": -3.75,
+            "lng": 137.95,
+            "bbox": {
+                "minLat": -4.1,
+                "maxLat": -3.4,
+                "minLng": 137.5,
+                "maxLng": 138.4
+            }
+        },
+        "abupatenaniainarotali": {
+            "name": "Kabupaten Paniai (Enarotali)",
+            "lat": -3.88,
+            "lng": 136.37,
+            "bbox": {
+                "minLat": -4.2,
+                "maxLat": -3.5,
+                "minLng": 136,
+                "maxLng": 136.8
+            }
+        },
+        "aniai": {
+            "name": "Kabupaten Paniai (Enarotali)",
+            "lat": -3.88,
+            "lng": 136.37,
+            "bbox": {
+                "minLat": -4.2,
+                "maxLat": -3.5,
+                "minLng": 136,
+                "maxLng": 136.8
+            }
+        },
+        "abupatenuncaklaga": {
+            "name": "Kabupaten Puncak (Ilaga)",
+            "lat": -3.95,
+            "lng": 137.35,
+            "bbox": {
+                "minLat": -4.3,
+                "maxLat": -3.6,
+                "minLng": 136.9,
+                "maxLng": 137.8
+            }
+        },
+        "uncak": {
+            "name": "Kabupaten Puncak (Ilaga)",
+            "lat": -3.95,
+            "lng": 137.35,
+            "bbox": {
+                "minLat": -4.3,
+                "maxLat": -3.6,
+                "minLng": 136.9,
+                "maxLng": 137.8
+            }
+        },
+        "abupatenogiyaiigamani": {
+            "name": "Kabupaten Dogiyai (Kigamani)",
+            "lat": -4.02,
+            "lng": 135.95,
+            "bbox": {
+                "minLat": -4.3,
+                "maxLat": -3.7,
+                "minLng": 135.6,
+                "maxLng": 136.3
+            }
+        },
+        "ogiyai": {
+            "name": "Kabupaten Dogiyai (Kigamani)",
+            "lat": -4.02,
+            "lng": 135.95,
+            "bbox": {
+                "minLat": -4.3,
+                "maxLat": -3.7,
+                "minLng": 135.6,
+                "maxLng": 136.3
+            }
+        },
+        "abupatenntanayaugapa": {
+            "name": "Kabupaten Intan Jaya (Sugapa)",
+            "lat": -3.73,
+            "lng": 137.02,
+            "bbox": {
+                "minLat": -4.1,
+                "maxLat": -3.3,
+                "minLng": 136.6,
+                "maxLng": 137.5
+            }
+        },
+        "ntanaya": {
+            "name": "Kabupaten Intan Jaya (Sugapa)",
+            "lat": -3.73,
+            "lng": 137.02,
+            "bbox": {
+                "minLat": -4.1,
+                "maxLat": -3.3,
+                "minLng": 136.6,
+                "maxLng": 137.5
+            }
+        },
+        "abupateneiyaiigi": {
+            "name": "Kabupaten Deiyai (Tigi)",
+            "lat": -4.05,
+            "lng": 136.22,
+            "bbox": {
+                "minLat": -4.3,
+                "maxLat": -3.8,
+                "minLng": 135.9,
+                "maxLng": 136.5
+            }
+        },
+        "eiyai": {
+            "name": "Kabupaten Deiyai (Tigi)",
+            "lat": -4.05,
+            "lng": 136.22,
+            "bbox": {
+                "minLat": -4.3,
+                "maxLat": -3.8,
+                "minLng": 135.9,
+                "maxLng": 136.5
+            }
+        },
+        "abupatenayawijayaamena": {
+            "name": "Kabupaten Jayawijaya (Wamena)",
+            "lat": -4.0953,
+            "lng": 138.9442,
+            "bbox": {
+                "minLat": -4.4,
+                "maxLat": -3.8,
+                "minLng": 138.6,
+                "maxLng": 139.3
+            }
+        },
+        "ayawijaya": {
+            "name": "Kabupaten Jayawijaya (Wamena)",
+            "lat": -4.0953,
+            "lng": 138.9442,
+            "bbox": {
+                "minLat": -4.4,
+                "maxLat": -3.8,
+                "minLng": 138.6,
+                "maxLng": 139.3
+            }
+        },
+        "abupatenegununganintangksibil": {
+            "name": "Kabupaten Pegunungan Bintang (Oksibil)",
+            "lat": -4.9,
+            "lng": 140.6,
+            "bbox": {
+                "minLat": -5.4,
+                "maxLat": -4.4,
+                "minLng": 140,
+                "maxLng": 141
+            }
+        },
+        "egununganintang": {
+            "name": "Kabupaten Pegunungan Bintang (Oksibil)",
+            "lat": -4.9,
+            "lng": 140.6,
+            "bbox": {
+                "minLat": -5.4,
+                "maxLat": -4.4,
+                "minLng": 140,
+                "maxLng": 141
+            }
+        },
+        "abupatenahukimoumohai": {
+            "name": "Kabupaten Yahukimo (Sumohai)",
+            "lat": -4.6,
+            "lng": 139.6,
+            "bbox": {
+                "minLat": -5.2,
+                "maxLat": -4,
+                "minLng": 139,
+                "maxLng": 140.2
+            }
+        },
+        "ahukimo": {
+            "name": "Kabupaten Yahukimo (Sumohai)",
+            "lat": -4.6,
+            "lng": 139.6,
+            "bbox": {
+                "minLat": -5.2,
+                "maxLat": -4,
+                "minLng": 139,
+                "maxLng": 140.2
+            }
+        },
+        "abupatenolikaraarubaga": {
+            "name": "Kabupaten Tolikara (Karubaga)",
+            "lat": -3.7,
+            "lng": 138.6,
+            "bbox": {
+                "minLat": -4.1,
+                "maxLat": -3.3,
+                "minLng": 138.2,
+                "maxLng": 139
+            }
+        },
+        "olikara": {
+            "name": "Kabupaten Tolikara (Karubaga)",
+            "lat": -3.7,
+            "lng": 138.6,
+            "bbox": {
+                "minLat": -4.1,
+                "maxLat": -3.3,
+                "minLng": 138.2,
+                "maxLng": 139
+            }
+        },
+        "abupatenamberamoengahobakma": {
+            "name": "Kabupaten Mamberamo Tengah (Kobakma)",
+            "lat": -3.4,
+            "lng": 139,
+            "bbox": {
+                "minLat": -3.8,
+                "maxLat": -3,
+                "minLng": 138.6,
+                "maxLng": 139.5
+            }
+        },
+        "amberamoengah": {
+            "name": "Kabupaten Mamberamo Tengah (Kobakma)",
+            "lat": -3.4,
+            "lng": 139,
+            "bbox": {
+                "minLat": -3.8,
+                "maxLat": -3,
+                "minLng": 138.6,
+                "maxLng": 139.5
+            }
+        },
+        "abupatenalimolelim": {
+            "name": "Kabupaten Yalimo (Elelim)",
+            "lat": -3.8,
+            "lng": 139.4,
+            "bbox": {
+                "minLat": -4.2,
+                "maxLat": -3.4,
+                "minLng": 139,
+                "maxLng": 139.8
+            }
+        },
+        "alimo": {
+            "name": "Kabupaten Yalimo (Elelim)",
+            "lat": -3.8,
+            "lng": 139.4,
+            "bbox": {
+                "minLat": -4.2,
+                "maxLat": -3.4,
+                "minLng": 139,
+                "maxLng": 139.8
+            }
+        },
+        "abupatenannyayaiom": {
+            "name": "Kabupaten Lanny Jaya (Tiom)",
+            "lat": -3.9,
+            "lng": 138.3,
+            "bbox": {
+                "minLat": -4.2,
+                "maxLat": -3.6,
+                "minLng": 138,
+                "maxLng": 138.7
+            }
+        },
+        "annyaya": {
+            "name": "Kabupaten Lanny Jaya (Tiom)",
+            "lat": -3.9,
+            "lng": 138.3,
+            "bbox": {
+                "minLat": -4.2,
+                "maxLat": -3.6,
+                "minLng": 138,
+                "maxLng": 138.7
+            }
+        },
+        "abupatendugaenyam": {
+            "name": "Kabupaten Nduga (Kenyam)",
+            "lat": -4.5,
+            "lng": 138.2,
+            "bbox": {
+                "minLat": -4.9,
+                "maxLat": -4.1,
+                "minLng": 137.8,
+                "maxLng": 138.7
+            }
+        },
+        "duga": {
+            "name": "Kabupaten Nduga (Kenyam)",
+            "lat": -4.5,
+            "lng": 138.2,
+            "bbox": {
+                "minLat": -4.9,
+                "maxLat": -4.1,
+                "minLng": 137.8,
+                "maxLng": 138.7
+            }
+        },
+        "otaorong": {
+            "name": "Kota Sorong",
+            "lat": -0.8762,
+            "lng": 131.2558,
+            "bbox": {
+                "minLat": -0.95,
+                "maxLat": -0.8,
+                "minLng": 131.18,
+                "maxLng": 131.33
+            }
+        },
+        "orong": {
+            "name": "Kota Sorong",
+            "lat": -0.8762,
+            "lng": 131.2558,
+            "bbox": {
+                "minLat": -0.95,
+                "maxLat": -0.8,
+                "minLng": 131.18,
+                "maxLng": 131.33
+            }
+        },
+        "abupatenorongimas": {
+            "name": "Kabupaten Sorong (Aimas)",
+            "lat": -0.95,
+            "lng": 131.4,
+            "bbox": {
+                "minLat": -1.4,
+                "maxLat": -0.6,
+                "minLng": 130.9,
+                "maxLng": 131.9
+            }
+        },
+        "abupatenorongelataneminabuan": {
+            "name": "Kabupaten Sorong Selatan (Teminabuan)",
+            "lat": -1.45,
+            "lng": 132,
+            "bbox": {
+                "minLat": -1.8,
+                "maxLat": -1.1,
+                "minLng": 131.5,
+                "maxLng": 132.5
+            }
+        },
+        "orongelatan": {
+            "name": "Kabupaten Sorong Selatan (Teminabuan)",
+            "lat": -1.45,
+            "lng": 132,
+            "bbox": {
+                "minLat": -1.8,
+                "maxLat": -1.1,
+                "minLng": 131.5,
+                "maxLng": 132.5
+            }
+        },
+        "abupatenajampataisai": {
+            "name": "Kabupaten Raja Ampat (Waisai)",
+            "lat": -0.42,
+            "lng": 130.82,
+            "bbox": {
+                "minLat": -1.1,
+                "maxLat": 0.2,
+                "minLng": 129.8,
+                "maxLng": 131.4
+            }
+        },
+        "ajampat": {
+            "name": "Kabupaten Raja Ampat (Waisai)",
+            "lat": -0.42,
+            "lng": 130.82,
+            "bbox": {
+                "minLat": -1.1,
+                "maxLat": 0.2,
+                "minLng": 129.8,
+                "maxLng": 131.4
+            }
+        },
+        "abupatenambrauwef": {
+            "name": "Kabupaten Tambrauw (Fef)",
+            "lat": -0.65,
+            "lng": 132.4,
+            "bbox": {
+                "minLat": -1,
+                "maxLat": -0.3,
+                "minLng": 131.8,
+                "maxLng": 133
+            }
+        },
+        "ambrauw": {
+            "name": "Kabupaten Tambrauw (Fef)",
+            "lat": -0.65,
+            "lng": 132.4,
+            "bbox": {
+                "minLat": -1,
+                "maxLat": -0.3,
+                "minLng": 131.8,
+                "maxLng": 133
+            }
+        },
+        "abupatenaybratumurkek": {
+            "name": "Kabupaten Maybrat (Kumurkek)",
+            "lat": -1.25,
+            "lng": 132.3,
+            "bbox": {
+                "minLat": -1.6,
+                "maxLat": -0.9,
+                "minLng": 131.9,
+                "maxLng": 132.8
+            }
+        },
+        "aybrat": {
+            "name": "Kabupaten Maybrat (Kumurkek)",
+            "lat": -1.25,
+            "lng": 132.3,
+            "bbox": {
+                "minLat": -1.6,
+                "maxLat": -0.9,
+                "minLng": 131.9,
+                "maxLng": 132.8
+            }
+        },
+        "otaagelang": {
+            "name": "Kota Magelang",
+            "lat": -7.4797,
+            "lng": 110.2177,
+            "bbox": {
+                "minLat": -7.51,
+                "maxLat": -7.44,
+                "minLng": 110.2,
+                "maxLng": 110.24
+            }
+        },
+        "agelang": {
+            "name": "Magelang",
+            "lat": -7.482,
+            "lng": 110.221,
+            "bbox": {
+                "minLat": -7.488,
+                "maxLat": -7.476,
+                "minLng": 110.215,
+                "maxLng": 110.227
+            }
+        },
+        "abupatenagelang": {
+            "name": "Kabupaten Magelang",
+            "lat": -7.4705,
+            "lng": 110.2178,
+            "bbox": {
+                "minLat": -7.65,
+                "maxLat": -7.3,
+                "minLng": 109.98,
+                "maxLng": 110.45
+            }
+        },
+        "otaemarang": {
+            "name": "Kota Semarang",
+            "lat": -6.9932,
+            "lng": 110.4203,
+            "bbox": {
+                "minLat": -7.1,
+                "maxLat": -6.9,
+                "minLng": 110.3,
+                "maxLng": 110.5
+            }
+        },
+        "emarang": {
+            "name": "Kota Semarang",
+            "lat": -6.9932,
+            "lng": 110.4203,
+            "bbox": {
+                "minLat": -7.1,
+                "maxLat": -6.9,
+                "minLng": 110.3,
+                "maxLng": 110.5
+            }
+        },
+        "abupatenemarang": {
+            "name": "Kabupaten Semarang",
+            "lat": -7.1436,
+            "lng": 110.4078,
+            "bbox": {
+                "minLat": -7.3,
+                "maxLat": -7.05,
+                "minLng": 110.3,
+                "maxLng": 110.55
+            }
+        },
+        "otaurakartaolo": {
+            "name": "Kota Surakarta (Solo)",
+            "lat": -7.5666,
+            "lng": 110.8166,
+            "bbox": {
+                "minLat": -7.61,
+                "maxLat": -7.52,
+                "minLng": 110.77,
+                "maxLng": 110.86
+            }
+        },
+        "urakarta": {
+            "name": "Kota Surakarta (Solo)",
+            "lat": -7.5666,
+            "lng": 110.8166,
+            "bbox": {
+                "minLat": -7.61,
+                "maxLat": -7.52,
+                "minLng": 110.77,
+                "maxLng": 110.86
+            }
+        },
+        "otaalatiga": {
+            "name": "Kota Salatiga",
+            "lat": -7.3305,
+            "lng": 110.5084,
+            "bbox": {
+                "minLat": -7.36,
+                "maxLat": -7.29,
+                "minLng": 110.47,
+                "maxLng": 110.53
+            }
+        },
+        "alatiga": {
+            "name": "Kota Salatiga",
+            "lat": -7.3305,
+            "lng": 110.5084,
+            "bbox": {
+                "minLat": -7.36,
+                "maxLat": -7.29,
+                "minLng": 110.47,
+                "maxLng": 110.53
+            }
+        },
+        "otaekalongan": {
+            "name": "Kota Pekalongan",
+            "lat": -6.8898,
+            "lng": 109.6753,
+            "bbox": {
+                "minLat": -6.93,
+                "maxLat": -6.85,
+                "minLng": 109.64,
+                "maxLng": 109.71
+            }
+        },
+        "ekalongan": {
+            "name": "Kota Pekalongan",
+            "lat": -6.8898,
+            "lng": 109.6753,
+            "bbox": {
+                "minLat": -6.93,
+                "maxLat": -6.85,
+                "minLng": 109.64,
+                "maxLng": 109.71
+            }
+        },
+        "otaegal": {
+            "name": "Kota Tegal",
+            "lat": -6.8694,
+            "lng": 109.1402,
+            "bbox": {
+                "minLat": -6.91,
+                "maxLat": -6.83,
+                "minLng": 109.1,
+                "maxLng": 109.16
+            }
+        },
+        "egal": {
+            "name": "Kota Tegal",
+            "lat": -6.8694,
+            "lng": 109.1402,
+            "bbox": {
+                "minLat": -6.91,
+                "maxLat": -6.83,
+                "minLng": 109.1,
+                "maxLng": 109.16
+            }
+        },
+        "abupatenilacap": {
+            "name": "Kabupaten Cilacap",
+            "lat": -7.7279,
+            "lng": 109.0059,
+            "bbox": {
+                "minLat": -7.85,
+                "maxLat": -7.35,
+                "minLng": 108.75,
+                "maxLng": 109.35
+            }
+        },
+        "ilacap": {
+            "name": "Kabupaten Cilacap",
+            "lat": -7.7279,
+            "lng": 109.0059,
+            "bbox": {
+                "minLat": -7.85,
+                "maxLat": -7.35,
+                "minLng": 108.75,
+                "maxLng": 109.35
+            }
+        },
+        "abupatenanyumasurwokerto": {
+            "name": "Kabupaten Banyumas (Purwokerto)",
+            "lat": -7.5134,
+            "lng": 109.2944,
+            "bbox": {
+                "minLat": -7.65,
+                "maxLat": -7.25,
+                "minLng": 109,
+                "maxLng": 109.45
+            }
+        },
+        "anyumas": {
+            "name": "Kabupaten Banyumas (Purwokerto)",
+            "lat": -7.5134,
+            "lng": 109.2944,
+            "bbox": {
+                "minLat": -7.65,
+                "maxLat": -7.25,
+                "minLng": 109,
+                "maxLng": 109.45
+            }
+        },
+        "abupatenurbalingga": {
+            "name": "Kabupaten Purbalingga",
+            "lat": -7.3894,
+            "lng": 109.3639,
+            "bbox": {
+                "minLat": -7.55,
+                "maxLat": -7.18,
+                "minLng": 109.18,
+                "maxLng": 109.55
+            }
+        },
+        "urbalingga": {
+            "name": "Kabupaten Purbalingga",
+            "lat": -7.3894,
+            "lng": 109.3639,
+            "bbox": {
+                "minLat": -7.55,
+                "maxLat": -7.18,
+                "minLng": 109.18,
+                "maxLng": 109.55
+            }
+        },
+        "abupatenanjarnegara": {
+            "name": "Kabupaten Banjarnegara",
+            "lat": -7.3975,
+            "lng": 109.6983,
+            "bbox": {
+                "minLat": -7.58,
+                "maxLat": -7.2,
+                "minLng": 109.45,
+                "maxLng": 109.9
+            }
+        },
+        "anjarnegara": {
+            "name": "Kabupaten Banjarnegara",
+            "lat": -7.3975,
+            "lng": 109.6983,
+            "bbox": {
+                "minLat": -7.58,
+                "maxLat": -7.2,
+                "minLng": 109.45,
+                "maxLng": 109.9
+            }
+        },
+        "abupatenebumen": {
+            "name": "Kabupaten Kebumen",
+            "lat": -7.6699,
+            "lng": 109.6521,
+            "bbox": {
+                "minLat": -7.82,
+                "maxLat": -7.45,
+                "minLng": 109.35,
+                "maxLng": 109.85
+            }
+        },
+        "ebumen": {
+            "name": "Kabupaten Kebumen",
+            "lat": -7.6699,
+            "lng": 109.6521,
+            "bbox": {
+                "minLat": -7.82,
+                "maxLat": -7.45,
+                "minLng": 109.35,
+                "maxLng": 109.85
+            }
+        },
+        "abupatenurworejo": {
+            "name": "Kabupaten Purworejo",
+            "lat": -7.7156,
+            "lng": 110.0084,
+            "bbox": {
+                "minLat": -7.88,
+                "maxLat": -7.52,
+                "minLng": 109.8,
+                "maxLng": 110.15
+            }
+        },
+        "urworejo": {
+            "name": "Kabupaten Purworejo",
+            "lat": -7.7156,
+            "lng": 110.0084,
+            "bbox": {
+                "minLat": -7.88,
+                "maxLat": -7.52,
+                "minLng": 109.8,
+                "maxLng": 110.15
+            }
+        },
+        "abupatenonosobo": {
+            "name": "Kabupaten Wonosobo",
+            "lat": -7.3634,
+            "lng": 109.9009,
+            "bbox": {
+                "minLat": -7.55,
+                "maxLat": -7.18,
+                "minLng": 109.75,
+                "maxLng": 110.05
+            }
+        },
+        "onosobo": {
+            "name": "Kabupaten Wonosobo",
+            "lat": -7.3634,
+            "lng": 109.9009,
+            "bbox": {
+                "minLat": -7.55,
+                "maxLat": -7.18,
+                "minLng": 109.75,
+                "maxLng": 110.05
+            }
+        },
+        "abupatenoyolali": {
+            "name": "Kabupaten Boyolali",
+            "lat": -7.5317,
+            "lng": 110.596,
+            "bbox": {
+                "minLat": -7.65,
+                "maxLat": -7.3,
+                "minLng": 110.4,
+                "maxLng": 110.8
+            }
+        },
+        "oyolali": {
+            "name": "Kabupaten Boyolali",
+            "lat": -7.5317,
+            "lng": 110.596,
+            "bbox": {
+                "minLat": -7.65,
+                "maxLat": -7.3,
+                "minLng": 110.4,
+                "maxLng": 110.8
+            }
+        },
+        "abupatenlaten": {
+            "name": "Kabupaten Klaten",
+            "lat": -7.7058,
+            "lng": 110.6037,
+            "bbox": {
+                "minLat": -7.8,
+                "maxLat": -7.58,
+                "minLng": 110.45,
+                "maxLng": 110.78
+            }
+        },
+        "laten": {
+            "name": "Kabupaten Klaten",
+            "lat": -7.7058,
+            "lng": 110.6037,
+            "bbox": {
+                "minLat": -7.8,
+                "maxLat": -7.58,
+                "minLng": 110.45,
+                "maxLng": 110.78
+            }
+        },
+        "abupatenukoharjo": {
+            "name": "Kabupaten Sukoharjo",
+            "lat": -7.6833,
+            "lng": 110.8333,
+            "bbox": {
+                "minLat": -7.78,
+                "maxLat": -7.55,
+                "minLng": 110.75,
+                "maxLng": 110.95
+            }
+        },
+        "ukoharjo": {
+            "name": "Kabupaten Sukoharjo",
+            "lat": -7.6833,
+            "lng": 110.8333,
+            "bbox": {
+                "minLat": -7.78,
+                "maxLat": -7.55,
+                "minLng": 110.75,
+                "maxLng": 110.95
+            }
+        },
+        "abupatenonogiri": {
+            "name": "Kabupaten Wonogiri",
+            "lat": -7.8144,
+            "lng": 110.9254,
+            "bbox": {
+                "minLat": -8.15,
+                "maxLat": -7.65,
+                "minLng": 110.7,
+                "maxLng": 111.25
+            }
+        },
+        "onogiri": {
+            "name": "Kabupaten Wonogiri",
+            "lat": -7.8144,
+            "lng": 110.9254,
+            "bbox": {
+                "minLat": -8.15,
+                "maxLat": -7.65,
+                "minLng": 110.7,
+                "maxLng": 111.25
+            }
+        },
+        "abupatenaranganyar": {
+            "name": "Kabupaten Karanganyar",
+            "lat": -7.5961,
+            "lng": 110.9515,
+            "bbox": {
+                "minLat": -7.75,
+                "maxLat": -7.45,
+                "minLng": 110.8,
+                "maxLng": 111.2
+            }
+        },
+        "aranganyar": {
+            "name": "Kabupaten Karanganyar",
+            "lat": -7.5961,
+            "lng": 110.9515,
+            "bbox": {
+                "minLat": -7.75,
+                "maxLat": -7.45,
+                "minLng": 110.8,
+                "maxLng": 111.2
+            }
+        },
+        "abupatenragen": {
+            "name": "Kabupaten Sragen",
+            "lat": -7.4263,
+            "lng": 111.0227,
+            "bbox": {
+                "minLat": -7.55,
+                "maxLat": -7.25,
+                "minLng": 110.8,
+                "maxLng": 111.2
+            }
+        },
+        "ragen": {
+            "name": "Kabupaten Sragen",
+            "lat": -7.4263,
+            "lng": 111.0227,
+            "bbox": {
+                "minLat": -7.55,
+                "maxLat": -7.25,
+                "minLng": 110.8,
+                "maxLng": 111.2
+            }
+        },
+        "abupatenroboganurwodadi": {
+            "name": "Kabupaten Grobogan (Purwodadi)",
+            "lat": -7.1084,
+            "lng": 110.9169,
+            "bbox": {
+                "minLat": -7.28,
+                "maxLat": -6.95,
+                "minLng": 110.55,
+                "maxLng": 111.25
+            }
+        },
+        "robogan": {
+            "name": "Kabupaten Grobogan (Purwodadi)",
+            "lat": -7.1084,
+            "lng": 110.9169,
+            "bbox": {
+                "minLat": -7.28,
+                "maxLat": -6.95,
+                "minLng": 110.55,
+                "maxLng": 111.25
+            }
+        },
+        "abupatenlora": {
+            "name": "Kabupaten Blora",
+            "lat": -7,
+            "lng": 111.4167,
+            "bbox": {
+                "minLat": -7.25,
+                "maxLat": -6.85,
+                "minLng": 111.15,
+                "maxLng": 111.65
+            }
+        },
+        "lora": {
+            "name": "Kabupaten Blora",
+            "lat": -7,
+            "lng": 111.4167,
+            "bbox": {
+                "minLat": -7.25,
+                "maxLat": -6.85,
+                "minLng": 111.15,
+                "maxLng": 111.65
+            }
+        },
+        "abupatenembang": {
+            "name": "Kabupaten Rembang",
+            "lat": -6.7114,
+            "lng": 111.3414,
+            "bbox": {
+                "minLat": -6.95,
+                "maxLat": -6.65,
+                "minLng": 111.15,
+                "maxLng": 111.6
+            }
+        },
+        "embang": {
+            "name": "Kabupaten Rembang",
+            "lat": -6.7114,
+            "lng": 111.3414,
+            "bbox": {
+                "minLat": -6.95,
+                "maxLat": -6.65,
+                "minLng": 111.15,
+                "maxLng": 111.6
+            }
+        },
+        "abupatenati": {
+            "name": "Kabupaten Pati",
+            "lat": -6.7533,
+            "lng": 111.0378,
+            "bbox": {
+                "minLat": -7,
+                "maxLat": -6.55,
+                "minLng": 110.85,
+                "maxLng": 111.25
+            }
+        },
+        "ati": {
+            "name": "Kabupaten Pati",
+            "lat": -6.7533,
+            "lng": 111.0378,
+            "bbox": {
+                "minLat": -7,
+                "maxLat": -6.55,
+                "minLng": 110.85,
+                "maxLng": 111.25
+            }
+        },
+        "abupatenudus": {
+            "name": "Kabupaten Kudus",
+            "lat": -6.8048,
+            "lng": 110.8405,
+            "bbox": {
+                "minLat": -6.92,
+                "maxLat": -6.68,
+                "minLng": 110.75,
+                "maxLng": 110.95
+            }
+        },
+        "udus": {
+            "name": "Kabupaten Kudus",
+            "lat": -6.8048,
+            "lng": 110.8405,
+            "bbox": {
+                "minLat": -6.92,
+                "maxLat": -6.68,
+                "minLng": 110.75,
+                "maxLng": 110.95
+            }
+        },
+        "abupatenepara": {
+            "name": "Kabupaten Jepara",
+            "lat": -6.5892,
+            "lng": 110.6684,
+            "bbox": {
+                "minLat": -6.8,
+                "maxLat": -6.35,
+                "minLng": 110.45,
+                "maxLng": 110.9
+            }
+        },
+        "epara": {
+            "name": "Kabupaten Jepara",
+            "lat": -6.5892,
+            "lng": 110.6684,
+            "bbox": {
+                "minLat": -6.8,
+                "maxLat": -6.35,
+                "minLng": 110.45,
+                "maxLng": 110.9
+            }
+        },
+        "abupatenemak": {
+            "name": "Kabupaten Demak",
+            "lat": -6.8944,
+            "lng": 110.6386,
+            "bbox": {
+                "minLat": -7.05,
+                "maxLat": -6.75,
+                "minLng": 110.45,
+                "maxLng": 110.8
+            }
+        },
+        "emak": {
+            "name": "Kabupaten Demak",
+            "lat": -6.8944,
+            "lng": 110.6386,
+            "bbox": {
+                "minLat": -7.05,
+                "maxLat": -6.75,
+                "minLng": 110.45,
+                "maxLng": 110.8
+            }
+        },
+        "abupatenemanggung": {
+            "name": "Kabupaten Temanggung",
+            "lat": -7.3167,
+            "lng": 110.1667,
+            "bbox": {
+                "minLat": -7.45,
+                "maxLat": -7.15,
+                "minLng": 110,
+                "maxLng": 110.3
+            }
+        },
+        "emanggung": {
+            "name": "Kabupaten Temanggung",
+            "lat": -7.3167,
+            "lng": 110.1667,
+            "bbox": {
+                "minLat": -7.45,
+                "maxLat": -7.15,
+                "minLng": 110,
+                "maxLng": 110.3
+            }
+        },
+        "abupatenendal": {
+            "name": "Kabupaten Kendal",
+            "lat": -6.9238,
+            "lng": 110.2038,
+            "bbox": {
+                "minLat": -7.15,
+                "maxLat": -6.85,
+                "minLng": 109.95,
+                "maxLng": 110.35
+            }
+        },
+        "endal": {
+            "name": "Kabupaten Kendal",
+            "lat": -6.9238,
+            "lng": 110.2038,
+            "bbox": {
+                "minLat": -7.15,
+                "maxLat": -6.85,
+                "minLng": 109.95,
+                "maxLng": 110.35
+            }
+        },
+        "abupatenatang": {
+            "name": "Kabupaten Batang",
+            "lat": -6.9084,
+            "lng": 109.7289,
+            "bbox": {
+                "minLat": -7.18,
+                "maxLat": -6.85,
+                "minLng": 109.65,
+                "maxLng": 110
+            }
+        },
+        "atang": {
+            "name": "Kabupaten Batang",
+            "lat": -6.9084,
+            "lng": 109.7289,
+            "bbox": {
+                "minLat": -7.18,
+                "maxLat": -6.85,
+                "minLng": 109.65,
+                "maxLng": 110
+            }
+        },
+        "abupatenekalongan": {
+            "name": "Kabupaten Pekalongan",
+            "lat": -7.0253,
+            "lng": 109.6384,
+            "bbox": {
+                "minLat": -7.2,
+                "maxLat": -6.88,
+                "minLng": 109.45,
+                "maxLng": 109.78
+            }
+        },
+        "abupatenemalang": {
+            "name": "Kabupaten Pemalang",
+            "lat": -7,
+            "lng": 109.3833,
+            "bbox": {
+                "minLat": -7.25,
+                "maxLat": -6.82,
+                "minLng": 109.15,
+                "maxLng": 109.55
+            }
+        },
+        "emalang": {
+            "name": "Kabupaten Pemalang",
+            "lat": -7,
+            "lng": 109.3833,
+            "bbox": {
+                "minLat": -7.25,
+                "maxLat": -6.82,
+                "minLng": 109.15,
+                "maxLng": 109.55
+            }
+        },
+        "abupatenegallawi": {
+            "name": "Kabupaten Tegal (Slawi)",
+            "lat": -7,
+            "lng": 109.1333,
+            "bbox": {
+                "minLat": -7.25,
+                "maxLat": -6.85,
+                "minLng": 109,
+                "maxLng": 109.3
+            }
+        },
+        "abupatenrebes": {
+            "name": "Kabupaten Brebes",
+            "lat": -6.8667,
+            "lng": 109.0333,
+            "bbox": {
+                "minLat": -7.35,
+                "maxLat": -6.78,
+                "minLng": 108.75,
+                "maxLng": 109.15
+            }
+        },
+        "rebes": {
+            "name": "Kabupaten Brebes",
+            "lat": -6.8667,
+            "lng": 109.0333,
+            "bbox": {
+                "minLat": -7.35,
+                "maxLat": -6.78,
+                "minLng": 108.75,
+                "maxLng": 109.15
+            }
+        },
+        "otaakartaelatan": {
+            "name": "Kota Jakarta Selatan",
+            "lat": -6.2615,
+            "lng": 106.8106,
+            "bbox": {
+                "minLat": -6.35,
+                "maxLat": -6.2,
+                "minLng": 106.74,
+                "maxLng": 106.88
+            }
+        },
+        "akartaelatan": {
+            "name": "Kota Jakarta Selatan",
+            "lat": -6.2615,
+            "lng": 106.8106,
+            "bbox": {
+                "minLat": -6.35,
+                "maxLat": -6.2,
+                "minLng": 106.74,
+                "maxLng": 106.88
+            }
+        },
+        "otaakartausat": {
+            "name": "Kota Jakarta Pusat",
+            "lat": -6.1805,
+            "lng": 106.8284,
+            "bbox": {
+                "minLat": -6.21,
+                "maxLat": -6.15,
+                "minLng": 106.8,
+                "maxLng": 106.87
+            }
+        },
+        "akartausat": {
+            "name": "Kota Jakarta Pusat",
+            "lat": -6.1805,
+            "lng": 106.8284,
+            "bbox": {
+                "minLat": -6.21,
+                "maxLat": -6.15,
+                "minLng": 106.8,
+                "maxLng": 106.87
+            }
+        },
+        "otaakartaimur": {
+            "name": "Kota Jakarta Timur",
+            "lat": -6.225,
+            "lng": 106.9004,
+            "bbox": {
+                "minLat": -6.37,
+                "maxLat": -6.17,
+                "minLng": 106.84,
+                "maxLng": 106.97
+            }
+        },
+        "akartaimur": {
+            "name": "Kota Jakarta Timur",
+            "lat": -6.225,
+            "lng": 106.9004,
+            "bbox": {
+                "minLat": -6.37,
+                "maxLat": -6.17,
+                "minLng": 106.84,
+                "maxLng": 106.97
+            }
+        },
+        "otaakartaarat": {
+            "name": "Kota Jakarta Barat",
+            "lat": -6.1683,
+            "lng": 106.7588,
+            "bbox": {
+                "minLat": -6.22,
+                "maxLat": -6.1,
+                "minLng": 106.68,
+                "maxLng": 106.83
+            }
+        },
+        "akartaarat": {
+            "name": "Kota Jakarta Barat",
+            "lat": -6.1683,
+            "lng": 106.7588,
+            "bbox": {
+                "minLat": -6.22,
+                "maxLat": -6.1,
+                "minLng": 106.68,
+                "maxLng": 106.83
+            }
+        },
+        "otaakartatara": {
+            "name": "Kota Jakarta Utara",
+            "lat": -6.1384,
+            "lng": 106.864,
+            "bbox": {
+                "minLat": -6.17,
+                "maxLat": -6.08,
+                "minLng": 106.75,
+                "maxLng": 106.96
+            }
+        },
+        "akartatara": {
+            "name": "Kota Jakarta Utara",
+            "lat": -6.1384,
+            "lng": 106.864,
+            "bbox": {
+                "minLat": -6.17,
+                "maxLat": -6.08,
+                "minLng": 106.75,
+                "maxLng": 106.96
+            }
+        },
+        "abupatenepulauaneribu": {
+            "name": "Kabupaten Kepulauan Seribu",
+            "lat": -5.6122,
+            "lng": 106.5621,
+            "bbox": {
+                "minLat": -5.95,
+                "maxLat": -5.4,
+                "minLng": 106.4,
+                "maxLng": 106.75
+            }
+        },
+        "epulauaneribu": {
+            "name": "Kabupaten Kepulauan Seribu",
+            "lat": -5.6122,
+            "lng": 106.5621,
+            "bbox": {
+                "minLat": -5.95,
+                "maxLat": -5.4,
+                "minLng": 106.4,
+                "maxLng": 106.75
+            }
+        },
+        "otaogyakarta": {
+            "name": "Kota Yogyakarta",
+            "lat": -7.7956,
+            "lng": 110.3695,
+            "bbox": {
+                "minLat": -7.83,
+                "maxLat": -7.76,
+                "minLng": 110.34,
+                "maxLng": 110.4
+            }
+        },
+        "abupatenleman": {
+            "name": "Kabupaten Sleman",
+            "lat": -7.7161,
+            "lng": 110.3556,
+            "bbox": {
+                "minLat": -7.82,
+                "maxLat": -7.54,
+                "minLng": 110.21,
+                "maxLng": 110.5
+            }
+        },
+        "leman": {
+            "name": "Kabupaten Sleman",
+            "lat": -7.7161,
+            "lng": 110.3556,
+            "bbox": {
+                "minLat": -7.82,
+                "maxLat": -7.54,
+                "minLng": 110.21,
+                "maxLng": 110.5
+            }
+        },
+        "abupatenantul": {
+            "name": "Kabupaten Bantul",
+            "lat": -7.8893,
+            "lng": 110.3297,
+            "bbox": {
+                "minLat": -8.02,
+                "maxLat": -7.79,
+                "minLng": 110.18,
+                "maxLng": 110.52
+            }
+        },
+        "antul": {
+            "name": "Kabupaten Bantul",
+            "lat": -7.8893,
+            "lng": 110.3297,
+            "bbox": {
+                "minLat": -8.02,
+                "maxLat": -7.79,
+                "minLng": 110.18,
+                "maxLng": 110.52
+            }
+        },
+        "abupatenunungkidulonosari": {
+            "name": "Kabupaten Gunungkidul (Wonosari)",
+            "lat": -7.9602,
+            "lng": 110.6053,
+            "bbox": {
+                "minLat": -8.22,
+                "maxLat": -7.78,
+                "minLng": 110.4,
+                "maxLng": 110.85
+            }
+        },
+        "unungkidul": {
+            "name": "Kabupaten Gunungkidul (Wonosari)",
+            "lat": -7.9602,
+            "lng": 110.6053,
+            "bbox": {
+                "minLat": -8.22,
+                "maxLat": -7.78,
+                "minLng": 110.4,
+                "maxLng": 110.85
+            }
+        },
+        "abupatenulonrogoates": {
+            "name": "Kabupaten Kulon Progo (Wates)",
+            "lat": -7.7713,
+            "lng": 110.1584,
+            "bbox": {
+                "minLat": -7.95,
+                "maxLat": -7.6,
+                "minLng": 110,
+                "maxLng": 110.3
+            }
+        },
+        "ulonrogo": {
+            "name": "Kabupaten Kulon Progo (Wates)",
+            "lat": -7.7713,
+            "lng": 110.1584,
+            "bbox": {
+                "minLat": -7.95,
+                "maxLat": -7.6,
+                "minLng": 110,
+                "maxLng": 110.3
+            }
+        },
+        "otaandung": {
+            "name": "Kota Bandung",
+            "lat": -6.9175,
+            "lng": 107.6191,
+            "bbox": {
+                "minLat": -6.97,
+                "maxLat": -6.84,
+                "minLng": 107.54,
+                "maxLng": 107.72
+            }
+        },
+        "andung": {
+            "name": "Kota Bandung",
+            "lat": -6.9175,
+            "lng": 107.6191,
+            "bbox": {
+                "minLat": -6.97,
+                "maxLat": -6.84,
+                "minLng": 107.54,
+                "maxLng": 107.72
+            }
+        },
+        "otaogor": {
+            "name": "Kota Bogor",
+            "lat": -6.5971,
+            "lng": 106.806,
+            "bbox": {
+                "minLat": -6.65,
+                "maxLat": -6.53,
+                "minLng": 106.75,
+                "maxLng": 106.85
+            }
+        },
+        "ogor": {
+            "name": "Kota Bogor",
+            "lat": -6.5971,
+            "lng": 106.806,
+            "bbox": {
+                "minLat": -6.65,
+                "maxLat": -6.53,
+                "minLng": 106.75,
+                "maxLng": 106.85
+            }
+        },
+        "otaekasi": {
+            "name": "Kota Bekasi",
+            "lat": -6.2383,
+            "lng": 106.9756,
+            "bbox": {
+                "minLat": -6.33,
+                "maxLat": -6.18,
+                "minLng": 106.9,
+                "maxLng": 107.05
+            }
+        },
+        "ekasi": {
+            "name": "Kota Bekasi",
+            "lat": -6.2383,
+            "lng": 106.9756,
+            "bbox": {
+                "minLat": -6.33,
+                "maxLat": -6.18,
+                "minLng": 106.9,
+                "maxLng": 107.05
+            }
+        },
+        "otaepok": {
+            "name": "Kota Depok",
+            "lat": -6.4025,
+            "lng": 106.7942,
+            "bbox": {
+                "minLat": -6.46,
+                "maxLat": -6.32,
+                "minLng": 106.72,
+                "maxLng": 106.88
+            }
+        },
+        "epok": {
+            "name": "Kota Depok",
+            "lat": -6.4025,
+            "lng": 106.7942,
+            "bbox": {
+                "minLat": -6.46,
+                "maxLat": -6.32,
+                "minLng": 106.72,
+                "maxLng": 106.88
+            }
+        },
+        "otaimahi": {
+            "name": "Kota Cimahi",
+            "lat": -6.8841,
+            "lng": 107.5413,
+            "bbox": {
+                "minLat": -6.92,
+                "maxLat": -6.85,
+                "minLng": 107.51,
+                "maxLng": 107.57
+            }
+        },
+        "imahi": {
+            "name": "Kota Cimahi",
+            "lat": -6.8841,
+            "lng": 107.5413,
+            "bbox": {
+                "minLat": -6.92,
+                "maxLat": -6.85,
+                "minLng": 107.51,
+                "maxLng": 107.57
+            }
+        },
+        "otairebon": {
+            "name": "Kota Cirebon",
+            "lat": -6.732,
+            "lng": 108.5523,
+            "bbox": {
+                "minLat": -6.77,
+                "maxLat": -6.7,
+                "minLng": 108.52,
+                "maxLng": 108.58
+            }
+        },
+        "irebon": {
+            "name": "Kota Cirebon",
+            "lat": -6.732,
+            "lng": 108.5523,
+            "bbox": {
+                "minLat": -6.77,
+                "maxLat": -6.7,
+                "minLng": 108.52,
+                "maxLng": 108.58
+            }
+        },
+        "otaukabumi": {
+            "name": "Kota Sukabumi",
+            "lat": -6.9277,
+            "lng": 106.93,
+            "bbox": {
+                "minLat": -6.96,
+                "maxLat": -6.89,
+                "minLng": 106.9,
+                "maxLng": 106.96
+            }
+        },
+        "ukabumi": {
+            "name": "Kota Sukabumi",
+            "lat": -6.9277,
+            "lng": 106.93,
+            "bbox": {
+                "minLat": -6.96,
+                "maxLat": -6.89,
+                "minLng": 106.9,
+                "maxLng": 106.96
+            }
+        },
+        "otaasikmalaya": {
+            "name": "Kota Tasikmalaya",
+            "lat": -7.3274,
+            "lng": 108.2207,
+            "bbox": {
+                "minLat": -7.38,
+                "maxLat": -7.28,
+                "minLng": 108.18,
+                "maxLng": 108.26
+            }
+        },
+        "asikmalaya": {
+            "name": "Kota Tasikmalaya",
+            "lat": -7.3274,
+            "lng": 108.2207,
+            "bbox": {
+                "minLat": -7.38,
+                "maxLat": -7.28,
+                "minLng": 108.18,
+                "maxLng": 108.26
+            }
+        },
+        "otaanjar": {
+            "name": "Kota Banjar",
+            "lat": -7.375,
+            "lng": 108.5375,
+            "bbox": {
+                "minLat": -7.42,
+                "maxLat": -7.32,
+                "minLng": 108.48,
+                "maxLng": 108.59
+            }
+        },
+        "anjar": {
+            "name": "Kota Banjar",
+            "lat": -7.375,
+            "lng": 108.5375,
+            "bbox": {
+                "minLat": -7.42,
+                "maxLat": -7.32,
+                "minLng": 108.48,
+                "maxLng": 108.59
+            }
+        },
+        "abupatenogoribinong": {
+            "name": "Kabupaten Bogor (Cibinong)",
+            "lat": -6.5518,
+            "lng": 106.6291,
+            "bbox": {
+                "minLat": -6.75,
+                "maxLat": -6.3,
+                "minLng": 106.4,
+                "maxLng": 107.1
+            }
+        },
+        "abupatenandungoreang": {
+            "name": "Kabupaten Bandung (Soreang)",
+            "lat": -7.0253,
+            "lng": 107.5198,
+            "bbox": {
+                "minLat": -7.25,
+                "maxLat": -6.85,
+                "minLng": 107.25,
+                "maxLng": 107.85
+            }
+        },
+        "abupatenandungarat": {
+            "name": "Kabupaten Bandung Barat",
+            "lat": -6.8427,
+            "lng": 107.5029,
+            "bbox": {
+                "minLat": -7.05,
+                "maxLat": -6.7,
+                "minLng": 107.2,
+                "maxLng": 107.7
+            }
+        },
+        "andungarat": {
+            "name": "Kabupaten Bandung Barat",
+            "lat": -6.8427,
+            "lng": 107.5029,
+            "bbox": {
+                "minLat": -7.05,
+                "maxLat": -6.7,
+                "minLng": 107.2,
+                "maxLng": 107.7
+            }
+        },
+        "abupatenekasiikarang": {
+            "name": "Kabupaten Bekasi (Cikarang)",
+            "lat": -6.3644,
+            "lng": 107.1725,
+            "bbox": {
+                "minLat": -6.5,
+                "maxLat": -6,
+                "minLng": 106.95,
+                "maxLng": 107.3
+            }
+        },
+        "abupatenarawang": {
+            "name": "Kabupaten Karawang",
+            "lat": -6.3,
+            "lng": 107.3,
+            "bbox": {
+                "minLat": -6.55,
+                "maxLat": -5.95,
+                "minLng": 107.1,
+                "maxLng": 107.6
+            }
+        },
+        "arawang": {
+            "name": "Kabupaten Karawang",
+            "lat": -6.3,
+            "lng": 107.3,
+            "bbox": {
+                "minLat": -6.55,
+                "maxLat": -5.95,
+                "minLng": 107.1,
+                "maxLng": 107.6
+            }
+        },
+        "otaurabaya": {
+            "name": "Kota Surabaya",
+            "lat": -7.2575,
+            "lng": 112.7521,
+            "bbox": {
+                "minLat": -7.35,
+                "maxLat": -7.18,
+                "minLng": 112.65,
+                "maxLng": 112.82
+            }
+        },
+        "urabaya": {
+            "name": "Kota Surabaya",
+            "lat": -7.2575,
+            "lng": 112.7521,
+            "bbox": {
+                "minLat": -7.35,
+                "maxLat": -7.18,
+                "minLng": 112.65,
+                "maxLng": 112.82
+            }
+        },
+        "otaalang": {
+            "name": "Kota Malang",
+            "lat": -7.9666,
+            "lng": 112.6326,
+            "bbox": {
+                "minLat": -8.02,
+                "maxLat": -7.92,
+                "minLng": 112.58,
+                "maxLng": 112.68
+            }
+        },
+        "alang": {
+            "name": "Kota Malang",
+            "lat": -7.9666,
+            "lng": 112.6326,
+            "bbox": {
+                "minLat": -8.02,
+                "maxLat": -7.92,
+                "minLng": 112.58,
+                "maxLng": 112.68
+            }
+        },
+        "otaatu": {
+            "name": "Kota Batu",
+            "lat": -7.8671,
+            "lng": 112.5239,
+            "bbox": {
+                "minLat": -7.92,
+                "maxLat": -7.8,
+                "minLng": 112.45,
+                "maxLng": 112.58
+            }
+        },
+        "atu": {
+            "name": "Kota Batu",
+            "lat": -7.8671,
+            "lng": 112.5239,
+            "bbox": {
+                "minLat": -7.92,
+                "maxLat": -7.8,
+                "minLng": 112.45,
+                "maxLng": 112.58
+            }
+        },
+        "otaediri": {
+            "name": "Kota Kediri",
+            "lat": -7.848,
+            "lng": 112.0178,
+            "bbox": {
+                "minLat": -7.88,
+                "maxLat": -7.8,
+                "minLng": 111.98,
+                "maxLng": 112.06
+            }
+        },
+        "ediri": {
+            "name": "Kota Kediri",
+            "lat": -7.848,
+            "lng": 112.0178,
+            "bbox": {
+                "minLat": -7.88,
+                "maxLat": -7.8,
+                "minLng": 111.98,
+                "maxLng": 112.06
+            }
+        },
+        "otaadiun": {
+            "name": "Kota Madiun",
+            "lat": -7.6298,
+            "lng": 111.5239,
+            "bbox": {
+                "minLat": -7.66,
+                "maxLat": -7.6,
+                "minLng": 111.5,
+                "maxLng": 111.55
+            }
+        },
+        "adiun": {
+            "name": "Kota Madiun",
+            "lat": -7.6298,
+            "lng": 111.5239,
+            "bbox": {
+                "minLat": -7.66,
+                "maxLat": -7.6,
+                "minLng": 111.5,
+                "maxLng": 111.55
+            }
+        },
+        "otalitar": {
+            "name": "Kota Blitar",
+            "lat": -8.0983,
+            "lng": 112.1681,
+            "bbox": {
+                "minLat": -8.13,
+                "maxLat": -8.07,
+                "minLng": 112.14,
+                "maxLng": 112.19
+            }
+        },
+        "litar": {
+            "name": "Kota Blitar",
+            "lat": -8.0983,
+            "lng": 112.1681,
+            "bbox": {
+                "minLat": -8.13,
+                "maxLat": -8.07,
+                "minLng": 112.14,
+                "maxLng": 112.19
+            }
+        },
+        "otaojokerto": {
+            "name": "Kota Mojokerto",
+            "lat": -7.4722,
+            "lng": 112.4339,
+            "bbox": {
+                "minLat": -7.5,
+                "maxLat": -7.45,
+                "minLng": 112.41,
+                "maxLng": 112.46
+            }
+        },
+        "ojokerto": {
+            "name": "Kota Mojokerto",
+            "lat": -7.4722,
+            "lng": 112.4339,
+            "bbox": {
+                "minLat": -7.5,
+                "maxLat": -7.45,
+                "minLng": 112.41,
+                "maxLng": 112.46
+            }
+        },
+        "otaasuruan": {
+            "name": "Kota Pasuruan",
+            "lat": -7.6453,
+            "lng": 112.9075,
+            "bbox": {
+                "minLat": -7.68,
+                "maxLat": -7.62,
+                "minLng": 112.87,
+                "maxLng": 112.93
+            }
+        },
+        "asuruan": {
+            "name": "Kota Pasuruan",
+            "lat": -7.6453,
+            "lng": 112.9075,
+            "bbox": {
+                "minLat": -7.68,
+                "maxLat": -7.62,
+                "minLng": 112.87,
+                "maxLng": 112.93
+            }
+        },
+        "otarobolinggo": {
+            "name": "Kota Probolinggo",
+            "lat": -7.7543,
+            "lng": 113.2159,
+            "bbox": {
+                "minLat": -7.78,
+                "maxLat": -7.72,
+                "minLng": 113.18,
+                "maxLng": 113.25
+            }
+        },
+        "robolinggo": {
+            "name": "Kota Probolinggo",
+            "lat": -7.7543,
+            "lng": 113.2159,
+            "bbox": {
+                "minLat": -7.78,
+                "maxLat": -7.72,
+                "minLng": 113.18,
+                "maxLng": 113.25
+            }
+        },
+        "abupatenidoarjo": {
+            "name": "Kabupaten Sidoarjo",
+            "lat": -7.4478,
+            "lng": 112.7183,
+            "bbox": {
+                "minLat": -7.58,
+                "maxLat": -7.35,
+                "minLng": 112.55,
+                "maxLng": 112.85
+            }
+        },
+        "idoarjo": {
+            "name": "Kabupaten Sidoarjo",
+            "lat": -7.4478,
+            "lng": 112.7183,
+            "bbox": {
+                "minLat": -7.58,
+                "maxLat": -7.35,
+                "minLng": 112.55,
+                "maxLng": 112.85
+            }
+        },
+        "abupatenresik": {
+            "name": "Kabupaten Gresik",
+            "lat": -7.1566,
+            "lng": 112.6555,
+            "bbox": {
+                "minLat": -7.35,
+                "maxLat": -6.85,
+                "minLng": 112.45,
+                "maxLng": 112.75
+            }
+        },
+        "resik": {
+            "name": "Kabupaten Gresik",
+            "lat": -7.1566,
+            "lng": 112.6555,
+            "bbox": {
+                "minLat": -7.35,
+                "maxLat": -6.85,
+                "minLng": 112.45,
+                "maxLng": 112.75
+            }
+        },
+        "abupatenanyuwangi": {
+            "name": "Kabupaten Banyuwangi",
+            "lat": -8.2192,
+            "lng": 114.3691,
+            "bbox": {
+                "minLat": -8.8,
+                "maxLat": -7.8,
+                "minLng": 113.9,
+                "maxLng": 114.65
+            }
+        },
+        "anyuwangi": {
+            "name": "Kabupaten Banyuwangi",
+            "lat": -8.2192,
+            "lng": 114.3691,
+            "bbox": {
+                "minLat": -8.8,
+                "maxLat": -7.8,
+                "minLng": 113.9,
+                "maxLng": 114.65
+            }
+        },
+        "abupatenember": {
+            "name": "Kabupaten Jember",
+            "lat": -8.1845,
+            "lng": 113.6681,
+            "bbox": {
+                "minLat": -8.5,
+                "maxLat": -7.95,
+                "minLng": 113.35,
+                "maxLng": 114.05
+            }
+        },
+        "ember": {
+            "name": "Kabupaten Jember",
+            "lat": -8.1845,
+            "lng": 113.6681,
+            "bbox": {
+                "minLat": -8.5,
+                "maxLat": -7.95,
+                "minLng": 113.35,
+                "maxLng": 114.05
+            }
+        },
+        "otaangerangelatan": {
+            "name": "Kota Tangerang Selatan",
+            "lat": -6.2886,
+            "lng": 106.7179,
+            "bbox": {
+                "minLat": -6.35,
+                "maxLat": -6.22,
+                "minLng": 106.65,
+                "maxLng": 106.78
+            }
+        },
+        "angerangelatan": {
+            "name": "Kota Tangerang Selatan",
+            "lat": -6.2886,
+            "lng": 106.7179,
+            "bbox": {
+                "minLat": -6.35,
+                "maxLat": -6.22,
+                "minLng": 106.65,
+                "maxLng": 106.78
+            }
+        },
+        "otaangerang": {
+            "name": "Kota Tangerang",
+            "lat": -6.1783,
+            "lng": 106.6319,
+            "bbox": {
+                "minLat": -6.25,
+                "maxLat": -6.12,
+                "minLng": 106.58,
+                "maxLng": 106.72
+            }
+        },
+        "angerang": {
+            "name": "Kota Tangerang",
+            "lat": -6.1783,
+            "lng": 106.6319,
+            "bbox": {
+                "minLat": -6.25,
+                "maxLat": -6.12,
+                "minLng": 106.58,
+                "maxLng": 106.72
+            }
+        },
+        "otaerang": {
+            "name": "Kota Serang",
+            "lat": -6.12,
+            "lng": 106.15,
+            "bbox": {
+                "minLat": -6.18,
+                "maxLat": -6.05,
+                "minLng": 106.1,
+                "maxLng": 106.22
+            }
+        },
+        "erang": {
+            "name": "Kota Serang",
+            "lat": -6.12,
+            "lng": 106.15,
+            "bbox": {
+                "minLat": -6.18,
+                "maxLat": -6.05,
+                "minLng": 106.1,
+                "maxLng": 106.22
+            }
+        },
+        "otailegon": {
+            "name": "Kota Cilegon",
+            "lat": -6.0174,
+            "lng": 106.0538,
+            "bbox": {
+                "minLat": -6.08,
+                "maxLat": -5.95,
+                "minLng": 105.98,
+                "maxLng": 106.12
+            }
+        },
+        "ilegon": {
+            "name": "Kota Cilegon",
+            "lat": -6.0174,
+            "lng": 106.0538,
+            "bbox": {
+                "minLat": -6.08,
+                "maxLat": -5.95,
+                "minLng": 105.98,
+                "maxLng": 106.12
+            }
+        },
+        "abupatenangerangigaraksa": {
+            "name": "Kabupaten Tangerang (Tigaraksa)",
+            "lat": -6.2405,
+            "lng": 106.4952,
+            "bbox": {
+                "minLat": -6.4,
+                "maxLat": -6,
+                "minLng": 106.35,
+                "maxLng": 106.7
+            }
+        },
+        "abupatenerang": {
+            "name": "Kabupaten Serang",
+            "lat": -6.12,
+            "lng": 106,
+            "bbox": {
+                "minLat": -6.35,
+                "maxLat": -5.95,
+                "minLng": 105.85,
+                "maxLng": 106.3
+            }
+        },
+        "otaenpasar": {
+            "name": "Kota Denpasar",
+            "lat": -8.6705,
+            "lng": 115.2126,
+            "bbox": {
+                "minLat": -8.72,
+                "maxLat": -8.6,
+                "minLng": 115.17,
+                "maxLng": 115.26
+            }
+        },
+        "enpasar": {
+            "name": "Kota Denpasar",
+            "lat": -8.6705,
+            "lng": 115.2126,
+            "bbox": {
+                "minLat": -8.72,
+                "maxLat": -8.6,
+                "minLng": 115.17,
+                "maxLng": 115.26
+            }
+        },
+        "abupatenadungutaeminyak": {
+            "name": "Kabupaten Badung (Kuta\/Seminyak)",
+            "lat": -8.5833,
+            "lng": 115.1833,
+            "bbox": {
+                "minLat": -8.85,
+                "maxLat": -8.25,
+                "minLng": 115.08,
+                "maxLng": 115.3
+            }
+        },
+        "adung": {
+            "name": "Kabupaten Badung (Kuta\/Seminyak)",
+            "lat": -8.5833,
+            "lng": 115.1833,
+            "bbox": {
+                "minLat": -8.85,
+                "maxLat": -8.25,
+                "minLng": 115.08,
+                "maxLng": 115.3
+            }
+        },
+        "abupatenianyarbud": {
+            "name": "Kabupaten Gianyar (Ubud)",
+            "lat": -8.5444,
+            "lng": 115.3283,
+            "bbox": {
+                "minLat": -8.65,
+                "maxLat": -8.35,
+                "minLng": 115.25,
+                "maxLng": 115.4
+            }
+        },
+        "ianyar": {
+            "name": "Kabupaten Gianyar (Ubud)",
+            "lat": -8.5444,
+            "lng": 115.3283,
+            "bbox": {
+                "minLat": -8.65,
+                "maxLat": -8.35,
+                "minLng": 115.25,
+                "maxLng": 115.4
+            }
+        },
+        "abupatenabanan": {
+            "name": "Kabupaten Tabanan",
+            "lat": -8.5411,
+            "lng": 115.1256,
+            "bbox": {
+                "minLat": -8.68,
+                "maxLat": -8.25,
+                "minLng": 114.95,
+                "maxLng": 115.25
+            }
+        },
+        "abanan": {
+            "name": "Kabupaten Tabanan",
+            "lat": -8.5411,
+            "lng": 115.1256,
+            "bbox": {
+                "minLat": -8.68,
+                "maxLat": -8.25,
+                "minLng": 114.95,
+                "maxLng": 115.25
+            }
+        },
+        "abupatenulelengingaraja": {
+            "name": "Kabupaten Buleleng (Singaraja)",
+            "lat": -8.112,
+            "lng": 115.0882,
+            "bbox": {
+                "minLat": -8.35,
+                "maxLat": -8.05,
+                "minLng": 114.45,
+                "maxLng": 115.45
+            }
+        },
+        "uleleng": {
+            "name": "Kabupaten Buleleng (Singaraja)",
+            "lat": -8.112,
+            "lng": 115.0882,
+            "bbox": {
+                "minLat": -8.35,
+                "maxLat": -8.05,
+                "minLng": 114.45,
+                "maxLng": 115.45
+            }
+        },
+        "otaedan": {
+            "name": "Kota Medan",
+            "lat": 3.5952,
+            "lng": 98.6722,
+            "bbox": {
+                "minLat": 3.45,
+                "maxLat": 3.75,
+                "minLng": 98.6,
+                "maxLng": 98.75
+            }
+        },
+        "edan": {
+            "name": "Kota Medan",
+            "lat": 3.5952,
+            "lng": 98.6722,
+            "bbox": {
+                "minLat": 3.45,
+                "maxLat": 3.75,
+                "minLng": 98.6,
+                "maxLng": 98.75
+            }
+        },
+        "otainjai": {
+            "name": "Kota Binjai",
+            "lat": 3.5975,
+            "lng": 98.4853,
+            "bbox": {
+                "minLat": 3.55,
+                "maxLat": 3.65,
+                "minLng": 98.45,
+                "maxLng": 98.53
+            }
+        },
+        "injai": {
+            "name": "Kota Binjai",
+            "lat": 3.5975,
+            "lng": 98.4853,
+            "bbox": {
+                "minLat": 3.55,
+                "maxLat": 3.65,
+                "minLng": 98.45,
+                "maxLng": 98.53
+            }
+        },
+        "otaematangsiantar": {
+            "name": "Kota Pematangsiantar",
+            "lat": 2.9599,
+            "lng": 99.0687,
+            "bbox": {
+                "minLat": 2.9,
+                "maxLat": 3.02,
+                "minLng": 99.03,
+                "maxLng": 99.11
+            }
+        },
+        "ematangsiantar": {
+            "name": "Kota Pematangsiantar",
+            "lat": 2.9599,
+            "lng": 99.0687,
+            "bbox": {
+                "minLat": 2.9,
+                "maxLat": 3.02,
+                "minLng": 99.03,
+                "maxLng": 99.11
+            }
+        },
+        "abupatenelierdang": {
+            "name": "Kabupaten Deli Serdang",
+            "lat": 3.55,
+            "lng": 98.78,
+            "bbox": {
+                "minLat": 3.1,
+                "maxLat": 3.9,
+                "minLng": 98.35,
+                "maxLng": 99.05
+            }
+        },
+        "elierdang": {
+            "name": "Kabupaten Deli Serdang",
+            "lat": 3.55,
+            "lng": 98.78,
+            "bbox": {
+                "minLat": 3.1,
+                "maxLat": 3.9,
+                "minLng": 98.35,
+                "maxLng": 99.05
+            }
+        },
+        "abupatenaroerastagi": {
+            "name": "Kabupaten Karo (Berastagi)",
+            "lat": 3.1167,
+            "lng": 98.5,
+            "bbox": {
+                "minLat": 2.85,
+                "maxLat": 3.35,
+                "minLng": 98.15,
+                "maxLng": 98.75
+            }
+        },
+        "aro": {
+            "name": "Kabupaten Karo (Berastagi)",
+            "lat": 3.1167,
+            "lng": 98.5,
+            "bbox": {
+                "minLat": 2.85,
+                "maxLat": 3.35,
+                "minLng": 98.15,
+                "maxLng": 98.75
+            }
+        },
+        "otaadang": {
+            "name": "Kota Padang",
+            "lat": -0.9471,
+            "lng": 100.4172,
+            "bbox": {
+                "minLat": -1.05,
+                "maxLat": -0.8,
+                "minLng": 100.3,
+                "maxLng": 100.55
+            }
+        },
+        "adang": {
+            "name": "Kota Padang",
+            "lat": -0.9471,
+            "lng": 100.4172,
+            "bbox": {
+                "minLat": -1.05,
+                "maxLat": -0.8,
+                "minLng": 100.3,
+                "maxLng": 100.55
+            }
+        },
+        "otaukittinggi": {
+            "name": "Kota Bukittinggi",
+            "lat": -0.3056,
+            "lng": 100.3692,
+            "bbox": {
+                "minLat": -0.34,
+                "maxLat": -0.27,
+                "minLng": 100.33,
+                "maxLng": 100.4
+            }
+        },
+        "ukittinggi": {
+            "name": "Kota Bukittinggi",
+            "lat": -0.3056,
+            "lng": 100.3692,
+            "bbox": {
+                "minLat": -0.34,
+                "maxLat": -0.27,
+                "minLng": 100.33,
+                "maxLng": 100.4
+            }
+        },
+        "otaayakumbuh": {
+            "name": "Kota Payakumbuh",
+            "lat": -0.2244,
+            "lng": 100.6322,
+            "bbox": {
+                "minLat": -0.27,
+                "maxLat": -0.18,
+                "minLng": 100.59,
+                "maxLng": 100.67
+            }
+        },
+        "ayakumbuh": {
+            "name": "Kota Payakumbuh",
+            "lat": -0.2244,
+            "lng": 100.6322,
+            "bbox": {
+                "minLat": -0.27,
+                "maxLat": -0.18,
+                "minLng": 100.59,
+                "maxLng": 100.67
+            }
+        },
+        "otaariaman": {
+            "name": "Kota Pariaman",
+            "lat": -0.6264,
+            "lng": 100.1206,
+            "bbox": {
+                "minLat": -0.67,
+                "maxLat": -0.58,
+                "minLng": 100.08,
+                "maxLng": 100.16
+            }
+        },
+        "ariaman": {
+            "name": "Kota Pariaman",
+            "lat": -0.6264,
+            "lng": 100.1206,
+            "bbox": {
+                "minLat": -0.67,
+                "maxLat": -0.58,
+                "minLng": 100.08,
+                "maxLng": 100.16
+            }
+        },
+        "otaekanbaru": {
+            "name": "Kota Pekanbaru",
+            "lat": 0.5071,
+            "lng": 101.4478,
+            "bbox": {
+                "minLat": 0.42,
+                "maxLat": 0.6,
+                "minLng": 101.35,
+                "maxLng": 101.55
+            }
+        },
+        "ekanbaru": {
+            "name": "Kota Pekanbaru",
+            "lat": 0.5071,
+            "lng": 101.4478,
+            "bbox": {
+                "minLat": 0.42,
+                "maxLat": 0.6,
+                "minLng": 101.35,
+                "maxLng": 101.55
+            }
+        },
+        "otaumai": {
+            "name": "Kota Dumai",
+            "lat": 1.6667,
+            "lng": 101.45,
+            "bbox": {
+                "minLat": 1.5,
+                "maxLat": 1.8,
+                "minLng": 101.25,
+                "maxLng": 101.65
+            }
+        },
+        "umai": {
+            "name": "Kota Dumai",
+            "lat": 1.6667,
+            "lng": 101.45,
+            "bbox": {
+                "minLat": 1.5,
+                "maxLat": 1.8,
+                "minLng": 101.25,
+                "maxLng": 101.65
+            }
+        },
+        "abupatenamparangkinang": {
+            "name": "Kabupaten Kampar (Bangkinang)",
+            "lat": 0.3361,
+            "lng": 101.025,
+            "bbox": {
+                "minLat": -0.2,
+                "maxLat": 0.9,
+                "minLng": 100.5,
+                "maxLng": 101.6
+            }
+        },
+        "ampar": {
+            "name": "Kabupaten Kampar (Bangkinang)",
+            "lat": 0.3361,
+            "lng": 101.025,
+            "bbox": {
+                "minLat": -0.2,
+                "maxLat": 0.9,
+                "minLng": 100.5,
+                "maxLng": 101.6
+            }
+        },
+        "otaatam": {
+            "name": "Kota Batam",
+            "lat": 1.0456,
+            "lng": 104.0305,
+            "bbox": {
+                "minLat": 0.9,
+                "maxLat": 1.25,
+                "minLng": 103.85,
+                "maxLng": 104.2
+            }
+        },
+        "atam": {
+            "name": "Kota Batam",
+            "lat": 1.0456,
+            "lng": 104.0305,
+            "bbox": {
+                "minLat": 0.9,
+                "maxLat": 1.25,
+                "minLng": 103.85,
+                "maxLng": 104.2
+            }
+        },
+        "otaanjungpinang": {
+            "name": "Kota Tanjungpinang",
+            "lat": 0.9167,
+            "lng": 104.45,
+            "bbox": {
+                "minLat": 0.85,
+                "maxLat": 0.98,
+                "minLng": 104.4,
+                "maxLng": 104.55
+            }
+        },
+        "anjungpinang": {
+            "name": "Kota Tanjungpinang",
+            "lat": 0.9167,
+            "lng": 104.45,
+            "bbox": {
+                "minLat": 0.85,
+                "maxLat": 0.98,
+                "minLng": 104.4,
+                "maxLng": 104.55
+            }
+        },
+        "abupatenintan": {
+            "name": "Kabupaten Bintan",
+            "lat": 1.05,
+            "lng": 104.55,
+            "bbox": {
+                "minLat": 0.75,
+                "maxLat": 1.35,
+                "minLng": 104.25,
+                "maxLng": 104.85
+            }
+        },
+        "intan": {
+            "name": "Kabupaten Bintan",
+            "lat": 1.05,
+            "lng": 104.55,
+            "bbox": {
+                "minLat": 0.75,
+                "maxLat": 1.35,
+                "minLng": 104.25,
+                "maxLng": 104.85
+            }
+        },
+        "otaalembang": {
+            "name": "Kota Palembang",
+            "lat": -2.9761,
+            "lng": 104.7754,
+            "bbox": {
+                "minLat": -3.05,
+                "maxLat": -2.88,
+                "minLng": 104.68,
+                "maxLng": 104.85
+            }
+        },
+        "alembang": {
+            "name": "Kota Palembang",
+            "lat": -2.9761,
+            "lng": 104.7754,
+            "bbox": {
+                "minLat": -3.05,
+                "maxLat": -2.88,
+                "minLng": 104.68,
+                "maxLng": 104.85
+            }
+        },
+        "otarabumulih": {
+            "name": "Kota Prabumulih",
+            "lat": -3.4333,
+            "lng": 104.2333,
+            "bbox": {
+                "minLat": -3.5,
+                "maxLat": -3.37,
+                "minLng": 104.18,
+                "maxLng": 104.28
+            }
+        },
+        "rabumulih": {
+            "name": "Kota Prabumulih",
+            "lat": -3.4333,
+            "lng": 104.2333,
+            "bbox": {
+                "minLat": -3.5,
+                "maxLat": -3.37,
+                "minLng": 104.18,
+                "maxLng": 104.28
+            }
+        },
+        "otaubuklinggau": {
+            "name": "Kota Lubuklinggau",
+            "lat": -3.2944,
+            "lng": 102.8611,
+            "bbox": {
+                "minLat": -3.35,
+                "maxLat": -3.22,
+                "minLng": 102.8,
+                "maxLng": 102.93
+            }
+        },
+        "ubuklinggau": {
+            "name": "Kota Lubuklinggau",
+            "lat": -3.2944,
+            "lng": 102.8611,
+            "bbox": {
+                "minLat": -3.35,
+                "maxLat": -3.22,
+                "minLng": 102.8,
+                "maxLng": 102.93
+            }
+        },
+        "otaandarampung": {
+            "name": "Kota Bandar Lampung",
+            "lat": -5.4292,
+            "lng": 105.2611,
+            "bbox": {
+                "minLat": -5.5,
+                "maxLat": -5.35,
+                "minLng": 105.2,
+                "maxLng": 105.33
+            }
+        },
+        "andarampung": {
+            "name": "Kota Bandar Lampung",
+            "lat": -5.4292,
+            "lng": 105.2611,
+            "bbox": {
+                "minLat": -5.5,
+                "maxLat": -5.35,
+                "minLng": 105.2,
+                "maxLng": 105.33
+            }
+        },
+        "otaetro": {
+            "name": "Kota Metro",
+            "lat": -5.1136,
+            "lng": 105.3067,
+            "bbox": {
+                "minLat": -5.15,
+                "maxLat": -5.07,
+                "minLng": 105.27,
+                "maxLng": 105.35
+            }
+        },
+        "etro": {
+            "name": "Kota Metro",
+            "lat": -5.1136,
+            "lng": 105.3067,
+            "bbox": {
+                "minLat": -5.15,
+                "maxLat": -5.07,
+                "minLng": 105.27,
+                "maxLng": 105.35
+            }
+        },
+        "abupatenampungelatan": {
+            "name": "Kabupaten Lampung Selatan",
+            "lat": -5.6,
+            "lng": 105.58,
+            "bbox": {
+                "minLat": -5.95,
+                "maxLat": -5.2,
+                "minLng": 105.2,
+                "maxLng": 105.9
+            }
+        },
+        "ampungelatan": {
+            "name": "Kabupaten Lampung Selatan",
+            "lat": -5.6,
+            "lng": 105.58,
+            "bbox": {
+                "minLat": -5.95,
+                "maxLat": -5.2,
+                "minLng": 105.2,
+                "maxLng": 105.9
+            }
+        },
+        "otaamarinda": {
+            "name": "Kota Samarinda",
+            "lat": -0.5022,
+            "lng": 117.1536,
+            "bbox": {
+                "minLat": -0.6,
+                "maxLat": -0.4,
+                "minLng": 117.05,
+                "maxLng": 117.25
+            }
+        },
+        "amarinda": {
+            "name": "Kota Samarinda",
+            "lat": -0.5022,
+            "lng": 117.1536,
+            "bbox": {
+                "minLat": -0.6,
+                "maxLat": -0.4,
+                "minLng": 117.05,
+                "maxLng": 117.25
+            }
+        },
+        "otaalikpapan": {
+            "name": "Kota Balikpapan",
+            "lat": -1.2379,
+            "lng": 116.8529,
+            "bbox": {
+                "minLat": -1.32,
+                "maxLat": -1.15,
+                "minLng": 116.78,
+                "maxLng": 116.95
+            }
+        },
+        "alikpapan": {
+            "name": "Kota Balikpapan",
+            "lat": -1.2379,
+            "lng": 116.8529,
+            "bbox": {
+                "minLat": -1.32,
+                "maxLat": -1.15,
+                "minLng": 116.78,
+                "maxLng": 116.95
+            }
+        },
+        "otaontang": {
+            "name": "Kota Bontang",
+            "lat": 0.1333,
+            "lng": 117.5,
+            "bbox": {
+                "minLat": 0.08,
+                "maxLat": 0.19,
+                "minLng": 117.43,
+                "maxLng": 117.55
+            }
+        },
+        "ontang": {
+            "name": "Kota Bontang",
+            "lat": 0.1333,
+            "lng": 117.5,
+            "bbox": {
+                "minLat": 0.08,
+                "maxLat": 0.19,
+                "minLng": 117.43,
+                "maxLng": 117.55
+            }
+        },
+        "abupatenutaiartanegaraenggarong": {
+            "name": "Kabupaten Kutai Kartanegara (Tenggarong)",
+            "lat": -0.4167,
+            "lng": 116.9833,
+            "bbox": {
+                "minLat": -1.2,
+                "maxLat": 0.4,
+                "minLng": 116.2,
+                "maxLng": 117.5
+            }
+        },
+        "utaiartanegara": {
+            "name": "Kabupaten Kutai Kartanegara (Tenggarong)",
+            "lat": -0.4167,
+            "lng": 116.9833,
+            "bbox": {
+                "minLat": -1.2,
+                "maxLat": 0.4,
+                "minLng": 116.2,
+                "maxLng": 117.5
+            }
+        },
+        "abupatenenajamasertara": {
+            "name": "Kabupaten Penajam Paser Utara (IKN)",
+            "lat": -1.2467,
+            "lng": 116.68,
+            "bbox": {
+                "minLat": -1.6,
+                "maxLat": -0.8,
+                "minLng": 116.3,
+                "maxLng": 117
+            }
+        },
+        "enajamasertara": {
+            "name": "Kabupaten Penajam Paser Utara (IKN)",
+            "lat": -1.2467,
+            "lng": 116.68,
+            "bbox": {
+                "minLat": -1.6,
+                "maxLat": -0.8,
+                "minLng": 116.3,
+                "maxLng": 117
+            }
+        },
+        "otaanjarmasin": {
+            "name": "Kota Banjarmasin",
+            "lat": -3.3194,
+            "lng": 114.5908,
+            "bbox": {
+                "minLat": -3.38,
+                "maxLat": -3.26,
+                "minLng": 114.54,
+                "maxLng": 114.65
+            }
+        },
+        "anjarmasin": {
+            "name": "Kota Banjarmasin",
+            "lat": -3.3194,
+            "lng": 114.5908,
+            "bbox": {
+                "minLat": -3.38,
+                "maxLat": -3.26,
+                "minLng": 114.54,
+                "maxLng": 114.65
+            }
+        },
+        "otaanjarbaru": {
+            "name": "Kota Banjarbaru",
+            "lat": -3.44,
+            "lng": 114.83,
+            "bbox": {
+                "minLat": -3.5,
+                "maxLat": -3.38,
+                "minLng": 114.77,
+                "maxLng": 114.89
+            }
+        },
+        "anjarbaru": {
+            "name": "Kota Banjarbaru",
+            "lat": -3.44,
+            "lng": 114.83,
+            "bbox": {
+                "minLat": -3.5,
+                "maxLat": -3.38,
+                "minLng": 114.77,
+                "maxLng": 114.89
+            }
+        },
+        "abupatenanjarartapura": {
+            "name": "Kabupaten Banjar (Martapura)",
+            "lat": -3.4167,
+            "lng": 114.85,
+            "bbox": {
+                "minLat": -3.7,
+                "maxLat": -3,
+                "minLng": 114.6,
+                "maxLng": 115.3
+            }
+        },
+        "otaontianak": {
+            "name": "Kota Pontianak",
+            "lat": -0.0263,
+            "lng": 109.3425,
+            "bbox": {
+                "minLat": -0.08,
+                "maxLat": 0.04,
+                "minLng": 109.28,
+                "maxLng": 109.4
+            }
+        },
+        "ontianak": {
+            "name": "Kota Pontianak",
+            "lat": -0.0263,
+            "lng": 109.3425,
+            "bbox": {
+                "minLat": -0.08,
+                "maxLat": 0.04,
+                "minLng": 109.28,
+                "maxLng": 109.4
+            }
+        },
+        "otaingkawang": {
+            "name": "Kota Singkawang",
+            "lat": 0.9067,
+            "lng": 108.9867,
+            "bbox": {
+                "minLat": 0.8,
+                "maxLat": 1,
+                "minLng": 108.92,
+                "maxLng": 109.05
+            }
+        },
+        "ingkawang": {
+            "name": "Kota Singkawang",
+            "lat": 0.9067,
+            "lng": 108.9867,
+            "bbox": {
+                "minLat": 0.8,
+                "maxLat": 1,
+                "minLng": 108.92,
+                "maxLng": 109.05
+            }
+        },
+        "abupatenubuaya": {
+            "name": "Kabupaten Kubu Raya",
+            "lat": -0.35,
+            "lng": 109.45,
+            "bbox": {
+                "minLat": -0.9,
+                "maxLat": 0.2,
+                "minLng": 109.1,
+                "maxLng": 109.9
+            }
+        },
+        "ubuaya": {
+            "name": "Kabupaten Kubu Raya",
+            "lat": -0.35,
+            "lng": 109.45,
+            "bbox": {
+                "minLat": -0.9,
+                "maxLat": 0.2,
+                "minLng": 109.1,
+                "maxLng": 109.9
+            }
+        },
+        "otaakassar": {
+            "name": "Kota Makassar",
+            "lat": -5.1477,
+            "lng": 119.4327,
+            "bbox": {
+                "minLat": -5.25,
+                "maxLat": -5.05,
+                "minLng": 119.38,
+                "maxLng": 119.52
+            }
+        },
+        "akassar": {
+            "name": "Kota Makassar",
+            "lat": -5.1477,
+            "lng": 119.4327,
+            "bbox": {
+                "minLat": -5.25,
+                "maxLat": -5.05,
+                "minLng": 119.38,
+                "maxLng": 119.52
+            }
+        },
+        "otaarepare": {
+            "name": "Kota Parepare",
+            "lat": -4.0133,
+            "lng": 119.6253,
+            "bbox": {
+                "minLat": -4.06,
+                "maxLat": -3.96,
+                "minLng": 119.59,
+                "maxLng": 119.67
+            }
+        },
+        "arepare": {
+            "name": "Kota Parepare",
+            "lat": -4.0133,
+            "lng": 119.6253,
+            "bbox": {
+                "minLat": -4.06,
+                "maxLat": -3.96,
+                "minLng": 119.59,
+                "maxLng": 119.67
+            }
+        },
+        "otaalopo": {
+            "name": "Kota Palopo",
+            "lat": -2.9947,
+            "lng": 120.1969,
+            "bbox": {
+                "minLat": -3.05,
+                "maxLat": -2.94,
+                "minLng": 120.15,
+                "maxLng": 120.25
+            }
+        },
+        "alopo": {
+            "name": "Kota Palopo",
+            "lat": -2.9947,
+            "lng": 120.1969,
+            "bbox": {
+                "minLat": -3.05,
+                "maxLat": -2.94,
+                "minLng": 120.15,
+                "maxLng": 120.25
+            }
+        },
+        "abupatenowaungguminasa": {
+            "name": "Kabupaten Gowa (Sungguminasa)",
+            "lat": -5.3,
+            "lng": 119.75,
+            "bbox": {
+                "minLat": -5.6,
+                "maxLat": -5.1,
+                "minLng": 119.45,
+                "maxLng": 120
+            }
+        },
+        "owa": {
+            "name": "Kabupaten Gowa (Sungguminasa)",
+            "lat": -5.3,
+            "lng": 119.75,
+            "bbox": {
+                "minLat": -5.6,
+                "maxLat": -5.1,
+                "minLng": 119.45,
+                "maxLng": 120
+            }
+        },
+        "abupatenaros": {
+            "name": "Kabupaten Maros",
+            "lat": -5,
+            "lng": 119.65,
+            "bbox": {
+                "minLat": -5.2,
+                "maxLat": -4.8,
+                "minLng": 119.5,
+                "maxLng": 119.9
+            }
+        },
+        "aros": {
+            "name": "Kabupaten Maros",
+            "lat": -5,
+            "lng": 119.65,
+            "bbox": {
+                "minLat": -5.2,
+                "maxLat": -4.8,
+                "minLng": 119.5,
+                "maxLng": 119.9
+            }
+        },
+        "otaanado": {
+            "name": "Kota Manado",
+            "lat": 1.4748,
+            "lng": 124.8428,
+            "bbox": {
+                "minLat": 1.4,
+                "maxLat": 1.55,
+                "minLng": 124.78,
+                "maxLng": 124.9
+            }
+        },
+        "anado": {
+            "name": "Kota Manado",
+            "lat": 1.4748,
+            "lng": 124.8428,
+            "bbox": {
+                "minLat": 1.4,
+                "maxLat": 1.55,
+                "minLng": 124.78,
+                "maxLng": 124.9
+            }
+        },
+        "otaitung": {
+            "name": "Kota Bitung",
+            "lat": 1.4404,
+            "lng": 125.1217,
+            "bbox": {
+                "minLat": 1.38,
+                "maxLat": 1.5,
+                "minLng": 125.07,
+                "maxLng": 125.2
+            }
+        },
+        "itung": {
+            "name": "Kota Bitung",
+            "lat": 1.4404,
+            "lng": 125.1217,
+            "bbox": {
+                "minLat": 1.38,
+                "maxLat": 1.5,
+                "minLng": 125.07,
+                "maxLng": 125.2
+            }
+        },
+        "otaomohon": {
+            "name": "Kota Tomohon",
+            "lat": 1.3256,
+            "lng": 124.8394,
+            "bbox": {
+                "minLat": 1.28,
+                "maxLat": 1.37,
+                "minLng": 124.8,
+                "maxLng": 124.88
+            }
+        },
+        "omohon": {
+            "name": "Kota Tomohon",
+            "lat": 1.3256,
+            "lng": 124.8394,
+            "bbox": {
+                "minLat": 1.28,
+                "maxLat": 1.37,
+                "minLng": 124.8,
+                "maxLng": 124.88
+            }
+        },
+        "otaataramombok": {
+            "name": "Kota Mataram (Lombok)",
+            "lat": -8.5833,
+            "lng": 116.1167,
+            "bbox": {
+                "minLat": -8.63,
+                "maxLat": -8.53,
+                "minLng": 116.07,
+                "maxLng": 116.16
+            }
+        },
+        "ataram": {
+            "name": "Kota Mataram (Lombok)",
+            "lat": -8.5833,
+            "lng": 116.1167,
+            "bbox": {
+                "minLat": -8.63,
+                "maxLat": -8.53,
+                "minLng": 116.07,
+                "maxLng": 116.16
+            }
+        },
+        "otaima": {
+            "name": "Kota Bima",
+            "lat": -8.46,
+            "lng": 118.73,
+            "bbox": {
+                "minLat": -8.51,
+                "maxLat": -8.41,
+                "minLng": 118.68,
+                "maxLng": 118.78
+            }
+        },
+        "ima": {
+            "name": "Kota Bima",
+            "lat": -8.46,
+            "lng": 118.73,
+            "bbox": {
+                "minLat": -8.51,
+                "maxLat": -8.41,
+                "minLng": 118.68,
+                "maxLng": 118.78
+            }
+        },
+        "abupatenombokarat": {
+            "name": "Kabupaten Lombok Barat",
+            "lat": -8.68,
+            "lng": 116.1,
+            "bbox": {
+                "minLat": -8.9,
+                "maxLat": -8.45,
+                "minLng": 115.9,
+                "maxLng": 116.3
+            }
+        },
+        "ombokarat": {
+            "name": "Kabupaten Lombok Barat",
+            "lat": -8.68,
+            "lng": 116.1,
+            "bbox": {
+                "minLat": -8.9,
+                "maxLat": -8.45,
+                "minLng": 115.9,
+                "maxLng": 116.3
+            }
+        },
+        "otaupang": {
+            "name": "Kota Kupang",
+            "lat": -10.1772,
+            "lng": 123.607,
+            "bbox": {
+                "minLat": -10.23,
+                "maxLat": -10.12,
+                "minLng": 123.55,
+                "maxLng": 123.66
+            }
+        },
+        "upang": {
+            "name": "Kota Kupang",
+            "lat": -10.1772,
+            "lng": 123.607,
+            "bbox": {
+                "minLat": -10.23,
+                "maxLat": -10.12,
+                "minLng": 123.55,
+                "maxLng": 123.66
+            }
+        },
+        "abupatenanggaraiaratabuanajo": {
+            "name": "Kabupaten Manggarai Barat (Labuan Bajo)",
+            "lat": -8.5,
+            "lng": 119.88,
+            "bbox": {
+                "minLat": -8.9,
+                "maxLat": -8.25,
+                "minLng": 119.7,
+                "maxLng": 120.2
+            }
+        },
+        "anggaraiarat": {
+            "name": "Kabupaten Manggarai Barat (Labuan Bajo)",
+            "lat": -8.5,
+            "lng": 119.88,
+            "bbox": {
+                "minLat": -8.9,
+                "maxLat": -8.25,
+                "minLng": 119.7,
+                "maxLng": 120.2
+            }
+        },
+        "otambon": {
+            "name": "Kota Ambon",
+            "lat": -3.6954,
+            "lng": 128.1814,
+            "bbox": {
+                "minLat": -3.75,
+                "maxLat": -3.62,
+                "minLng": 128.1,
+                "maxLng": 128.25
+            }
+        },
+        "mbon": {
+            "name": "Kota Ambon",
+            "lat": -3.6954,
+            "lng": 128.1814,
+            "bbox": {
+                "minLat": -3.75,
+                "maxLat": -3.62,
+                "minLng": 128.1,
+                "maxLng": 128.25
+            }
+        },
+        "otaual": {
+            "name": "Kota Tual",
+            "lat": -5.6289,
+            "lng": 132.7486,
+            "bbox": {
+                "minLat": -5.75,
+                "maxLat": -5.5,
+                "minLng": 132.65,
+                "maxLng": 132.85
+            }
+        },
+        "ual": {
+            "name": "Kota Tual",
+            "lat": -5.6289,
+            "lng": 132.7486,
+            "bbox": {
+                "minLat": -5.75,
+                "maxLat": -5.5,
+                "minLng": 132.65,
+                "maxLng": 132.85
+            }
+        },
+        "otaernate": {
+            "name": "Kota Ternate",
+            "lat": 0.7906,
+            "lng": 127.3831,
+            "bbox": {
+                "minLat": 0.73,
+                "maxLat": 0.85,
+                "minLng": 127.32,
+                "maxLng": 127.42
+            }
+        },
+        "ernate": {
+            "name": "Kota Ternate",
+            "lat": 0.7906,
+            "lng": 127.3831,
+            "bbox": {
+                "minLat": 0.73,
+                "maxLat": 0.85,
+                "minLng": 127.32,
+                "maxLng": 127.42
+            }
+        },
+        "otaidoreepulauan": {
+            "name": "Kota Tidore Kepulauan",
+            "lat": 0.6833,
+            "lng": 127.4,
+            "bbox": {
+                "minLat": 0.55,
+                "maxLat": 0.78,
+                "minLng": 127.3,
+                "maxLng": 127.5
+            }
+        },
+        "idoreepulauan": {
+            "name": "Kota Tidore Kepulauan",
+            "lat": 0.6833,
+            "lng": 127.4,
+            "bbox": {
+                "minLat": 0.55,
+                "maxLat": 0.78,
+                "minLng": 127.3,
+                "maxLng": 127.5
+            }
+        },
+        "otaandaceh": {
+            "name": "Kota Banda Aceh",
+            "lat": 5.5483,
+            "lng": 95.3238,
+            "bbox": {
+                "minLat": 5.5,
+                "maxLat": 5.6,
+                "minLng": 95.28,
+                "maxLng": 95.38
+            }
+        },
+        "andaceh": {
+            "name": "Kota Banda Aceh",
+            "lat": 5.5483,
+            "lng": 95.3238,
+            "bbox": {
+                "minLat": 5.5,
+                "maxLat": 5.6,
+                "minLng": 95.28,
+                "maxLng": 95.38
+            }
+        },
+        "otahokseumawe": {
+            "name": "Kota Lhokseumawe",
+            "lat": 5.1804,
+            "lng": 97.1408,
+            "bbox": {
+                "minLat": 5.12,
+                "maxLat": 5.24,
+                "minLng": 97.1,
+                "maxLng": 97.18
+            }
+        },
+        "hokseumawe": {
+            "name": "Kota Lhokseumawe",
+            "lat": 5.1804,
+            "lng": 97.1408,
+            "bbox": {
+                "minLat": 5.12,
+                "maxLat": 5.24,
+                "minLng": 97.1,
+                "maxLng": 97.18
+            }
+        },
+        "otaangsa": {
+            "name": "Kota Langsa",
+            "lat": 4.4719,
+            "lng": 97.9683,
+            "bbox": {
+                "minLat": 4.42,
+                "maxLat": 4.52,
+                "minLng": 97.92,
+                "maxLng": 98.02
+            }
+        },
+        "angsa": {
+            "name": "Kota Langsa",
+            "lat": 4.4719,
+            "lng": 97.9683,
+            "bbox": {
+                "minLat": 4.42,
+                "maxLat": 4.52,
+                "minLng": 97.92,
+                "maxLng": 98.02
+            }
+        },
+        "otaabang": {
+            "name": "Kota Sabang",
+            "lat": 5.8933,
+            "lng": 95.32,
+            "bbox": {
+                "minLat": 5.82,
+                "maxLat": 5.95,
+                "minLng": 95.25,
+                "maxLng": 95.38
+            }
+        },
+        "abang": {
+            "name": "Kota Sabang",
+            "lat": 5.8933,
+            "lng": 95.32,
+            "bbox": {
+                "minLat": 5.82,
+                "maxLat": 5.95,
+                "minLng": 95.25,
+                "maxLng": 95.38
+            }
+        },
+        "otaambi": {
+            "name": "Kota Jambi",
+            "lat": -1.61,
+            "lng": 103.61,
+            "bbox": {
+                "minLat": -1.67,
+                "maxLat": -1.55,
+                "minLng": 103.55,
+                "maxLng": 103.68
+            }
+        },
+        "otaungaienuh": {
+            "name": "Kota Sungai Penuh",
+            "lat": -2.06,
+            "lng": 101.39,
+            "bbox": {
+                "minLat": -2.12,
+                "maxLat": -2,
+                "minLng": 101.34,
+                "maxLng": 101.44
+            }
+        },
+        "ungaienuh": {
+            "name": "Kota Sungai Penuh",
+            "lat": -2.06,
+            "lng": 101.39,
+            "bbox": {
+                "minLat": -2.12,
+                "maxLat": -2,
+                "minLng": 101.34,
+                "maxLng": 101.44
+            }
+        },
+        "otaengkulu": {
+            "name": "Kota Bengkulu",
+            "lat": -3.8,
+            "lng": 102.2667,
+            "bbox": {
+                "minLat": -3.88,
+                "maxLat": -3.72,
+                "minLng": 102.22,
+                "maxLng": 102.32
+            }
+        },
+        "otaangkalpinang": {
+            "name": "Kota Pangkalpinang",
+            "lat": -2.1333,
+            "lng": 106.1167,
+            "bbox": {
+                "minLat": -2.18,
+                "maxLat": -2.08,
+                "minLng": 106.07,
+                "maxLng": 106.16
+            }
+        },
+        "angkalpinang": {
+            "name": "Kota Pangkalpinang",
+            "lat": -2.1333,
+            "lng": 106.1167,
+            "bbox": {
+                "minLat": -2.18,
+                "maxLat": -2.08,
+                "minLng": 106.07,
+                "maxLng": 106.16
+            }
+        },
+        "otaalangkaaya": {
+            "name": "Kota Palangka Raya",
+            "lat": -2.21,
+            "lng": 113.92,
+            "bbox": {
+                "minLat": -2.28,
+                "maxLat": -2.14,
+                "minLng": 113.85,
+                "maxLng": 113.99
+            }
+        },
+        "alangkaaya": {
+            "name": "Kota Palangka Raya",
+            "lat": -2.21,
+            "lng": 113.92,
+            "bbox": {
+                "minLat": -2.28,
+                "maxLat": -2.14,
+                "minLng": 113.85,
+                "maxLng": 113.99
+            }
+        },
+        "otaarakan": {
+            "name": "Kota Tarakan",
+            "lat": 3.3,
+            "lng": 117.6,
+            "bbox": {
+                "minLat": 3.22,
+                "maxLat": 3.38,
+                "minLng": 117.53,
+                "maxLng": 117.67
+            }
+        },
+        "arakan": {
+            "name": "Kota Tarakan",
+            "lat": 3.3,
+            "lng": 117.6,
+            "bbox": {
+                "minLat": 3.22,
+                "maxLat": 3.38,
+                "minLng": 117.53,
+                "maxLng": 117.67
+            }
+        },
+        "abupatenulungananjungelor": {
+            "name": "Kabupaten Bulungan (Tanjung Selor)",
+            "lat": 2.85,
+            "lng": 117.37,
+            "bbox": {
+                "minLat": 2.5,
+                "maxLat": 3.2,
+                "minLng": 116.8,
+                "maxLng": 117.8
+            }
+        },
+        "ulungan": {
+            "name": "Kabupaten Bulungan (Tanjung Selor)",
+            "lat": 2.85,
+            "lng": 117.37,
+            "bbox": {
+                "minLat": 2.5,
+                "maxLat": 3.2,
+                "minLng": 116.8,
+                "maxLng": 117.8
+            }
+        },
+        "otaalu": {
+            "name": "Kota Palu",
+            "lat": -0.9,
+            "lng": 119.8833,
+            "bbox": {
+                "minLat": -0.96,
+                "maxLat": -0.83,
+                "minLng": 119.82,
+                "maxLng": 119.95
+            }
+        },
+        "alu": {
+            "name": "Kota Palu",
+            "lat": -0.9,
+            "lng": 119.8833,
+            "bbox": {
+                "minLat": -0.96,
+                "maxLat": -0.83,
+                "minLng": 119.82,
+                "maxLng": 119.95
+            }
+        },
+        "otaendari": {
+            "name": "Kota Kendari",
+            "lat": -3.9985,
+            "lng": 122.5126,
+            "bbox": {
+                "minLat": -4.05,
+                "maxLat": -3.93,
+                "minLng": 122.45,
+                "maxLng": 122.58
+            }
+        },
+        "endari": {
+            "name": "Kota Kendari",
+            "lat": -3.9985,
+            "lng": 122.5126,
+            "bbox": {
+                "minLat": -4.05,
+                "maxLat": -3.93,
+                "minLng": 122.45,
+                "maxLng": 122.58
+            }
+        },
+        "otaaubau": {
+            "name": "Kota Baubau",
+            "lat": -5.4667,
+            "lng": 122.6,
+            "bbox": {
+                "minLat": -5.52,
+                "maxLat": -5.41,
+                "minLng": 122.55,
+                "maxLng": 122.66
+            }
+        },
+        "aubau": {
+            "name": "Kota Baubau",
+            "lat": -5.4667,
+            "lng": 122.6,
+            "bbox": {
+                "minLat": -5.52,
+                "maxLat": -5.41,
+                "minLng": 122.55,
+                "maxLng": 122.66
+            }
+        },
+        "otaorontalo": {
+            "name": "Kota Gorontalo",
+            "lat": 0.54,
+            "lng": 123.06,
+            "bbox": {
+                "minLat": 0.49,
+                "maxLat": 0.59,
+                "minLng": 123.01,
+                "maxLng": 123.11
+            }
+        },
+        "abupatenamuju": {
+            "name": "Kabupaten Mamuju",
+            "lat": -2.6775,
+            "lng": 118.8892,
+            "bbox": {
+                "minLat": -2.8,
+                "maxLat": -2.55,
+                "minLng": 118.75,
+                "maxLng": 119.05
+            }
+        },
+        "amuju": {
+            "name": "Kabupaten Mamuju",
+            "lat": -2.6775,
+            "lng": 118.8892,
+            "bbox": {
+                "minLat": -2.8,
+                "maxLat": -2.55,
+                "minLng": 118.75,
+                "maxLng": 119.05
+            }
+        },
+        "ayapuratara": {
+            "name": "Jayapura Utara",
+            "lat": -2.52,
+            "lng": 140.71,
+            "bbox": {
+                "minLat": -2.54,
+                "maxLat": -2.5,
+                "minLng": 140.69,
+                "maxLng": 140.73
+            }
+        },
+        "ayapuraelatan": {
+            "name": "Jayapura Selatan",
+            "lat": -2.55,
+            "lng": 140.69,
+            "bbox": {
+                "minLat": -2.57,
+                "maxLat": -2.53,
+                "minLng": 140.67,
+                "maxLng": 140.71
+            }
+        },
+        "bepura": {
+            "name": "Abepura",
+            "lat": -2.6,
+            "lng": 140.67,
+            "bbox": {
+                "minLat": -2.62,
+                "maxLat": -2.58,
+                "minLng": 140.65,
+                "maxLng": 140.69
+            }
+        },
+        "eramaena": {
+            "name": "Heram (Waena)",
+            "lat": -2.58,
+            "lng": 140.62,
+            "bbox": {
+                "minLat": -2.6,
+                "maxLat": -2.56,
+                "minLng": 140.6,
+                "maxLng": 140.64
+            }
+        },
+        "eram": {
+            "name": "Heram (Waena)",
+            "lat": -2.58,
+            "lng": 140.62,
+            "bbox": {
+                "minLat": -2.6,
+                "maxLat": -2.56,
+                "minLng": 140.6,
+                "maxLng": 140.64
+            }
+        },
+        "uaraamioya": {
+            "name": "Muara Tami (Koya)",
+            "lat": -2.62,
+            "lng": 140.85,
+            "bbox": {
+                "minLat": -2.65,
+                "maxLat": -2.59,
+                "minLng": 140.8,
+                "maxLng": 140.9
+            }
+        },
+        "uaraami": {
+            "name": "Muara Tami (Koya)",
+            "lat": -2.62,
+            "lng": 140.85,
+            "bbox": {
+                "minLat": -2.65,
+                "maxLat": -2.59,
+                "minLng": 140.8,
+                "maxLng": 140.9
+            }
+        },
+        "orongota": {
+            "name": "Sorong Kota",
+            "lat": -0.8762,
+            "lng": 131.2558,
+            "bbox": {
+                "minLat": -0.9,
+                "maxLat": -0.85,
+                "minLng": 131.23,
+                "maxLng": 131.28
+            }
+        },
+        "orongarat": {
+            "name": "Sorong Barat",
+            "lat": -0.865,
+            "lng": 131.24,
+            "bbox": {
+                "minLat": -0.88,
+                "maxLat": -0.84,
+                "minLng": 131.22,
+                "maxLng": 131.26
+            }
+        },
+        "orongimur": {
+            "name": "Sorong Timur",
+            "lat": -0.885,
+            "lng": 131.29,
+            "bbox": {
+                "minLat": -0.91,
+                "maxLat": -0.86,
+                "minLng": 131.27,
+                "maxLng": 131.31
+            }
+        },
+        "orongtara": {
+            "name": "Sorong Utara",
+            "lat": -0.85,
+            "lng": 131.27,
+            "bbox": {
+                "minLat": -0.87,
+                "maxLat": -0.83,
+                "minLng": 131.25,
+                "maxLng": 131.29
+            }
+        },
+        "eraukeota": {
+            "name": "Merauke Kota",
+            "lat": -8.4991,
+            "lng": 140.4018,
+            "bbox": {
+                "minLat": -8.53,
+                "maxLat": -8.47,
+                "minLng": 140.37,
+                "maxLng": 140.43
+            }
+        },
+        "emangga": {
+            "name": "Semangga",
+            "lat": -8.43,
+            "lng": 140.43,
+            "bbox": {
+                "minLat": -8.46,
+                "maxLat": -8.4,
+                "minLng": 140.4,
+                "maxLng": 140.46
+            }
+        },
+        "anahiring": {
+            "name": "Tanah Miring",
+            "lat": -8.38,
+            "lng": 140.48,
+            "bbox": {
+                "minLat": -8.42,
+                "maxLat": -8.35,
+                "minLng": 140.45,
+                "maxLng": 140.52
+            }
+        },
+        "imikaaruimikaota": {
+            "name": "Mimika Baru (Timika Kota)",
+            "lat": -4.5467,
+            "lng": 136.8833,
+            "bbox": {
+                "minLat": -4.58,
+                "maxLat": -4.51,
+                "minLng": 136.85,
+                "maxLng": 136.92
+            }
+        },
+        "imikaaru": {
+            "name": "Mimika Baru (Timika Kota)",
+            "lat": -4.5467,
+            "lng": 136.8833,
+            "bbox": {
+                "minLat": -4.58,
+                "maxLat": -4.51,
+                "minLng": 136.85,
+                "maxLng": 136.92
+            }
+        },
+        "ualaencana": {
+            "name": "Kuala Kencana",
+            "lat": -4.42,
+            "lng": 136.85,
+            "bbox": {
+                "minLat": -4.45,
+                "maxLat": -4.38,
+                "minLng": 136.82,
+                "maxLng": 136.88
+            }
+        },
+        "agelangtara": {
+            "name": "Magelang Utara",
+            "lat": -7.4589,
+            "lng": 110.2251,
+            "bbox": {
+                "minLat": -7.475,
+                "maxLat": -7.442,
+                "minLng": 110.212,
+                "maxLng": 110.238
+            }
+        },
+        "agelangengah": {
+            "name": "Magelang Tengah",
+            "lat": -7.4812,
+            "lng": 110.2195,
+            "bbox": {
+                "minLat": -7.492,
+                "maxLat": -7.47,
+                "minLng": 110.208,
+                "maxLng": 110.23
+            }
+        },
+        "agelangelatan": {
+            "name": "Magelang Selatan",
+            "lat": -7.4984,
+            "lng": 110.2223,
+            "bbox": {
+                "minLat": -7.512,
+                "maxLat": -7.485,
+                "minLng": 110.205,
+                "maxLng": 110.235
+            }
+        },
+        "ertoyudan": {
+            "name": "Mertoyudan",
+            "lat": -7.5147,
+            "lng": 110.2311,
+            "bbox": {
+                "minLat": -7.54,
+                "maxLat": -7.49,
+                "minLng": 110.21,
+                "maxLng": 110.255
+            }
+        },
+        "orobudur": {
+            "name": "Borobudur",
+            "lat": -7.6079,
+            "lng": 110.2038,
+            "bbox": {
+                "minLat": -7.64,
+                "maxLat": -7.575,
+                "minLng": 110.17,
+                "maxLng": 110.235
+            }
+        },
+        "untilan": {
+            "name": "Muntilan",
+            "lat": -7.5815,
+            "lng": 110.2974,
+            "bbox": {
+                "minLat": -7.61,
+                "maxLat": -7.55,
+                "minLng": 110.26,
+                "maxLng": 110.33
+            }
+        },
+        "ecang": {
+            "name": "Secang",
+            "lat": -7.4069,
+            "lng": 110.2505,
+            "bbox": {
+                "minLat": -7.435,
+                "maxLat": -7.38,
+                "minLng": 110.22,
+                "maxLng": 110.28
+            }
+        },
+        "emarangengah": {
+            "name": "Semarang Tengah",
+            "lat": -6.9822,
+            "lng": 110.4208,
+            "bbox": {
+                "minLat": -6.995,
+                "maxLat": -6.97,
+                "minLng": 110.41,
+                "maxLng": 110.435
+            }
+        },
+        "emarangarat": {
+            "name": "Semarang Barat",
+            "lat": -6.985,
+            "lng": 110.385,
+            "bbox": {
+                "minLat": -7.005,
+                "maxLat": -6.965,
+                "minLng": 110.36,
+                "maxLng": 110.41
+            }
+        },
+        "emarangimur": {
+            "name": "Semarang Timur",
+            "lat": -6.975,
+            "lng": 110.445,
+            "bbox": {
+                "minLat": -6.99,
+                "maxLat": -6.96,
+                "minLng": 110.43,
+                "maxLng": 110.46
+            }
+        },
+        "emarangelatan": {
+            "name": "Semarang Selatan",
+            "lat": -7.005,
+            "lng": 110.425,
+            "bbox": {
+                "minLat": -7.025,
+                "maxLat": -6.985,
+                "minLng": 110.41,
+                "maxLng": 110.44
+            }
+        },
+        "anjarsari": {
+            "name": "Banjarsari",
+            "lat": -7.55,
+            "lng": 110.82,
+            "bbox": {
+                "minLat": -7.57,
+                "maxLat": -7.53,
+                "minLng": 110.8,
+                "maxLng": 110.84
+            }
+        },
+        "ebres": {
+            "name": "Jebres",
+            "lat": -7.56,
+            "lng": 110.85,
+            "bbox": {
+                "minLat": -7.58,
+                "maxLat": -7.54,
+                "minLng": 110.83,
+                "maxLng": 110.87
+            }
+        },
+        "aweyan": {
+            "name": "Laweyan",
+            "lat": -7.565,
+            "lng": 110.795,
+            "bbox": {
+                "minLat": -7.585,
+                "maxLat": -7.545,
+                "minLng": 110.775,
+                "maxLng": 110.815
+            }
+        },
+        "anurejan": {
+            "name": "Danurejan",
+            "lat": -7.7932,
+            "lng": 110.3725,
+            "bbox": {
+                "minLat": -7.805,
+                "maxLat": -7.785,
+                "minLng": 110.365,
+                "maxLng": 110.38
+            }
+        },
+        "ondomanan": {
+            "name": "Gondomanan",
+            "lat": -7.8015,
+            "lng": 110.3685,
+            "bbox": {
+                "minLat": -7.81,
+                "maxLat": -7.795,
+                "minLng": 110.36,
+                "maxLng": 110.375
+            }
+        },
+        "alioboroedongtengen": {
+            "name": "Malioboro \/ Gedongtengen",
+            "lat": -7.7915,
+            "lng": 110.3621,
+            "bbox": {
+                "minLat": -7.8,
+                "maxLat": -7.785,
+                "minLng": 110.355,
+                "maxLng": 110.37
+            }
+        },
+        "egalsari": {
+            "name": "Tegalsari",
+            "lat": -7.265,
+            "lng": 112.738,
+            "bbox": {
+                "minLat": -7.28,
+                "maxLat": -7.25,
+                "minLng": 112.725,
+                "maxLng": 112.75
+            }
+        },
+        "ubeng": {
+            "name": "Gubeng",
+            "lat": -7.275,
+            "lng": 112.755,
+            "bbox": {
+                "minLat": -7.29,
+                "maxLat": -7.26,
+                "minLng": 112.74,
+                "maxLng": 112.77
+            }
+        },
+        "onokromo": {
+            "name": "Wonokromo",
+            "lat": -7.3,
+            "lng": 112.738,
+            "bbox": {
+                "minLat": -7.315,
+                "maxLat": -7.285,
+                "minLng": 112.72,
+                "maxLng": 112.755
+            }
+        },
+        "ungkut": {
+            "name": "Rungkut",
+            "lat": -7.32,
+            "lng": 112.78,
+            "bbox": {
+                "minLat": -7.34,
+                "maxLat": -7.3,
+                "minLng": 112.76,
+                "maxLng": 112.8
+            }
+        },
+        "jungandang": {
+            "name": "Ujung Pandang",
+            "lat": -5.135,
+            "lng": 119.41,
+            "bbox": {
+                "minLat": -5.15,
+                "maxLat": -5.12,
+                "minLng": 119.395,
+                "maxLng": 119.425
+            }
+        },
+        "anakkukang": {
+            "name": "Panakkukang",
+            "lat": -5.15,
+            "lng": 119.45,
+            "bbox": {
+                "minLat": -5.17,
+                "maxLat": -5.13,
+                "minLng": 119.435,
+                "maxLng": 119.465
+            }
+        },
+        "appocini": {
+            "name": "Rappocini",
+            "lat": -5.17,
+            "lng": 119.435,
+            "bbox": {
+                "minLat": -5.19,
+                "maxLat": -5.15,
+                "minLng": 119.42,
+                "maxLng": 119.45
+            }
+        },
+        "edanota": {
+            "name": "Medan Kota",
+            "lat": 3.585,
+            "lng": 98.685,
+            "bbox": {
+                "minLat": 3.565,
+                "maxLat": 3.605,
+                "minLng": 98.67,
+                "maxLng": 98.7
+            }
+        },
+        "edanetisah": {
+            "name": "Medan Petisah",
+            "lat": 3.595,
+            "lng": 98.665,
+            "bbox": {
+                "minLat": 3.575,
+                "maxLat": 3.615,
+                "minLng": 98.65,
+                "maxLng": 98.68
+            }
+        },
+        "edanarat": {
+            "name": "Medan Barat",
+            "lat": 3.61,
+            "lng": 98.675,
+            "bbox": {
+                "minLat": 3.59,
+                "maxLat": 3.63,
+                "minLng": 98.66,
+                "maxLng": 98.69
+            }
+        },
+        "enpasararat": {
+            "name": "Denpasar Barat",
+            "lat": -8.665,
+            "lng": 115.195,
+            "bbox": {
+                "minLat": -8.685,
+                "maxLat": -8.645,
+                "minLng": 115.18,
+                "maxLng": 115.21
+            }
+        },
+        "enpasarelatananur": {
+            "name": "Denpasar Selatan (Sanur)",
+            "lat": -8.695,
+            "lng": 115.24,
+            "bbox": {
+                "minLat": -8.72,
+                "maxLat": -8.67,
+                "minLng": 115.22,
+                "maxLng": 115.26
+            }
+        },
+        "enpasarelatan": {
+            "name": "Denpasar Selatan (Sanur)",
+            "lat": -8.695,
+            "lng": 115.24,
+            "bbox": {
+                "minLat": -8.72,
+                "maxLat": -8.67,
+                "minLng": 115.22,
+                "maxLng": 115.26
+            }
+        },
+        "enpasarimur": {
+            "name": "Denpasar Timur",
+            "lat": -8.645,
+            "lng": 115.235,
+            "bbox": {
+                "minLat": -8.665,
+                "maxLat": -8.625,
+                "minLng": 115.22,
+                "maxLng": 115.25
+            }
+        },
+        "enpasartara": {
+            "name": "Denpasar Utara",
+            "lat": -8.625,
+            "lng": 115.21,
+            "bbox": {
+                "minLat": -8.645,
+                "maxLat": -8.605,
+                "minLng": 115.195,
+                "maxLng": 115.225
+            }
+        },
+        "elurahanurabesi": {
+            "name": "Kelurahan Gurabesi",
+            "lat": -2.525,
+            "lng": 140.708,
+            "bbox": {
+                "minLat": -2.535,
+                "maxLat": -2.515,
+                "minLng": 140.7,
+                "maxLng": 140.715
+            }
+        },
+        "elurahananjungia": {
+            "name": "Kelurahan Tanjung Ria",
+            "lat": -2.515,
+            "lng": 140.715,
+            "bbox": {
+                "minLat": -2.525,
+                "maxLat": -2.505,
+                "minLng": 140.708,
+                "maxLng": 140.722
+            }
+        },
+        "elurahanmbi": {
+            "name": "Kelurahan Imbi",
+            "lat": -2.53,
+            "lng": 140.702,
+            "bbox": {
+                "minLat": -2.54,
+                "maxLat": -2.52,
+                "minLng": 140.695,
+                "maxLng": 140.71
+            }
+        },
+        "elurahanotaaru": {
+            "name": "Kelurahan Kota Baru",
+            "lat": -2.595,
+            "lng": 140.665,
+            "bbox": {
+                "minLat": -2.605,
+                "maxLat": -2.585,
+                "minLng": 140.655,
+                "maxLng": 140.675
+            }
+        },
+        "elurahanayhorock": {
+            "name": "Kelurahan Way Mhorock",
+            "lat": -2.605,
+            "lng": 140.675,
+            "bbox": {
+                "minLat": -2.615,
+                "maxLat": -2.595,
+                "minLng": 140.665,
+                "maxLng": 140.685
+            }
+        },
+        "elurahansano": {
+            "name": "Kelurahan Asano",
+            "lat": -2.615,
+            "lng": 140.685,
+            "bbox": {
+                "minLat": -2.625,
+                "maxLat": -2.605,
+                "minLng": 140.675,
+                "maxLng": 140.695
+            }
+        },
+        "edungsari": {
+            "name": "Kedungsari",
+            "lat": -7.4542,
+            "lng": 110.2215,
+            "bbox": {
+                "minLat": -7.46,
+                "maxLat": -7.448,
+                "minLng": 110.215,
+                "maxLng": 110.228
+            }
+        },
+        "ramatelatan": {
+            "name": "Kramat Selatan",
+            "lat": -7.461,
+            "lng": 110.228,
+            "bbox": {
+                "minLat": -7.468,
+                "maxLat": -7.454,
+                "minLng": 110.222,
+                "maxLng": 110.234
+            }
+        },
+        "ramattara": {
+            "name": "Kramat Utara",
+            "lat": -7.449,
+            "lng": 110.231,
+            "bbox": {
+                "minLat": -7.456,
+                "maxLat": -7.442,
+                "minLng": 110.225,
+                "maxLng": 110.238
+            }
+        },
+        "otrobangsan": {
+            "name": "Potrobangsan",
+            "lat": -7.468,
+            "lng": 110.223,
+            "bbox": {
+                "minLat": -7.474,
+                "maxLat": -7.462,
+                "minLng": 110.217,
+                "maxLng": 110.229
+            }
+        },
+        "ates": {
+            "name": "Wates",
+            "lat": -7.4625,
+            "lng": 110.2185,
+            "bbox": {
+                "minLat": -7.469,
+                "maxLat": -7.456,
+                "minLng": 110.212,
+                "maxLng": 110.225
+            }
+        },
+        "acaban": {
+            "name": "Cacaban",
+            "lat": -7.481,
+            "lng": 110.216,
+            "bbox": {
+                "minLat": -7.486,
+                "maxLat": -7.476,
+                "minLng": 110.21,
+                "maxLng": 110.222
+            }
+        },
+        "emirirejo": {
+            "name": "Kemirirejo",
+            "lat": -7.485,
+            "lng": 110.22,
+            "bbox": {
+                "minLat": -7.49,
+                "maxLat": -7.48,
+                "minLng": 110.214,
+                "maxLng": 110.226
+            }
+        },
+        "anjatan": {
+            "name": "Panjatan",
+            "lat": -7.478,
+            "lng": 110.224,
+            "bbox": {
+                "minLat": -7.484,
+                "maxLat": -7.472,
+                "minLng": 110.218,
+                "maxLng": 110.23
+            }
+        }
+    }
+}

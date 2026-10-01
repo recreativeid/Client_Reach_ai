@@ -1,13 +1,8 @@
 {
-    "state": "processing",
-    "pid": 13988,
-    "message": "Memanen: Kabupaten Jembrana...",
-    "processed": 5,
-    "total_pending": 9,
-    "current_region": "Kabupaten Jembrana",
-    "current_province": "Bali",
-    "total_places": 12657,
-    "started_at": "2026-09-28 09:00:48",
-    "updated_at": "2026-09-28 09:00:48",
-    "updated_at_ts": 1790578848
+    "state": "idle",
+    "message": "Deteksi wilayah Kota Magelang selesai.",
+    "current_region": "Kota Magelang",
+    "total_places": 257,
+    "last_completed": "2026-09-30 19:23:28",
+    "updated_at": "2026-09-30 19:23:28"
 }

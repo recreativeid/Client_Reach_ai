@@ -1,0 +1,17 @@
+{
+    "region": "Kabupaten Karangasem",
+    "province_id": "bali",
+    "date": "2026-09-29 17:49:30",
+    "bbox": {
+        "minLat": -8.5507222,
+        "maxLat": -8.1665993,
+        "minLng": 115.3899954,
+        "maxLng": 115.712436
+    },
+    "initial_count": 0,
+    "overpass_added": 1490,
+    "photon_added": 674,
+    "total_new": 2164,
+    "total_records": 2164,
+    "jsonl_file": "places_kabupaten_karangasem_20260929.jsonl"
+}

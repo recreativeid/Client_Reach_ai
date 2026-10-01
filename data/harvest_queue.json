@@ -1,6 +1,6 @@
 {
     "created_at": "2026-09-27 19:37:33",
-    "updated_at": "2026-09-28 09:00:48",
+    "updated_at": "2026-09-30 19:23:28",
     "items": [
         {
             "id": "hq_6ab9545d18490",
@@ -18,8 +18,8 @@
             "status": "done",
             "queued_at": "2026-09-27 19:37:33",
             "started_at": "2026-09-27 19:41:47",
-            "completed_at": "2026-09-27 19:46:14",
-            "places_found": 906,
+            "completed_at": "2026-09-30 19:23:28",
+            "places_found": 257,
             "error": null,
             "new_places": 0,
             "file": "places_kota_magelang_20260927.jsonl"
@@ -155,14 +155,24 @@
             "type": "kabupaten",
             "province_id": "bali",
             "province_name": "Bali",
-            "center": null,
-            "bbox": null,
-            "status": "processing",
+            "center": {
+                "lat": -8.3139706,
+                "lng": 114.6684648
+            },
+            "bbox": {
+                "minLat": -8.467138,
+                "maxLat": -8.1606139,
+                "minLng": 114.4316281,
+                "maxLng": 114.9366377
+            },
+            "status": "done",
             "queued_at": "2026-09-28 04:30:49",
-            "started_at": "2026-09-28 09:00:48",
-            "completed_at": null,
-            "places_found": 0,
-            "error": null
+            "started_at": "2026-09-29 09:47:35",
+            "completed_at": "2026-09-29 10:17:28",
+            "places_found": 26,
+            "error": null,
+            "new_places": 26,
+            "file": "places_kabupaten_jembrana_20260929.jsonl"
         },
         {
             "id": "hq_6ab9d159def4f",
@@ -170,14 +180,24 @@
             "type": "kabupaten",
             "province_id": "bali",
             "province_name": "Bali",
-            "center": null,
-            "bbox": null,
-            "status": "pending",
+            "center": {
+                "lat": -8.3587533,
+                "lng": 115.5472993
+            },
+            "bbox": {
+                "minLat": -8.5507222,
+                "maxLat": -8.1665993,
+                "minLng": 115.3899954,
+                "maxLng": 115.712436
+            },
+            "status": "done",
             "queued_at": "2026-09-28 04:30:49",
-            "started_at": null,
-            "completed_at": null,
-            "places_found": 0,
-            "error": null
+            "started_at": "2026-09-29 17:19:05",
+            "completed_at": "2026-09-29 17:49:30",
+            "places_found": 2164,
+            "error": null,
+            "new_places": 2164,
+            "file": "places_kabupaten_karangasem_20260929.jsonl"
         },
         {
             "id": "hq_6ab9d159def69",
@@ -185,14 +205,24 @@
             "type": "kabupaten",
             "province_id": "bali",
             "province_name": "Bali",
-            "center": null,
-            "bbox": null,
-            "status": "pending",
+            "center": {
+                "lat": -8.7455,
+                "lng": 115.5348
+            },
+            "bbox": {
+                "minLat": -9.0204,
+                "maxLat": -8.4589,
+                "minLng": 115.3534,
+                "maxLng": 115.7011
+            },
+            "status": "done",
             "queued_at": "2026-09-28 04:30:49",
-            "started_at": null,
-            "completed_at": null,
-            "places_found": 0,
-            "error": null
+            "started_at": "2026-09-29 17:49:32",
+            "completed_at": "2026-09-29 18:33:21",
+            "places_found": 1218,
+            "error": null,
+            "new_places": 1218,
+            "file": "places_kabupaten_klungkung_20260929.jsonl"
         },
         {
             "id": "hq_6ab9d159def86",
@@ -200,14 +230,24 @@
             "type": "kabupaten",
             "province_id": "bali",
             "province_name": "Bali",
-            "center": null,
-            "bbox": null,
-            "status": "pending",
+            "center": {
+                "lat": -8.5411,
+                "lng": 115.1256
+            },
+            "bbox": {
+                "minLat": -8.68,
+                "maxLat": -8.25,
+                "minLng": 114.95,
+                "maxLng": 115.25
+            },
+            "status": "done",
             "queued_at": "2026-09-28 04:30:49",
-            "started_at": null,
-            "completed_at": null,
-            "places_found": 0,
-            "error": null
+            "started_at": "2026-09-29 18:33:23",
+            "completed_at": "2026-09-29 18:42:25",
+            "places_found": 3748,
+            "error": null,
+            "new_places": 3748,
+            "file": "places_kabupaten_tabanan_20260929.jsonl"
         }
     ]
 }

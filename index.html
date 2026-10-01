@@ -23,7 +23,7 @@
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 
   <!-- App Custom Stylesheet -->
-  <link rel="stylesheet" href="assets/css/style.css?v=20260928_v4">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261001_v36">
 </head>
 <body>
 
@@ -338,6 +338,9 @@
         <a class="nav-link" data-page="scraper">
           <i class="fa-solid fa-map-location-dot"></i> Scraping Client
         </a>
+        <a class="nav-link" data-page="data-manager">
+          <i class="fa-solid fa-folder-tree"></i> Kelola Data Scraping
+        </a>
         <a class="nav-link" data-page="templates">
           <i class="fa-solid fa-message"></i> Template Pesan
         </a>
@@ -514,19 +517,6 @@
                   <span>Garis Merah Batas Aktif</span>
                 </span>
               </div>
-              
-              <!-- Wilayah Master Database Siap Pakai (Pintas Instan) -->
-              <div id="master-db-quick-chips" style="margin-bottom: 10px; padding: 7px 9px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
-                <div style="font-size: 0.66rem; font-weight: 600; color: #475569; margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between;">
-                  <span style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fa-solid fa-bolt" style="color: #2563eb;"></i> Wilayah Master Database Siap Pakai:
-                  </span>
-                  <span style="font-size: 0.62rem; color: #64748b;">Klik untuk akses instan</span>
-                </div>
-                <div id="ready-regions-chips-container" style="display: flex; gap: 5px; flex-wrap: wrap;">
-                  <!-- Dynamically populated by JS from API / Master DB -->
-                </div>
-              </div>
 
               <!-- Provinsi & Kab/Kota Dipisah Bertingkat (Wajib) -->
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
@@ -577,213 +567,124 @@
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════════ -->
-            <!-- DYNAMIC REGION BRANCHING ARCHITECTURE                           -->
-            <!-- Branch A: KOTA SUDAH TERPANEN (Master Database Siap)           -->
-            <!-- Branch B: KOTA BELUM TERPANEN (2 Opsi: Targeted vs Deteksi)    -->
+            <!-- UNIFIED SCRAPER CONTROLS (Parameter Target & Aksi Scraping)     -->
             <!-- ═══════════════════════════════════════════════════════════════ -->
-
-            <!-- BRANCH A: KOTA SUDAH TERPANEN (Denpasar, Badung, Magelang, dll) -->
-            <div id="branch-harvested-city" style="display: none; margin-bottom: 14px;">
-              <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 14px; box-shadow: 0 2px 6px rgba(16,185,129,0.08);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                  <span class="badge" style="background: #16a34a; color: #ffffff; font-size: 0.70rem; font-weight: 700; padding: 3px 8px; border-radius: 6px;">
-                    <i class="fa-solid fa-circle-check"></i> Master Database Siap
-                  </span>
-                  <span id="harvested-region-total-badge" class="badge" style="background: #dcfce7; color: #15803d; font-size: 0.72rem; font-weight: 700; border: 1px solid #86efac;">
-                    0 Tempat
-                  </span>
-                </div>
-                
-                <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;">
-                  <h4 id="harvested-region-title" style="margin: 0; font-size: 1.05rem; font-weight: 800; color: #0f172a;">-</h4>
-                  <span style="font-size: 0.72rem; color: #15803d; font-weight: 600;">Terpanen Lengkap</span>
-                </div>
-
-                <p style="margin: 0 0 10px; font-size: 0.74rem; color: #475569; line-height: 1.4;">
-                  Data seluruh tempat, profil usaha, nomor telepon, dan legalitas di wilayah ini telah tersedia di Master Database lokal.
-                </p>
-
-                <!-- Categories Preview Chips -->
-                <div id="harvested-categories-chips" style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 12px;"></div>
-
-                <!-- Tombol Aksi Utama: Buka Database -->
-                <button type="button" class="btn btn-primary btn-block" id="btn-open-master-db" style="padding: 12px 14px; font-size: 0.90rem; font-weight: 700; background: #059669; border-color: #059669; border-radius: 8px; box-shadow: 0 2px 8px rgba(5,150,105,0.25); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                  <i class="fa-solid fa-table-list"></i> 
-                  <span>Buka Database Wilayah</span>
-                  <span id="harvested-btn-count" style="background: rgba(255,255,255,0.25); padding: 2px 6px; border-radius: 4px; font-size: 0.80rem;">(0 Data)</span>
-                </button>
-
-                <div style="margin-top: 10px; font-size: 0.68rem; color: #166534; display: flex; align-items: center; justify-content: space-around; padding: 6px; background: #dcfce7; border-radius: 6px;">
-                  <span><i class="fa-solid fa-bolt"></i> Hasil instan (0.05 detik)</span>
-                  <span>•</span>
-                  <span><i class="fa-solid fa-filter"></i> Filter keyword/kategori/HP</span>
-                  <span>•</span>
-                  <span><i class="fa-solid fa-file-excel"></i> Ekspor Excel &amp; WA</span>
-                </div>
-              </div>
-
-              <!-- Collapsible Alternative: Targeted Scrape for Custom Keyword -->
-              <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-top: 8px;">
-                <button type="button" id="btn-toggle-custom-scrape" style="width: 100%; background: none; border: none; padding: 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #475569; font-size: 0.74rem; font-weight: 600;">
-                  <span><i class="fa-solid fa-sliders" style="color: #64748b;"></i> Butuh Scrape Target Kata Kunci Spesifik di Wilayah Ini?</span>
-                  <i class="fa-solid fa-chevron-down" id="custom-scrape-chevron" style="transition: transform 0.2s;"></i>
-                </button>
-                <div id="harvested-custom-scrape-panel" style="display: none; margin-top: 10px; border-top: 1px dashed #e2e8f0; padding-top: 10px;">
-                  <div style="font-size: 0.70rem; color: #64748b; margin-bottom: 8px;">
-                    Gunakan opsi ini jika Anda ingin melakukan pencarian kata kunci baru di luar data Master Database yang telah terpanen.
+            <div class="scraper-controls-card" style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
+              
+              <!-- Target Parameter Selector (Keyword vs Category) -->
+              <div class="form-group" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+                <div class="d-flex justify-between align-center" style="margin-bottom: 6px;">
+                  <span style="font-size: 0.74rem; font-weight: 700; color: #0f172a;">Target Sasaran Usaha</span>
+                  <div class="target-mode-toggle" style="display: flex; gap: 4px; background: #ffffff; border: 1px solid #e2e8f0; padding: 2px; border-radius: 6px;">
+                    <button type="button" class="target-toggle-btn" id="btn-toggle-keyword" style="padding: 3px 6px; font-size: 0.66rem; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: transparent; color: #64748b;">Cari Keyword</button>
+                    <button type="button" class="target-toggle-btn active" id="btn-toggle-preset" style="padding: 3px 6px; font-size: 0.66rem; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: #0f172a; color: #ffffff;">Pilih Kategori</button>
                   </div>
-                  <button type="button" class="btn btn-outline btn-block btn-sm" id="btn-switch-to-targeted" style="font-size: 0.76rem; font-weight: 600; padding: 8px;">
-                    <i class="fa-solid fa-crosshairs"></i> Buka Panel Targeted Scrape
-                  </button>
                 </div>
-              </div>
-            </div>
 
-            <!-- BRANCH B: KOTA BELUM TERPANEN (Jakarta, Surabaya, Bandung, Medan, dll) -->
-            <div id="branch-unharvested-city" style="display: block;">
-              <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                  <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 0.68rem; font-weight: 700; border: 1px solid #cbd5e1;">
-                    Wilayah Belum Terpanen
-                  </span>
-                  <span id="unharvested-region-name" style="font-size: 0.76rem; font-weight: 700; color: #0f172a;">
-                    Pilih Wilayah
-                  </span>
-                </div>
-                <div style="font-size: 0.72rem; color: #64748b;">
-                  Pilih salah satu dari <strong>2 Opsi Fleksibel</strong> di bawah ini:
-                </div>
-              </div>
-
-              <!-- JALUR 1: TARGETED SCRAPE (Pencarian Instan 2-4 Detik) -->
-              <div class="unharvested-branch-card" style="background: #ffffff; border: 1.5px solid #3b82f6; border-radius: 10px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(59,130,246,0.08);">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="background: #2563eb; color: #ffffff; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800;">1</span>
-                    <strong style="font-size: 0.82rem; color: #0f172a;">JALUR 1: TARGETED SCRAPE</strong>
+                <!-- Option 1: Search Keyword Box -->
+                <div id="target-keyword-box" style="display: none;">
+                  <div style="display: flex; gap: 6px;">
+                    <input type="text" id="target-keyword-input" class="form-input" 
+                           placeholder="Ketik kata kunci (misal: cafe, laundry, bengkel, klinik)..." value="cafe" style="font-size: 0.78rem;">
+                    <button class="btn btn-primary btn-sm" id="btn-trigger-search" title="Cari & Pratinjau Titik Potensial di Peta">
+                      <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
                   </div>
-                  <span class="badge" style="background: #eff6ff; color: #2563eb; font-size: 0.66rem; font-weight: 700; border: 1px solid #bfdbfe;">
-                    Pencarian Instan 2-4 Detik
-                  </span>
                 </div>
-                <p style="margin: 0 0 10px; font-size: 0.72rem; color: #475569; line-height: 1.35;">
-                  Ketik kata kunci (misal: cafe) atau pilih kategori (PT/CV). Klik "Scrape Data Lengkap" dan data langsung keluar siap WhatsApp &amp; Excel. Berlaku untuk 509 Kab/Kota.
-                </p>
 
-                <!-- Target Parameter Selector (Keyword vs Category) -->
-                <div class="form-group" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
-                  <div class="d-flex justify-between align-center" style="margin-bottom: 6px;">
-                    <span style="font-size: 0.72rem; font-weight: 700; color: #0f172a;">Target Sasaran Usaha</span>
-                    <div class="target-mode-toggle" style="display: flex; gap: 4px; background: #ffffff; border: 1px solid #e2e8f0; padding: 2px; border-radius: 6px;">
-                      <button type="button" class="target-toggle-btn" id="btn-toggle-keyword" style="padding: 3px 6px; font-size: 0.66rem; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: transparent; color: #64748b;">Cari Keyword</button>
-                      <button type="button" class="target-toggle-btn active" id="btn-toggle-preset" style="padding: 3px 6px; font-size: 0.66rem; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; background: #0f172a; color: #ffffff;">Pilih Kategori</button>
+                <!-- Option 2: Cascading Two-Tier Category Dropdowns -->
+                <div id="target-preset-box" style="display: block;">
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <div>
+                      <label style="font-size: 0.66rem; font-weight: 700; color: #334155; margin-bottom: 2px; display: block;">
+                        1. Pilih Bidang Utama:
+                      </label>
+                      <select id="target-sector-select" class="form-select" style="font-size: 0.76rem; font-weight: 600; background: #ffffff;">
+                        <option value="perusahaan" selected>Perusahaan, Korporasi & Industri (PT / CV)</option>
+                        <option value="konstruksi">Konstruksi, Arsitektur & Properti</option>
+                        <option value="jasa">Jasa Bisnis, Legal & Profesional</option>
+                        <option value="it">Teknologi, IT & Telekomunikasi</option>
+                        <option value="pendidikan">Pendidikan & Edukasi</option>
+                        <option value="kesehatan">Kesehatan, Medis & Farmasi</option>
+                        <option value="pemerintah">Instansi Pemerintah & Layanan Publik</option>
+                        <option value="kuliner">Kuliner, Makanan & Minuman</option>
+                        <option value="retail">Perdagangan, Retail & Toko</option>
+                        <option value="otomotif">Otomotif & Transportasi</option>
+                        <option value="akomodasi">Akomodasi, Pariwisata & Hiburan</option>
+                        <option value="kecantikan">Kecantikan, Kebugaran & Relaksasi</option>
+                        <option value="keuangan">Lembaga Keuangan & Asuransi</option>
+                        <option value="pertanian">Pertanian, Peternakan & Agribisnis</option>
+                        <option value="ibadah">Tempat Ibadah & Yayasan Sosial</option>
+                        <option value="lainnya">Bidang Lainnya & Usaha Umum</option>
+                      </select>
                     </div>
-                  </div>
-
-                  <!-- Option 1: Search Keyword Box -->
-                  <div id="target-keyword-box" style="display: none;">
-                    <div style="display: flex; gap: 6px;">
-                      <input type="text" id="target-keyword-input" class="form-input" 
-                             placeholder="Ketik kata kunci (misal: cafe, laundry, bengkel, klinik)..." value="cafe" style="font-size: 0.78rem;">
-                      <button class="btn btn-primary btn-sm" id="btn-trigger-search" title="Cari & Pratinjau Titik Potensial di Peta">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Option 2: Cascading Two-Tier Category Dropdowns -->
-                  <div id="target-preset-box" style="display: block;">
-                    <div style="display: flex; flex-direction: column; gap: 6px;">
-                      <div>
-                        <label style="font-size: 0.66rem; font-weight: 700; color: #334155; margin-bottom: 2px; display: block;">
-                          1. Pilih Bidang Utama:
-                        </label>
-                        <select id="target-sector-select" class="form-select" style="font-size: 0.76rem; font-weight: 600; background: #ffffff;">
-                          <option value="perusahaan" selected>Perusahaan, Korporasi & Industri (PT / CV)</option>
-                          <option value="konstruksi">Konstruksi, Arsitektur & Properti</option>
-                          <option value="jasa">Jasa Bisnis, Legal & Profesional</option>
-                          <option value="it">Teknologi, IT & Telekomunikasi</option>
-                          <option value="pendidikan">Pendidikan & Edukasi</option>
-                          <option value="kesehatan">Kesehatan, Medis & Farmasi</option>
-                          <option value="pemerintah">Instansi Pemerintah & Layanan Publik</option>
-                          <option value="kuliner">Kuliner, Makanan & Minuman</option>
-                          <option value="retail">Perdagangan, Retail & Toko</option>
-                          <option value="otomotif">Otomotif & Transportasi</option>
-                          <option value="akomodasi">Akomodasi, Pariwisata & Hiburan</option>
-                          <option value="kecantikan">Kecantikan, Kebugaran & Relaksasi</option>
-                          <option value="keuangan">Lembaga Keuangan & Asuransi</option>
-                          <option value="pertanian">Pertanian, Peternakan & Agribisnis</option>
-                          <option value="ibadah">Tempat Ibadah & Yayasan Sosial</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label style="font-size: 0.66rem; font-weight: 700; color: #334155; margin-bottom: 2px; display: block;">
-                          2. Pilih Jenis / Instansi Spesifik:
-                        </label>
-                        <select id="target-category-select" class="form-select" style="font-size: 0.76rem;">
-                          <option value="semua_perusahaan" selected>Semua Kantor Perusahaan & PT/CV</option>
-                          <option value="kantor_pt">Kantor PT (Perseroan Terbatas)</option>
-                          <option value="kantor_cv">Kantor CV (Persekutuan Komanditer)</option>
-                          <option value="pabrik_manufaktur">Pabrik, Manufaktur & Industri</option>
-                          <option value="distributor_supplier">Distributor, Supplier & Agen Grosir</option>
-                          <option value="pergudangan_logistik">Pergudangan (Warehouse) & Depo</option>
-                          <option value="holding_corporate">Kantor Pusat / Holding Corporate</option>
-                        </select>
-                      </div>
+                    <div>
+                      <label style="font-size: 0.66rem; font-weight: 700; color: #334155; margin-bottom: 2px; display: block;">
+                        2. Pilih Jenis / Instansi Spesifik:
+                      </label>
+                      <select id="target-category-select" class="form-select" style="font-size: 0.76rem;">
+                        <option value="semua_perusahaan" selected>Semua Kantor Perusahaan & PT/CV</option>
+                        <option value="kantor_pt">Kantor PT (Perseroan Terbatas)</option>
+                        <option value="kantor_cv">Kantor CV (Persekutuan Komanditer)</option>
+                        <option value="pabrik_manufaktur">Pabrik, Manufaktur & Industri</option>
+                        <option value="distributor_supplier">Distributor, Supplier & Agen Grosir</option>
+                        <option value="pergudangan_logistik">Pergudangan (Warehouse) & Depo</option>
+                        <option value="holding_corporate">Kantor Pusat / Holding Corporate</option>
+                      </select>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <!-- Candidate Places Preview List -->
-                <div style="margin-bottom: 10px;">
-                  <div class="d-flex justify-between align-center" style="margin-bottom: 4px;">
-                    <span style="font-size: 0.72rem; font-weight: 600; color: #0f172a;">Pratinjau Calon Klien</span>
-                    <span class="badge" style="background:#ffffff; border:1px solid #e2e8f0; color:#0f172a; font-size: 0.65rem;" id="preview-count-badge">Memuat...</span>
-                  </div>
-                  <div id="pre-scrape-places-list" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; max-height: 95px; overflow-y: auto;">
-                  </div>
+              <!-- Candidate Places Preview List -->
+              <div style="margin-bottom: 12px;">
+                <div class="d-flex justify-between align-center" style="margin-bottom: 4px;">
+                  <span style="font-size: 0.72rem; font-weight: 600; color: #0f172a;">Pratinjau Calon Klien</span>
+                  <span class="badge" style="background:#ffffff; border:1px solid #e2e8f0; color:#0f172a; font-size: 0.65rem;" id="preview-count-badge">Memuat...</span>
+                </div>
+                <div id="pre-scrape-places-list" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; max-height: 95px; overflow-y: auto;">
+                </div>
+              </div>
+
+              <!-- Dua Pilihan Tombol Scraping & Deteksi -->
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Opsi Fleksibel: Filter Khusus WhatsApp -->
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 7px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                  <label for="scraper-only-wa-toggle" style="font-size: 0.72rem; font-weight: 600; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
+                    <i class="fa-brands fa-whatsapp" style="color: #16a34a; font-size: 0.88rem;"></i>
+                    <span>Hanya simpan tempat yang memiliki WhatsApp (08xx)</span>
+                  </label>
+                  <input type="checkbox" id="scraper-only-wa-toggle" style="width: 16px; height: 16px; cursor: pointer; accent-color: #16a34a;" title="Centang untuk hanya menyimpan data yang memiliki nomor WhatsApp">
                 </div>
 
-                <!-- Primary Scrape Action Button -->
-                <button class="btn btn-primary btn-block" id="btn-execute-scrape" style="padding: 10px; font-size: 0.85rem; font-weight: 700;">
-                  <i class="fa-solid fa-bolt"></i> Scrape Data Lengkap (Instan 2-4 Detik)
+                <!-- Tombol 1: Deteksi Seluruh Bisnis di Wilayah Ini Sekarang -->
+                <button type="button" class="btn btn-primary btn-block" id="btn-sapu-bersih" style="padding: 11px; font-size: 0.86rem; font-weight: 700; background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; border-radius: 8px; box-shadow: 0 3px 10px rgba(37,99,235,0.22); display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; color: #ffffff;">
+                  <i class="fa-solid fa-crosshairs"></i>
+                  <span>Deteksi Seluruh Bisnis di Wilayah Ini Sekarang</span>
+                </button>
+
+                <!-- Tombol 2: Scrape Instan Berdasarkan Target -->
+                <button class="btn btn-outline btn-block" id="btn-execute-scrape" style="padding: 10px; font-size: 0.82rem; font-weight: 600; border: 1.5px solid #2563eb; color: #2563eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #ffffff;">
+                  <i class="fa-solid fa-bolt"></i>
+                  <span>Scrape Data Lengkap (Instan 2-4 Detik)</span>
                 </button>
               </div>
 
-              <!-- JALUR 2: DETEKSI LENGKAP (Perekaman Permanen) -->
-              <div class="unharvested-branch-card" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="background: #0f172a; color: #ffffff; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800;">2</span>
-                    <strong style="font-size: 0.82rem; color: #0f172a;">JALUR 2: DETEKSI LENGKAP</strong>
-                  </div>
-                  <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 0.66rem; font-weight: 700; border: 1px solid #cbd5e1;">
-                    Perekaman Permanen
-                  </span>
+              <!-- Progress Bar Deteksi Wilayah -->
+              <div id="sapu-bersih-progress" style="display: none; margin-top: 10px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 10px; font-size: 0.74rem; color: #166534;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <strong style="display: flex; align-items: center; gap: 6px; font-size: 0.74rem;">
+                    <span class="spinner-border-sm" style="display: inline-block; width: 10px; height: 10px; border: 2px solid #86efac; border-top-color: #16a34a; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+                    Proses Deteksi Wilayah Berjalan...
+                  </strong>
+                  <span id="sapu-progress-pct" style="font-weight: 700; color: #16a34a;">0%</span>
                 </div>
-                <p style="margin: 0 0 10px; font-size: 0.72rem; color: #475569; line-height: 1.35;">
-                  Worker memanen otomatis di background dan menyimpan ke Master DB lokal. Setelah selesai, wilayah ini otomatis masuk ke Jalur Kota Terpanen.
-                </p>
-
-                <button type="button" class="btn btn-primary btn-block" id="btn-sapu-bersih" style="padding: 10px; font-size: 0.82rem; font-weight: 700; background: #0f172a; border-color: #0f172a;">
-                  <i class="fa-solid fa-crosshairs"></i> Deteksi Seluruh Bisnis di Wilayah Ini
-                </button>
-
-                <!-- Progress Bar Deteksi Wilayah -->
-                <div id="sapu-bersih-progress" style="display: none; margin-top: 10px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 10px; font-size: 0.74rem; color: #166534;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <strong style="display: flex; align-items: center; gap: 6px; font-size: 0.74rem;">
-                      <span class="spinner-border-sm" style="display: inline-block; width: 10px; height: 10px; border: 2px solid #86efac; border-top-color: #16a34a; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
-                      Proses Deteksi Wilayah Berjalan...
-                    </strong>
-                    <span id="sapu-progress-pct" style="font-weight: 700; color: #16a34a;">0%</span>
-                  </div>
-                  <div style="background: #dcfce7; border-radius: 4px; height: 6px; overflow: hidden;">
-                    <div id="sapu-progress-bar" style="height: 100%; background: #16a34a; border-radius: 4px; width: 0%; transition: width 0.3s;"></div>
-                  </div>
-                  <div id="sapu-progress-label" style="margin-top: 6px; font-size: 0.70rem; color: #475569;">Memulai proses...</div>
+                <div style="background: #dcfce7; border-radius: 4px; height: 6px; overflow: hidden;">
+                  <div id="sapu-progress-bar" style="height: 100%; background: #16a34a; border-radius: 4px; width: 0%; transition: width 0.3s;"></div>
                 </div>
+                <div id="sapu-progress-label" style="margin-top: 6px; font-size: 0.70rem; color: #475569;">Memulai proses...</div>
               </div>
+
             </div>
 
           </div>
@@ -889,6 +790,12 @@
                        placeholder="Cari nama, alamat, atau jenis usaha..." 
                        style="font-size: 0.8rem; padding: 8px 10px 8px 32px; width: 100%;">
               </div>
+              <!-- Subdistrict / Kecamatan Filter -->
+              <div style="flex: 1; min-width: 150px;">
+                <select id="db-filter-subdistrict" class="form-select" style="font-size: 0.8rem; padding: 8px 10px; width: 100%;">
+                  <option value="">Semua Kecamatan</option>
+                </select>
+              </div>
               <!-- Category Filter -->
               <div style="flex: 1; min-width: 160px;">
                 <select id="db-filter-category" class="form-select" style="font-size: 0.8rem; padding: 8px 10px; width: 100%;">
@@ -945,6 +852,188 @@
       </div>
     </section>
 
+    <!-- ==============================================================
+         2.5 MENU KELOLA DATA SCRAPING (38 Provinsi Hierarchical Explorer)
+         ============================================================== -->
+    <section id="view-data-manager" class="page-view">
+      <div class="page-header" style="margin-bottom: 14px;">
+        <div class="d-flex justify-between align-center">
+          <div>
+            <h2 class="page-title" style="display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-folder-tree" style="color: #2563eb;"></i>
+              Kelola Data Scraping
+            </h2>
+            <p class="page-subtitle">
+              Pusat arsip dan direktori database bisnis seluruh Indonesia berbasis hierarki 38 Provinsi, Kota/Kabupaten, dan Sektor
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="badge" id="dm-total-all-badge" style="background: #eff6ff; color: #2563eb; border: 1.5px solid #bfdbfe; font-size: 0.82rem; padding: 6px 12px; font-weight: 700;">
+              0 Bisnis Terpanen
+            </span>
+            <button type="button" class="btn btn-outline btn-sm" onclick="window.DataManager.loadTreeData();" title="Refresh Data">
+              <i class="fa-solid fa-rotate"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-COLUMN EXPLORER LAYOUT -->
+      <div style="display: grid; grid-template-columns: 320px 1fr; gap: 16px; align-items: start;">
+        
+        <!-- LEFT COLUMN: FOLDER TREE NAVIGATOR (38 PROVINCES) -->
+        <div class="card" style="padding: 14px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); max-height: calc(100vh - 170px); display: flex; flex-direction: column;">
+          <div style="margin-bottom: 10px;">
+            <div style="font-size: 0.76rem; font-weight: 700; color: #0f172a; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+              <span><i class="fa-solid fa-sitemap" style="color: #2563eb;"></i> 38 Provinsi Indonesia</span>
+              <span style="font-size: 0.68rem; color: #64748b; font-weight: 500;">Pilih folder wilayah</span>
+            </div>
+            <div style="position: relative;">
+              <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.75rem;"></i>
+              <input type="text" id="dm-tree-search" class="form-input" placeholder="Cari provinsi / kota..." style="padding-left: 28px; font-size: 0.76rem; height: 32px; border-radius: 6px;">
+            </div>
+          </div>
+
+          <!-- Tree Scroll Area -->
+          <div id="dm-folder-tree" style="overflow-y: auto; flex: 1; padding-right: 4px;">
+            <!-- Rendered by DataManager.renderTree() -->
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: DATA WORKSPACE & PREVIEW -->
+        <div class="card" style="padding: 16px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); min-height: 550px;">
+          
+          <!-- Breadcrumb & Main Header -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <div id="dm-breadcrumb" style="display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: #64748b; margin-bottom: 4px;">
+                <span>Indonesia</span>
+              </div>
+              <h3 id="dm-view-title" style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #0f172a;">
+                Pilih Wilayah
+              </h3>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-outline btn-sm" id="dm-btn-open-map" style="font-size: 0.76rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; color: #2563eb; border-color: #bfdbfe;">
+                <i class="fa-solid fa-map"></i> Buka di Peta
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" id="dm-btn-export-csv" style="font-size: 0.76rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;">
+                <i class="fa-solid fa-file-csv"></i> Export CSV
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" id="dm-btn-export-excel" style="font-size: 0.76rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: #059669; border-color: #059669;">
+                <i class="fa-solid fa-file-excel"></i> Export Excel
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" id="dm-btn-save-archive" onclick="window.DataManager.openSaveArchiveModal()" style="font-size: 0.76rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; color: #7c3aed; border-color: #c4b5fd; background: #f5f3ff;" title="Simpan data prospek yang tampil ke folder Koleksi Arsip Google Drive">
+                <i class="fa-solid fa-folder-plus"></i> Simpan ke Arsip
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Stat Cards -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 14px;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px;">
+              <div style="font-size: 0.68rem; color: #64748b; font-weight: 600;">Total Tempat Terdaftar</div>
+              <div id="dm-stat-total" style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">0</div>
+            </div>
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px;">
+              <div style="font-size: 0.68rem; color: #166534; font-weight: 600;">Telepon / WhatsApp</div>
+              <div id="dm-stat-phone" style="font-size: 0.85rem; font-weight: 700; color: #15803d; margin-top: 4px;">0 kontak terverifikasi</div>
+            </div>
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px;">
+              <div style="font-size: 0.68rem; color: #1e40af; font-weight: 600;">Website &amp; Media</div>
+              <div id="dm-stat-web" style="font-size: 0.85rem; font-weight: 700; color: #1d4ed8; margin-top: 4px;">0 website aktif</div>
+            </div>
+          </div>
+
+          <!-- Sector Filter Chips -->
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 0.70rem; font-weight: 600; color: #475569; margin-bottom: 6px;">Filter Sektor Bisnis:</div>
+            <div id="dm-sector-chips" style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Interactive Embedded Map for Scraped Places -->
+          <div id="dm-map-wrapper" style="margin-bottom: 14px; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 7px 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 0.78rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-map-location-dot" style="color: #2563eb;"></i> Peta Sebaran Bisnis Wilayah
+                </span>
+                <span id="dm-map-pin-count" class="badge" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; font-size: 0.68rem; font-weight: 600;">
+                  0 Titik di Peta
+                </span>
+                <span style="font-size: 0.68rem; color: #64748b;">(Klik pin di peta untuk scroll otomatis ke baris tabel)</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <button type="button" class="btn btn-outline btn-sm" id="dm-btn-fit-map" onclick="window.DataManager.fitMapBounds();" style="font-size: 0.70rem; padding: 3px 8px;" title="Pusatkan Semua Titik Lokasi">
+                  <i class="fa-solid fa-expand"></i> Pas'kan Peta
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" id="dm-btn-toggle-map" onclick="window.DataManager.toggleMap();" style="font-size: 0.70rem; padding: 3px 8px;" title="Tampilkan/Sembunyikan Peta">
+                  <i class="fa-solid fa-eye-slash" id="dm-toggle-map-icon"></i> <span id="dm-toggle-map-text">Sembunyikan</span>
+                </button>
+              </div>
+            </div>
+            <div id="dm-map-container" style="width: 100%; height: 260px; position: relative;"></div>
+          </div>
+
+          <!-- Search & Table Toolbar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 8px; flex: 1; min-width: 280px; align-items: center; flex-wrap: wrap;">
+              <div style="position: relative; max-width: 260px; width: 100%;">
+                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.75rem;"></i>
+                <input type="text" id="dm-table-search" class="form-input" placeholder="Cari nama bisnis, alamat, kategori..." style="padding-left: 28px; font-size: 0.76rem; height: 32px;">
+              </div>
+              <div class="dm-phone-filter-group" style="display: flex; gap: 6px;">
+                <button type="button" class="btn btn-outline btn-sm dm-filter-phone active" data-phone="wa" onclick="window.DataManager.filterPhone('wa')" style="font-size: 0.72rem; padding: 5px 12px; font-weight: 700; background: #059669; color: #ffffff; border-color: #059669; display: inline-flex; align-items: center; gap: 6px;" title="Tampilkan hanya bisnis yang memiliki nomor WhatsApp">
+                  <i class="fa-brands fa-whatsapp" style="font-size: 0.85rem;"></i> Khusus WhatsApp (Siap Chat)
+                </button>
+                <button type="button" class="btn btn-outline btn-sm dm-filter-phone" data-phone="" onclick="window.DataManager.filterPhone('')" style="font-size: 0.72rem; padding: 5px 12px; font-weight: 500; color: #475569; border-color: #cbd5e1; background: #ffffff; display: inline-flex; align-items: center; gap: 6px;" title="Tampilkan seluruh bisnis di wilayah ini">
+                  <i class="fa-solid fa-list-ul"></i> Semua Data Wilayah
+                </button>
+              </div>
+            </div>
+            <div id="dm-pagination-info" style="font-size: 0.74rem; color: #64748b; font-weight: 500;">
+              Halaman 1 dari 1
+            </div>
+          </div>
+
+          <!-- Interactive Table -->
+          <div class="table-responsive" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow-x: auto;">
+            <table class="table-clean" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                  <th style="padding: 10px; font-size: 0.72rem; color: #475569; text-align: center; width: 45px;">No</th>
+                  <th style="padding: 10px; font-size: 0.72rem; color: #475569; text-align: left;">Nama Bisnis / Tempat</th>
+                  <th style="padding: 10px; font-size: 0.72rem; color: #475569; text-align: left;">Kategori</th>
+                  <th style="padding: 10px; font-size: 0.72rem; color: #475569; text-align: left;">Alamat</th>
+                  <th style="padding: 10px; font-size: 0.72rem; color: #475569; text-align: left;">Telepon / WA</th>
+                  <th style="padding: 10px; font-size: 0.72rem; color: #475569; text-align: left;">Website</th>
+                  <th style="padding: 10px; font-size: 0.72rem; color: #475569; text-align: center; width: 90px;">Aksi / Peta</th>
+                </tr>
+              </thead>
+              <tbody id="dm-table-body">
+                <!-- Dynamically filled -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Table Pagination Footer -->
+          <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 12px;">
+            <button type="button" class="btn btn-outline btn-sm" id="dm-btn-prev" disabled style="font-size: 0.74rem; padding: 5px 12px;">
+              <i class="fa-solid fa-chevron-left"></i> Sebelumnya
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" id="dm-btn-next" disabled style="font-size: 0.74rem; padding: 5px 12px;">
+              Berikutnya <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
 
     <!-- ==============================================================
          3. MENU KELOLA TEMPLATE PESAN
@@ -1546,7 +1635,13 @@
             </button>
           </div>
 
-          <div style="display: flex; gap: 8px;">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <a href="database/cpanel_mysql_dump.sql" download="cpanel_mysql_dump.sql" class="btn btn-outline btn-sm" id="btn-download-cpanel-sql" style="color: #0284c7; border-color: #bae6fd;" title="Unduh dump database SQL untuk diimpor ke phpMyAdmin cPanel">
+              <i class="fa-solid fa-database"></i> Unduh SQL cPanel
+            </a>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-sync-sqlite-db" style="color: #16a34a; border-color: #bbf7d0;" title="Sinkronkan data hasil panen ke database SQLite dan cPanel">
+              <i class="fa-solid fa-rotate"></i> Sinkron Database
+            </button>
             <button type="button" class="btn btn-outline btn-sm" id="btn-refresh-tables">
               <i class="fa-solid fa-arrows-rotate"></i> Refresh Tabel
             </button>
@@ -1973,10 +2068,10 @@
           </div>
           <div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <strong style="font-size: 0.95rem; color: #0f172a;">Rincian Sumber Data Prospek</strong>
-              <span class="badge" style="background:#f1f5f9; border: 1px solid #cbd5e1; color:#334155; font-size: 0.68rem; font-weight: 600;"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> 3 Sumber Terverifikasi</span>
+              <strong style="font-size: 0.95rem; color: #0f172a;">Rincian Validasi &amp; Kesiapan Prospek</strong>
+              <span class="badge" style="background:#f1f5f9; border: 1px solid #cbd5e1; color:#334155; font-size: 0.68rem; font-weight: 600;"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Verifikasi Asli Tanpa Data Palsu</span>
             </div>
-            <div style="font-size: 0.72rem; color: #64748b;">Rangkuman data terpadu dari Google Maps, Yelp, dan OpenStreetMap.</div>
+            <div style="font-size: 0.72rem; color: #64748b;">Rangkuman data terpadu dari Direktori Peta Digital, Validasi WhatsApp, dan Geospasial Wilayah.</div>
           </div>
         </div>
         <button class="btn-icon-toggle btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
@@ -2012,65 +2107,65 @@
             </div>
           </div>
           <p class="channel-desc" style="font-size: 0.71rem; color: #475569; margin: 4px 0 10px; line-height: 1.35;">
-            <strong>Fungsi:</strong> Menampilkan profil utama tempat usaha, jam buka operasional, nomor kontak telepon/WA, dan rating keramaian.
+            <strong>Fungsi:</strong> Menampilkan profil utama tempat usaha, keberadaan bisnis di peta publik, serta koordinat geospasial presisi.
           </p>
           <div class="channel-metric-list">
             <div class="metric-row">
-              <span class="metric-label">Rating Bisnis</span>
-              <span class="metric-val" id="insight-alpha-rating"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.8 / 5.0</span>
+              <span class="metric-label">Status Profil</span>
+              <span class="metric-val text-green" id="insight-alpha-status">Terdaftar di Peta</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-label">Rating Sumber</span>
+              <span class="metric-val" id="insight-alpha-rating">-</span>
             </div>
             <div class="metric-row">
               <span class="metric-label">Total Ulasan</span>
-              <span class="metric-val" id="insight-alpha-reviews">420 Ulasan</span>
+              <span class="metric-val" id="insight-alpha-reviews">-</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Status Operasional</span>
-              <span class="metric-val text-green" id="insight-alpha-status">Buka Normal</span>
-            </div>
-            <div class="metric-row">
-              <span class="metric-label">Tingkat Kunjungan</span>
-              <span class="metric-val" id="insight-alpha-popularity">Ramai / Aktif</span>
+              <span class="metric-label">Validitas Peta</span>
+              <span class="metric-val" id="insight-alpha-popularity">Terverifikasi</span>
             </div>
           </div>
           <div class="channel-highlight" id="insight-alpha-summary">
-            Profil usaha aktif di Google Maps dengan kontak terverifikasi.
+            Profil usaha aktif di direktori peta digital dengan koordinat geospasial riil.
           </div>
         </div>
 
-        <!-- CARD 2: Yelp -->
+        <!-- CARD 2: Kesiapan WhatsApp & Outreach -->
         <div class="insight-channel-card">
           <div class="channel-card-header">
-            <div class="channel-card-icon beta-icon" style="background: #fef2f2; color: #dc2626;">
-              <i class="fa-brands fa-yelp"></i>
+            <div class="channel-card-icon beta-icon" style="background: #ecfdf5; color: #059669;">
+              <i class="fa-brands fa-whatsapp"></i>
             </div>
             <div>
-              <div class="channel-tag tag-beta" style="color: #dc2626;">Ulasan &amp; Mutu</div>
-              <h4 class="channel-title">Yelp</h4>
+              <div class="channel-tag tag-beta" style="color: #059669; background: #ecfdf5; border-color: #a7f3d0;">Saluran Outreach</div>
+              <h4 class="channel-title">WhatsApp &amp; Kontak</h4>
             </div>
           </div>
           <p class="channel-desc" style="font-size: 0.71rem; color: #475569; margin: 4px 0 10px; line-height: 1.35;">
-            <strong>Fungsi:</strong> Mengukur reputasi dan mutu pelayanan berdasarkan analisis sentimen ulasan kepuasan pelanggan serta rekomendasi.
+            <strong>Fungsi:</strong> Mengidentifikasi apakah bisnis memiliki nomor WhatsApp seluler (08xx) untuk dihubungi chat penawaran layanan.
           </p>
           <div class="channel-metric-list">
             <div class="metric-row">
-              <span class="metric-label">Sentimen Positif</span>
-              <span class="metric-val" id="insight-beta-sentiment">96% Positif</span>
+              <span class="metric-label">Kesiapan Chat</span>
+              <span class="metric-val" id="insight-beta-sentiment" style="color: #059669; font-weight: 700;">Siap Chat WA</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Kisaran Harga</span>
-              <span class="metric-val" id="insight-beta-price">Menengah ($$)</span>
+              <span class="metric-label">Tipe Saluran</span>
+              <span class="metric-val" id="insight-beta-price">WhatsApp Seluler</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Mutu Pelayanan</span>
-              <span class="metric-val" id="insight-beta-satisfaction">Sangat Baik</span>
+              <span class="metric-label">Prioritas Prospek</span>
+              <span class="metric-val" id="insight-beta-satisfaction">Tinggi</span>
             </div>
             <div class="metric-row">
-              <span class="metric-label">Rasio Rekomendasi</span>
-              <span class="metric-val" id="insight-beta-recommend">94% Pelanggan</span>
+              <span class="metric-label">Format Kontak</span>
+              <span class="metric-val" id="insight-beta-recommend">08xx / 628xx</span>
             </div>
           </div>
-          <div class="channel-highlight" id="insight-beta-summary">
-            Memiliki reputasi stabil dan rekam jejak kepuasan konsumen tinggi.
+          <div class="channel-highlight" id="insight-beta-summary" style="background: #ecfdf5; border-color: #a7f3d0; color: #065f46;">
+            Memiliki nomor seluler WhatsApp yang siap dihubungi langsung untuk penawaran layanan.
           </div>
         </div>
 
@@ -2656,24 +2751,24 @@
             </ul>
           </div>
 
-          <!-- Source 3: Business Reputation & Directory -->
-          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-left: 4px solid #8b5cf6; border-radius: 8px; padding: 12px;">
+          <!-- Source 3: WhatsApp & Direct Outreach Validation -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-left: 4px solid #059669; border-radius: 8px; padding: 12px;">
             <div class="d-flex justify-between align-center" style="margin-bottom: 6px;">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <div style="background: #f5f3ff; color: #8b5cf6; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem;">
-                  <i class="fa-solid fa-award"></i>
+                <div style="background: #ecfdf5; color: #059669; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem;">
+                  <i class="fa-brands fa-whatsapp"></i>
                 </div>
                 <div>
-                  <strong style="font-size: 0.82rem; color: #0f172a;">Business Reputation &amp; Review Directory (Yelp Index)</strong>
-                  <span style="font-size: 0.64rem; color: #64748b; display: block;">Saluran Beta (Kurasi Mutu &amp; Sentimen Konsumen)</span>
+                  <strong style="font-size: 0.82rem; color: #0f172a;">Validasi Kontak &amp; Kesiapan WhatsApp (Direct Outreach)</strong>
+                  <span style="font-size: 0.64rem; color: #64748b; display: block;">Saluran Outreach (Klasifikasi Nomor Seluler &amp; Telepon Kantor)</span>
                 </div>
               </div>
-              <span class="badge badge-green" style="font-size: 0.64rem;"><i class="fa-solid fa-check"></i> Terhubung Aktif</span>
+              <span class="badge badge-green" style="font-size: 0.64rem;"><i class="fa-solid fa-check"></i> Asli &amp; Terverifikasi</span>
             </div>
             <ul style="font-size: 0.72rem; color: #475569; margin: 0; padding-left: 18px; line-height: 1.5;">
-              <li><strong>Sentimen Ulasan:</strong> Analisis kepuasan konsumen (persentase respon positif 92% - 98%).</li>
-              <li><strong>Segmentasi Pasar:</strong> Klasifikasi tingkat harga bisnis ($, $$, $$$) untuk kualifikasi target closing.</li>
-              <li><strong>Lencana Emas 3/3 Validasi:</strong> Menggabungkan keabsahan Google Maps, OpenStreetMap, dan Indeks Mutu.</li>
+              <li><strong>Deteksi WhatsApp Seluler:</strong> Mengidentifikasi format 08xx / 628xx yang siap dikontak penawaran via WhatsApp.</li>
+              <li><strong>Pembedaan Telepon Kantor:</strong> Menandai nomor kabel/PSTN lokal (02xx / 03xx) untuk panggilan suara telepon.</li>
+              <li><strong>Zero Data Palsu:</strong> Menjamin 100% nomor berasal dari sumber resmi direktori, tanpa generator acak.</li>
             </ul>
           </div>
 
@@ -2699,6 +2794,10 @@
       <i class="fa-solid fa-map-location-dot"></i>
       <span>Scraping</span>
     </div>
+    <div class="mobile-nav-item" data-page="data-manager">
+      <i class="fa-solid fa-folder-tree"></i>
+      <span>Kelola Data</span>
+    </div>
     <div class="mobile-nav-item" data-page="templates">
       <i class="fa-solid fa-message"></i>
       <span>Template</span>
@@ -2719,17 +2818,18 @@
 
   <!-- Supabase Cloud SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/js/supabase.js?v=20260928_v5"></script>
+  <script src="assets/js/supabase.js?v=20261001_v38"></script>
 
   <!-- Application Modules -->
-  <script src="assets/js/regions_data.js?v=20260928_v5"></script>
-  <script src="assets/js/map.js?v=20260928_v5"></script>
-  <script src="assets/js/templates.js?v=20260928_v5"></script>
-  <script src="assets/js/archives.js?v=20260928_v5"></script>
-  <script src="assets/js/scraper.js?v=20260928_v5"></script>
-  <script src="assets/js/auth.js?v=20260928_v5"></script>
-  <script src="assets/js/customers.js?v=20260928_v5"></script>
-  <script src="assets/js/harvest.js?v=20260928_v5"></script>
-  <script src="assets/js/app.js?v=20260928_v5"></script>
+  <script src="assets/js/regions_data.js?v=20261001_v38"></script>
+  <script src="assets/js/map.js?v=20261001_v38"></script>
+  <script src="assets/js/templates.js?v=20261001_v38"></script>
+  <script src="assets/js/archives.js?v=20261001_v38"></script>
+  <script src="assets/js/scraper.js?v=20261001_v38"></script>
+  <script src="assets/js/data_manager.js?v=20261001_v38"></script>
+  <script src="assets/js/auth.js?v=20261001_v38"></script>
+  <script src="assets/js/customers.js?v=20261001_v38"></script>
+  <script src="assets/js/harvest.js?v=20261001_v38"></script>
+  <script src="assets/js/app.js?v=20261001_v38"></script>
 </body>
 </html>

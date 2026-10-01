@@ -58,7 +58,7 @@ const App = {
     },
 
     navigateTo(pageId) {
-        const validPages = ['dashboard', 'scraper', 'templates', 'archives', 'customers'];
+        const validPages = ['dashboard', 'scraper', 'data-manager', 'templates', 'archives', 'customers'];
         if (!validPages.includes(pageId)) pageId = 'dashboard';
 
         // Protected Admin View: customers
@@ -89,6 +89,11 @@ const App = {
         document.querySelectorAll('.mobile-nav-item').forEach(item => {
             item.classList.toggle('active', item.getAttribute('data-page') === pageId);
         });
+
+        // Initialize Data Manager View
+        if (pageId === 'data-manager' && window.DataManager) {
+            window.DataManager.init();
+        }
 
         // Invalidate map size and refresh Master Database status if scraper
         if (pageId === 'scraper') {

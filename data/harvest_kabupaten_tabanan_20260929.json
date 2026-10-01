@@ -1,0 +1,17 @@
+{
+    "region": "Kabupaten Tabanan",
+    "province_id": "bali",
+    "date": "2026-09-29 18:42:25",
+    "bbox": {
+        "minLat": -8.68,
+        "maxLat": -8.25,
+        "minLng": 114.95,
+        "maxLng": 115.25
+    },
+    "initial_count": 0,
+    "overpass_added": 3748,
+    "photon_added": 0,
+    "total_new": 3748,
+    "total_records": 3748,
+    "jsonl_file": "places_kabupaten_tabanan_20260929.jsonl"
+}

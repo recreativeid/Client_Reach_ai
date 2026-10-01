@@ -1,0 +1,17 @@
+{
+    "region": "Kabupaten Jembrana",
+    "province_id": "bali",
+    "date": "2026-09-29 10:17:28",
+    "bbox": {
+        "minLat": -8.467138,
+        "maxLat": -8.1606139,
+        "minLng": 114.4316281,
+        "maxLng": 114.9366377
+    },
+    "initial_count": 0,
+    "overpass_added": 26,
+    "photon_added": 0,
+    "total_new": 26,
+    "total_records": 26,
+    "jsonl_file": "places_kabupaten_jembrana_20260929.jsonl"
+}

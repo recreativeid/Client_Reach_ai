@@ -1,0 +1,17 @@
+{
+    "region": "Kabupaten Klungkung",
+    "province_id": "bali",
+    "date": "2026-09-29 18:33:21",
+    "bbox": {
+        "minLat": -9.0204,
+        "maxLat": -8.4589,
+        "minLng": 115.3534,
+        "maxLng": 115.7011
+    },
+    "initial_count": 0,
+    "overpass_added": 888,
+    "photon_added": 330,
+    "total_new": 1218,
+    "total_records": 1218,
+    "jsonl_file": "places_kabupaten_klungkung_20260929.jsonl"
+}

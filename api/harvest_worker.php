@@ -27,56 +27,58 @@ foreach ([$dataDir, $cacheDir] as $d) {
 }
 
 // ─── LOCK: Prevent multiple workers running simultaneously ───
+function isWorkerAliveW($pid) {
+    if (!$pid || !is_numeric($pid) || (int)$pid <= 0) return false;
+    $pid = (int)$pid;
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        $output = [];
+        @exec("tasklist /FI \"PID eq $pid\" 2>NUL", $output);
+        foreach ($output as $line) {
+            if (preg_match('/\b' . $pid . '\b/', $line)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    return file_exists("/proc/$pid");
+}
+
+$myPid = getmypid();
+$lockStartTime = time();
+
 if (file_exists($lockFile)) {
     $lockData = json_decode(file_get_contents($lockFile), true);
-    $lockPid = $lockData['pid'] ?? 0;
-    $lockTime = $lockData['started_at_ts'] ?? 0;
+    $lockPid = (int)($lockData['pid'] ?? 0);
     
-    // If lock is older than 30 minutes, assume stale and remove
-    if (time() - $lockTime > 1800) {
-        @unlink($lockFile);
-    } else {
-        // Check if the PID is still running (Windows-compatible)
-        $isRunning = false;
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            exec("tasklist /FI \"PID eq $lockPid\" 2>NUL", $output);
-            foreach ($output as $line) {
-                if (strpos($line, (string)$lockPid) !== false) {
-                    $isRunning = true;
-                    break;
-                }
-            }
-        } else {
-            $isRunning = file_exists("/proc/$lockPid");
-        }
-        
-        if ($isRunning) {
-            writeStatus(['state' => 'error', 'error' => 'Worker sudah berjalan (PID: ' . $lockPid . ')']);
-            exit(1);
-        }
-        @unlink($lockFile);
+    if ($lockPid > 0 && isWorkerAliveW($lockPid)) {
+        writeStatus(['state' => 'error', 'error' => 'Worker sudah berjalan (PID: ' . $lockPid . ')']);
+        exit(1);
     }
+    @unlink($lockFile);
 }
 
 // Create lock file
 file_put_contents($lockFile, json_encode([
-    'pid' => getmypid(),
+    'pid' => $myPid,
     'started_at' => date('Y-m-d H:i:s'),
-    'started_at_ts' => time()
+    'started_at_ts' => $lockStartTime,
+    'updated_at_ts' => $lockStartTime
 ], JSON_PRETTY_PRINT));
 
 // ─── STATUS WRITER ───
 function writeStatus($data) {
-    global $statusFile, $lockFile;
+    global $statusFile, $lockFile, $lockStartTime;
+    $now = time();
     $data['updated_at'] = date('Y-m-d H:i:s');
-    $data['updated_at_ts'] = time();
+    $data['updated_at_ts'] = $now;
     file_put_contents($statusFile, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
     
-    if (!empty($lockFile)) {
+    if (!empty($lockFile) && file_exists($lockFile)) {
         @file_put_contents($lockFile, json_encode([
             'pid' => getmypid(),
+            'started_at_ts' => $lockStartTime ?? time(),
             'updated_at' => date('Y-m-d H:i:s'),
-            'updated_at_ts' => time()
+            'updated_at_ts' => $now
         ], JSON_PRETTY_PRINT));
     }
 }
@@ -107,20 +109,49 @@ function makeDedupKeyW($item) {
     return $cleanName . '@' . $latGrid . ',' . $lngGrid;
 }
 
-// ─── NOMINATIM BBOX RESOLVER ───
+// ─── NOMINATIM + PHOTON + CURATED BBOX RESOLVER ───
 function resolveRegionBboxW($regionName, $provinceName = 'Indonesia') {
-    global $cacheDir;
+    global $cacheDir, $dataDir;
     
     $cacheKey = md5(strtolower($regionName . '_' . $provinceName));
     $cacheFile = $cacheDir . "/bbox_{$cacheKey}.json";
     
     if (file_exists($cacheFile)) {
         $cached = json_decode(file_get_contents($cacheFile), true);
-        if ($cached && time() - ($cached['cached_at'] ?? 0) < 86400 * 30) {
+        if ($cached && !empty($cached['bbox']) && time() - ($cached['cached_at'] ?? 0) < 86400 * 30) {
             return $cached;
         }
     }
+
+    // 0. Check Curated Local Database (Instant, 0 latency, verified)
+    $curatedFile = $dataDir . '/curated_regions_bbox.json';
+    if (file_exists($curatedFile)) {
+        static $curatedDataW = null;
+        if ($curatedDataW === null) {
+            $curatedDataW = json_decode(file_get_contents($curatedFile), true) ?: [];
+        }
+        $cleanKey = strtolower(preg_replace('/[^a-z0-9]/', '', $regionName));
+        $stripped = preg_replace('/^(kabupaten|kota|kab\.|adm\.)\s+/i', '', $regionName);
+        $stripped = preg_replace('/\s*\(.*?\)\s*/', '', $stripped);
+        $strippedKey = strtolower(preg_replace('/[^a-z0-9]/', '', $stripped));
+        
+        $match = $curatedDataW['cities'][$cleanKey] ?? ($curatedDataW['cities'][$strippedKey] ?? null);
+        if ($match && !empty($match['bbox'])) {
+            $result = [
+                'name' => $regionName . ", $provinceName",
+                'short_name' => $regionName,
+                'lat' => $match['lat'],
+                'lng' => $match['lng'],
+                'bbox' => $match['bbox'],
+                'source' => 'curated_database',
+                'cached_at' => time()
+            ];
+            file_put_contents($cacheFile, json_encode($result, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+            return $result;
+        }
+    }
     
+    // 1. Try Nominatim
     $query = urlencode("$regionName, $provinceName, Indonesia");
     $url = "https://nominatim.openstreetmap.org/search?q={$query}&format=json&addressdetails=1&limit=3&countrycodes=id";
     
@@ -128,45 +159,137 @@ function resolveRegionBboxW($regionName, $provinceName = 'Indonesia') {
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_USERAGENT => 'ClientReachAI_Harvester/4.0 (info@recreative.id)',
-        CURLOPT_TIMEOUT => 10,
+        CURLOPT_TIMEOUT => 8,
+        CURLOPT_CONNECTTIMEOUT => 4,
         CURLOPT_SSL_VERIFYPEER => false
     ]);
     $res = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     
-    if ($httpCode !== 200 || empty($res)) return null;
-    
-    $results = json_decode($res, true);
-    if (empty($results)) return null;
-    
-    $best = $results[0];
-    foreach ($results as $r) {
-        if (($r['class'] ?? '') === 'boundary' && ($r['type'] ?? '') === 'administrative') {
-            $best = $r;
-            break;
+    if ($httpCode === 200 && !empty($res)) {
+        $results = json_decode($res, true);
+        if (!empty($results)) {
+            $best = $results[0];
+            foreach ($results as $r) {
+                if (($r['class'] ?? '') === 'boundary' && ($r['type'] ?? '') === 'administrative') {
+                    $best = $r;
+                    break;
+                }
+            }
+            
+            $bb = $best['boundingbox'] ?? null;
+            if ($bb && count($bb) >= 4) {
+                $result = [
+                    'name' => $best['display_name'] ?? $regionName,
+                    'short_name' => $regionName,
+                    'lat' => (float)$best['lat'],
+                    'lng' => (float)$best['lon'],
+                    'bbox' => [
+                        'minLat' => (float)$bb[0],
+                        'maxLat' => (float)$bb[1],
+                        'minLng' => (float)$bb[2],
+                        'maxLng' => (float)$bb[3]
+                    ],
+                    'osm_id' => $best['osm_id'] ?? null,
+                    'osm_type' => $best['osm_type'] ?? null,
+                    'cached_at' => time()
+                ];
+                file_put_contents($cacheFile, json_encode($result, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                return $result;
+            }
         }
     }
     
-    $bb = $best['boundingbox'] ?? null;
-    if (!$bb || count($bb) < 4) return null;
+    // 2. Fallback: Query Photon Komoot Geocoder
+    $cleanName = preg_replace('/^(kabupaten|kota|kab\.|adm\.)\s+/i', '', trim($regionName));
+    $pQuery = urlencode("$cleanName $provinceName Indonesia");
+    $pUrl = "https://photon.komoot.io/api/?q={$pQuery}&limit=3";
     
-    $result = [
-        'name' => $best['display_name'] ?? $regionName,
-        'short_name' => $regionName,
-        'lat' => (float)$best['lat'],
-        'lng' => (float)$best['lon'],
-        'bbox' => [
-            'minLat' => (float)$bb[0],
-            'maxLat' => (float)$bb[1],
-            'minLng' => (float)$bb[2],
-            'maxLng' => (float)$bb[3]
-        ],
-        'cached_at' => time()
-    ];
+    $pch = curl_init($pUrl);
+    curl_setopt_array($pch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_USERAGENT => 'ClientReachAI_Harvester/4.0 (info@recreative.id)',
+        CURLOPT_TIMEOUT => 7,
+        CURLOPT_CONNECTTIMEOUT => 4,
+        CURLOPT_SSL_VERIFYPEER => false
+    ]);
+    $pRes = curl_exec($pch);
+    $pCode = curl_getinfo($pch, CURLINFO_HTTP_CODE);
+    curl_close($pch);
     
-    file_put_contents($cacheFile, json_encode($result, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-    return $result;
+    if ($pCode === 200 && !empty($pRes)) {
+        $pData = json_decode($pRes, true);
+        $features = $pData['features'] ?? [];
+        if (!empty($features)) {
+            $f = $features[0];
+            $coords = $f['geometry']['coordinates'] ?? [0, 0];
+            $pLng = (float)$coords[0];
+            $pLat = (float)$coords[1];
+            
+            if ($pLat && $pLng) {
+                $extent = $f['properties']['extent'] ?? null;
+                if ($extent && count($extent) >= 4) {
+                    $minLng = min((float)$extent[0], (float)$extent[2]);
+                    $maxLng = max((float)$extent[0], (float)$extent[2]);
+                    $minLat = min((float)$extent[1], (float)$extent[3]);
+                    $maxLat = max((float)$extent[1], (float)$extent[3]);
+                } else {
+                    $minLat = $pLat - 0.15;
+                    $maxLat = $pLat + 0.15;
+                    $minLng = $pLng - 0.15;
+                    $maxLng = $pLng + 0.15;
+                }
+                
+                $result = [
+                    'name' => ($f['properties']['name'] ?? $regionName) . ", $provinceName",
+                    'short_name' => $regionName,
+                    'lat' => $pLat,
+                    'lng' => $pLng,
+                    'bbox' => [
+                        'minLat' => $minLat,
+                        'maxLat' => $maxLat,
+                        'minLng' => $minLng,
+                        'maxLng' => $maxLng
+                    ],
+                    'osm_id' => $f['properties']['osm_id'] ?? null,
+                    'osm_type' => $f['properties']['osm_type'] ?? null,
+                    'source' => 'photon_fallback',
+                    'cached_at' => time()
+                ];
+                file_put_contents($cacheFile, json_encode($result, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                return $result;
+            }
+        }
+    }
+
+    // 3. Fallback to Province Bbox if available
+    if (file_exists($curatedFile)) {
+        if ($curatedDataW === null) {
+            $curatedDataW = json_decode(file_get_contents($curatedFile), true) ?: [];
+        }
+        $cleanProv = strtolower(preg_replace('/[^a-z0-9]/', '', $provinceName));
+        foreach ($curatedDataW['provinces'] ?? [] as $pid => $pInfo) {
+            $pNameClean = strtolower(preg_replace('/[^a-z0-9]/', '', $pInfo['name'] ?? ''));
+            if ($cleanProv === $pNameClean || strpos($pNameClean, $cleanProv) !== false) {
+                if (!empty($pInfo['bbox']) && !empty($pInfo['center'])) {
+                    $result = [
+                        'name' => $regionName . ", $provinceName",
+                        'short_name' => $regionName,
+                        'lat' => $pInfo['center']['lat'],
+                        'lng' => $pInfo['center']['lng'],
+                        'bbox' => $pInfo['bbox'],
+                        'source' => 'province_fallback',
+                        'cached_at' => time()
+                    ];
+                    file_put_contents($cacheFile, json_encode($result, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                    return $result;
+                }
+            }
+        }
+    }
+    
+    return null;
 }
 
 // ─── MAIN WORKER LOOP ───
@@ -186,6 +309,19 @@ require_once __DIR__ . '/full_harvest.php';
 
 $queue = loadQueue();
 $items = &$queue['items'];
+
+// Auto-recover any orphaned 'processing' items from terminated processes
+$recovered = 0;
+foreach ($items as &$it) {
+    if (($it['status'] ?? '') === 'processing') {
+        $it['status'] = 'pending';
+        $recovered++;
+    }
+}
+unset($it);
+if ($recovered > 0) {
+    saveQueue($queue);
+}
 
 // Count pending
 $totalPending = 0;
@@ -306,8 +442,10 @@ for ($i = 0; $i < count($items); $i++) {
             throw new Exception("Cannot open $jsonlFile for writing");
         }
         
+        $provName = $item['province_name'] ?? 'Indonesia';
+
         // Stage 1: Overpass Grid
-        $added1 = harvestOverpassGrid($bbox, $seenKeys, $harvestedPlaces, $fpOut, false, 0);
+        $added1 = harvestOverpassGrid($bbox, $seenKeys, $harvestedPlaces, $fpOut, false, 0, $item['name'], $provName);
         
         // Update status mid-process
         writeStatus([
@@ -316,7 +454,7 @@ for ($i = 0; $i < count($items); $i++) {
             'processed' => $processed,
             'total_pending' => $totalPending,
             'current_region' => $item['name'],
-            'current_province' => $item['province_name'] ?? '',
+            'current_province' => $provName,
             'total_places' => $totalPlacesAll + count($harvestedPlaces),
             'current_stage' => 'photon'
         ]);
@@ -329,11 +467,16 @@ for ($i = 0; $i < count($items); $i++) {
             'maxLng' => $bbox['maxLng'],
             'centerLat' => ($bbox['minLat'] + $bbox['maxLat']) / 2,
             'centerLng' => ($bbox['minLng'] + $bbox['maxLng']) / 2,
-            'cityKeywords' => [$item['name']]
+            'cityKeywords' => [$item['name']],
+            'province_name' => $provName
         ];
         $added2 = harvestPhotonKeywords($regionConfig, $seenKeys, $harvestedPlaces, $fpOut, false);
         
         fclose($fpOut);
+
+        // Auto-save to SQLite Database (Accessible in GitHub & cPanel)
+        require_once __DIR__ . '/db_manager.php';
+        saveHarvestPlacesToDb($harvestedPlaces, $item['name'], $provName);
         
         $totalNew = $added1 + $added2;
         $totalAll = count($harvestedPlaces);

@@ -346,14 +346,14 @@ function classifyPlaceRecord($raw) {
         return ['sector' => 'pertanian', 'subsector' => 'pertanian_peternakan', 'category' => 'Pertanian & Peternakan'];
     }
 
-    // Default Fallback
-    return ['sector' => 'lainnya', 'subsector' => 'usaha_lokal', 'category' => 'Usaha & Tempat Terdaftar'];
+    // Default Fallback (Guarantees zero-empty, all unclassified businesses go to "Lainnya")
+    return ['sector' => 'lainnya', 'subsector' => 'usaha_lokal', 'category' => 'Lainnya'];
 }
 
 /**
  * Standardize Place Object Structure
  */
-function formatHarvestRecord($item, $source = 'harvest') {
+function formatHarvestRecord($item, $source = 'harvest', $fallbackCity = '', $fallbackProv = '') {
     $name = trim($item['name'] ?? '');
     if (empty($name)) {
         $display = $item['display_name'] ?? '';
@@ -362,23 +362,22 @@ function formatHarvestRecord($item, $source = 'harvest') {
     }
 
     $cls = classifyPlaceRecord($item);
+    $tags = $item['tags'] ?? ($item['extratags'] ?? []);
     
-    // Address decomposition
+    // Address decomposition with tag fallbacks
     $addr = $item['address'] ?? [];
-    $street = $addr['road'] ?? ($addr['street'] ?? '');
-    $village = $addr['village'] ?? ($addr['suburb'] ?? ($addr['neighbourhood'] ?? ''));
-    $subdistrict = $addr['city_district'] ?? ($addr['subdistrict'] ?? ($addr['district'] ?? ''));
-    $city = $addr['city'] ?? ($addr['regency'] ?? ($addr['county'] ?? 'Magelang'));
-    $province = $addr['state'] ?? 'Jawa Tengah';
-    $postcode = $addr['postcode'] ?? '';
+    $street = $addr['road'] ?? ($addr['street'] ?? ($tags['addr:street'] ?? ($tags['addr:housename'] ?? '')));
+    $village = $addr['village'] ?? ($addr['suburb'] ?? ($addr['neighbourhood'] ?? ($tags['addr:suburb'] ?? ($tags['addr:village'] ?? ''))));
+    $subdistrict = $addr['city_district'] ?? ($addr['subdistrict'] ?? ($addr['district'] ?? ($tags['addr:district'] ?? ($tags['addr:subdistrict'] ?? ''))));
+    $city = $addr['city'] ?? ($addr['regency'] ?? ($addr['county'] ?? ($tags['addr:city'] ?? ($fallbackCity ?: 'Indonesia'))));
+    $province = $addr['state'] ?? ($tags['addr:province'] ?? ($tags['addr:state'] ?? ($fallbackProv ?: 'Indonesia')));
+    $postcode = $addr['postcode'] ?? ($tags['addr:postcode'] ?? '');
 
     $displayAddr = trim($item['display_name'] ?? '');
-    if (empty($displayAddr)) {
+    if (empty($displayAddr) || $displayAddr === $fallbackCity) {
         $parts = array_filter([$street, $village, $subdistrict, $city, $province, $postcode]);
-        $displayAddr = implode(', ', $parts);
+        $displayAddr = !empty($parts) ? implode(', ', $parts) : ($fallbackCity ? "$fallbackCity, $province" : 'Indonesia');
     }
-
-    $tags = $item['tags'] ?? ($item['extratags'] ?? []);
 
     return [
         'osm_id' => $item['osm_id'] ?? ($item['id'] ?? null),
@@ -390,6 +389,9 @@ function formatHarvestRecord($item, $source = 'harvest') {
         'lat' => (float)($item['lat'] ?? 0),
         'lng' => (float)($item['lon'] ?? ($item['lng'] ?? 0)),
         'address' => $displayAddr,
+        'city' => $city,
+        'province' => $province,
+        'subdistrict' => $subdistrict,
         'phone' => $tags['phone'] ?? ($tags['contact:phone'] ?? ($tags['mobile'] ?? null)),
         'website' => $tags['website'] ?? ($tags['contact:website'] ?? null),
         'opening_hours' => $tags['opening_hours'] ?? null,
@@ -402,9 +404,9 @@ function formatHarvestRecord($item, $source = 'harvest') {
 
 /**
  * Stage 1: Overpass API Multi-Tile Grid Crawler
- * Queries nodes with amenity, shop, office, tourism, healthcare, craft, leisure
+ * Queries nodes, ways, and relations across all 8 commercial & institutional sectors
  */
-function harvestOverpassGrid($bbox, &$seenKeys, &$harvestedPlaces, $fpOut, $verbose, $maxTiles = 0) {
+function harvestOverpassGrid($bbox, &$seenKeys, &$harvestedPlaces, $fpOut, $verbose, $maxTiles = 0, $fallbackCity = '', $fallbackProv = '') {
     $minLat = $bbox['minLat'];
     $maxLat = $bbox['maxLat'];
     $minLng = $bbox['minLng'];
@@ -413,12 +415,22 @@ function harvestOverpassGrid($bbox, &$seenKeys, &$harvestedPlaces, $fpOut, $verb
     // Overpass mirror servers with automatic failover
     $endpoints = [
         'https://overpass-api.de/api/interpreter',
-        'https://lz4.overpass-api.de/api/interpreter'
+        'https://lz4.overpass-api.de/api/interpreter',
+        'https://overpass.kumi.systems/api/interpreter',
+        'https://overpass.private.coffee/api/interpreter'
     ];
 
-    // Grid step: 0.04 degrees (~4.4 km) ensures sub-second response without timeout
-    $stepLat = 0.04;
-    $stepLng = 0.04;
+    $deltaLat = abs($maxLat - $minLat);
+    $deltaLng = abs($maxLng - $minLng);
+
+    // Adaptive tile step: 1 fast query for compact regions (< 0.45 deg ~50km), or max 4 tiles for large areas
+    if ($deltaLat <= 0.45 && $deltaLng <= 0.45) {
+        $stepLat = $deltaLat + 0.01;
+        $stepLng = $deltaLng + 0.01;
+    } else {
+        $stepLat = max(0.25, $deltaLat / 2);
+        $stepLng = max(0.25, $deltaLng / 2);
+    }
 
     $tiles = [];
     for ($lat = $minLat; $lat < $maxLat; $lat += $stepLat) {
@@ -450,17 +462,27 @@ function harvestOverpassGrid($bbox, &$seenKeys, &$harvestedPlaces, $fpOut, $verb
     foreach ($tiles as $idx => $tile) {
         $bStr = sprintf('%.5f,%.5f,%.5f,%.5f', $tile['minLat'], $tile['minLng'], $tile['maxLat'], $tile['maxLng']);
 
-        // Overpass QL for all verified nodes, ways, relations with active business/institutional categories
-        $ql = "[out:json][timeout:20];(
-            nwr[\"amenity\"]($bStr);
-            nwr[\"shop\"]($bStr);
-            nwr[\"office\"]($bStr);
-            nwr[\"tourism\"]($bStr);
-            nwr[\"healthcare\"]($bStr);
-            nwr[\"craft\"]($bStr);
-            nwr[\"industrial\"]($bStr);
-            nwr[\"leisure\"]($bStr);
-        );out center tags qt 1500;";
+        // Overpass QL for all verified nodes and ways (omitting heavy relations for 10x faster speed)
+        $ql = "[out:json][timeout:15];(
+            node[\"amenity\"]($bStr);
+            way[\"amenity\"]($bStr);
+            node[\"shop\"]($bStr);
+            way[\"shop\"]($bStr);
+            node[\"office\"]($bStr);
+            way[\"office\"]($bStr);
+            node[\"tourism\"]($bStr);
+            way[\"tourism\"]($bStr);
+            node[\"healthcare\"]($bStr);
+            way[\"healthcare\"]($bStr);
+            node[\"craft\"]($bStr);
+            way[\"craft\"]($bStr);
+            node[\"industrial\"]($bStr);
+            way[\"industrial\"]($bStr);
+            node[\"leisure\"]($bStr);
+            way[\"leisure\"]($bStr);
+            node[\"commercial\"]($bStr);
+            way[\"commercial\"]($bStr);
+        );out center tags qt 2000;";
 
         $response = null;
         foreach ($endpoints as $ep) {
@@ -469,7 +491,8 @@ function harvestOverpassGrid($bbox, &$seenKeys, &$harvestedPlaces, $fpOut, $verb
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, 'data=' . urlencode($ql));
             curl_setopt($ch, CURLOPT_USERAGENT, 'ClientReachAI_Harvester/4.0 (info@recreative.id)');
-            curl_setopt($ch, CURLOPT_TIMEOUT, 18);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             $res = curl_exec($ch);
             $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -479,7 +502,7 @@ function harvestOverpassGrid($bbox, &$seenKeys, &$harvestedPlaces, $fpOut, $verb
                 $response = $res;
                 break;
             }
-            usleep(200000);
+            usleep(150000);
         }
 
         if (!$response) {
@@ -511,7 +534,7 @@ function harvestOverpassGrid($bbox, &$seenKeys, &$harvestedPlaces, $fpOut, $verb
                 'class' => isset($tags['amenity']) ? 'amenity' : (isset($tags['shop']) ? 'shop' : 'office')
             ];
 
-            $formatted = formatHarvestRecord($rawItem, 'overpass');
+            $formatted = formatHarvestRecord($rawItem, 'overpass', $fallbackCity, $fallbackProv);
             $key = makeDedupKey($formatted);
 
             if (!isset($seenKeys[$key])) {
@@ -591,30 +614,42 @@ function harvestPhotonKeywords($regionConfig, &$seenKeys, &$harvestedPlaces, $fp
         'pt', 'cv', 'pabrik', 'gudang', 'distributor'
     ];
 
+    $cleanCity = preg_replace('/^(kabupaten|kota|kab\.|adm\.)\s+/i', '', trim($cityName));
+    $cleanCity = trim(explode(',', $cleanCity)[0]);
+    if (empty($cleanCity) || strtolower($cleanCity) === 'indonesia') {
+        $cleanCity = $cityName;
+    }
+
     $queryPool = [];
     foreach ($baseKeywords as $bk) {
-        $queryPool[] = "$bk $cityName";
+        $queryPool[] = "$bk $cleanCity";
+    }
+    // Also add pure base keywords which will be bounded by bbox
+    foreach (array_slice($baseKeywords, 0, 15) as $bk) {
+        $queryPool[] = $bk;
     }
     // Add district-specific searches for high-yield commercial targets
     foreach (array_slice($subAreas, 1, 4) as $district) {
-        $queryPool[] = "cafe $district";
-        $queryPool[] = "kopi $district";
-        $queryPool[] = "toko elektronik $district";
-        $queryPool[] = "apotek $district";
-        $queryPool[] = "klinik $district";
-        $queryPool[] = "bengkel $district";
-        $queryPool[] = "toko $district";
-        $queryPool[] = "warung $district";
+        $cleanDist = preg_replace('/^(kecamatan|kelurahan|desa)\s+/i', '', trim($district));
+        $queryPool[] = "cafe $cleanDist";
+        $queryPool[] = "kopi $cleanDist";
+        $queryPool[] = "toko elektronik $cleanDist";
+        $queryPool[] = "apotek $cleanDist";
+        $queryPool[] = "klinik $cleanDist";
+        $queryPool[] = "bengkel $cleanDist";
+        $queryPool[] = "toko $cleanDist";
+        $queryPool[] = "warung $cleanDist";
     }
     $queryPool = array_values(array_unique($queryPool));
 
     $totalKeywords = count($queryPool);
     if ($verbose) {
-        echo "[Stage 2: Photon] Executing spatial crawl with $totalKeywords keywords...\n";
+        echo "[Stage 2: Photon] Executing spatial crawl with $totalKeywords keywords (Target: $cleanCity)...\n";
     }
 
     $addedInStage = 0;
     $batchSize = 6;
+    $bboxParam = sprintf('%.5f,%.5f,%.5f,%.5f', $regionConfig['minLng'], $regionConfig['minLat'], $regionConfig['maxLng'], $regionConfig['maxLat']);
 
     for ($i = 0; $i < $totalKeywords; $i += $batchSize) {
         $batch = array_slice($queryPool, $i, $batchSize);
@@ -622,16 +657,19 @@ function harvestPhotonKeywords($regionConfig, &$seenKeys, &$harvestedPlaces, $fp
         $handles = [];
 
         foreach ($batch as $kw) {
-            $url = 'https://photon.komoot.io/api/?' . http_build_query([
+            $params = [
                 'q' => $kw,
                 'lat' => $centerLat,
                 'lon' => $centerLng,
+                'bbox' => $bboxParam,
                 'limit' => 30
-            ]);
+            ];
+            $url = 'https://photon.komoot.io/api/?' . http_build_query($params);
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_USERAGENT, 'ClientReachAI_Harvester/4.0 (info@recreative.id)');
-            curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 6);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_multi_add_handle($mh, $ch);
             $handles[$kw] = $ch;
@@ -677,19 +715,20 @@ function harvestPhotonKeywords($regionConfig, &$seenKeys, &$harvestedPlaces, $fp
                     'address' => [
                         'street' => $prop['street'] ?? '',
                         'district' => $prop['district'] ?? '',
-                        'city' => $prop['city'] ?? $cityName,
-                        'state' => $prop['state'] ?? 'Jawa Tengah',
+                        'city' => $prop['city'] ?? $cleanCity,
+                        'state' => $prop['state'] ?? ($regionConfig['province_name'] ?? 'Indonesia'),
                         'postcode' => $prop['postcode'] ?? ''
                     ],
                     'display_name' => implode(', ', array_filter([
                         $name,
                         $prop['street'] ?? '',
                         $prop['district'] ?? '',
-                        $prop['city'] ?? $cityName
+                        $prop['city'] ?? $cleanCity,
+                        $prop['state'] ?? ($regionConfig['province_name'] ?? 'Indonesia')
                     ]))
                 ];
 
-                $formatted = formatHarvestRecord($rawItem, 'photon');
+                $formatted = formatHarvestRecord($rawItem, 'photon', $cleanCity, $regionConfig['province_name'] ?? 'Indonesia');
                 $key = makeDedupKey($formatted);
 
                 if (!isset($seenKeys[$key])) {
@@ -886,23 +925,57 @@ function runStandaloneHarvest() {
     $selectedRegionKey = strtolower(trim($regionParam));
     $regionConfig = $regions[$selectedRegionKey] ?? null;
 
-    // Support custom bounding box via GET/POST
+    // Support custom bounding box via GET/POST or dynamic resolution
     if (!$regionConfig) {
         if (isset($_GET['minLat'], $_GET['maxLat'], $_GET['minLng'], $_GET['maxLng'])) {
             $regionConfig = [
-                'name' => $_GET['name'] ?? 'Custom Region',
+                'name' => $_GET['name'] ?? $regionParam,
                 'minLat' => (float)$_GET['minLat'],
                 'maxLat' => (float)$_GET['maxLat'],
                 'minLng' => (float)$_GET['minLng'],
                 'maxLng' => (float)$_GET['maxLng'],
                 'centerLat' => ((float)$_GET['minLat'] + (float)$_GET['maxLat']) / 2,
                 'centerLng' => ((float)$_GET['minLng'] + (float)$_GET['maxLng']) / 2,
-                'cityKeywords' => [$_GET['name'] ?? 'Indonesia']
+                'cityKeywords' => [$_GET['name'] ?? $regionParam]
             ];
-            $selectedRegionKey = 'custom_' . date('Ymd_His');
+            $selectedRegionKey = preg_replace('/[^a-z0-9_]/', '_', strtolower($regionParam));
         } else {
-            $selectedRegionKey = 'magelang';
-            $regionConfig = $regions['magelang'];
+            // Dynamically resolve any Indonesian city/regency from curated DB or Nominatim
+            $curatedFile = $dataDir . '/curated_regions_bbox.json';
+            $resolved = null;
+            if (file_exists($curatedFile)) {
+                $curData = json_decode(file_get_contents($curatedFile), true) ?: [];
+                $cleanKey = strtolower(preg_replace('/[^a-z0-9]/', '', $regionParam));
+                $stripped = preg_replace('/^(kabupaten|kota|kab\.|adm\.)\s+/i', '', $regionParam);
+                $strippedKey = strtolower(preg_replace('/[^a-z0-9]/', '', $stripped));
+                $match = $curData['cities'][$cleanKey] ?? ($curData['cities'][$strippedKey] ?? null);
+                if ($match && !empty($match['bbox'])) {
+                    $resolved = [
+                        'name' => $regionParam,
+                        'lat' => $match['lat'],
+                        'lng' => $match['lng'],
+                        'bbox' => $match['bbox']
+                    ];
+                }
+            }
+
+            if ($resolved && !empty($resolved['bbox'])) {
+                $bb = $resolved['bbox'];
+                $regionConfig = [
+                    'name' => $regionParam,
+                    'minLat' => $bb['minLat'],
+                    'maxLat' => $bb['maxLat'],
+                    'minLng' => $bb['minLng'],
+                    'maxLng' => $bb['maxLng'],
+                    'centerLat' => $resolved['lat'],
+                    'centerLng' => $resolved['lng'],
+                    'cityKeywords' => [$regionParam]
+                ];
+                $selectedRegionKey = preg_replace('/[^a-z0-9_]/', '_', strtolower($regionParam));
+            } else {
+                $selectedRegionKey = 'magelang';
+                $regionConfig = $regions['magelang'];
+            }
         }
     }
 
@@ -946,8 +1019,8 @@ function runStandaloneHarvest() {
         echo "========================================================\n";
     }
 
-    // 1. Overpass Grid Scan
-    $addedOverpass = harvestOverpassGrid($regionConfig, $seenKeys, $harvestedPlaces, $fpOut, $verbose, $maxTiles);
+    // 1. Overpass Grid Scan (Multi-Sector POIs)
+    $addedOverpass = harvestOverpassGrid($regionConfig, $seenKeys, $harvestedPlaces, $fpOut, $verbose, $maxTiles, $regionConfig['name'], $regionConfig['province_name'] ?? '');
 
     // 2. Photon Komoot Spatial Keyword Crawl
     $addedPhoton = harvestPhotonKeywords($regionConfig, $seenKeys, $harvestedPlaces, $fpOut, $verbose);
@@ -956,6 +1029,10 @@ function runStandaloneHarvest() {
     $addedNominatim = harvestNominatimBounded($regionConfig, $seenKeys, $harvestedPlaces, $fpOut, $verbose);
 
     fclose($fpOut);
+
+    // 4. Automatically save all harvested places to SQLite Database (for GitHub & cPanel)
+    require_once __DIR__ . '/db_manager.php';
+    saveHarvestPlacesToDb($harvestedPlaces, $regionConfig['name'], $regionConfig['province_name'] ?? '');
 
     $totalRecords = count($harvestedPlaces);
     $newlyAdded = $totalRecords - $initialCount;

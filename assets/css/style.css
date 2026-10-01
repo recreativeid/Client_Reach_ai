@@ -3151,3 +3151,28 @@ body:not(.authenticated) .mobile-bottom-nav {
   border: 1px solid #e2e8f0;
   white-space: nowrap;
 }
+
+/* Data Manager Interactive Map & Table Row Synchronization */
+@keyframes dmRowPulse {
+  0% { background-color: #fef08a !important; box-shadow: inset 0 0 0 2px #eab308; }
+  35% { background-color: #dbeafe !important; box-shadow: inset 0 0 0 2px #2563eb; }
+  100% { background-color: transparent; box-shadow: none; }
+}
+
+.dm-row-active-pulse {
+  animation: dmRowPulse 2.4s ease-out forwards;
+}
+
+.dm-row-clickable {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.dm-row-clickable:hover {
+  background-color: #f8fafc;
+}
+
+#dm-map-container .leaflet-tile-pane {
+  filter: contrast(105%) brightness(101%);
+}
+

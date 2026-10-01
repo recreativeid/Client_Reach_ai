@@ -1,6 +1,86 @@
 RewriteEngine On
 RewriteBase /Client_Reach_ai/
 
+# ─────────────────────────────────────────────────────────
+# SECURITY: Block direct access to sensitive files & dirs
+# ─────────────────────────────────────────────────────────
+
+# Block .git directory
+RedirectMatch 404 /\.git
+
+# Block database files (.db, .sqlite, .sqlite3)
+<FilesMatch "\.(db|sqlite|sqlite3)$">
+    Require all denied
+</FilesMatch>
+
+# Block SQL dump/schema files
+<FilesMatch "\.(sql)$">
+    Require all denied
+</FilesMatch>
+
+# Block JSONL harvest data files
+<FilesMatch "\.(jsonl)$">
+    Require all denied
+</FilesMatch>
+
+# Block config.local.php (contains credentials)
+<Files "config.local.php">
+    Require all denied
+</Files>
+
+# Block config.local.example.php
+<Files "config.local.example.php">
+    Require all denied
+</Files>
+
+# Block config.example.php
+<Files "config.example.php">
+    Require all denied
+</Files>
+
+# Block .jarvisignore, .gitignore
+<FilesMatch "^\.(jarvisignore|gitignore)$">
+    Require all denied
+</FilesMatch>
+
+# Block database/ directory entirely (init.php, migrate scripts)
+RewriteRule ^database/ - [F,L]
+
+# Block scratch/ directory entirely (dev test scripts)
+RewriteRule ^scratch/ - [F,L]
+
+# Block .kilo/ directory
+RewriteRule ^\.kilo/ - [F,L]
+
+# Block Markdown documentation files from direct download
+<FilesMatch "\.(md)$">
+    Require all denied
+</FilesMatch>
+
+# ─────────────────────────────────────────────────────────
+# SECURITY HEADERS
+# ─────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    # Prevent MIME-type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Clickjacking protection
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # XSS filter (legacy browsers)
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Referrer policy - don't leak full URL to external sites
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Remove server version info from headers (if possible)
+    Header unset X-Powered-By
+</IfModule>
+
+# ─────────────────────────────────────────────────────────
+# API ROUTES (existing functionality preserved)
+# ─────────────────────────────────────────────────────────
+
 # Don't rewrite existing files/dirs
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
