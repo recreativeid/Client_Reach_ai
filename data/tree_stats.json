@@ -1,0 +1,3513 @@
+{
+    "success": true,
+    "total_all_places": 17715,
+    "provinces": [
+        {
+            "province": "Bali",
+            "total_places": 16267,
+            "cities": [
+                {
+                    "name": "Kabupaten Badung",
+                    "total_places": 4062,
+                    "subdistricts": [
+                        {
+                            "name": "Kuta Utara",
+                            "total_places": 1851
+                        },
+                        {
+                            "name": "Kuta",
+                            "total_places": 1166
+                        },
+                        {
+                            "name": "Kuta Selatan",
+                            "total_places": 477
+                        },
+                        {
+                            "name": "Abiansemal",
+                            "total_places": 202
+                        },
+                        {
+                            "name": "Mengwi",
+                            "total_places": 188
+                        },
+                        {
+                            "name": "Petang",
+                            "total_places": 178
+                        }
+                    ],
+                    "sectors": {
+                        "lainnya": 304,
+                        "pendidikan": 192,
+                        "kuliner": 858,
+                        "akomodasi": 664,
+                        "hiburan_wisata": 81,
+                        "olahraga": 34,
+                        "otomotif": 48,
+                        "retail": 1135,
+                        "pemerintahan": 78,
+                        "jasa": 260,
+                        "kesehatan": 167,
+                        "keagamaan": 194,
+                        "industri": 47
+                    }
+                },
+                {
+                    "name": "Kota Denpasar",
+                    "total_places": 3600,
+                    "subdistricts": [
+                        {
+                            "name": "Denpasar Selatan",
+                            "total_places": 1663
+                        },
+                        {
+                            "name": "Denpasar Barat",
+                            "total_places": 1217
+                        },
+                        {
+                            "name": "Denpasar Utara",
+                            "total_places": 568
+                        },
+                        {
+                            "name": "Denpasar Timur",
+                            "total_places": 152
+                        }
+                    ],
+                    "sectors": {
+                        "akomodasi": 625,
+                        "otomotif": 53,
+                        "pendidikan": 183,
+                        "jasa": 227,
+                        "kesehatan": 115,
+                        "keagamaan": 76,
+                        "pemerintahan": 83,
+                        "kuliner": 618,
+                        "hiburan_wisata": 54,
+                        "lainnya": 170,
+                        "retail": 1294,
+                        "industri": 59,
+                        "olahraga": 43
+                    }
+                },
+                {
+                    "name": "Kabupaten Tabanan",
+                    "total_places": 2395,
+                    "subdistricts": [
+                        {
+                            "name": "Kecamatan Tabanan",
+                            "total_places": 2395
+                        }
+                    ],
+                    "sectors": {
+                        "hiburan_wisata": 35,
+                        "kuliner": 835,
+                        "akomodasi": 536,
+                        "lainnya": 114,
+                        "pendidikan": 13,
+                        "pemerintahan": 41,
+                        "retail": 646,
+                        "jasa": 37,
+                        "industri": 15,
+                        "kesehatan": 41,
+                        "otomotif": 10,
+                        "olahraga": 38,
+                        "keagamaan": 34
+                    }
+                },
+                {
+                    "name": "Kabupaten Bangli",
+                    "total_places": 2137,
+                    "subdistricts": [
+                        {
+                            "name": "Kecamatan Bangli",
+                            "total_places": 2137
+                        }
+                    ],
+                    "sectors": {
+                        "pemerintahan": 48,
+                        "kesehatan": 31,
+                        "kuliner": 762,
+                        "akomodasi": 498,
+                        "jasa": 34,
+                        "otomotif": 17,
+                        "retail": 353,
+                        "industri": 3,
+                        "pendidikan": 35,
+                        "keagamaan": 153,
+                        "olahraga": 14,
+                        "hiburan_wisata": 60,
+                        "lainnya": 129
+                    }
+                },
+                {
+                    "name": "Kabupaten Karangasem",
+                    "total_places": 1780,
+                    "subdistricts": [
+                        {
+                            "name": "Kecamatan Karangasem",
+                            "total_places": 1780
+                        }
+                    ],
+                    "sectors": {
+                        "retail": 330,
+                        "akomodasi": 275,
+                        "industri": 8,
+                        "olahraga": 13,
+                        "kesehatan": 49,
+                        "keagamaan": 128,
+                        "pertanian": 2,
+                        "lainnya": 209,
+                        "otomotif": 19,
+                        "pemerintahan": 124,
+                        "pendidikan": 160,
+                        "kuliner": 343,
+                        "jasa": 55,
+                        "hiburan_wisata": 65
+                    }
+                },
+                {
+                    "name": "Kabupaten Klungkung",
+                    "total_places": 744,
+                    "subdistricts": [
+                        {
+                            "name": "Kecamatan Klungkung",
+                            "total_places": 744
+                        }
+                    ],
+                    "sectors": {
+                        "kuliner": 242,
+                        "pemerintahan": 21,
+                        "akomodasi": 206,
+                        "hiburan_wisata": 71,
+                        "kesehatan": 10,
+                        "olahraga": 3,
+                        "otomotif": 10,
+                        "retail": 56,
+                        "keagamaan": 31,
+                        "lainnya": 60,
+                        "industri": 4,
+                        "jasa": 15,
+                        "pendidikan": 15
+                    }
+                },
+                {
+                    "name": "Kabupaten Buleleng",
+                    "total_places": 642,
+                    "subdistricts": [
+                        {
+                            "name": "Kecamatan Buleleng",
+                            "total_places": 642
+                        }
+                    ],
+                    "sectors": {
+                        "hiburan_wisata": 9,
+                        "kesehatan": 19,
+                        "kuliner": 133,
+                        "akomodasi": 65,
+                        "industri": 21,
+                        "keagamaan": 30,
+                        "retail": 141,
+                        "otomotif": 17,
+                        "lainnya": 38,
+                        "pemerintahan": 44,
+                        "jasa": 31,
+                        "olahraga": 2,
+                        "pendidikan": 92
+                    }
+                },
+                {
+                    "name": "Kabupaten Jembrana",
+                    "total_places": 574,
+                    "subdistricts": [
+                        {
+                            "name": "Kecamatan Jembrana",
+                            "total_places": 574
+                        }
+                    ],
+                    "sectors": {
+                        "pemerintahan": 40,
+                        "jasa": 9,
+                        "pendidikan": 30,
+                        "retail": 40,
+                        "hiburan_wisata": 24,
+                        "kuliner": 68,
+                        "otomotif": 21,
+                        "olahraga": 10,
+                        "akomodasi": 175,
+                        "lainnya": 43,
+                        "industri": 53,
+                        "keagamaan": 50,
+                        "kesehatan": 11
+                    }
+                },
+                {
+                    "name": "Kabupaten Gianyar",
+                    "total_places": 333,
+                    "subdistricts": [
+                        {
+                            "name": "Kecamatan Gianyar",
+                            "total_places": 333
+                        }
+                    ],
+                    "sectors": {
+                        "akomodasi": 36,
+                        "kuliner": 57,
+                        "pendidikan": 27,
+                        "kesehatan": 12,
+                        "lainnya": 38,
+                        "otomotif": 3,
+                        "pemerintahan": 17,
+                        "jasa": 27,
+                        "keagamaan": 4,
+                        "industri": 4,
+                        "retail": 108
+                    }
+                }
+            ]
+        },
+        {
+            "province": "Jawa Tengah",
+            "total_places": 1448,
+            "cities": [
+                {
+                    "name": "Kota Magelang",
+                    "total_places": 1448,
+                    "subdistricts": [
+                        {
+                            "name": "Magelang Selatan",
+                            "total_places": 808
+                        },
+                        {
+                            "name": "Magelang Utara",
+                            "total_places": 366
+                        },
+                        {
+                            "name": "Magelang Tengah",
+                            "total_places": 274
+                        }
+                    ],
+                    "sectors": {
+                        "pemerintahan": 125,
+                        "retail": 117,
+                        "olahraga": 11,
+                        "keagamaan": 373,
+                        "lainnya": 68,
+                        "kesehatan": 123,
+                        "akomodasi": 38,
+                        "otomotif": 25,
+                        "hiburan_wisata": 14,
+                        "kuliner": 92,
+                        "industri": 8,
+                        "jasa": 45,
+                        "pendidikan": 409
+                    }
+                },
+                {
+                    "name": "Kabupaten Banjarnegara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Banyumas",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Batang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Blora",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Boyolali",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Brebes",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Cilacap",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Demak",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Grobogan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Jepara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Karanganyar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kebumen",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kendal",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Klaten",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kudus",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Magelang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pati",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pekalongan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pemalang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Purbalingga",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Purworejo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Rembang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Semarang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sragen",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sukoharjo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tegal",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Temanggung",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Wonogiri",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Wonosobo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Pekalongan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Salatiga",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Semarang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Surakarta",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Tegal",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Aceh",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Aceh Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Aceh Barat Daya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Aceh Besar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Aceh Jaya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Aceh Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Aceh Singkil",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Aceh Tamiang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Aceh Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Aceh Tenggara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Aceh Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Aceh Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bener Meriah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bireuen",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Gayo Lues",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Nagan Raya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pidie",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pidie Jaya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Simeulue",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Banda Aceh",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Langsa",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Lhokseumawe",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Sabang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Subulussalam",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Banten",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Lebak",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pandeglang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Serang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tangerang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Cilegon",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Serang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Tangerang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Tangerang Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Bengkulu",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bengkulu Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bengkulu Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bengkulu Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kaur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kepahiang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lebong",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mukomuko",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Rejang Lebong",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Seluma",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Bengkulu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "DI Yogyakarta",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bantul",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Gunungkidul",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kulon Progo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sleman",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Yogyakarta",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "DKI Jakarta",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Kepulauan Seribu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Jakarta Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Jakarta Pusat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Jakarta Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Jakarta Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Jakarta Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Gorontalo",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Boalemo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bone Bolango",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Gorontalo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Gorontalo Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pohuwato",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Gorontalo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Jambi",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Batanghari",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bungo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kerinci",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Merangin",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Muaro Jambi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sarolangun",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tanjung Jabung Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tanjung Jabung Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tebo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Jambi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Sungai Penuh",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Jawa Barat",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bandung",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bandung Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bekasi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bogor",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Ciamis",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Cianjur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Cirebon",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Garut",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Indramayu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Karawang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kuningan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Majalengka",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pangandaran",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Purwakarta",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Subang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sukabumi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sumedang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tasikmalaya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Bandung",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Banjar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Bekasi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Bogor",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Cimahi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Cirebon",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Depok",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Sukabumi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Tasikmalaya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Jawa Timur",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bangkalan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Banyuwangi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Blitar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bojonegoro",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bondowoso",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Gresik",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Jember",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Jombang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kediri",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lamongan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lumajang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Madiun",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Magetan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Malang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mojokerto",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Nganjuk",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Ngawi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pacitan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pamekasan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pasuruan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Ponorogo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Probolinggo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sampang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sidoarjo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Situbondo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sumenep",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Trenggalek",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tuban",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tulungagung",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Batu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Blitar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Kediri",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Madiun",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Malang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Mojokerto",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Pasuruan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Probolinggo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Surabaya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Kalimantan Barat",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bengkayang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kapuas Hulu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kayong Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Ketapang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kubu Raya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Landak",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Melawi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mempawah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sambas",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sanggau",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sekadau",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sintang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Pontianak",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Singkawang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Kalimantan Selatan",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Balangan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Banjar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Barito Kuala",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Hulu Sungai Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Hulu Sungai Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Hulu Sungai Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kotabaru",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tabalong",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tanah Bumbu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tanah Laut",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tapin",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Banjarbaru",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Banjarmasin",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Kalimantan Tengah",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Barito Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Barito Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Barito Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Gunung Mas",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kapuas",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Katingan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kotawaringin Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kotawaringin Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lamandau",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Murung Raya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pulang Pisau",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Seruyan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sukamara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Palangka Raya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Kalimantan Timur",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Berau",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kutai Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kutai Kartanegara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kutai Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mahakam Ulu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Paser",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Penajam Paser Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Balikpapan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Bontang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Samarinda",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Kalimantan Utara",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bulungan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Malinau",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Nunukan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tana Tidung",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Tarakan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Kepulauan Bangka Belitung",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bangka",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bangka Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bangka Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bangka Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Belitung",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Belitung Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Pangkal Pinang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Kepulauan Riau",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bintan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Karimun",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kepulauan Anambas",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lingga",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Natuna",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Batam",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Tanjung Pinang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Lampung",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Lampung Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lampung Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lampung Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lampung Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lampung Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mesuji",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pesawaran",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pesisir Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pringsewu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tanggamus",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tulang Bawang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tulang Bawang Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Way Kanan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Bandar Lampung",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Metro",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Maluku",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Buru",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Buru Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kepulauan Aru",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kepulauan Tanimbar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Maluku Barat Daya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Maluku Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Maluku Tenggara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Seram Bagian Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Seram Bagian Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Ambon",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Tual",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Maluku Utara",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Halmahera Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Halmahera Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Halmahera Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Halmahera Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Halmahera Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kepulauan Sula",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pulau Morotai",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pulau Taliabu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Ternate",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Tidore Kepulauan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Nusa Tenggara Barat",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bima",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Dompu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lombok Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lombok Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lombok Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lombok Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sumbawa",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sumbawa Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Bima",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Mataram",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Nusa Tenggara Timur",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Alor",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Belu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Ende",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Flores Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kupang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lembata",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Malaka",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Manggarai",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Manggarai Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Manggarai Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Nagekeo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Ngada",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Rote Ndao",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sabu Raijua",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sikka",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sumba Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sumba Barat Daya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sumba Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sumba Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Timor Tengah Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Timor Tengah Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Kupang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Papua",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Asmat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Biak Numfor",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Boven Digoel",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Deiyai",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Dogiyai",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Intan Jaya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Jayapura",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Jayawijaya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Keerom",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kepulauan Yapen",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lanny Jaya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mamberamo Raya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mamberamo Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mappi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Merauke",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mimika",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Nabire",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Nduga",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Paniai",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pegunungan Bintang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Puncak",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Puncak Jaya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sarmi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Supiori",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tolikara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Waropen",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Yahukimo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Yalimo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Jayapura",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Papua Barat",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Fakfak",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kaimana",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Manokwari",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Manokwari Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pegunungan Arfak",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Teluk Bintuni",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Teluk Wondama",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Sorong",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Papua Barat Daya",
+            "total_places": 0,
+            "cities": []
+        },
+        {
+            "province": "Papua Pegunungan",
+            "total_places": 0,
+            "cities": []
+        },
+        {
+            "province": "Papua Selatan",
+            "total_places": 0,
+            "cities": []
+        },
+        {
+            "province": "Papua Tengah",
+            "total_places": 0,
+            "cities": []
+        },
+        {
+            "province": "Riau",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bengkalis",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Indragiri Hilir",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Indragiri Hulu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kampar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kepulauan Meranti",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kuantan Singingi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pelalawan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Rokan Hilir",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Rokan Hulu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Siak",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Dumai",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Pekanbaru",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Sulawesi Barat",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Majene",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mamasa",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mamuju",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mamuju Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pasangkayu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Polewali Mandar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Sulawesi Selatan",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bantaeng",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Barru",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bone",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bulukumba",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Enrekang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Gowa",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Jeneponto",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kepulauan Selayar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Luwu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Luwu Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Luwu Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Maros",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pangkajene dan Kepulauan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pinrang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sidenreng Rappang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sinjai",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Soppeng",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Takalar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tana Toraja",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Toraja Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Wajo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Makassar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Palopo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Parepare",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Sulawesi Tengah",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Banggai",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Banggai Kepulauan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Banggai Laut",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Buol",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Donggala",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Morowali",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Morowali Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Parigi Moutong",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Poso",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sigi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tojo Una-Una",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tolitoli",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Palu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Sulawesi Tenggara",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bombana",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Buton",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Buton Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Buton Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Buton Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kolaka",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kolaka Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kolaka Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Konawe",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Konawe Kepulauan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Konawe Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Konawe Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Muna",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Muna Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Wakatobi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Baubau",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Kendari",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Sulawesi Utara",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Bolaang Mongondow",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bolaang Mongondow Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bolaang Mongondow Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Bolaang Mongondow Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kepulauan Sangihe",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kepulauan Siau Tagulandang Biaro",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kepulauan Talaud",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Minahasa",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Minahasa Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Minahasa Tenggara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Minahasa Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Bitung",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Kotamobagu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Manado",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Tomohon",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Sumatera Barat",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Agam",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Dharmasraya",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Kepulauan Mentawai",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lima Puluh Kota",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Padang Pariaman",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pasaman",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pasaman Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pesisir Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Sijunjung",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Solok",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Solok Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tanah Datar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Bukittinggi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Padang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Padang Panjang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Pariaman",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Payakumbuh",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Sawahlunto",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Solok",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Sumatera Selatan",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Banyuasin",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Empat Lawang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Lahat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Muara Enim",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Musi Banyuasin",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Musi Rawas",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Musi Rawas Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten OKU Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten OKU Timur",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Ogan Ilir",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Ogan Komering Ilir",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Ogan Komering Ulu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Penukal Abab Lematang Ilir",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Lubuklinggau",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Pagar Alam",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Palembang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Prabumulih",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        },
+        {
+            "province": "Sumatera Utara",
+            "total_places": 0,
+            "cities": [
+                {
+                    "name": "Kabupaten Asahan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Batubara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Dairi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Deli Serdang",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Humbang Hasundutan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Karo",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Labuhanbatu",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Labuhanbatu Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Labuhanbatu Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Langkat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Mandailing Natal",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Nias",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Nias Barat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Nias Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Nias Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Padang Lawas",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Padang Lawas Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Pakpak Bharat",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Samosir",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Serdang Bedagai",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Simalungun",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tapanuli Selatan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tapanuli Tengah",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Tapanuli Utara",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kabupaten Toba",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Binjai",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Gunungsitoli",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Medan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Padangsidimpuan",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Pematangsiantar",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Sibolga",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Tanjungbalai",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                },
+                {
+                    "name": "Kota Tebing Tinggi",
+                    "total_places": 0,
+                    "subdistricts": [],
+                    "sectors": []
+                }
+            ]
+        }
+    ]
+}

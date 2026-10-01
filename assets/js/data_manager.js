@@ -114,10 +114,27 @@ window.DataManager = {
             </div>
         `;
 
+        let data = null;
         try {
             const res = await fetch('api/master_db.php?action=tree_stats');
-            const data = await res.json();
-            if (data.success && data.provinces) {
+            const text = await res.text();
+            // Check if response starts with PHP tag or is HTML (typical on GitHub Pages / static host)
+            if (text.trim().startsWith('<?php') || text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
+                throw new Error('PHP backend not supported on this static host (GitHub Pages)');
+            }
+            data = JSON.parse(text);
+        } catch (e) {
+            console.warn('Backend PHP tidak aktif / static host terdeteksi. Beralih ke static fallback data/tree_stats.json...');
+            try {
+                const staticRes = await fetch('data/tree_stats.json');
+                data = await staticRes.json();
+            } catch (staticErr) {
+                console.error('Gagal memuat static fallback data wilayah:', staticErr);
+            }
+        }
+
+        try {
+            if (data && data.success && data.provinces) {
                 this.provinces = data.provinces;
                 this.totalAllPlaces = data.total_all_places || 0;
 
@@ -156,6 +173,8 @@ window.DataManager = {
                 } else if (this.provinces.length) {
                     this.selectProvince(this.provinces[0].province);
                 }
+            } else {
+                throw new Error('Data provinsi kosong');
             }
         } catch (e) {
             console.error('Gagal memuat struktur folder wilayah:', e);
@@ -525,8 +544,22 @@ window.DataManager = {
                 url += `&skip_meta=1&known_total=${this.totalRecords}`;
             }
 
-            const res = await fetch(url);
-            const data = await res.json();
+            let data = null;
+            try {
+                const res = await fetch(url);
+                const text = await res.text();
+                if (text.trim().startsWith('<?php') || text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
+                    throw new Error('Static host detected (PHP unsupported)');
+                }
+                data = JSON.parse(text);
+            } catch (queryErr) {
+                // Static fallback from data/static_places_sample.json
+                data = await this.queryStaticSample();
+            }
+
+            if (!data) {
+                data = await this.queryStaticSample();
+            }
 
             this.pageCache[scopeKey] = data;
             this.renderTable(data);
@@ -536,6 +569,80 @@ window.DataManager = {
                 tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ef4444; padding:20px;">Gagal memuat data dari database.</td></tr>`;
             }
         }
+    },
+
+    async queryStaticSample() {
+        if (!this._staticSampleCache) {
+            try {
+                const res = await fetch('data/static_places_sample.json');
+                this._staticSampleCache = await res.json();
+            } catch (e) {
+                this._staticSampleCache = { data: {} };
+            }
+        }
+
+        const cityData = this._staticSampleCache?.data || {};
+        let records = [];
+
+        if (this.activeCity && cityData[this.activeCity]) {
+            records = [...cityData[this.activeCity]];
+        } else if (this.activeProvince) {
+            // Find all cities in this province
+            const pData = this.provinces.find(p => p.province === this.activeProvince);
+            if (pData && pData.cities) {
+                pData.cities.forEach(c => {
+                    if (cityData[c.name]) {
+                        records.push(...cityData[c.name]);
+                    }
+                });
+            }
+        } else {
+            // All sample records
+            Object.values(cityData).forEach(arr => records.push(...arr));
+        }
+
+        // Apply subdistrict filter
+        if (this.activeSubdistrict) {
+            records = records.filter(r => (r.subdistrict || '').toLowerCase() === this.activeSubdistrict.toLowerCase());
+        }
+
+        // Apply sector filter
+        if (this.activeSector) {
+            records = records.filter(r => (r.sector || '').toLowerCase() === this.activeSector.toLowerCase());
+        }
+
+        // Apply phone filter
+        if (this.activePhoneFilter === 'wa') {
+            records = records.filter(r => {
+                const p = (r.phone || '').replace(/[^0-9]/g, '');
+                return p.startsWith('08') || p.startsWith('628');
+            });
+        }
+
+        // Apply search keyword
+        if (this.searchKeyword) {
+            const kw = this.searchKeyword.toLowerCase();
+            records = records.filter(r => 
+                (r.name || '').toLowerCase().includes(kw) || 
+                (r.address || '').toLowerCase().includes(kw) || 
+                (r.category || '').toLowerCase().includes(kw)
+            );
+        }
+
+        const total = records.length;
+        const totalPages = Math.max(1, Math.ceil(total / this.perPage));
+        const startIndex = (this.currentPage - 1) * this.perPage;
+        const pagedData = records.slice(startIndex, startIndex + this.perPage);
+
+        return {
+            success: true,
+            total: total,
+            page: this.currentPage,
+            per_page: this.perPage,
+            total_pages: totalPages,
+            data: pagedData,
+            is_static_fallback: true
+        };
     },
 
     renderTable(data) {

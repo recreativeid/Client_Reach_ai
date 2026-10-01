@@ -4722,8 +4722,34 @@ window.ScraperClient = ScraperClient;
                 if (this.currentKecamatan) {
                     statusUrl += `&kecamatan=${encodeURIComponent(this.currentKecamatan)}`;
                 }
-                const res = await fetch(statusUrl);
-                const data = await res.json();
+                let data = null;
+                try {
+                    const res = await fetch(statusUrl);
+                    const text = await res.text();
+                    if (!text.trim().startsWith('<?php') && !text.trim().startsWith('<!DOCTYPE')) {
+                        data = JSON.parse(text);
+                    }
+                } catch (e1) {}
+
+                if (!data) {
+                    // Check if cleanRegion is in readyRegions fallback
+                    const matchRegion = (this.readyRegions || []).find(r => 
+                        r.name.toLowerCase() === cleanRegion.toLowerCase() ||
+                        cleanRegion.toLowerCase().includes(r.name.toLowerCase()) ||
+                        r.name.toLowerCase().includes(cleanRegion.toLowerCase())
+                    );
+                    if (matchRegion) {
+                        data = {
+                            available: true,
+                            region: cleanRegion,
+                            total_places: matchRegion.total_places || 0,
+                            city_total_places: matchRegion.total_places || 0,
+                            categories: matchRegion.categories || {}
+                        };
+                    } else {
+                        data = { available: false, total_places: 0 };
+                    }
+                }
 
                 const branchHarvested = document.getElementById('branch-harvested-city');
                 const branchUnharvested = document.getElementById('branch-unharvested-city');
@@ -5016,9 +5042,23 @@ window.ScraperClient = ScraperClient;
         async loadReadyRegions() {
             const container = document.getElementById('ready-regions-chips-container');
             try {
-                const res = await fetch('api/master_db.php?action=regions');
-                const data = await res.json();
-                if (data.regions && data.regions.length) {
+                let data = null;
+                try {
+                    const res = await fetch('api/master_db.php?action=regions');
+                    const text = await res.text();
+                    if (!text.trim().startsWith('<?php') && !text.trim().startsWith('<!DOCTYPE') && !text.trim().startsWith('<html')) {
+                        data = JSON.parse(text);
+                    }
+                } catch (apiErr) {}
+
+                if (!data || !data.regions) {
+                    try {
+                        const staticRes = await fetch('data/ready_regions.json');
+                        data = await staticRes.json();
+                    } catch (sErr) {}
+                }
+
+                if (data && data.regions && data.regions.length) {
                     this.readyRegions = data.regions.filter(r => r.total_places > 0);
                     if (container) {
                         container.innerHTML = '';

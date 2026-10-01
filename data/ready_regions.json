@@ -1,0 +1,115 @@
+{
+    "regions": [
+        {
+            "slug": "kota_denpasar",
+            "name": "Kota Denpasar",
+            "province": "Bali",
+            "total_places": 5032,
+            "file_size": 1808218,
+            "file_date": "2026-09-28",
+            "filename": "places_kota_denpasar_20260928.jsonl",
+            "source": "jsonl"
+        },
+        {
+            "slug": "kabupaten_badung",
+            "name": "Kabupaten Badung",
+            "province": "Bali",
+            "total_places": 4145,
+            "file_size": 1507909,
+            "file_date": "2026-09-28",
+            "filename": "places_kabupaten_badung_20260928.jsonl",
+            "source": "jsonl"
+        },
+        {
+            "slug": "kabupaten_tabanan",
+            "name": "Kabupaten Tabanan",
+            "province": "Bali",
+            "total_places": 3748,
+            "file_size": 1340654,
+            "file_date": "2026-09-29",
+            "filename": "places_kabupaten_tabanan_20260929.jsonl",
+            "source": "jsonl"
+        },
+        {
+            "slug": "kabupaten_bangli",
+            "name": "Kabupaten Bangli",
+            "province": "Bali",
+            "total_places": 2216,
+            "file_size": 792339,
+            "file_date": "2026-09-28",
+            "filename": "places_kabupaten_bangli_20260928.jsonl",
+            "source": "jsonl"
+        },
+        {
+            "slug": "kabupaten_karangasem",
+            "name": "Kabupaten Karangasem",
+            "province": "Bali",
+            "total_places": 2164,
+            "file_size": 795466,
+            "file_date": "2026-09-29",
+            "filename": "places_kabupaten_karangasem_20260929.jsonl",
+            "source": "jsonl"
+        },
+        {
+            "slug": "kota_magelang",
+            "name": "Kota Magelang",
+            "province": "Jawa Tengah",
+            "total_places": 1457,
+            "file_size": 0,
+            "file_date": "2026-09-30",
+            "filename": "database\/client_reach.db",
+            "source": "database"
+        },
+        {
+            "slug": "kabupaten_klungkung",
+            "name": "Kabupaten Klungkung",
+            "province": "Bali",
+            "total_places": 1218,
+            "file_size": 450132,
+            "file_date": "2026-09-29",
+            "filename": "places_kabupaten_klungkung_20260929.jsonl",
+            "source": "jsonl"
+        },
+        {
+            "slug": "magelang",
+            "name": "Magelang",
+            "province": "",
+            "total_places": 1117,
+            "file_size": 431967,
+            "file_date": "2026-09-28",
+            "filename": "places_magelang_20260927.jsonl",
+            "source": "jsonl"
+        },
+        {
+            "slug": "kabupaten_gianyar",
+            "name": "Kabupaten Gianyar",
+            "province": "Bali",
+            "total_places": 1042,
+            "file_size": 397154,
+            "file_date": "2026-09-28",
+            "filename": "places_kabupaten_gianyar_20260928.jsonl",
+            "source": "jsonl"
+        },
+        {
+            "slug": "kabupaten_buleleng",
+            "name": "Kabupaten Buleleng",
+            "province": "Bali",
+            "total_places": 743,
+            "file_size": 273635,
+            "file_date": "2026-09-28",
+            "filename": "places_kabupaten_buleleng_20260928.jsonl",
+            "source": "jsonl"
+        },
+        {
+            "slug": "kabupaten_jembrana",
+            "name": "Kabupaten Jembrana",
+            "province": "Bali",
+            "total_places": 574,
+            "file_size": 0,
+            "file_date": "2026-09-30",
+            "filename": "database\/client_reach.db",
+            "source": "database"
+        }
+    ],
+    "total_regions": 11
+}
