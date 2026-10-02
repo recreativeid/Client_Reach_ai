@@ -3443,12 +3443,13 @@ const ScraperClient = {
             const payload = {
                 action: 'scrape',
                 method: this.currentQuery.zoneMode,
-                category: this.currentQuery.category || 'cafe',
+                category: this.currentQuery.category || 'all',
                 location: this.currentQuery.location || 'Magelang Utara',
                 lat: this.currentQuery.lat,
                 lng: this.currentQuery.lng,
                 radius: this.currentQuery.radius,
-                limit: 15
+                limit: 25,
+                candidate_places: (this.candidatePlaces && this.candidatePlaces.length > 0) ? this.candidatePlaces : null
             };
 
             if (this.currentQuery.zoneMode === 'boundary' && this.currentQuery.bbox) {
@@ -3470,7 +3471,19 @@ const ScraperClient = {
             const onlyWaToggle = document.getElementById('scraper-only-wa-toggle');
             if (onlyWaToggle && onlyWaToggle.checked) {
                 payload.only_wa = true;
+                this.activeFilter = 'has_wa';
+            } else {
+                this.activeFilter = 'all';
             }
+
+            // Sync pill buttons UI state
+            document.querySelectorAll('.lead-filter-pill').forEach(p => {
+                if (p.getAttribute('data-filter') === this.activeFilter) {
+                    p.classList.add('active');
+                } else {
+                    p.classList.remove('active');
+                }
+            });
 
             let data = null;
             const isStaticHost = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
@@ -5536,7 +5549,7 @@ window.ScraperClient = ScraperClient;
                             btnDetect.disabled = false;
                             btnDetect.innerHTML = '<i class="fa-solid fa-check"></i> Deteksi Selesai';
                         }
-                        setTimeout(() => {
+                        setTimeout(async () => {
                             this.checkStatus(this.currentRegion, this.currentKecamatan);
                             this.loadReadyRegions();
                             if (window.ScraperClient && typeof window.ScraperClient.scanTerritory === 'function') {
@@ -5546,6 +5559,53 @@ window.ScraperClient = ScraperClient;
                             if (progressEl) progressEl.style.display = 'none';
                             if (btnDetect) {
                                 btnDetect.innerHTML = '<i class="fa-solid fa-crosshairs"></i> Deteksi Seluruh Bisnis di Wilayah Ini';
+                            }
+
+                            // AUTOMATICALLY REDIRECT TO SCRAPED RESULTS TABLE!
+                            try {
+                                const qUrl = `api/master_db.php?action=query&region=${encodeURIComponent(this.currentRegion)}&per_page=100`;
+                                const qRes = await fetch(qUrl);
+                                const qData = await qRes.json();
+                                const rawPlaces = qData.places || qData.items || [];
+                                if (rawPlaces.length > 0 && window.ScraperClient) {
+                                    window.ScraperClient.scrapedResults = rawPlaces.map((p, idx) => ({
+                                        id: idx + 1,
+                                        osm_id: p.osm_id || null,
+                                        name: p.name,
+                                        category: p.category_name || p.subsector || 'Usaha Lokal',
+                                        address: p.address || this.currentRegion,
+                                        phone: p.phone || '-',
+                                        lat: parseFloat(p.lat || p.latitude || 0),
+                                        lng: parseFloat(p.lng || p.longitude || 0),
+                                        social_media: p.website || '-',
+                                        opening_hours: p.opening_hours || '-',
+                                        rating: parseFloat(p.rating || 4.5),
+                                        reviews_count: parseInt(p.reviews_count || 25),
+                                        status: 'none',
+                                        source: p.source || 'master_db',
+                                        source_name: 'Master DB Wilayah',
+                                        source_type: 'Database Sapu Bersih',
+                                        source_color: '#3b82f6',
+                                        source_icon: 'fa-database',
+                                        insights: (typeof window.ScraperClient.generateInsights === 'function')
+                                            ? window.ScraperClient.generateInsights(p.name, p.category_name, p.rating, p.reviews_count, p.phone)
+                                            : null
+                                    }));
+                                    window.ScraperClient.currentQuery.location = this.currentRegion;
+                                    window.ScraperClient.currentQuery.category = 'all';
+                                    window.ScraperClient.activeFilter = 'all';
+                                    window.ScraperClient.renderScrapedResultsTable();
+
+                                    const setupView = document.getElementById('scraper-setup-view');
+                                    const resultsView = document.getElementById('scraped-results-view');
+                                    if (setupView) setupView.style.display = 'none';
+                                    if (resultsView) resultsView.style.display = 'block';
+
+                                    // Scroll into view smoothly
+                                    resultsView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }
+                            } catch(err) {
+                                console.warn('Could not auto-load scraped results table from master_db:', err);
                             }
                         }, 1200);
                         return;

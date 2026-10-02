@@ -2071,9 +2071,15 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
                     $pLon = (float)($item['lng'] ?? 0);
                     if (!$pLat || !$pLon) continue;
 
-                    if ($pLat < ($minLat - 0.05) || $pLat > ($maxLat + 0.05) ||
-                        $pLon < ($minLng - 0.05) || $pLon > ($maxLng + 0.05)) {
-                        continue;
+                    if ($hasBbox) {
+                        if ($pLat < $minLat || $pLat > $maxLat || $pLon < $minLng || $pLon > $maxLng) {
+                            continue;
+                        }
+                    } else {
+                        $pDist = hypot($pLat - $centerLat, $pLon - $centerLng) * 111.0;
+                        if ($pDist > $radiusKm) {
+                            continue;
+                        }
                     }
 
                     $isAll = in_array(strtolower($q), ['all', 'semua', 'semua_bidang', 'all_categories']) || empty($q);
@@ -2931,7 +2937,58 @@ if ($action === 'scrape') {
         }
     }
 
-    $scrapedData = scrapeRealPlaces($category, $locationName, $centerLat, $centerLng, $radiusKm, $limit, $bbox);
+    // 1. If candidate places are directly passed from the client's verified map boundary, use them!
+    if (!empty($input['candidate_places']) && is_array($input['candidate_places'])) {
+        $scrapedData = [];
+        $seenCandidateNames = [];
+        foreach ($input['candidate_places'] as $idx => $cp) {
+            if (empty($cp['name'])) continue;
+            $name = trim($cp['name']);
+            $lower = strtolower($name);
+            if (isset($seenCandidateNames[$lower])) continue;
+            $seenCandidateNames[$lower] = true;
+
+            $lat = (float)($cp['lat'] ?? 0);
+            $lng = (float)($cp['lng'] ?? ($cp['lon'] ?? 0));
+            $cat = !empty($cp['category']) ? $cp['category'] : 'Usaha Lokal';
+            $addr = !empty($cp['address']) ? $cp['address'] : $locationName;
+            $phone = !empty($cp['phone']) && $cp['phone'] !== '-' && $cp['phone'] !== 'null' ? $cp['phone'] : '-';
+            $website = !empty($cp['social_media']) && $cp['social_media'] !== '-' ? $cp['social_media'] : (!empty($cp['website']) ? $cp['website'] : '-');
+            $hours = !empty($cp['opening_hours']) ? $cp['opening_hours'] : '-';
+            $rating = (float)($cp['rating'] ?? 4.5);
+            $reviews = (int)($cp['reviews_count'] ?? 30);
+
+            $insights = generateTriChannelInsights($name, $cat, $rating, $reviews, $phone, $lat, $lng);
+
+            $scrapedData[] = [
+                'id' => $idx + 1,
+                'osm_id' => $cp['osm_id'] ?? null,
+                'name' => $name,
+                'category' => $cat,
+                'address' => $addr,
+                'phone' => $phone,
+                'lat' => $lat,
+                'lng' => $lng,
+                'social_media' => $website,
+                'opening_hours' => $hours,
+                'rating' => $rating,
+                'reviews_count' => $reviews,
+                'status' => 'none',
+                'source' => $cp['source'] ?? 'osm',
+                'source_name' => 'Peta Digital & Wilayah',
+                'source_type' => 'Peta Spasial Nyata',
+                'source_color' => '#16a34a',
+                'source_icon' => 'fa-map-location-dot',
+                'insights' => $insights
+            ];
+            if (count($scrapedData) >= $limit) break;
+        }
+
+        // Enrich missing contacts strictly 1:1 by ID
+        enrichPlacesWithHybridDirectory($scrapedData, $locationName);
+    } else {
+        $scrapedData = scrapeRealPlaces($category, $locationName, $centerLat, $centerLng, $radiusKm, $limit, $bbox);
+    }
 
     if (empty($scrapedData)) {
         jsonResponse([
@@ -2957,11 +3014,12 @@ if ($action === 'scrape') {
             return (!empty($raw) && $raw !== '-' && strlen($raw) >= 6);
         }));
 
-        if (!empty($withWa)) {
+        if (count($withWa) >= 3) {
             $scrapedData = $withWa;
-        } elseif (!empty($withAnyPhone)) {
+        } elseif (count($withAnyPhone) >= 3) {
             $scrapedData = $withAnyPhone;
         }
+        // If fewer than 3 have phone numbers, keep all scraped items so leads are not dropped to 1 or 0!
     }
 
     // Save to scraping_history table
