@@ -2924,7 +2924,12 @@ if ($action === 'scrape') {
     $centerLat = (float)($input['lat'] ?? -2.5337);
     $centerLng = (float)($input['lng'] ?? 140.7181);
     $radiusKm = (float)($input['radius'] ?? 5);
-    $limit = (int)($input['limit'] ?? 15);
+    $limitRaw = $input['limit'] ?? 25;
+    if ($limitRaw === 'all' || (int)$limitRaw <= 0) {
+        $limit = 9999;
+    } else {
+        $limit = (int)$limitRaw;
+    }
 
     // Parse bbox if present
     $bbox = null;
@@ -2939,10 +2944,24 @@ if ($action === 'scrape') {
 
     $scrapedData = [];
     $seenNames = [];
+    $onlyWa = !empty($input['only_wa']) && ($input['only_wa'] === true || $input['only_wa'] === 'true' || $input['only_wa'] === 1 || $input['only_wa'] === '1');
 
     // 1. First include any candidate places passed from the client
     if (!empty($input['candidate_places']) && is_array($input['candidate_places'])) {
-        foreach ($input['candidate_places'] as $idx => $cp) {
+        $candidates = $input['candidate_places'];
+
+        // If only_wa or contact priority is active, sort candidates so places with contact / mobile come first
+        if ($onlyWa) {
+            usort($candidates, function($a, $b) {
+                $rawA = (string)($a['phone'] ?? '');
+                $rawB = (string)($b['phone'] ?? '');
+                $isWaA = preg_match('/^(08|628|\+628)/', preg_replace('/[^0-9+]/', '', $rawA)) ? 2 : ((!empty($rawA) && $rawA !== '-') ? 1 : 0);
+                $isWaB = preg_match('/^(08|628|\+628)/', preg_replace('/[^0-9+]/', '', $rawB)) ? 2 : ((!empty($rawB) && $rawB !== '-') ? 1 : 0);
+                return $isWaB <=> $isWaA;
+            });
+        }
+
+        foreach ($candidates as $idx => $cp) {
             if (empty($cp['name'])) continue;
             $name = trim($cp['name']);
             $lower = strtolower($name);
@@ -3001,7 +3020,7 @@ if ($action === 'scrape') {
         }
     }
 
-    // 3. Enrich missing contacts strictly 1:1 by ID
+    // 3. Enrich missing contacts strictly 1:1 by ID using Gemini API
     enrichPlacesWithHybridDirectory($scrapedData, $locationName);
 
     if (empty($scrapedData)) {
@@ -3013,27 +3032,30 @@ if ($action === 'scrape') {
         ]);
     }
 
-    // Optional Preprocessing: Filter only places with contact numbers (prioritize WhatsApp 08xx, retain verified landline PSTN)
-    $onlyWa = !empty($input['only_wa']) && ($input['only_wa'] === true || $input['only_wa'] === 'true' || $input['only_wa'] === 1 || $input['only_wa'] === '1');
+    // Smart Prioritization: Place verified WhatsApp 08xx first, then PSTN landlines, then others
     if ($onlyWa) {
-        $withWa = array_values(array_filter($scrapedData, function($item) {
-            $raw = (string)($item['phone'] ?? '');
+        $withWa = [];
+        $withPstn = [];
+        $others = [];
+
+        foreach ($scrapedData as $it) {
+            $raw = (string)($it['phone'] ?? '');
             $digits = preg_replace('/[^0-9]/', '', $raw);
             if (strpos($digits, '0') === 0) $digits = '62' . substr($digits, 1);
-            return (strpos($digits, '628') === 0 && strlen($digits) >= 10 && strlen($digits) <= 14);
-        }));
-
-        $withAnyPhone = array_values(array_filter($scrapedData, function($item) {
-            $raw = trim((string)($item['phone'] ?? ''));
-            return (!empty($raw) && $raw !== '-' && strlen($raw) >= 6);
-        }));
-
-        if (count($withWa) >= 3) {
-            $scrapedData = $withWa;
-        } elseif (count($withAnyPhone) >= 3) {
-            $scrapedData = $withAnyPhone;
+            if (strpos($digits, '628') === 0 && strlen($digits) >= 10 && strlen($digits) <= 14) {
+                $withWa[] = $it;
+            } elseif (!empty($raw) && $raw !== '-' && strlen($raw) >= 6) {
+                $withPstn[] = $it;
+            } else {
+                $others[] = $it;
+            }
         }
-        // If fewer than 3 have phone numbers, keep all scraped items so leads are not dropped to 1 or 0!
+
+        // Keep WhatsApp leads at the top, followed by PSTN landlines, then remaining places
+        $scrapedData = array_merge($withWa, $withPstn, $others);
+        if ($limit < 9999 && count($scrapedData) > $limit) {
+            $scrapedData = array_slice($scrapedData, 0, $limit);
+        }
     }
 
     // Save to scraping_history table

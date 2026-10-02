@@ -666,9 +666,27 @@
                     <span style="font-size: 0.68rem; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px;">Mode A · Pencarian Tertarget</span>
                     <span style="font-size: 0.62rem; font-weight: 600; background: #eff6ff; color: #1d4ed8; padding: 2px 6px; border-radius: 4px; border: 1px solid #bfdbfe;">Filter & Radius</span>
                   </div>
-                  <p style="font-size: 0.7rem; color: #475569; margin-bottom: 10px; line-height: 1.35;">
+                  <p style="font-size: 0.7rem; color: #475569; margin-bottom: 8px; line-height: 1.35;">
                     Mengekstrak bisnis spesifik berdasarkan kategori/semua bidang dan radius titik pin yang Anda tentukan di form atas.
                   </p>
+
+                  <!-- Selector Kuota Pengambilan Data -->
+                  <div style="margin-bottom: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                      <label for="scraper-batch-limit" style="font-size: 0.68rem; font-weight: 700; color: #334155; margin: 0;">
+                        <i class="fa-solid fa-list-ol" style="color: #2563eb; margin-right: 4px;"></i> Target Jumlah Data:
+                      </label>
+                      <span id="limit-hint-badge" style="font-size: 0.65rem; color: #2563eb; font-weight: 700;">25 Tempat</span>
+                    </div>
+                    <select id="scraper-batch-limit" style="width: 100%; padding: 5px 8px; font-size: 0.73rem; border: 1px solid #cbd5e1; border-radius: 5px; background: #ffffff; color: #0f172a; font-weight: 600; cursor: pointer;">
+                      <option value="25" selected>25 Data (Proses Cepat ~3 dtk)</option>
+                      <option value="50">50 Data (~6 dtk)</option>
+                      <option value="100">100 Data (~10 dtk)</option>
+                      <option value="250">250 Data (~18 dtk)</option>
+                      <option value="all">Semua Calon Terdeteksi (Maksimal)</option>
+                    </select>
+                  </div>
+
                   <button type="button" class="btn btn-primary btn-block" id="btn-execute-scrape" style="padding: 10px; font-size: 0.82rem; font-weight: 700; background: #2563eb; border: none; border-radius: 7px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; color: #ffffff;">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <span>Ambil Data Sesuai Filter di Atas</span>

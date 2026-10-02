@@ -770,6 +770,19 @@ const ScraperClient = {
         if (countBadge) {
             countBadge.textContent = `${this.candidatePlaces.length} Calon Terdeteksi (Dalam Batas)`;
         }
+        const limitHintBadge = document.getElementById('limit-hint-badge');
+        if (limitHintBadge) {
+            const limitSelect = document.getElementById('scraper-batch-limit');
+            const curVal = limitSelect ? limitSelect.value : '25';
+            limitHintBadge.textContent = (curVal === 'all') ? `Semua (${this.candidatePlaces.length})` : `${curVal} Tempat`;
+        }
+        const limitSelect = document.getElementById('scraper-batch-limit');
+        if (limitSelect) {
+            const allOpt = limitSelect.querySelector('option[value="all"]');
+            if (allOpt) {
+                allOpt.textContent = `Semua Calon Terdeteksi (${this.candidatePlaces.length} Tempat)`;
+            }
+        }
 
         if (listContainer) {
             if (this.candidatePlaces.length === 0) {
@@ -3346,6 +3359,19 @@ const ScraperClient = {
                 if (countBadge) {
                     countBadge.textContent = `${this.candidatePlaces.length} Calon Terdeteksi (Dalam Batas)`;
                 }
+                const limitHintBadge = document.getElementById('limit-hint-badge');
+                if (limitHintBadge) {
+                    const limitSelect = document.getElementById('scraper-batch-limit');
+                    const curVal = limitSelect ? limitSelect.value : '25';
+                    limitHintBadge.textContent = (curVal === 'all') ? `Semua (${this.candidatePlaces.length})` : `${curVal} Tempat`;
+                }
+                const limitSelect = document.getElementById('scraper-batch-limit');
+                if (limitSelect) {
+                    const allOpt = limitSelect.querySelector('option[value="all"]');
+                    if (allOpt) {
+                        allOpt.textContent = `Semua Calon Terdeteksi (${this.candidatePlaces.length} Tempat)`;
+                    }
+                }
 
                 if (listContainer) {
                     listContainer.innerHTML = '';
@@ -3393,6 +3419,19 @@ const ScraperClient = {
             btnScrape.addEventListener('click', () => this.executeDeepScrape());
         }
 
+        const batchLimitSelect = document.getElementById('scraper-batch-limit');
+        if (batchLimitSelect) {
+            batchLimitSelect.addEventListener('change', () => {
+                const hintBadge = document.getElementById('limit-hint-badge');
+                if (hintBadge) {
+                    const val = batchLimitSelect.value;
+                    hintBadge.textContent = (val === 'all') 
+                        ? `Semua (${(this.candidatePlaces && this.candidatePlaces.length) ? this.candidatePlaces.length : 'Semua'})` 
+                        : `${val} Tempat`;
+                }
+            });
+        }
+
         const btnExportExcel = document.getElementById('btn-export-excel');
         if (btnExportExcel) {
             btnExportExcel.addEventListener('click', () => this.exportScrapedToExcel());
@@ -3438,6 +3477,17 @@ const ScraperClient = {
         }
 
         try {
+            const batchLimitSelect = document.getElementById('scraper-batch-limit');
+            let selectedLimit = 25;
+            if (batchLimitSelect) {
+                const rawVal = batchLimitSelect.value;
+                if (rawVal === 'all') {
+                    selectedLimit = (this.candidatePlaces && this.candidatePlaces.length > 0) ? this.candidatePlaces.length : 9999;
+                } else {
+                    selectedLimit = parseInt(rawVal, 10) || 25;
+                }
+            }
+
             const payload = {
                 action: 'scrape',
                 method: this.currentQuery.zoneMode,
@@ -3446,7 +3496,7 @@ const ScraperClient = {
                 lat: this.currentQuery.lat,
                 lng: this.currentQuery.lng,
                 radius: this.currentQuery.radius,
-                limit: 25,
+                limit: selectedLimit,
                 candidate_places: (this.candidatePlaces && this.candidatePlaces.length > 0) ? this.candidatePlaces : null
             };
 
