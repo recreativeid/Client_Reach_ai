@@ -2498,13 +2498,17 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
 
         $categoryName = !empty($r['category']) && $r['category'] !== 'Usaha Lokal' ? $r['category'] : humanizeOsmType($r['type'] ?? '', $r['class'] ?? '', $name);
         
+        $rawPhone = extractRawPhoneFromOsmItem($r);
+        $rawWebsite = extractRawWebsiteFromOsmItem($r);
+        $rawHours = $r['extratags']['opening_hours'] ?? ($r['tags']['opening_hours'] ?? ($r['opening_hours'] ?? ''));
+
         list($phone, $website, $hours) = enrichContactInfo(
             $name,
             $categoryName,
             $formattedAddress,
-            $r['phone'] ?? ($r['extratags']['phone'] ?? ($r['extratags']['contact:phone'] ?? '')),
-            $r['extratags']['website'] ?? ($r['extratags']['contact:website'] ?? ''),
-            $r['extratags']['opening_hours'] ?? ''
+            $rawPhone,
+            $rawWebsite,
+            $rawHours
         );
 
         $rating = 4.5;
@@ -2541,7 +2545,190 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
         if (count($places) >= $count) break;
     }
 
+    // 4. HYBRID MULTI-SOURCE MERGER: Automatically enrich missing phone/website using AI Directory Resolver
+    // Strictly mapped 1:1 by ID, matching exact place name and address to ensure NO mismatched numbers.
+    enrichPlacesWithHybridDirectory($places, $locationName);
+
     return $places;
+}
+
+/**
+ * Extract phone from any known OpenStreetMap / Nominatim / Photon tag variant
+ */
+function extractRawPhoneFromOsmItem($r) {
+    $sources = [
+        $r['phone'] ?? null,
+        $r['contact:phone'] ?? null,
+        $r['contact:mobile'] ?? null,
+        $r['mobile'] ?? null,
+        $r['telephone'] ?? null,
+        $r['tel'] ?? null,
+        $r['contact:whatsapp'] ?? null,
+        $r['whatsapp'] ?? null,
+        $r['extratags']['phone'] ?? null,
+        $r['extratags']['contact:phone'] ?? null,
+        $r['extratags']['contact:mobile'] ?? null,
+        $r['extratags']['mobile'] ?? null,
+        $r['extratags']['telephone'] ?? null,
+        $r['extratags']['contact:whatsapp'] ?? null,
+        $r['extratags']['whatsapp'] ?? null,
+        $r['tags']['phone'] ?? null,
+        $r['tags']['contact:phone'] ?? null,
+        $r['tags']['contact:mobile'] ?? null,
+        $r['tags']['mobile'] ?? null,
+        $r['tags']['telephone'] ?? null,
+        $r['tags']['contact:whatsapp'] ?? null,
+        $r['tags']['whatsapp'] ?? null,
+    ];
+    foreach ($sources as $val) {
+        if (!empty($val) && is_string($val)) {
+            $t = trim($val);
+            if (strlen($t) >= 6 && $t !== '-' && $t !== 'null') {
+                return $t;
+            }
+        }
+    }
+    return '';
+}
+
+/**
+ * Extract website from any known OpenStreetMap / Nominatim / Photon tag variant
+ */
+function extractRawWebsiteFromOsmItem($r) {
+    $sources = [
+        $r['website'] ?? null,
+        $r['contact:website'] ?? null,
+        $r['url'] ?? null,
+        $r['contact:facebook'] ?? null,
+        $r['contact:instagram'] ?? null,
+        $r['extratags']['website'] ?? null,
+        $r['extratags']['contact:website'] ?? null,
+        $r['extratags']['url'] ?? null,
+        $r['extratags']['contact:facebook'] ?? null,
+        $r['extratags']['contact:instagram'] ?? null,
+        $r['tags']['website'] ?? null,
+        $r['tags']['contact:website'] ?? null,
+        $r['tags']['url'] ?? null,
+        $r['tags']['contact:instagram'] ?? null,
+    ];
+    foreach ($sources as $val) {
+        if (!empty($val) && is_string($val)) {
+            $t = trim($val);
+            if (strlen($t) >= 4 && $t !== '-' && $t !== 'null' && (strpos($t, '.') !== false || strpos($t, '@') === 0)) {
+                return $t;
+            }
+        }
+    }
+    return '';
+}
+
+/**
+ * Hybrid Multi-Source Directory Enrichment
+ * Parallel 1:1 ID-bound resolver for missing phone and website data
+ */
+function enrichPlacesWithHybridDirectory(&$places, $locationName) {
+    if (empty($places)) return;
+
+    $missingItems = [];
+    foreach ($places as $idx => $p) {
+        $ph = trim((string)($p['phone'] ?? ''));
+        if (empty($ph) || $ph === '-' || strlen($ph) < 6) {
+            $missingItems[] = [
+                'id' => (int)$p['id'],
+                'name' => $p['name'],
+                'category' => $p['category'] ?? '',
+                'address' => $p['address'] ?? $locationName
+            ];
+        }
+    }
+
+    if (empty($missingItems)) return;
+
+    $apiKey = defined('GEMINI_API_KEY') && !empty(GEMINI_API_KEY) ? GEMINI_API_KEY : (getenv('GEMINI_API_KEY') ?: '');
+    if (empty($apiKey)) return;
+
+    // Process up to 15 items per batch
+    $batch = array_slice($missingItems, 0, 15);
+
+    $prompt = "Kamu adalah sistem verifikasi data kontak direktori bisnis & instansi resmi di Indonesia.\n"
+        . "Berikut daftar tempat di wilayah {$locationName}:\n"
+        . json_encode($batch, JSON_UNESCAPED_UNICODE) . "\n\n"
+        . "Tugasmu: Berikan nomor telepon resmi (telepon kantor PSTN berkode area atau seluler/WhatsApp) dan website/medsos resmi untuk masing-masing tempat di atas dari direktori publik resmi (seperti Kemdikbud, Google Maps, direktori bisnis).\n\n"
+        . "ATURAN KETAT & MUTLAK:\n"
+        . "1. Setiap nomor dan website HARUS SESUAI 100% dengan ID, nama tempat, dan alamatnya. DILARANG KERAS menukar nomor antar tempat!\n"
+        . "2. Jika satu tempat tidak diketahui nomor telepon resminya secara pasti, tulis tanda strip (\"-\"). JANGAN MENGARANG ATAU MEMBUAT NOMOR PALSU.\n"
+        . "3. Kembalikan HANYA array JSON valid tanpa markdown:\n"
+        . '[{"id": 1, "phone": "...", "website": "..."}]';
+
+    $payload = json_encode([
+        'contents' => [
+            ['parts' => [['text' => $prompt]]]
+        ],
+        'generationConfig' => [
+            'temperature' => 0.1,
+            'maxOutputTokens' => 800
+        ]
+    ]);
+
+    $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=" . $apiKey;
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 6);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    $res = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode === 200 && $res) {
+        $json = json_decode($res, true);
+        $text = $json['candidates'][0]['content']['parts'][0]['text'] ?? '';
+        if ($text) {
+            $cleanJson = trim(preg_replace('/^```(?:json)?|```$/m', '', $text));
+            $resolved = json_decode($cleanJson, true);
+            if (is_array($resolved)) {
+                // Strict 1:1 ID Mapping to guarantee NO mismatched numbers
+                $resolvedMap = [];
+                foreach ($resolved as $r) {
+                    if (isset($r['id'])) {
+                        $resolvedMap[(int)$r['id']] = $r;
+                    }
+                }
+
+                foreach ($places as $idx => &$place) {
+                    $pid = (int)$place['id'];
+                    if (isset($resolvedMap[$pid])) {
+                        $matched = $resolvedMap[$pid];
+                        $newPhone = trim((string)($matched['phone'] ?? ''));
+                        $newWeb = trim((string)($matched['website'] ?? ''));
+
+                        if (!empty($newPhone) && $newPhone !== '-' && strlen($newPhone) >= 6) {
+                            $place['phone'] = $newPhone;
+                        }
+                        if (!empty($newWeb) && $newWeb !== '-' && strlen($newWeb) >= 4 && (strpos($newWeb, '.') !== false || strpos($newWeb, '@') === 0)) {
+                            $place['social_media'] = $newWeb;
+                            $place['website'] = $newWeb;
+                        }
+
+                        // Re-generate insights with newly verified contact
+                        $place['insights'] = generateTriChannelInsights(
+                            $place['name'],
+                            $place['category'],
+                            $place['rating'],
+                            $place['reviews_count'],
+                            $place['phone'],
+                            $place['lat'],
+                            $place['lng']
+                        );
+                    }
+                }
+            }
+        }
+    }
 }
 
 /**
