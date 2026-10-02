@@ -35,6 +35,24 @@ if ($action === 'generate_pitch') {
     $tone         = trim($input['tone'] ?? 'Hangat, Sopan & Profesional');
     $customNotes  = trim($input['custom_notes'] ?? '');
 
+    // Detected Opportunities from Data Audit (Zero Hallucination)
+    $selectedOpps = $input['selected_opportunities'] ?? [];
+    $oppsText = '';
+    if (!empty($selectedOpps) && is_array($selectedOpps)) {
+        $oppsList = [];
+        foreach ($selectedOpps as $o) {
+            $t = trim($o['title'] ?? '');
+            $r = trim($o['reason'] ?? '');
+            $s = trim($o['solution'] ?? '');
+            if ($t || $r) {
+                $oppsList[] = "- [{$t}] Celah Data: {$r}. Tawaran Solusi: {$s}";
+            }
+        }
+        if (!empty($oppsList)) {
+            $oppsText = "\n--- CELAH & PELUANG AUDIT DATA RIIL (WAJIB DIJADIKAN DASAR PENAWARAN) ---\n" . implode("\n", $oppsList) . "\n";
+        }
+    }
+
     // Multimodal Image (Base64)
     $imageBase64  = $input['image_base64'] ?? null;
     $imageMime    = $input['image_mime'] ?? 'image/jpeg';
@@ -60,9 +78,9 @@ Tugasmu adalah membuat 1 naskah pesan WhatsApp cold outreach yang SANGAT PERSUAS
 - Nama Bisnis: {$businessName}
 - Kategori Usaha: {$category}
 - Alamat/Lokasi: {$address}
-- Rating Google Maps: {$rating} ⭐ ({$reviewsCount} ulasan)
+- Rating Google Maps: {$rating} ({$reviewsCount} ulasan)
 - Status Website: {$hasWebsite}
-
+{$oppsText}
 --- PENAWARAN & SOLUSI KITA ---
 - Layanan/Produk Kita: {$myService}
 - Tawaran Spesial / Diskon / Lead Magnet: {$myOffer}
@@ -80,19 +98,21 @@ Sertakan poin penting dari gambar tersebut (misalnya diskon, bonus, keunggulan, 
     $prompt .= "\n\n--- STRUKTUR & PSIKOLOGI PESAN YANG WAJIB DIIKUTI ---
 1. **AWALAN PERKENALAN YANG BAIK & RESPEK**:
    - Sapa dengan ramah menyebut nama toko *{$businessName}* secara spesifik.
-   - Berikan pujian/apresiasi tulus atas bisnis mereka di {$address} atau reputasi ulasannya ({$rating} ⭐).
-2. **MEMBUAT PELANGGAN MERASA BUTUH (CREATE NEED & PAIN POINT)**:
-   - Singgung secara halus tantangan atau potensi tersembunyi bisnis mereka ({$painPoint}).
+   - Berikan apresiasi objektif atas performa bisnis mereka di {$address} atau reputasi ulasannya ({$rating}).
+2. **MEMBUAT PELANGGAN MERASA BUTUH (CREATE NEED BERDASARKAN CELAH DATA DI ATAS)**:
+   - Singgung secara halus tantangan atau celah data yang terdeteksi di atas ({$painPoint}).
    - Buat mereka sadar bahwa kompetitor terus bergerak dan mereka berpotensi kehilangan pelanggan lokal jika tidak segera memanfaatkan peluang ini.
 3. **SOLUSI & PENAWARAN MENARIK**:
    - Jelaskan bagaimana layanan kita ({$myService}) dan penawaran ({$myOffer}) bisa membantu mereka menambah pelanggan dan menghemat anggaran iklan secara nyata.
    " . ($imageBase64 ? "- Sebutkan bahwa ada materi/flyer promo menarik yang sedang kita siapkan untuk *{$businessName}*." : "") . "
 4. **CLOSING RAMAH TANPA PAKSAAN (LOW-FRICTION SOFT CTA)**:
-   - Ajak diskusi santai yang mudah dijawab (misal: 'Kira-kira jika kami kirimkan ulasan/audit singkatnya via WhatsApp ini, apakah berkenan kak? Murni berbagi insight tanpa biaya 🙏').
+   - Ajak diskusi santai yang mudah dijawab (misal: 'Kira-kira jika kami kirimkan ulasan/audit singkatnya via WhatsApp ini, apakah berkenan kak? Murni berbagi insight tanpa biaya').
 5. **FORMATTING**:
-   - Gunakan format WhatsApp (gunakan *bold* untuk nama bisnis dan penawaran utama, serta emoji secukupnya agar estetik dan hangat).
+   - Gunakan format WhatsApp (gunakan *bold* untuk nama bisnis dan penawaran utama).
+   - HINDARI PENGGUNAAN EMOJI DAN STIKER. Format harus clean, minimalis, dan berwibawa.
    - Panjang ideal: 3-4 paragraf ringkas yang enak dibaca di layar HP (mobile-friendly).
    - HANYA keluarkan naskah pesan WhatsApp siap kirim, jangan tambahkan kalimat pembuka/penutup seperti 'Berikut adalah pesan...'.";
+
 
     $aiResponseText = null;
 

@@ -3241,15 +3241,28 @@ const ScraperClient = {
         const category = item.category || 'Usaha Anda';
         const address = item.address || 'lokasi Anda';
         const rating = item.rating || '4.8';
-        const tone = (payload && payload.tone) || 'humas';
+        const tone = (payload && payload.tone) || 'Hangat, Sopan & Profesional';
+        const selected = (payload && payload.selected_opportunities && payload.selected_opportunities.length > 0)
+            ? payload.selected_opportunities
+            : [];
 
         let pitch = '';
-        if (tone === 'formal') {
-            pitch = `Selamat siang Bapak/Ibu Manajemen ${name},\n\nPerkenalkan kami dari cliento (Sales Intelligence). Kami mengamati reputasi luar biasa dan performa prima ${name} di kawasan ${address}. Melalui sistem kami, kami ingin menawarkan solusi optimasi kemitraan B2B dan ekspansi kunjungan klien terarah yang dapat diintegrasikan dengan operasional Anda.\n\nApakah kami diperkenankan mengirimkan rangkuman proposal singkat via WhatsApp ini? Terima kasih atas waktu dan perhatian Bapak/Ibu.`;
-        } else if (tone === 'casual') {
-            pitch = `Halo kak dari tim ${name}! 👋\n\nSalam kenal ya, kami dari tim cliento. Senang banget melihat rating ${rating}⭐ dan review positif pelanggan kakak di ${address}. Kami ada ide seru buat bantu naikin traffic kunjungan pelanggan baru ke ${name} secara konsisten lewat otomatisasi digital.\n\nKalau kakak ada waktu santai 5 menit, boleh kami share detail demonya kak? Makasih banyak!`;
+        let oppSection = '';
+        if (selected.length === 1) {
+            oppSection = `Berdasarkan audit data profil ${name}, kami melihat ${selected[0].reason ? selected[0].reason.toLowerCase() : 'peluang optimasi digital'}. Kami memiliki solusi terarah: ${selected[0].solution}.`;
+        } else if (selected.length > 1) {
+            const listStr = selected.map((o, idx) => `${idx + 1}. ${o.title}: ${o.reason}`).join('\n');
+            oppSection = `Berdasarkan audit direktori bisnis kami, terdapat ${selected.length} celah peluang yang bisa ditingkatkan:\n\n${listStr}\n\nSeluruh poin di atas dapat kami integrasikan dalam satu solusi efisien.`;
         } else {
-            pitch = `Yth. Tim Humas & Hubungan Publik ${name},\n\nSalam hangat. Berdasarkan kurasi data direktori bisnis kami, ${name} di ${address} memiliki indeks kepuasan konsumen sangat baik (${rating} bintang). Kami dari cliento Sales Intelligence berinisiatif menjalin kolaborasi strategis dalam penyediaan kemitraan dan perluasan segmen pasar lokal.\n\nBolehkah kami jadwalkan diskusi singkat via chat mengenai peluang sinergi ini? Terima kasih.`;
+            oppSection = `Kami mengamati reputasi dan performa bisnis ${name} di kawasan ${address}. Melalui sistem kami, kami ingin menawarkan solusi optimasi kunjungan klien terarah yang dapat diintegrasikan dengan operasional Anda.`;
+        }
+
+        if (tone.includes('Santai') || tone === 'casual') {
+            pitch = `Halo kak dari tim ${name}!\n\nSalam kenal dari tim cliento. Senang melihat performa rating ${rating} toko kakak di ${address}.\n\n${oppSection}\n\nKalau kakak ada waktu senggang 5 menit, boleh kami kirimkan ringkasan solusi lengkapnya via WhatsApp ini kak? Terima kasih banyak.`;
+        } else if (tone.includes('Konsultatif')) {
+            pitch = `Selamat siang Bapak/Ibu Manajemen ${name},\n\nSalam profesional dari tim cliento Sales Intelligence. Kami melakukan analisis direktori bisnis di wilayah ${address}.\n\n${oppSection}\n\nApakah kami diperkenankan mengirimkan studi kasus singkat mengenai implementasi solusi ini untuk ${name}? Terima kasih.`;
+        } else {
+            pitch = `Yth. Pimpinan & Manajemen ${name},\n\nSalam hangat dari cliento. Berdasarkan kurasi data direktori bisnis kami di ${address}:\n\n${oppSection}\n\nBolehkah kami jadwalkan diskusi ringkas via chat mengenai detail proposal solusi ini? Terima kasih atas perhatian Bapak/Ibu.`;
         }
 
         return {
@@ -3590,6 +3603,9 @@ const ScraperClient = {
             };
             const waUrl = window.TemplateManager ? window.TemplateManager.getWhatsAppUrl(it) : '#';
 
+            const opps = this.detectOpportunities(it);
+            const oppBadgesHtml = opps.slice(0, 2).map(o => `<span class="opp-badge ${o.badgeClass}" title="${o.reason}">${o.badge}</span>`).join(' ');
+
             const multiChannelHtml = `
                 <div class="lead-data-verification">
                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 5px;">
@@ -3604,6 +3620,9 @@ const ScraperClient = {
                         <span class="tag-clean" title="Peta Digital: Lokasi fisik dan direktori bisnis"><i class="fa-brands fa-google"></i> Maps</span>
                         <span class="tag-clean" title="Saluran Outreach: Kesiapan chat WhatsApp & telepon"><i class="fa-brands fa-whatsapp"></i> WhatsApp</span>
                         <span class="tag-clean" title="OpenStreetMap: Titik koordinat GPS dan batas wilayah"><i class="fa-solid fa-map-location-dot"></i> OpenStreetMap</span>
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px;">
+                        ${oppBadgesHtml}
                     </div>
                 </div>
             `;
@@ -3660,8 +3679,8 @@ const ScraperClient = {
                         <button class="btn btn-outline btn-sm btn-quick-copy" title="Salin Pesan Penawaran Terpersonalisasi" data-id="${it.id}">
                             <i class="fa-solid fa-copy"></i> Salin
                         </button>
-                        <button class="btn btn-primary btn-sm btn-open-gemini-pitch" title="Buat Pesan Sales Otomatis dengan Gemini AI" data-id="${it.id}" style="background: linear-gradient(135deg, #2563eb, #7c3aed); border: none;">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI Pitch
+                        <button class="btn btn-sm btn-open-gemini-pitch" title="Analisis Celah & Buat Naskah Outreach" data-id="${it.id}" style="background: #0f172a; color: #ffffff; border: 1px solid #0f172a; font-size: 0.74rem; font-weight: 600; padding: 4px 8px; border-radius: 6px;">
+                            <i class="fa-solid fa-bullseye"></i> Peluang &amp; Pitch
                         </button>
                         ${waBtn}
                     </div>
@@ -3872,6 +3891,200 @@ const ScraperClient = {
         reader.readAsDataURL(file);
     },
 
+    detectOpportunities(item) {
+        if (!item) return [];
+        const opps = [];
+
+        // 1. Website Check
+        const web = (item.website || item.social_media || '').trim();
+        const hasRealWebsite = web && web !== '-' && web !== 'null' && (web.includes('.') && !web.startsWith('@'));
+        if (!hasRealWebsite) {
+            opps.push({
+                id: 'no_web',
+                badge: 'Tanpa Website',
+                badgeClass: 'opp-badge-danger',
+                title: 'Jasa Pembuatan Website & Profil Landing Page Modern',
+                reason: 'Data audit mendeteksi bisnis ini belum memiliki website/landing page resmi. Calon pembeli kesulitan mengecek portofolio, menu, dan kredibilitas usaha secara langsung.',
+                solution: 'Pembuatan landing page mobile-friendly satu halaman dengan tombol langsung WhatsApp & integrasi peta.',
+                service: 'Jasa Pembuatan Website & Landing Page Profesional',
+                pain: 'Belum memiliki website resmi atau portofolio digital sehingga calon pembeli ragu',
+                pitchHook: 'kami perhatikan profil bisnis kakak di Google belum tertaut dengan website/landing page resmi. Banyak calon pembeli ragu bertransaksi karena tidak bisa melihat portofolio/menu lengkap',
+                pitchSolution: 'kami bisa bantu siapkan Landing Page modern yang ringan dan langsung terhubung ke chat WhatsApp'
+            });
+        }
+
+        // 2. Rating Check
+        const ratingNum = parseFloat(item.rating) || 0;
+        if (ratingNum > 0 && ratingNum < 4.2) {
+            opps.push({
+                id: 'low_rating',
+                badge: 'Rating Rendah (< 4.2)',
+                badgeClass: 'opp-badge-warning',
+                title: 'Jasa Manajemen Reputasi & Review Positif Organik',
+                reason: `Rating bisnis tercatat ${ratingNum.toFixed(1)} dari 5.0 (di bawah rata-rata aman 4.2). Konsumen modern cenderung beralih ke kompetitor dengan rating 4.5 ke atas.`,
+                solution: 'Sistem pengumpulan ulasan bintang 5 organik dari pelanggan puas dan strategi mitigasi ulasan negatif.',
+                service: 'Jasa Optimasi Google Maps & Review Booster',
+                pain: 'Jumlah ulasan masih sedikit atau ada review negatif yang belum ditangani profesional',
+                pitchHook: `kami melihat rating toko saat ini di angka ${ratingNum.toFixed(1)}. Padahal dengan sedikit penataan respon ulasan dan filter komplain, reputasi bisa cepat naik ke 4.7+`,
+                pitchSolution: 'kami ada metode otomatisasi ulasan positif organik dari pelanggan yang puas agar rating toko kakak pulih maksimal'
+            });
+        }
+
+        // 3. Review Count Check
+        const revCount = parseInt(item.reviews_count) || 0;
+        if (revCount < 25 && (ratingNum >= 4.2 || ratingNum === 0)) {
+            opps.push({
+                id: 'low_reviews',
+                badge: 'Ulasan Sedikit (< 25)',
+                badgeClass: 'opp-badge-info',
+                title: 'Jasa Optimasi Google Maps & Review Booster Organik',
+                reason: `Jumlah ulasan baru tercatat ${revCount} ulasan. Algoritma Google Maps memprioritaskan bisnis dengan interaksi ulasan aktif untuk masuk ke Local 3-Pack (halaman utama).`,
+                solution: 'Optimasi listing peta (foto interior/eksterior HD, tagar lokasi) dan program kartu ulasan cepat via QR Code.',
+                service: 'Jasa Optimasi Google Maps & Review Booster',
+                pain: 'Peringkat Google Maps belum di 3 besar & kompetitor di sekitar lebih ramai pengunjung',
+                pitchHook: `toko kakak sudah punya rating bagus (${ratingNum || '4.8'}), tapi ulasannya baru ${revCount}. Kompetitor di sekitar yang punya ratusan ulasan lebih berpeluang disarankan Google ke calon pembeli baru`,
+                pitchSolution: 'kami bantu optimasi profil Google Maps dan booster ulasan bintang 5 organik agar toko kakak selalu muncul di pencarian teratas'
+            });
+        }
+
+        // 4. WhatsApp / Mobile CS Check
+        const rawPhone = (item.phone || '').trim();
+        const digits = rawPhone.replace(/[^0-9]/g, '');
+        let intl = digits;
+        if (intl.startsWith('0')) intl = '62' + intl.substring(1);
+        const isMobileWA = intl.startsWith('628') && intl.length >= 10 && intl.length <= 14;
+        const hasAnyPhone = digits.length >= 6;
+
+        if (!isMobileWA) {
+            opps.push({
+                id: 'no_wa_cs',
+                badge: hasAnyPhone ? 'Telepon Kantor (Bukan WA)' : 'Tanpa Kontak WA',
+                badgeClass: 'opp-badge-warning',
+                title: 'Setup WhatsApp Bisnis & Integrasi Chat CS Otomatis',
+                reason: hasAnyPhone 
+                    ? `Nomor kontak terdaftar adalah telepon PSTN/kantor (${rawPhone}). Mayoritas konsumen modern enggan telepon pulsa dan lebih memilih chat WhatsApp interaktif.`
+                    : 'Belum ada nomor kontak yang dapat dihubungi pelanggan langsung dari direktori digital.',
+                solution: 'Setup WhatsApp Business resmi, auto-greeting 24/7 jam kerja, dan integrasi tombol chat di semua profil online.',
+                service: 'Sistem POS Kasir Online & Manajemen Usaha',
+                pain: 'Ingin omset naik drastis tapi hemat biaya iklan berbayar yang mahal',
+                pitchHook: hasAnyPhone 
+                    ? `nomor kontak yang tertera di peta masih nomor telepon kantor (${rawPhone}). Padahal lebih dari 85% pembeli sekarang enggan telepon pulsa dan maunya langsung klik chat WhatsApp` 
+                    : 'kontak langsung pemesanan belum terhubung di peta sehingga calon pembeli sering batal transaksi',
+                pitchSolution: 'kami bantu setup jalur chat WhatsApp Bisnis otomatis dan integrasi tombol pesan langsung agar konversi penjualan naik'
+            });
+        }
+
+        // 5. Operating Hours Check
+        const hours = (item.opening_hours || '').trim();
+        const hasHours = hours && hours !== '-' && hours !== 'null';
+        if (!hasHours) {
+            opps.push({
+                id: 'missing_hours',
+                badge: 'Jam Buka Belum Tertera',
+                badgeClass: 'opp-badge-neutral',
+                title: 'Jasa Verifikasi & Optimasi Profil Bisnis Google (GMB)',
+                reason: 'Jam operasional buka/tutup tidak terdata pada peta. Risiko calon pelanggan menganggap toko tutup saat mereka sedang mencari tempat di jam sibuk.',
+                solution: 'Audit kelengkapan info Google Business Profile: verifikasi jam operasional hari kerja/libur, penambahan foto HD, dan deskripsi SEO lokal.',
+                service: 'Jasa Optimasi Google Maps & Review Booster',
+                pain: 'Kompetitor lokal lebih ramai di jam sibuk & ranking Google Maps belum #1',
+                pitchHook: 'jam operasional toko belum lengkap tercantum di Google Maps. Calon pelanggan berisiko ragu datang karena takut toko sedang tutup',
+                pitchSolution: 'kami bantu audit dan rapikan informasi profil Google Maps secara komprehensif termasuk jam buka, foto, dan atribut fasilitas'
+            });
+        }
+
+        // 6. Fallback if business has no severe gaps
+        if (opps.length === 0) {
+            opps.push({
+                id: 'scale_growth',
+                badge: 'Perluasan Pasar & Scaling Iklan',
+                badgeClass: 'opp-badge-success',
+                title: 'Jasa Perluasan Segmen Pasar & Iklan Digital Tertarget',
+                reason: `Profil bisnis ini sudah sangat kuat (${ratingNum || '4.8'} bintang dengan ${revCount} ulasan dan kontak aktif). Peluang emas saat ini adalah ekspansi penjualan melalui targeted traffic.`,
+                solution: 'Pengelolaan kampanye iklan Meta Ads / Google Ads tertarget lokal untuk melipatgandakan omset tanpa boros anggaran.',
+                service: 'Jasa Kelola Media Sosial & Iklan Berbayar',
+                pain: 'Ingin omset naik drastis tapi hemat biaya iklan berbayar yang mahal',
+                pitchHook: `kami perhatikan profil bisnis ${item.name} sudah sangat rapi dan punya reputasi unggul di kawasan ini. Ini momen tepat untuk melipatgandakan jangkauan ke konsumen baru`,
+                pitchSolution: 'kami ingin menawarkan kemitraan strategi kampanye iklan digital tertarget agar omset harian bisa scale up lebih cepat'
+            });
+        }
+
+        // Mark the first one (highest priority) as default checked
+        opps[0].defaultChecked = true;
+
+        return opps;
+    },
+
+    renderOpportunityChecklist() {
+        const oppContainer = document.getElementById('opp-checklist-container');
+        const oppBadgeCount = document.getElementById('opp-count-badge');
+        if (!oppContainer || !this.detectedOpportunities) return;
+
+        if (oppBadgeCount) {
+            oppBadgeCount.textContent = `${this.detectedOpportunities.length} Celah Terdeteksi`;
+        }
+
+        oppContainer.innerHTML = this.detectedOpportunities.map((opp) => `
+            <label class="opp-item-row ${opp.defaultChecked ? 'is-selected' : ''}" data-opp-id="${opp.id}" style="display: flex; align-items: flex-start; gap: 10px; background: ${opp.defaultChecked ? '#ffffff' : '#f8fafc'}; border: 1px solid ${opp.defaultChecked ? '#2563eb' : '#e2e8f0'}; border-radius: 8px; padding: 8px 10px; cursor: pointer; margin-bottom: 6px; user-select: none;">
+                <input type="checkbox" class="opp-checkbox" data-opp-id="${opp.id}" ${opp.defaultChecked ? 'checked' : ''} style="width: 16px; height: 16px; margin-top: 3px; cursor: pointer; accent-color: #2563eb; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                        <span class="opp-title" style="font-size: 0.78rem; font-weight: 700; color: #0f172a;">${opp.title}</span>
+                        <span class="opp-badge ${opp.badgeClass}">${opp.badge}</span>
+                    </div>
+                    <div class="opp-desc" style="font-size: 0.7rem; color: #475569; margin-top: 2px; line-height: 1.35;">${opp.reason}</div>
+                    <div class="opp-solution" style="font-size: 0.68rem; color: #2563eb; font-weight: 600; margin-top: 4px;">Solusi: ${opp.solution}</div>
+                </div>
+            </label>
+        `).join('');
+
+        oppContainer.querySelectorAll('.opp-checkbox').forEach(cb => {
+            cb.addEventListener('change', (e) => {
+                const row = e.target.closest('.opp-item-row');
+                if (row) {
+                    row.classList.toggle('is-selected', e.target.checked);
+                    row.style.background = e.target.checked ? '#ffffff' : '#f8fafc';
+                    row.style.borderColor = e.target.checked ? '#2563eb' : '#e2e8f0';
+                }
+                this.syncSelectedOpportunities();
+            });
+        });
+
+        // Initialize selected opportunities
+        this.selectedOpportunities = this.detectedOpportunities.filter(o => o.defaultChecked);
+    },
+
+    syncSelectedOpportunities() {
+        const checkedBoxes = Array.from(document.querySelectorAll('#opp-checklist-container .opp-checkbox:checked'));
+        const checkedIds = checkedBoxes.map(cb => cb.getAttribute('data-opp-id'));
+        this.selectedOpportunities = (this.detectedOpportunities || []).filter(o => checkedIds.includes(o.id));
+
+        // Sync with primary pain & service selects
+        if (this.selectedOpportunities.length > 0) {
+            const primary = this.selectedOpportunities[0];
+            const painSelect = document.getElementById('ai-modal-pain-select');
+            const serviceSelect = document.getElementById('ai-modal-service-select');
+            if (painSelect && primary.pain) {
+                for (let i = 0; i < painSelect.options.length; i++) {
+                    if (painSelect.options[i].value.includes(primary.pain.substring(0, 20)) || primary.pain.includes(painSelect.options[i].value.substring(0, 20))) {
+                        painSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            if (serviceSelect && primary.service) {
+                for (let i = 0; i < serviceSelect.options.length; i++) {
+                    if (serviceSelect.options[i].value.includes(primary.service.substring(0, 15)) || primary.service.includes(serviceSelect.options[i].value.substring(0, 15))) {
+                        serviceSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Re-generate standard pitch
+        this.updateStandardPitchText();
+    },
+
     openAIPitchModal(item, initialMode = 'standard') {
         this.activeModalItem = item;
         const modal = document.getElementById('modal-ai-pitch');
@@ -3898,7 +4111,11 @@ const ScraperClient = {
         if (previewCard) previewCard.style.display = 'none';
         if (dropzone) dropzone.style.display = 'block';
 
-        // Update standard template text
+        // Detect Data-Driven Opportunities and Render Checklist
+        this.detectedOpportunities = this.detectOpportunities(item);
+        this.renderOpportunityChecklist();
+
+        // Update standard template text with detected opportunity
         this.updateStandardPitchText();
 
         // Switch to appropriate tab
@@ -3932,13 +4149,20 @@ const ScraperClient = {
             greetingText = `Halo kak *${item.name}*! Salam kenal dari tim cliento.`;
         }
 
-        let body = window.TemplateManager ? window.TemplateManager.getPersonalizedMessage(item) : '';
-        // If template doesn't have custom body, create standard template
-        if (!body) {
-            body = `${greetingText}\n\nKami sempat melihat profil usaha kakak di Google Maps dengan reputasi yang sangat baik (Rating ${item.rating}). Kami ingin sharing solusi singkat untuk optimasi visibilitas pelanggan lokal dan hemat biaya promosi.\n\nKira-kira jika kami kirimkan ringkasan insight singkatnya via WhatsApp ini, boleh kak? Terima kasih banyak.`;
+        const selected = (this.selectedOpportunities && this.selectedOpportunities.length > 0)
+            ? this.selectedOpportunities
+            : (this.detectedOpportunities && this.detectedOpportunities.length > 0 ? [this.detectedOpportunities[0]] : []);
+
+        let body = '';
+        if (selected.length === 1) {
+            const opp = selected[0];
+            body = `${greetingText}\n\nKami sempat menganalisis data profil usaha kakak di ${item.address} (Rating ${item.rating || '4.5'}). Sedikit insight objektif dari riset kami, ${opp.pitchHook}.\n\nKebetulan di tim kami, ${opp.pitchSolution}.\n\nKira-kira jika kami kirimkan ringkasan solusi singkatnya via WhatsApp ini, boleh kak? Terima kasih banyak.`;
+        } else if (selected.length > 1) {
+            // Bundled multi-opportunity pitch!
+            const hooks = selected.map((o, i) => `${i + 1}. ${o.pitchHook}`).join('\n');
+            body = `${greetingText}\n\nKami mengamati potensi pasar bisnis kakak di ${item.address}. Berdasarkan audit data kami, ada ${selected.length} celah peluang yang bisa dioptimalkan:\n\n${hooks}\n\nSolusi dari tim kami dapat mengintegrasikan perbaikan tersebut dalam satu paket efisien.\n\nKira-kira berkenan jika kami kirimkan gambaran solusi ringkasnya via chat ini kak? Terima kasih.`;
         } else {
-            // Replace greeting at beginning if standard
-            body = `${greetingText}\n\n` + body.replace(/^Halo [^\n]+?\n\n/i, '').replace(/^Hallo [^\n]+?\n\n/i, '');
+            body = `${greetingText}\n\nKami mengamati reputasi bisnis *${item.name}* di ${item.address}. Kami ingin sharing solusi ringkas untuk meningkatkan kunjungan pelanggan lokal secara terarah.\n\nKira-kira boleh kami kirimkan ringkasannya via WhatsApp ini kak? Terima kasih.`;
         }
 
         if (outputBox) outputBox.value = body;
@@ -3967,6 +4191,10 @@ const ScraperClient = {
         const offer = document.getElementById('ai-modal-offer-input')?.value || 'Free Audit Profil Google Maps 10 Menit & Diskon Promo 50%';
         const tone = document.getElementById('ai-modal-tone-select')?.value || 'Hangat, Sopan & Profesional';
 
+        const selectedOpps = (this.selectedOpportunities && this.selectedOpportunities.length > 0)
+            ? this.selectedOpportunities
+            : (this.detectedOpportunities && this.detectedOpportunities.length > 0 ? [this.detectedOpportunities[0]] : []);
+
         if (btnRun) {
             btnRun.disabled = true;
             btnRun.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gemini AI Sedang Menganalisis & Meracik Pesan...';
@@ -3988,7 +4216,14 @@ const ScraperClient = {
                 my_service: service,
                 my_offer: offer,
                 pain_point: painPoint,
-                tone: tone
+                tone: tone,
+                selected_opportunities: selectedOpps.map(o => ({
+                    id: o.id,
+                    badge: o.badge,
+                    title: o.title,
+                    reason: o.reason,
+                    solution: o.solution
+                }))
             };
 
             // Attach image if uploaded
@@ -4022,7 +4257,7 @@ const ScraperClient = {
             if (data.success && data.pitch) {
                 if (outputBox) outputBox.value = data.pitch;
                 if (statusEl) {
-                    statusEl.textContent = data.has_image ? '✓ Sukses diracik oleh Gemini Vision (Teks + Analisis Flyer)! ' : '✓ Berhasil diracik oleh Gemini AI!';
+                    statusEl.textContent = data.has_image ? '✓ Sukses diracik oleh Gemini Vision (Teks + Analisis Flyer)!' : '✓ Berhasil diracik oleh Gemini AI!';
                     statusEl.style.color = '#16a34a';
                 }
 

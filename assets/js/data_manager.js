@@ -723,6 +723,22 @@ window.DataManager = {
                 ? `<a href="${r.website.startsWith('http') ? r.website : 'https://' + r.website}" target="_blank" style="color: #2563eb; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="${this.esc(r.website)}"><i class="fa-solid fa-arrow-up-right-from-square"></i> Kunjungi</a>`
                 : `<span style="color: #94a3b8;">-</span>`;
 
+            let oppBadgeHtml = '';
+            if (window.ScraperClient && window.ScraperClient.detectOpportunities) {
+                const opps = window.ScraperClient.detectOpportunities({
+                    website: r.website,
+                    phone: r.phone,
+                    rating: r.rating,
+                    reviews_count: r.reviews_count,
+                    opening_hours: r.opening_hours
+                });
+                if (opps && opps.length > 0) {
+                    oppBadgeHtml = `<div style="display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px;">` +
+                        opps.slice(0, 2).map(o => `<span class="opp-badge ${o.badgeClass}" title="${this.esc(o.reason)}">${o.badge}</span>`).join('') +
+                        `</div>`;
+                }
+            }
+
             html += `
                 <tr id="dm-row-${itemKey}" class="dm-row-clickable" onclick="window.DataManager.onRowClick(event, '${itemKey}')" style="border-bottom: 1px solid #f1f5f9; transition: background 0.15s;" title="Klik baris untuk melihat titik di peta">
                     <td style="padding: 10px; font-size: 0.76rem; color: #64748b; text-align: center;">${num}</td>
@@ -733,15 +749,19 @@ window.DataManager = {
                         <span style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 6px; color: #334155; font-weight: 500;">
                             ${this.esc(r.category || r.category_name || 'Lainnya')}
                         </span>
+                        ${oppBadgeHtml}
                     </td>
                     <td style="padding: 10px; font-size: 0.74rem; color: #475569; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${this.esc(r.address || '-')}">
                         ${this.esc(r.address || '-')}
                     </td>
                     <td style="padding: 10px; font-size: 0.74rem;">${phoneBadge}</td>
                     <td style="padding: 10px; font-size: 0.74rem;">${webLink}</td>
-                    <td style="padding: 10px; font-size: 0.74rem; text-align: center;">
+                    <td style="padding: 10px; font-size: 0.74rem; text-align: center; white-space: nowrap;">
                         <button type="button" class="btn btn-outline btn-sm" onclick="event.stopPropagation(); window.DataManager.focusMapMarker('${itemKey}');" style="font-size: 0.68rem; padding: 3px 8px; color: #2563eb; border-color: #bfdbfe; font-weight: 600; border-radius: 4px;" title="Pusatkan Titik di Peta">
                             <i class="fa-solid fa-location-dot"></i> Peta
+                        </button>
+                        <button type="button" class="btn btn-sm" onclick="event.stopPropagation(); window.DataManager.openOpportunityPitch('${itemKey}');" style="font-size: 0.68rem; padding: 3px 8px; background: #0f172a; color: #ffffff; border: 1px solid #0f172a; font-weight: 600; border-radius: 4px; margin-left: 4px;" title="Analisis Celah & Buat Naskah Outreach">
+                            <i class="fa-solid fa-bullseye"></i> Peluang
                         </button>
                     </td>
                 </tr>
@@ -750,6 +770,27 @@ window.DataManager = {
 
         if (tableBody) tableBody.innerHTML = html;
         this.plotMapMarkers();
+    },
+
+    openOpportunityPitch(itemKey) {
+        const r = this.currentRecords.find(rec => String(rec.id || rec.osm_id || `${rec.lat}_${rec.lng}`) === String(itemKey));
+        if (!r) return;
+        const item = {
+            id: r.id || r.osm_id || itemKey,
+            name: r.name || 'Bisnis Lokal',
+            category: r.category || r.category_name || 'Usaha Lokal',
+            address: r.address || `${r.subdistrict || ''} ${r.city || ''}`.trim() || 'Indonesia',
+            phone: r.phone || '-',
+            social_media: r.website || '-',
+            rating: r.rating || '4.5',
+            reviews_count: r.reviews_count || '15',
+            opening_hours: r.opening_hours || '-',
+            lat: r.lat,
+            lng: r.lng
+        };
+        if (window.ScraperClient && window.ScraperClient.openAIPitchModal) {
+            window.ScraperClient.openAIPitchModal(item);
+        }
     },
 
     exportExcel() {

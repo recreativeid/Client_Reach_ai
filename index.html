@@ -23,7 +23,7 @@
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 
   <!-- App Custom Stylesheet -->
-  <link rel="stylesheet" href="assets/css/style.css?v=20261001_v36">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261002_v37">
 </head>
 <body>
 
@@ -1886,6 +1886,26 @@
         </div>
       </div>
 
+      <!-- Data-Driven Opportunity Detector (Multi-Checklist, Clean & Zero Emojis) -->
+      <div id="ai-modal-opp-section" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
+        <div class="d-flex justify-between align-center" style="margin-bottom: 8px;">
+          <div>
+            <div style="font-size: 0.72rem; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.3px;">
+              Analisis Celah &amp; Peluang Bisnis (Berdasarkan Data)
+            </div>
+            <div style="font-size: 0.68rem; color: #64748b;">
+              Centang satu atau beberapa peluang di bawah untuk meramu hook penawaran
+            </div>
+          </div>
+          <span id="opp-count-badge" class="badge" style="background: #f1f5f9; color: #334155; font-size: 0.68rem; font-weight: 600;">
+            0 Terdeteksi
+          </span>
+        </div>
+        <div id="opp-checklist-container" style="display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; padding-right: 4px;">
+          <!-- Dynamically populated via detectOpportunities() in JS -->
+        </div>
+      </div>
+
       <!-- ==============================================================
            PANEL 1: TEMPLATE STANDAR (Sesuai Template Awal, Cepat & Praktis)
            ============================================================== -->
@@ -1907,7 +1927,7 @@
         <!-- Callout Banner to AI Tab -->
         <div style="background: #fdf4ff; border: 1px solid #f0abfc; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
           <div style="font-size: 0.72rem; color: #86198f;">
-            <strong>✨ Ingin Closing Lebih Tinggi?</strong><br>
+            <strong>Ingin Closing Lebih Tinggi?</strong><br>
             Gunakan <strong>Gemini AI</strong> untuk membuat calon pelanggan merasa butuh & sertakan gambar/brosur promo!
           </div>
           <button type="button" class="btn btn-sm" id="btn-quick-switch-to-ai" style="background: #a21caf; color:#fff; font-size: 0.72rem; padding: 5px 10px; border:none; white-space:nowrap;">
@@ -1964,19 +1984,19 @@
           </label>
           <select id="ai-modal-pain-select" class="form-select" style="font-size: 0.75rem; padding: 6px 8px;">
             <option value="Peringkat Google Maps belum di 3 besar & kompetitor di sekitar lebih ramai pengunjung">
-              🎯 Kompetitor lokal lebih ramai di jam sibuk & ranking Google Maps belum #1
+              Kompetitor lokal lebih ramai di jam sibuk & ranking Google Maps belum #1
             </option>
             <option value="Jumlah ulasan masih sedikit atau ada review negatif yang belum ditangani profesional">
-              ⭐ Ulasan Google Maps masih sedikit atau ada review negatif belum direspon
+              Ulasan Google Maps masih sedikit atau ada review negatif belum direspon
             </option>
             <option value="Belum memiliki website resmi atau portofolio digital sehingga calon pembeli ragu">
-              🌐 Belum punya website resmi sehingga calon pembeli ragu memilih toko ini
+              Belum punya website resmi sehingga calon pembeli ragu memilih toko ini
             </option>
             <option value="Ingin menambah omset harian dan hemat jutaan rupiah dari biaya iklan Meta/Google Ads">
-              💰 Ingin omset naik drastis tapi hemat biaya iklan berbayar yang mahal
+              Ingin omset naik drastis tapi hemat biaya iklan berbayar yang mahal
             </option>
             <option value="Promo khusus pelanggan baru terbatas hanya untuk 3 pelaku usaha terpilih bulan ini">
-              ⏳ Penawaran terbatas / urgensi kuota khusus pelaku usaha pilihan bulan ini
+              Penawaran terbatas / urgensi kuota khusus pelaku usaha pilihan bulan ini
             </option>
           </select>
         </div>
@@ -2009,7 +2029,7 @@
         <div class="form-group" style="margin-bottom: 12px;">
           <label class="form-label" style="font-size: 0.7rem; color: #0f172a;">
             <span><i class="fa-solid fa-image" style="color: #2563eb;"></i> Unggah Gambar Promosi / Flyer / Brosur (Opsional)</span>
-            <span style="font-size: 0.65rem; color: #2563eb; font-weight: 600;">✨ Multimodal AI Vision</span>
+            <span style="font-size: 0.65rem; color: #2563eb; font-weight: 600;">Multimodal AI Vision</span>
           </label>
           
           <!-- Dropzone -->
