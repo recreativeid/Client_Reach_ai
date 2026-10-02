@@ -68,6 +68,7 @@
     let location = urlParams.get('location') || hashParams.get('location');
     let origin = urlParams.get('origin') || hashParams.get('origin');
     let multi = urlParams.get('multi_sector') === '1' || hashParams.get('multi_sector') === '1';
+    let city = urlParams.get('city_mode') === '1' || hashParams.get('city_mode') === '1';
 
     if (isAuto || target || category) {
       try {
@@ -77,6 +78,7 @@
         if (location) sessionStorage.setItem('cr_location', location);
         if (origin) sessionStorage.setItem('cr_origin', origin);
         if (multi) sessionStorage.setItem('cr_multi_sector', '1');
+        if (city) sessionStorage.setItem('cr_city_mode', '1');
       } catch (e) {}
     } else {
       try {
@@ -86,6 +88,7 @@
         location = sessionStorage.getItem('cr_location');
         origin = sessionStorage.getItem('cr_origin');
         multi = sessionStorage.getItem('cr_multi_sector') === '1';
+        city = sessionStorage.getItem('cr_city_mode') === '1';
       } catch (e) {}
     }
 
@@ -95,9 +98,10 @@
     const parsedTarget = parseInt(target || '60', 10);
     state.targetCount = isNaN(parsedTarget) ? 60 : parsedTarget;
     state.category = category || (searchVal ? searchVal.split(' di ')[0] : 'Semua Bidang Usaha');
-    state.location = location || (searchVal && searchVal.includes(' di ') ? searchVal.split(' di ')[1] : 'Magelang Utara, Kota Magelang');
+    state.location = location || (searchVal && searchVal.includes(' di ') ? searchVal.split(' di ')[1] : 'Kota Magelang');
     state.originUrl = origin || 'http://localhost/Client_Reach_ai';
-    state.isMultiSector = multi || (state.category.toLowerCase().includes('semua') || state.category === 'all');
+    state.isCityMode = city;
+    state.isMultiSector = multi || city || (state.category.toLowerCase().includes('semua') || state.category === 'all');
 
     // Calculate batches: Google Maps yields ~50-60 places per single search query
     state.batchSize = 60;
@@ -248,7 +252,7 @@
     if (lbl) lbl.textContent = text;
     if (bar && progressPct !== null) bar.style.width = `${Math.min(100, Math.max(0, progressPct))}%`;
     if (countVal) countVal.textContent = state.extractedPlaces.length;
-    if (badge) badge.textContent = `Batch ${state.currentBatchIdx}/${state.totalBatches}`;
+    if (badge) badge.textContent = state.isCityMode ? `Sapu Bersih (${state.currentBatchIdx}/${state.totalBatches})` : `Batch ${state.currentBatchIdx}/${state.totalBatches}`;
     if (waVal) {
       const waCount = state.extractedPlaces.filter(p => p.phone && (p.phone.startsWith('08') || p.phone.startsWith('628') || p.phone.startsWith('+628'))).length;
       waVal.textContent = waCount;

@@ -3425,6 +3425,11 @@ const ScraperClient = {
             btnGmapsAuto.addEventListener('click', () => this.launchGoogleMapsAutoScrape());
         }
 
+        const btnSapuGmaps = document.getElementById('btn-sapu-bersih-gmaps');
+        if (btnSapuGmaps) {
+            btnSapuGmaps.addEventListener('click', () => this.launchGoogleMapsCityWideScrape());
+        }
+
         const batchLimitSelect = document.getElementById('scraper-batch-limit');
         if (batchLimitSelect) {
             batchLimitSelect.addEventListener('change', () => {
@@ -3667,6 +3672,39 @@ const ScraperClient = {
             alert('Pop-up browser diblokir. Silakan izinkan pop-up untuk membuka Google Maps secara otomatis.');
         } else {
             this.watchForChromeImportCompletion(limit);
+        }
+    },
+
+    launchGoogleMapsCityWideScrape() {
+        const regKota = document.getElementById('reg-kota');
+        let cityName = regKota ? (regKota.options[regKota.selectedIndex]?.text || regKota.value) : 'Kota Magelang';
+        cityName = cityName.replace(/\[Database\]/gi, '').trim();
+
+        const queryText = `bisnis di ${cityName}`;
+        const encodedQuery = encodeURIComponent(queryText);
+        const originUrl = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '');
+
+        let lat = this.currentQuery.lat || -7.47;
+        let lng = this.currentQuery.lng || 110.22;
+        let zoom = 13;
+
+        // Target for city-wide sapu bersih is high (e.g. 180 places across all sectors/districts)
+        const targetUrl = `https://www.google.com/maps/search/${encodedQuery}/@${lat.toFixed(5)},${lng.toFixed(5)},${zoom}z?clientreach_auto=1&target=180&category=Semua%20Bidang%20Usaha&location=${encodeURIComponent(cityName)}&city_mode=1&multi_sector=1&origin=${encodeURIComponent(originUrl)}`;
+
+        const btn = document.getElementById('btn-sapu-bersih-gmaps');
+        if (btn) {
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Membuka Google Maps Se-Kota...</span>';
+            setTimeout(() => {
+                if (btn) btn.innerHTML = originalHTML;
+            }, 3000);
+        }
+
+        const win = window.open(targetUrl, '_blank');
+        if (!win) {
+            alert('Pop-up browser diblokir. Silakan izinkan pop-up untuk membuka Google Maps secara otomatis.');
+        } else {
+            this.watchForChromeImportCompletion(180);
         }
     },
 
