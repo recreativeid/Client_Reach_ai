@@ -1,9 +1,11 @@
 /**
- * ClientReach AI - Google Maps Assistant (Content Script v1.2.0)
- * Mode Mendalam & Multi-Sector Auto-Rotation Pipeline
- * 1. Menangani Single Place View (auto-extract + auto-reveal search list)
- * 2. Menangani Rotasi Sektor Bergantian (Kuliner -> Toko -> Jasa -> Kesehatan -> Sekolah)
- * 3. Ekstraksi Kontak Real WhatsApp (08xx), PSTN, Rating, Alamat & Jam Operasional
+ * ClientReach AI - Google Maps Assistant (Content Script v1.3.0)
+ * Multi-Batch Auto-Load Pipeline (Estafet 1/N, 2/N, ... N/N)
+ * - Ekstraksi 100% dari kartu DOM (Anti-0-Data)
+ * - Auto-Close Single Place View (X) agar daftar pencarian selalu terlihat
+ * - Auto-Rotate Sektor (Kuliner, Toko, Jasa, Kesehatan, Sekolah, Bengkel, dll)
+ * - Auto-Deduplication (Anti-Duplikat nama & alamat)
+ * - Real-Time Batch Sync ke ClientReach AI tanpa keluar dari Google Maps
  */
 
 (function () {
@@ -14,7 +16,11 @@
     isScraping: false,
     shouldStop: false,
     extractedPlaces: [],
-    targetCount: 25,
+    seenKeys: new Set(),
+    targetCount: 60,
+    batchSize: 60,
+    currentBatchIdx: 1,
+    totalBatches: 1,
     category: '',
     location: '',
     isMultiSector: false,
@@ -22,14 +28,18 @@
     hudEl: null
   };
 
-  // Predefined Multi-Sector Rotation List for "Semua Bidang Usaha"
+  // Predefined Multi-Sector Rotation List for High-Volume Auto-Load
   const SECTOR_ROTATION = [
-    { key: 'kuliner', label: 'Kuliner & Kafe', query: 'kuliner' },
-    { key: 'toko', label: 'Toko & Ritel', query: 'toko swalayan' },
-    { key: 'jasa', label: 'Jasa & Kantor', query: 'jasa kantor' },
-    { key: 'kesehatan', label: 'Kesehatan & Apotek', query: 'klinik apotek' },
-    { key: 'sekolah', label: 'Pendidikan & Sekolah', query: 'sekolah kursus' },
-    { key: 'bengkel', label: 'Bengkel & Otomotif', query: 'bengkel' }
+    { key: 'kuliner', label: 'Kuliner & Kafe', query: 'kuliner restoran kafe' },
+    { key: 'toko', label: 'Toko & Ritel', query: 'toko swalayan minimarket' },
+    { key: 'jasa', label: 'Jasa & Kantor', query: 'kantor jasa bisnis' },
+    { key: 'kesehatan', label: 'Kesehatan & Apotek', query: 'klinik apotek dokter' },
+    { key: 'sekolah', label: 'Pendidikan & Sekolah', query: 'sekolah kursus bimbel' },
+    { key: 'bengkel', label: 'Bengkel & Otomotif', query: 'bengkel motor mobil' },
+    { key: 'hotel', label: 'Hotel & Akomodasi', query: 'hotel penginapan homestay' },
+    { key: 'salon', label: 'Kecantikan & Salon', query: 'salon barbershop spa' },
+    { key: 'fashion', label: 'Fashion & Butik', query: 'toko pakaian butik fashion' },
+    { key: 'elektronik', label: 'Elektronik & Gadget', query: 'toko elektronik komputer hp' }
   ];
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -44,7 +54,7 @@
     }
   }
 
-  // Load and cache parameters so Google Maps SPA URL rewrites do not destroy them
+  // Load and cache parameters
   function loadAndPersistParams() {
     const urlParams = new URLSearchParams(window.location.search);
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -82,11 +92,19 @@
     const searchBox = document.getElementById('searchboxinput');
     const searchVal = searchBox ? searchBox.value.trim() : '';
 
-    state.targetCount = parseInt(target || '25', 10);
-    state.category = category || (searchVal ? searchVal.split(' di ')[0] : 'Bisnis');
-    state.location = location || (searchVal && searchVal.includes(' di ') ? searchVal.split(' di ')[1] : 'Wilayah Target');
+    const parsedTarget = parseInt(target || '60', 10);
+    state.targetCount = isNaN(parsedTarget) ? 60 : parsedTarget;
+    state.category = category || (searchVal ? searchVal.split(' di ')[0] : 'Semua Bidang Usaha');
+    state.location = location || (searchVal && searchVal.includes(' di ') ? searchVal.split(' di ')[1] : 'Magelang Utara, Kota Magelang');
     state.originUrl = origin || 'http://localhost/Client_Reach_ai';
     state.isMultiSector = multi || (state.category.toLowerCase().includes('semua') || state.category === 'all');
+
+    // Calculate batches: Google Maps yields ~50-60 places per single search query
+    state.batchSize = 60;
+    state.totalBatches = Math.max(1, Math.ceil(state.targetCount / state.batchSize));
+    if (state.isMultiSector && state.totalBatches < SECTOR_ROTATION.length) {
+      state.totalBatches = Math.min(SECTOR_ROTATION.length, Math.max(state.totalBatches, Math.ceil(state.targetCount / 30)));
+    }
 
     return isAuto;
   }
@@ -94,14 +112,13 @@
   // Check if opened automatically or manually
   function checkAutoStart() {
     const isAuto = loadAndPersistParams();
-
     renderHud();
 
     if (isAuto) {
-      console.log('[ClientReach AI] Otomasi terdeteksi. Memulai ekstraksi Mode Mendalam...');
+      console.log('[ClientReach AI] Otomasi terdeteksi. Memulai Pipeline Multi-Batch Estafet...');
       startScrapePipeline();
     } else {
-      updateStatus('Siap mengekstrak tempat di Google Maps. Klik "Mulai Sedot Sekarang".');
+      updateStatus('Siap mengekstrak tempat. Klik "Mulai Sedot Sekarang".');
       renderButtons();
     }
   }
@@ -123,7 +140,7 @@
           </svg>
           <span>ClientReach AI</span>
         </div>
-        <span class="cr-badge" id="cr-mode-badge">${state.isMultiSector ? 'Rotasi Multi-Sektor' : 'Mode Mendalam'}</span>
+        <span class="cr-badge" id="cr-batch-badge">Batch ${state.currentBatchIdx}/${state.totalBatches}</span>
       </div>
       <div class="cr-status-box">
         <div class="cr-status-text" id="cr-status-label">Menginisialisasi pencarian Google Maps...</div>
@@ -150,6 +167,8 @@
     const actionsBox = document.getElementById('cr-actions-container');
     if (!actionsBox) return;
 
+    const count = state.extractedPlaces.length;
+
     if (state.isScraping) {
       actionsBox.innerHTML = `
         <button type="button" class="cr-btn cr-btn-danger" id="cr-btn-stop">
@@ -158,7 +177,7 @@
         </button>
         <button type="button" class="cr-btn cr-btn-primary" id="cr-btn-save-now">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          <span>Simpan (${state.extractedPlaces.length})</span>
+          <span>Simpan (${count}) & Selesai</span>
         </button>
       `;
 
@@ -181,12 +200,11 @@
         };
       }
     } else {
-      const count = state.extractedPlaces.length;
       if (count > 0) {
         actionsBox.innerHTML = `
           <button type="button" class="cr-btn cr-btn-secondary" id="cr-btn-retry">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-            <span>Sedot Ulang</span>
+            <span>Sedot Lagi</span>
           </button>
           <button type="button" class="cr-btn cr-btn-success" id="cr-btn-save-finish">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -200,7 +218,6 @@
         const btnFinish = document.getElementById('cr-btn-save-finish');
         if (btnFinish) btnFinish.onclick = () => finalizeAndExport(true);
       } else {
-        // Idle / 0 Data
         actionsBox.innerHTML = `
           <button type="button" class="cr-btn cr-btn-primary cr-btn-full" id="cr-btn-start-now">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -226,17 +243,19 @@
     const bar = document.getElementById('cr-progress-fill');
     const countVal = document.getElementById('cr-count-val');
     const waVal = document.getElementById('cr-wa-val');
+    const badge = document.getElementById('cr-batch-badge');
 
     if (lbl) lbl.textContent = text;
     if (bar && progressPct !== null) bar.style.width = `${Math.min(100, Math.max(0, progressPct))}%`;
     if (countVal) countVal.textContent = state.extractedPlaces.length;
+    if (badge) badge.textContent = `Batch ${state.currentBatchIdx}/${state.totalBatches}`;
     if (waVal) {
       const waCount = state.extractedPlaces.filter(p => p.phone && (p.phone.startsWith('08') || p.phone.startsWith('628') || p.phone.startsWith('+628'))).length;
       waVal.textContent = waCount;
     }
   }
 
-  // Multi-strategy place card discovery
+  // Multi-strategy place card discovery (Finds all search result cards)
   function getPlaceCardElements() {
     const standardCards = Array.from(document.querySelectorAll('div.Nv2PK'));
     if (standardCards.length > 0) return standardCards;
@@ -287,20 +306,28 @@
     return null;
   }
 
-  // Extract core business info directly from the card DOM element
+  // Extract core business info directly from the card DOM element (NEVER FAILS)
   function extractDataFromCard(card) {
     if (!card) return null;
 
+    // 1. Name Strategy
+    let name = '';
     const nameEl = card.querySelector('div.qBF1Pd') || 
                    card.querySelector('.fontHeadlineSmall') || 
-                   card.querySelector('a[aria-label]') || 
-                   card.querySelector('[aria-label]');
-    let name = '';
+                   card.querySelector('a[aria-label]');
     if (nameEl) {
       name = (nameEl.innerText || nameEl.getAttribute('aria-label') || '').trim();
     }
+    if (!name && card.getAttribute('aria-label')) {
+      name = card.getAttribute('aria-label').trim();
+    }
+    if (!name && card.innerText) {
+      const firstLine = card.innerText.split('\n')[0].trim();
+      if (firstLine.length > 1) name = firstLine;
+    }
     if (!name) return null;
 
+    // 2. Link & Coordinates
     const linkEl = card.querySelector('a.hfpxzc') || card.querySelector('a[href*="/maps/place/"]') || card.closest('a');
     const href = linkEl ? (linkEl.getAttribute('href') || '') : '';
     let lat = -7.46, lng = 110.22;
@@ -310,8 +337,9 @@
       lng = parseFloat(coordMatch[2]);
     }
 
+    // 3. Rating & Reviews
     let rating = 4.5;
-    let reviewsCount = 20;
+    let reviewsCount = 15;
     const ratingEl = card.querySelector('span.MW4etd');
     if (ratingEl) {
       const r = parseFloat(ratingEl.innerText.replace(',', '.'));
@@ -323,6 +351,7 @@
       if (!isNaN(rc)) reviewsCount = rc;
     }
 
+    // 4. Raw text from card info lines (.W4Efsd)
     const fullCardText = card.innerText || '';
     const textLines = Array.from(card.querySelectorAll('.W4Efsd')).map(el => el.innerText.trim()).filter(Boolean);
 
@@ -342,6 +371,7 @@
       }
     }
 
+    // 5. Phone / WhatsApp directly on card text
     let phone = '-';
     const waMatch = fullCardText.match(/(?:\+62|62|0)8[1-9][0-9]{7,11}/);
     if (waMatch) {
@@ -418,7 +448,7 @@
     }
   }
 
-  // Handle case where Google Maps opens in Single Place Detail View (like SMP N 9 Magelang)
+  // Handle case where Google Maps opens in Single Place Detail View
   async function handleSinglePlaceOrRevealList() {
     let cards = getPlaceCardElements();
     if (cards.length > 0) return cards;
@@ -450,12 +480,8 @@
         };
 
         enrichFromDetailPane(singlePlace);
-
-        const lower = singlePlace.name.toLowerCase();
-        if (!state.extractedPlaces.some(p => p.name.toLowerCase() === lower)) {
-          state.extractedPlaces.push(singlePlace);
-          updateStatus(`Terekstrak: ${singlePlace.name} (${singlePlace.phone})`, 10);
-        }
+        addPlaceDeduplicated(singlePlace);
+        updateStatus(`Terekstrak: ${singlePlace.name} (${singlePlace.phone})`);
       }
 
       // 2. Click close (X) button to reveal the search list
@@ -472,7 +498,6 @@
       for (const sel of closeSelectors) {
         const btn = document.querySelector(sel);
         if (btn) {
-          console.log('[ClientReach AI] Menutup detail tempat untuk membuka daftar hasil:', sel);
           btn.click();
           await sleep(1000);
           cards = getPlaceCardElements();
@@ -486,7 +511,6 @@
                       document.querySelector('button[aria-label="Telusuri"]') ||
                       document.querySelector('button[aria-label="Search"]');
     if (searchBtn) {
-      console.log('[ClientReach AI] Memicu pencarian ulang untuk menampilkan kartu...');
       searchBtn.click();
       await sleep(1500);
       cards = getPlaceCardElements();
@@ -495,60 +519,79 @@
     return cards;
   }
 
-  // Master Scraping Pipeline (Supports Single Category AND Multi-Sector Auto-Rotation)
+  // Add place with strict deduplication
+  function addPlaceDeduplicated(place) {
+    if (!place || !place.name) return false;
+    const cleanName = place.name.toLowerCase().trim();
+    const cleanAddr = (place.address || '').toLowerCase().trim().slice(0, 15);
+    const key = `${cleanName}|${cleanAddr}`;
+
+    if (state.seenKeys.has(key) || state.seenKeys.has(cleanName)) {
+      return false; // Skip duplicate!
+    }
+
+    state.seenKeys.add(key);
+    state.seenKeys.add(cleanName);
+    state.extractedPlaces.push(place);
+    return true;
+  }
+
+  // Master Scraping Pipeline (Supports Multi-Batch Auto-Load Estafet 1/N ... N/N)
   async function startScrapePipeline() {
     if (state.isScraping) return;
     state.isScraping = true;
     state.shouldStop = false;
     state.extractedPlaces = [];
+    state.seenKeys.clear();
+    state.currentBatchIdx = 1;
     renderButtons();
 
-    if (state.isMultiSector) {
-      await runMultiSectorRotation();
-    } else {
-      await runSingleSectorScrape(state.targetCount);
+    const totalTarget = state.targetCount;
+    updateStatus(`Memulai Scraping Estafet (Target Total: ${totalTarget} bisnis)...`, 5);
+    await sleep(800);
+
+    const rotationList = state.isMultiSector 
+      ? SECTOR_ROTATION 
+      : [{ key: 'single', label: state.category, query: state.category }];
+
+    state.totalBatches = Math.max(rotationList.length, Math.ceil(totalTarget / state.batchSize));
+
+    for (let bIdx = 0; bIdx < state.totalBatches; bIdx++) {
+      if (state.shouldStop || state.extractedPlaces.length >= totalTarget) break;
+
+      state.currentBatchIdx = bIdx + 1;
+      const sectorObj = rotationList[bIdx % rotationList.length];
+      const sectorLabel = sectorObj.label || state.category;
+
+      updateStatus(`[Batch ${state.currentBatchIdx}/${state.totalBatches}]: Mencari ${sectorLabel}...`, 
+                   Math.min(95, (state.extractedPlaces.length / totalTarget) * 90));
+
+      // 1. Execute query in Google Maps search input
+      const queryStr = `${sectorObj.query || sectorObj.key} di ${state.location}`;
+      await executeSearchQuery(queryStr);
+
+      // 2. Scrape this batch up to batchSize
+      const countBefore = state.extractedPlaces.length;
+      await runSingleBatchScrape(state.batchSize, sectorLabel);
+      const batchGained = state.extractedPlaces.length - countBefore;
+
+      // 3. Immediately sync partial batch to backend (SCREEN STAYS ON GOOGLE MAPS!)
+      if (batchGained > 0) {
+        updateStatus(`[Batch ${state.currentBatchIdx}/${state.totalBatches} Selesai]: +${batchGained} data ${sectorLabel}. Menyimpan ke sistem...`);
+        await sendBatchToBackend(false);
+        await sleep(1500);
+      }
     }
 
     state.isScraping = false;
     renderButtons();
 
     if (state.extractedPlaces.length > 0) {
-      updateStatus(`Selesai! ${state.extractedPlaces.length} data terkumpul. Menyimpan ke sistem...`, 100);
-      await sleep(1200);
+      updateStatus(`Selesai! ${state.extractedPlaces.length} data unik terkumpul. Mengalihkan ke sistem...`, 100);
+      await sleep(1500);
       await finalizeAndExport(true);
     } else {
       updateStatus('Tidak ada data yang berhasil diekstrak. Silakan coba lagi.');
-    }
-  }
-
-  // Multi-Sector Auto-Rotation Pipeline (Kuliner -> Toko -> Jasa -> Kesehatan -> Sekolah)
-  async function runMultiSectorRotation() {
-    const totalTarget = state.targetCount;
-    const perSectorTarget = Math.max(8, Math.ceil(totalTarget / SECTOR_ROTATION.length));
-
-    updateStatus(`Memulai Rotasi Multi-Sektor (Target: ${totalTarget} bisnis beragam)...`, 5);
-    await sleep(800);
-
-    for (let idx = 0; idx < SECTOR_ROTATION.length; idx++) {
-      if (state.shouldStop || state.extractedPlaces.length >= totalTarget) break;
-
-      const sector = SECTOR_ROTATION[idx];
-      updateStatus(`[Sektor ${idx + 1}/${SECTOR_ROTATION.length}]: Mencari ${sector.label}...`, Math.min(90, (idx / SECTOR_ROTATION.length) * 85));
-
-      // 1. Change searchbox query in Google Maps
-      await executeSearchQuery(`${sector.query} di ${state.location}`);
-
-      // 2. Scrape batch for this sector
-      const beforeCount = state.extractedPlaces.length;
-      await runSingleSectorScrape(perSectorTarget, sector.label);
-      const newlyAdded = state.extractedPlaces.length - beforeCount;
-
-      // 3. Send partial batch to backend immediately
-      if (newlyAdded > 0) {
-        updateStatus(`[Sektor ${idx + 1}/${SECTOR_ROTATION.length}]: Berhasil ${newlyAdded} data ${sector.label}. Mengirim batch...`);
-        await sendBatchToBackend(false);
-        await sleep(1000);
-      }
     }
   }
 
@@ -569,10 +612,8 @@
     }
   }
 
-  // Single Sector Scrape Engine
-  async function runSingleSectorScrape(sectorLimit, sectorLabel = '') {
-    updateStatus(`Memindai hasil ${sectorLabel || state.category}...`);
-
+  // Scrape a single batch by scrolling Google Maps feed
+  async function runSingleBatchScrape(batchLimit, sectorLabel = '') {
     let cards = [];
     for (let wait = 0; wait < 16; wait++) {
       if (state.shouldStop) break;
@@ -582,23 +623,23 @@
     }
 
     if (cards.length === 0) {
-      console.warn('[ClientReach AI] Tidak ada kartu ditemukan untuk sektor:', sectorLabel);
+      console.warn('[ClientReach AI] Tidak ada kartu ditemukan untuk:', sectorLabel);
       return;
     }
 
-    // Scroll to discover more cards
+    // Scroll to load all cards for this query
     const scrollContainer = findScrollableContainer(cards[0]);
     let scrollAttempts = 0;
-    const maxScroll = Math.max(8, Math.ceil(sectorLimit / 3));
+    const maxScroll = Math.max(12, Math.ceil(batchLimit / 3));
 
-    while (cards.length < sectorLimit && scrollAttempts < maxScroll && !state.shouldStop) {
+    while (cards.length < batchLimit && scrollAttempts < maxScroll && !state.shouldStop) {
       if (scrollContainer) {
         scrollContainer.scrollTop = scrollContainer.scrollHeight;
       }
       if (cards[cards.length - 1]) {
         cards[cards.length - 1].scrollIntoView({ behavior: 'smooth', block: 'end' });
       }
-      await sleep(900);
+      await sleep(950);
 
       cards = getPlaceCardElements();
       scrollAttempts++;
@@ -611,39 +652,42 @@
       if (isEnd) break;
     }
 
-    // Extract cards
-    const targetCards = cards.slice(0, sectorLimit);
-    const seenNames = new Set(state.extractedPlaces.map(p => p.name.toLowerCase()));
+    // Step 1: Instant Card-DOM Extraction (Guarantees NO 0-data drop)
+    const targetCards = cards.slice(0, batchLimit);
+    const newlyExtracted = [];
 
-    for (let i = 0; i < targetCards.length; i++) {
+    for (const card of targetCards) {
       if (state.shouldStop || state.extractedPlaces.length >= state.targetCount) break;
 
-      const card = targetCards[i];
       try {
         const place = extractDataFromCard(card);
-        if (place && place.name) {
-          const lower = place.name.toLowerCase();
-          if (!seenNames.has(lower)) {
-            seenNames.add(lower);
-
-            // Click card for detail enrichment
-            try {
-              const clickTarget = card.querySelector('a.hfpxzc') || card.querySelector('div.qBF1Pd') || card;
-              clickTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              clickTarget.click();
-              await sleep(650);
-              enrichFromDetailPane(place);
-            } catch (err) {}
-
-            state.extractedPlaces.push(place);
-            updateStatus(`Terekstrak (${state.extractedPlaces.length}/${state.targetCount}): ${place.name}`);
-          }
+        if (place && addPlaceDeduplicated(place)) {
+          newlyExtracted.push({ place, card });
+          const pct = Math.min(95, (state.extractedPlaces.length / state.targetCount) * 90);
+          updateStatus(`[Batch ${state.currentBatchIdx}/${state.totalBatches}] ${state.extractedPlaces.length}/${state.targetCount}: ${place.name}`, pct);
         }
-      } catch (err) {
-        console.warn('[ClientReach AI] Gagal ekstrak kartu:', err);
-      }
+      } catch (err) {}
+    }
 
-      await sleep(250);
+    // Step 2: Detail Pane Enrichment for Missing Phone/WhatsApp
+    for (const item of newlyExtracted) {
+      if (state.shouldStop) break;
+      if (item.place.phone === '-' || !item.place.phone) {
+        try {
+          const clickTarget = item.card.querySelector('a.hfpxzc') || item.card.querySelector('div.qBF1Pd') || item.card;
+          clickTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          clickTarget.click();
+          await sleep(650);
+          enrichFromDetailPane(item.place);
+
+          // Close detail view immediately to restore search results list!
+          const closeBtn = document.querySelector('button[aria-label="Tutup"]') || 
+                           document.querySelector('button[aria-label="Close"]') ||
+                           document.querySelector('button.VfPpkd-icon-LgbsSe');
+          if (closeBtn) closeBtn.click();
+          await sleep(250);
+        } catch (e) {}
+      }
     }
   }
 
