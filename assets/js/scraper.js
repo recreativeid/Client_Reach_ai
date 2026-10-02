@@ -35,6 +35,7 @@ const ScraperClient = {
         this.bindLeadFilterPills();
         this.bindAIPitchModal();
         this.bind360ModalEvents();
+        this.checkChromeReturnState();
 
         // Connect map click: Only active when in Radius Mode
         if (window.mapEngine) {
@@ -3419,6 +3420,11 @@ const ScraperClient = {
             btnScrape.addEventListener('click', () => this.executeDeepScrape());
         }
 
+        const btnGmapsAuto = document.getElementById('btn-scrape-gmaps-auto');
+        if (btnGmapsAuto) {
+            btnGmapsAuto.addEventListener('click', () => this.launchGoogleMapsAutoScrape());
+        }
+
         const batchLimitSelect = document.getElementById('scraper-batch-limit');
         if (batchLimitSelect) {
             batchLimitSelect.addEventListener('change', () => {
@@ -3605,6 +3611,134 @@ const ScraperClient = {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Ambil Data Sesuai Filter di Atas';
             }
+        }
+    },
+
+    // ----------------------------------------------------
+    // GOOGLE MAPS COMPANION AUTOMATION (OPTION B - DEEP SCRAPE)
+    // ----------------------------------------------------
+    launchGoogleMapsAutoScrape() {
+        const batchLimitSelect = document.getElementById('scraper-batch-limit');
+        let limit = 25;
+        if (batchLimitSelect) {
+            const rawVal = batchLimitSelect.value;
+            limit = (rawVal === 'all') ? 60 : (parseInt(rawVal, 10) || 25);
+        }
+
+        // Construct search query
+        let categoryName = this.currentQuery.category || 'Semua Bidang Usaha';
+        if (categoryName === 'all' || categoryName === 'semua_bidang') {
+            categoryName = 'Semua Bidang Usaha';
+        }
+
+        let locName = this.currentQuery.location || 'Magelang Utara, Kota Magelang';
+        let queryText = `${categoryName} di ${locName}`;
+
+        let lat = this.currentQuery.lat || -7.46;
+        let lng = this.currentQuery.lng || 110.22;
+        let zoom = 15;
+
+        if (this.currentQuery.zoneMode === 'radius' && this.currentQuery.radius) {
+            const r = this.currentQuery.radius;
+            zoom = r <= 1 ? 16 : (r <= 3 ? 15 : (r <= 7 ? 14 : 13));
+        }
+
+        const encodedQuery = encodeURIComponent(queryText);
+        const originUrl = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '');
+        const targetUrl = `https://www.google.com/maps/search/${encodedQuery}/@${lat.toFixed(5)},${lng.toFixed(5)},${zoom}z?clientreach_auto=1&target=${limit}&category=${encodeURIComponent(categoryName)}&location=${encodeURIComponent(locName)}&origin=${encodeURIComponent(originUrl)}`;
+
+        const win = window.open(targetUrl, '_blank');
+        if (!win) {
+            alert('Pop-up browser diblokir. Silakan izinkan pop-up untuk membuka Google Maps secara otomatis.');
+        } else {
+            this.watchForChromeImportCompletion(limit);
+        }
+    },
+
+    watchForChromeImportCompletion(expectedCount) {
+        let attempts = 0;
+        const maxAttempts = 120; // 2 minutes max
+        const pollInterval = setInterval(async () => {
+            attempts++;
+            if (attempts > maxAttempts) {
+                clearInterval(pollInterval);
+                return;
+            }
+
+            try {
+                // Check localStorage fallback first
+                const pending = localStorage.getItem('clientreach_pending_import');
+                if (pending) {
+                    localStorage.removeItem('clientreach_pending_import');
+                    const parsed = JSON.parse(pending);
+                    if (parsed && parsed.items) {
+                        clearInterval(pollInterval);
+                        this.processImportedChromeLeads(parsed.items, parsed.category, parsed.location);
+                        return;
+                    }
+                }
+
+                // Check backend endpoint
+                const res = await fetch('api/scraper.php?action=get_latest_chrome_import');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.success && data.items && data.items.length > 0) {
+                        const lastSeenHist = sessionStorage.getItem('clientreach_last_chrome_hist');
+                        if (!lastSeenHist || lastSeenHist != data.history_id) {
+                            sessionStorage.setItem('clientreach_last_chrome_hist', data.history_id);
+                            clearInterval(pollInterval);
+                            this.processImportedChromeLeads(data.items, data.category, data.location);
+                        }
+                    }
+                }
+            } catch (err) {}
+        }, 1500);
+    },
+
+    processImportedChromeLeads(items, category, location) {
+        if (!items || items.length === 0) return;
+
+        // Smart Geo-Fencing: If in boundary mode, ensure containment
+        if (this.currentQuery.zoneMode === 'boundary' && window.mapEngine) {
+            const inside = items.filter(it => {
+                return window.mapEngine.isPointInsideBoundary(it.lat, it.lng);
+            });
+            this.scrapedResults = (inside.length > 0) ? inside : items;
+        } else {
+            this.scrapedResults = items;
+        }
+
+        this.activeFilter = 'has_wa';
+        this.renderScrapedResultsTable();
+
+        document.getElementById('scraper-setup-view').style.display = 'none';
+        document.getElementById('scraped-results-view').style.display = 'block';
+
+        if (window.mapEngine) {
+            window.mapEngine.showPreviewMarkers(this.scrapedResults);
+        }
+
+        if (window.DataManager) window.DataManager.loadTreeData();
+        if (window.App) window.App.refreshDashboardStats();
+
+        const countWa = this.scrapedResults.filter(p => p.phone && (p.phone.startsWith('08') || p.phone.startsWith('628'))).length;
+        alert(`🎉 Sukses! Berhasil menyedot ${this.scrapedResults.length} data bisnis asli dari Google Maps (${countWa} memiliki WhatsApp 08xx).\n\nData sudah otomatis masuk ke sistem Anda.`);
+    },
+
+    checkChromeReturnState() {
+        const hash = window.location.hash || '';
+        if (hash.includes('chrome_success') || hash.includes('chrome_local')) {
+            setTimeout(async () => {
+                try {
+                    const res = await fetch('api/scraper.php?action=get_latest_chrome_import');
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.success && data.items) {
+                            this.processImportedChromeLeads(data.items, data.category, data.location);
+                        }
+                    }
+                } catch(e) {}
+            }, 600);
         }
     },
 

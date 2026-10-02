@@ -3151,4 +3151,132 @@ if ($action === 'scrape') {
     }
 }
 
+// 4. Import from Chrome Extension (Google Maps Real-Time Extraction)
+if ($action === 'import_chrome') {
+    $input = !empty($jsonInput) ? $jsonInput : $_POST;
+    $items = $input['items'] ?? [];
+    $locationName = trim($input['location'] ?? 'Wilayah Target');
+    $category = trim($input['category'] ?? 'Bisnis');
+
+    if (empty($items) || !is_array($items)) {
+        jsonResponse(['success' => false, 'message' => 'Tidak ada data tempat yang diterima dari ekstensi.'], 400);
+    }
+
+    $savedPlaces = [];
+    $seen = [];
+
+    foreach ($items as $idx => $it) {
+        $name = trim($it['name'] ?? '');
+        if (empty($name)) continue;
+        $lower = strtolower($name);
+        if (isset($seen[$lower])) continue;
+        $seen[$lower] = true;
+
+        $cat = !empty($it['category']) ? $it['category'] : $category;
+        $addr = !empty($it['address']) ? $it['address'] : $locationName;
+        $phone = !empty($it['phone']) ? $it['phone'] : '-';
+        $website = !empty($it['website']) && $it['website'] !== '-' ? $it['website'] : (!empty($it['social_media']) ? $it['social_media'] : '-');
+        $hours = !empty($it['opening_hours']) ? $it['opening_hours'] : '-';
+        $rating = (float)($it['rating'] ?? 4.5);
+        $reviews = (int)($it['reviews_count'] ?? 25);
+        $lat = (float)($it['lat'] ?? 0);
+        $lng = (float)($it['lng'] ?? 0);
+
+        $insights = generateTriChannelInsights($name, $cat, $rating, $reviews, $phone, $lat, $lng);
+
+        $savedPlaces[] = [
+            'id' => count($savedPlaces) + 1,
+            'osm_id' => null,
+            'name' => $name,
+            'category' => $cat,
+            'address' => $addr,
+            'phone' => $phone,
+            'lat' => $lat,
+            'lng' => $lng,
+            'social_media' => $website,
+            'opening_hours' => $hours,
+            'rating' => $rating,
+            'reviews_count' => $reviews,
+            'status' => 'none',
+            'source' => 'gmaps',
+            'source_name' => 'Google Maps Asli',
+            'source_type' => 'Google Maps Real-Time',
+            'source_color' => '#2563eb',
+            'source_icon' => 'fa-brands fa-google',
+            'insights' => $insights
+        ];
+    }
+
+    // Save to scraping_history
+    $historyId = 0;
+    try {
+        $authUser = getAuthUser($pdo);
+        $authUserId = $authUser ? $authUser['id'] : null;
+        $stmt = $pdo->prepare("INSERT INTO scraping_history (query_name, method, location_name, target_category, total_found, user_id) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([
+            $category . ' di ' . $locationName . ' (Google Maps)',
+            'gmaps_chrome',
+            $locationName,
+            $category,
+            count($savedPlaces),
+            $authUserId
+        ]);
+        $historyId = (int)$pdo->lastInsertId();
+
+        $itemStmt = $pdo->prepare("INSERT INTO scraped_items (history_id, name, address, phone, lat, lng, category, social_media, opening_hours, rating, reviews_count, status, insights_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'none', ?)");
+        foreach ($savedPlaces as &$item) {
+            $insightsJson = !empty($item['insights']) ? json_encode($item['insights'], JSON_UNESCAPED_UNICODE) : null;
+            $itemStmt->execute([
+                $historyId,
+                $item['name'],
+                $item['address'],
+                $item['phone'],
+                $item['lat'],
+                $item['lng'],
+                $item['category'],
+                $item['social_media'],
+                $item['opening_hours'],
+                $item['rating'],
+                $item['reviews_count'],
+                $insightsJson
+            ]);
+            $item['db_id'] = (int)$pdo->lastInsertId();
+        }
+    } catch (\Exception $e) {
+        error_log('import_chrome DB error: ' . $e->getMessage());
+    }
+
+    // Cache latest import for instant client retrieval
+    $cacheFile = __DIR__ . '/../data/latest_chrome_import.json';
+    @file_put_contents($cacheFile, json_encode([
+        'success' => true,
+        'history_id' => $historyId,
+        'category' => $category,
+        'location' => $locationName,
+        'total_items' => count($savedPlaces),
+        'items' => $savedPlaces
+    ], JSON_UNESCAPED_UNICODE));
+
+    jsonResponse([
+        'success' => true,
+        'message' => 'Berhasil mengimpor ' . count($savedPlaces) . ' data dari Google Maps.',
+        'history_id' => $historyId,
+        'count' => count($savedPlaces),
+        'items' => $savedPlaces
+    ]);
+}
+
+// 5. Retrieve Latest Chrome Import
+if ($action === 'get_latest_chrome_import') {
+    $cacheFile = __DIR__ . '/../data/latest_chrome_import.json';
+    if (file_exists($cacheFile)) {
+        $raw = file_get_contents($cacheFile);
+        $json = json_decode($raw, true);
+        if ($json) {
+            jsonResponse($json);
+        }
+    }
+    jsonResponse(['success' => false, 'message' => 'Belum ada data impor Google Maps.'], 404);
+}
+
 jsonResponse(['success' => false, 'message' => 'Aksi scraping tidak dikenali'], 400);

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>ClientReach AI</title>
+  <style>
+    body {
+      width: 280px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 16px;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 13px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .title {
+      font-weight: 700;
+      color: #60a5fa;
+      font-size: 14px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+    .desc {
+      font-size: 11.5px;
+      color: #94a3b8;
+      line-height: 1.45;
+      margin-bottom: 14px;
+    }
+    .btn {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      background: #2563eb;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">ClientReach AI Assistant</div>
+  </div>
+  <div class="status-badge">
+    <span class="dot"></span>
+    <span>Ekstensi Aktif & Terhubung</span>
+  </div>
+  <div class="desc">
+    Ekstensi ini bertindak sebagai robot pembantu ClientReach AI untuk menyedot nomor WhatsApp dan data bisnis asli dari Google Maps secara otomatis.
+  </div>
+  <button type="button" class="btn" id="btn-open-app">
+    Buka Sistem ClientReach AI
+  </button>
+  <script src="popup.js"></script>
+</body>
+</html>
