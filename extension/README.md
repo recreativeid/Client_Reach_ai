@@ -1,6 +1,6 @@
 # Panduan 30 Detik Memasang Ekstensi ClientReach AI di Google Chrome
 
-Ekstensi ini adalah robot asisten resmi untuk menyedot data kontak WhatsApp asli dari Google Maps langsung ke sistem ClientReach AI Anda.
+Ekstensi ini adalah robot asisten resmi untuk mendeteksi data kontak WhatsApp asli dari Google Maps langsung ke sistem ClientReach AI Anda.
 
 ### Cara Memasang (Hanya 1 Kali di Awal):
 

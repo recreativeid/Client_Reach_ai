@@ -122,7 +122,7 @@
       console.log('[ClientReach AI] Otomasi terdeteksi. Memulai Pipeline Multi-Batch Estafet...');
       startScrapePipeline();
     } else {
-      updateStatus('Siap mengekstrak tempat. Klik "Mulai Sedot Sekarang".');
+      updateStatus('Siap mendeteksi tempat. Klik "Mulai Deteksi Sekarang".');
       renderButtons();
     }
   }
@@ -208,7 +208,7 @@
         actionsBox.innerHTML = `
           <button type="button" class="cr-btn cr-btn-secondary" id="cr-btn-retry">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-            <span>Sedot Lagi</span>
+            <span>Deteksi Lagi</span>
           </button>
           <button type="button" class="cr-btn cr-btn-success" id="cr-btn-save-finish">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -225,7 +225,7 @@
         actionsBox.innerHTML = `
           <button type="button" class="cr-btn cr-btn-primary cr-btn-full" id="cr-btn-start-now">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            <span>Mulai Sedot Sekarang</span>
+            <span>Mulai Deteksi Sekarang</span>
           </button>
           <button type="button" class="cr-btn cr-btn-back cr-btn-full" id="cr-btn-return-sys">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -737,7 +737,7 @@
   // Export collected data and return to ClientReach AI web app
   async function finalizeAndExport(redirectNow = true) {
     if (state.extractedPlaces.length === 0) {
-      updateStatus('Belum ada data untuk disimpan. Klik "Mulai Sedot Sekarang".');
+      updateStatus('Belum ada data untuk disimpan. Klik "Mulai Deteksi Sekarang".');
       renderButtons();
       return;
     }

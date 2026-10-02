@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ClientReach AI - Google Maps Assistant",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Asisten otomasi ClientReach AI untuk ekstraksi kontak WhatsApp & data bisnis langsung dari Google Maps.",
   "permissions": [
     "storage"

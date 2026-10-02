@@ -3781,7 +3781,7 @@ const ScraperClient = {
         if (window.App) window.App.refreshDashboardStats();
 
         const countWa = this.scrapedResults.filter(p => p.phone && (p.phone.startsWith('08') || p.phone.startsWith('628'))).length;
-        alert(`🎉 Sukses! Berhasil menyedot ${this.scrapedResults.length} data bisnis asli dari Google Maps (${countWa} memiliki WhatsApp 08xx).\n\nData sudah otomatis masuk ke sistem Anda.`);
+        alert(`🎉 Sukses! Berhasil mendeteksi ${this.scrapedResults.length} data bisnis asli dari Google Maps (${countWa} memiliki WhatsApp 08xx).\n\nData sudah otomatis masuk ke sistem Anda.`);
     },
 
     checkChromeReturnState() {
