@@ -142,6 +142,12 @@ const ScraperClient = {
     // 2. TARGET PARAMETER (KEYWORD vs CASCADING CATEGORY PRESETS)
     // ----------------------------------------------------
     SECTORS_DATA: {
+        semua_bidang: {
+            name: 'Semua Bidang Usaha (Semua Kategori)',
+            items: [
+                { value: 'all', label: 'Semua Bidang Usaha & Instansi' }
+            ]
+        },
         perusahaan: {
             name: 'Perusahaan, Korporasi & Industri (PT / CV)',
             items: [
@@ -614,9 +620,16 @@ const ScraperClient = {
         if (!sectorSelect) return;
 
         const sectorCounts = (this.territoryData && this.territoryData.sector_counts) || {};
-        const previousSelected = sectorSelect.value || 'perusahaan';
+        const previousSelected = sectorSelect.value || 'semua_bidang';
 
-        const keys = Object.keys(this.SECTORS_DATA);
+        let totalAllPlaces = 0;
+        if (this.territoryData && this.territoryData.places) {
+            totalAllPlaces = this.territoryData.places.length;
+        } else {
+            Object.values(sectorCounts).forEach(c => { totalAllPlaces += (c || 0); });
+        }
+
+        const keys = Object.keys(this.SECTORS_DATA).filter(k => k !== 'semua_bidang');
         // Sort sectors descending by place count so sectors with active businesses are prominent
         keys.sort((a, b) => {
             const countA = sectorCounts[a] || 0;
@@ -624,30 +637,30 @@ const ScraperClient = {
             return countB - countA;
         });
 
+        // Prepend semua_bidang at the very top
+        keys.unshift('semua_bidang');
+
         sectorSelect.innerHTML = '';
         let topKeyWithData = null;
 
         keys.forEach((key, idx) => {
             const sectorInfo = this.SECTORS_DATA[key];
-            const count = sectorCounts[key] || 0;
+            if (!sectorInfo) return;
+            const count = (key === 'semua_bidang') ? totalAllPlaces : (sectorCounts[key] || 0);
             const opt = document.createElement('option');
             opt.value = key;
-            // Clean format: [Sector Name] ([Count]) - strictly without emojis!
             opt.textContent = `${sectorInfo.name} (${count})`;
             sectorSelect.appendChild(opt);
 
-            if (count > 0 && !topKeyWithData) {
+            if (count > 0 && !topKeyWithData && key !== 'semua_bidang') {
                 topKeyWithData = key;
             }
         });
 
-        // Select previously selected sector if it has places > 0, otherwise select top sector with places
-        if (previousSelected && (sectorCounts[previousSelected] || 0) > 0) {
+        if (previousSelected && this.SECTORS_DATA[previousSelected]) {
             sectorSelect.value = previousSelected;
-        } else if (topKeyWithData) {
-            sectorSelect.value = topKeyWithData;
         } else {
-            sectorSelect.value = previousSelected || keys[0];
+            sectorSelect.value = 'semua_bidang';
         }
 
         this.populateSubcategoriesWithCounts(sectorSelect.value);
@@ -656,6 +669,17 @@ const ScraperClient = {
     populateSubcategoriesWithCounts(sectorKey) {
         const presetSelect = document.getElementById('target-category-select');
         if (!presetSelect) return;
+
+        if (sectorKey === 'semua_bidang' || sectorKey === 'all') {
+            presetSelect.innerHTML = '';
+            const totalPlaces = (this.territoryData && this.territoryData.places) ? this.territoryData.places.length : 0;
+            const opt = document.createElement('option');
+            opt.value = 'all';
+            opt.textContent = `Semua Jenis Bisnis (${totalPlaces})`;
+            presetSelect.appendChild(opt);
+            presetSelect.selectedIndex = 0;
+            return;
+        }
 
         const sector = this.SECTORS_DATA[sectorKey] || this.SECTORS_DATA['perusahaan'];
         const sectorCounts = (this.territoryData && this.territoryData.sector_counts) || {};
@@ -695,7 +719,7 @@ const ScraperClient = {
         const subKey = presetSelect ? presetSelect.value : '';
 
         if (!this.territoryData || !this.territoryData.places || this.territoryData.places.length === 0) {
-            this.currentQuery.category = subKey || sectorKey;
+            this.currentQuery.category = (sectorKey === 'semua_bidang' || subKey === 'all') ? 'all' : (subKey || sectorKey);
             this.loadPreScrapeCandidates();
             return;
         }
@@ -705,8 +729,12 @@ const ScraperClient = {
         const firstSubVal = (sector && sector.items && sector.items[0]) ? sector.items[0].value : null;
 
         let filtered = [];
-        if (!subKey || subKey === firstSubVal || subKey.startsWith('semua_')) {
+        if (sectorKey === 'semua_bidang' || sectorKey === 'all' || subKey === 'all') {
+            filtered = allPlaces;
+            this.currentQuery.category = 'all';
+        } else if (!subKey || subKey === firstSubVal || subKey.startsWith('semua_')) {
             filtered = allPlaces.filter(p => p.sector === sectorKey);
+            this.currentQuery.category = sectorKey;
         } else {
             filtered = allPlaces.filter(p => p.sector === sectorKey && p.sub === subKey);
             if (filtered.length === 0) {
@@ -716,10 +744,11 @@ const ScraperClient = {
                     (p.category && p.category.toLowerCase().includes(term))
                 ));
             }
+            this.currentQuery.category = subKey;
         }
 
         const subObj = sector && sector.items ? sector.items.find(i => i.value === subKey) : null;
-        const label = subObj ? subObj.label : (sector ? sector.name : 'kategori terpilih');
+        const label = (sectorKey === 'semua_bidang' || subKey === 'all') ? 'Semua Bidang Usaha' : (subObj ? subObj.label : (sector ? sector.name : 'kategori terpilih'));
         this.renderCandidatePlaces(filtered, label);
     },
 
@@ -3500,7 +3529,7 @@ const ScraperClient = {
         } finally {
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Scrape Data Lengkap';
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Ambil Data Sesuai Filter di Atas';
             }
         }
     },
@@ -3524,7 +3553,10 @@ const ScraperClient = {
         if (!tbody) return;
 
         tbody.innerHTML = '';
-        if (titleEl) titleEl.textContent = `Hasil Scraping: ${this.currentQuery.category.toUpperCase()} di ${this.currentQuery.location}`;
+        const catUpper = (this.currentQuery.category === 'all' || this.currentQuery.category === 'semua_bidang') 
+            ? 'SEMUA BIDANG USAHA' 
+            : (this.currentQuery.category || 'PROSPEK').toUpperCase();
+        if (titleEl) titleEl.textContent = `Hasil Scraping: ${catUpper} di ${this.currentQuery.location}`;
 
         let filtered = this.scrapedResults;
         if (this.activeFilter === 'has_wa') {
@@ -5205,7 +5237,7 @@ window.ScraperClient = ScraperClient;
                         }
                         if (progressEl) progressEl.style.display = 'none';
                         if (btnDetect) {
-                            btnDetect.innerHTML = '<i class="fa-solid fa-crosshairs"></i> Deteksi Seluruh Bisnis di Wilayah Ini';
+                            btnDetect.innerHTML = '<i class="fa-solid fa-database"></i> Unduh Seluruh Data Kota ke Database';
                         }
                     }, 1200);
                 } else if (data.status === 'queued') {

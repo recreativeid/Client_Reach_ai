@@ -600,7 +600,8 @@
                         1. Pilih Bidang Utama:
                       </label>
                       <select id="target-sector-select" class="form-select" style="font-size: 0.76rem; font-weight: 600; background: #ffffff;">
-                        <option value="perusahaan" selected>Perusahaan, Korporasi & Industri (PT / CV)</option>
+                        <option value="semua_bidang" selected>Semua Bidang Usaha (Semua Kategori)</option>
+                        <option value="perusahaan">Perusahaan, Korporasi & Industri (PT / CV)</option>
                         <option value="konstruksi">Konstruksi, Arsitektur & Properti</option>
                         <option value="jasa">Jasa Bisnis, Legal & Profesional</option>
                         <option value="it">Teknologi, IT & Telekomunikasi</option>
@@ -623,7 +624,8 @@
                         2. Pilih Jenis / Instansi Spesifik:
                       </label>
                       <select id="target-category-select" class="form-select" style="font-size: 0.76rem;">
-                        <option value="semua_perusahaan" selected>Semua Kantor Perusahaan & PT/CV</option>
+                        <option value="all" selected>Semua Jenis Bisnis & Instansi</option>
+                        <option value="semua_perusahaan">Semua Kantor Perusahaan & PT/CV</option>
                         <option value="kantor_pt">Kantor PT (Perseroan Terbatas)</option>
                         <option value="kantor_cv">Kantor CV (Persekutuan Komanditer)</option>
                         <option value="pabrik_manufaktur">Pabrik, Manufaktur & Industri</option>
@@ -646,10 +648,11 @@
                 </div>
               </div>
 
-              <!-- Dua Pilihan Tombol Scraping & Deteksi -->
-              <div style="display: flex; flex-direction: column; gap: 8px;">
-                <!-- Opsi Fleksibel: Filter Khusus WhatsApp -->
-                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 7px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+              <!-- Pemisah Mode Scraping: Tertarget vs Seluruh Kota -->
+              <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 6px;">
+
+                <!-- Opsi Filter Kontak WhatsApp -->
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                   <label for="scraper-only-wa-toggle" style="font-size: 0.72rem; font-weight: 600; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
                     <i class="fa-brands fa-whatsapp" style="color: #16a34a; font-size: 0.88rem;"></i>
                     <span>Hanya simpan tempat yang memiliki WhatsApp (08xx)</span>
@@ -657,17 +660,36 @@
                   <input type="checkbox" id="scraper-only-wa-toggle" style="width: 16px; height: 16px; cursor: pointer; accent-color: #16a34a;" title="Centang untuk hanya menyimpan data yang memiliki nomor WhatsApp">
                 </div>
 
-                <!-- Tombol 1: Deteksi Seluruh Bisnis di Wilayah Ini Sekarang -->
-                <button type="button" class="btn btn-primary btn-block" id="btn-sapu-bersih" style="padding: 11px; font-size: 0.86rem; font-weight: 700; background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; border-radius: 8px; box-shadow: 0 3px 10px rgba(37,99,235,0.22); display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; color: #ffffff;">
-                  <i class="fa-solid fa-crosshairs"></i>
-                  <span>Deteksi Seluruh Bisnis di Wilayah Ini Sekarang</span>
-                </button>
+                <!-- KARTU MODE A: PENCARIAN TERTARGET (SESUAI FILTER DI ATAS) -->
+                <div style="background: #ffffff; border: 1.5px solid #2563eb; border-radius: 10px; padding: 12px; box-shadow: 0 2px 6px rgba(37,99,235,0.06);">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                    <span style="font-size: 0.68rem; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px;">Mode A · Pencarian Tertarget</span>
+                    <span style="font-size: 0.62rem; font-weight: 600; background: #eff6ff; color: #1d4ed8; padding: 2px 6px; border-radius: 4px; border: 1px solid #bfdbfe;">Filter & Radius</span>
+                  </div>
+                  <p style="font-size: 0.7rem; color: #475569; margin-bottom: 10px; line-height: 1.35;">
+                    Mengekstrak bisnis spesifik berdasarkan kategori/semua bidang dan radius titik pin yang Anda tentukan di form atas.
+                  </p>
+                  <button type="button" class="btn btn-primary btn-block" id="btn-execute-scrape" style="padding: 10px; font-size: 0.82rem; font-weight: 700; background: #2563eb; border: none; border-radius: 7px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; color: #ffffff;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Ambil Data Sesuai Filter di Atas</span>
+                  </button>
+                </div>
 
-                <!-- Tombol 2: Scrape Instan Berdasarkan Target -->
-                <button class="btn btn-outline btn-block" id="btn-execute-scrape" style="padding: 10px; font-size: 0.82rem; font-weight: 600; border: 1.5px solid #2563eb; color: #2563eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #ffffff;">
-                  <i class="fa-solid fa-bolt"></i>
-                  <span>Scrape Data Lengkap (Instan 2-4 Detik)</span>
-                </button>
+                <!-- KARTU MODE B: EKSPEDISI WILAYAH (SAPU BERSIH SE-KOTA) -->
+                <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                    <span style="font-size: 0.68rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">Mode B · Seluruh Kabupaten / Kota</span>
+                    <span style="font-size: 0.62rem; font-weight: 600; background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px;">Sapu Bersih Massal</span>
+                  </div>
+                  <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 10px; line-height: 1.35;">
+                    Memindai dan mengunduh massal ribuan data bisnis lintas kategori untuk 1 wilayah administratif penuh langsung ke database Cloud.
+                  </p>
+                  <button type="button" class="btn btn-outline btn-block" id="btn-sapu-bersih" style="padding: 9px; font-size: 0.8rem; font-weight: 600; border: 1.5px solid #475569; color: #1e293b; background: #ffffff; border-radius: 7px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+                    <i class="fa-solid fa-database"></i>
+                    <span>Unduh Seluruh Data Kota ke Database</span>
+                  </button>
+                </div>
+
               </div>
 
               <!-- Progress Bar Deteksi Wilayah -->

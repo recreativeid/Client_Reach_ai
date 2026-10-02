@@ -8,6 +8,23 @@
 error_reporting(E_ALL);
 ini_set('display_errors', '0');
 
+// PHP 8 Compatibility Polyfills for PHP 7.4
+if (!function_exists('str_starts_with')) {
+    function str_starts_with($haystack, $needle) {
+        return (string)$needle !== '' && strncmp($haystack, $needle, strlen($needle)) === 0;
+    }
+}
+if (!function_exists('str_ends_with')) {
+    function str_ends_with($haystack, $needle) {
+        return $needle === '' || $needle === substr($haystack, -strlen($needle));
+    }
+}
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle) {
+        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+    }
+}
+
 // Set headers for JSON APIs
 function jsonResponse($data, $status = 200) {
     http_response_code($status);

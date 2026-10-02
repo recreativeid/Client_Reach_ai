@@ -75,6 +75,18 @@ function humanizeOsmType($type, $class = '', $name = '') {
 function getCategoryTaxonomy($keyword) {
     $k = strtolower(trim($keyword));
 
+    // 0. Semua Bidang Usaha / All Categories
+    if (in_array($k, ['all', 'semua', 'semua_bidang', 'all_categories']) || preg_match('/\b(semua kategori|semua bidang|semua usaha|all)\b/i', $k)) {
+        return [
+            'title' => 'Semua Bidang Usaha',
+            'amenities' => ['restaurant', 'cafe', 'fast_food', 'clinic', 'pharmacy', 'bank', 'school', 'hospital', 'fuel'],
+            'offices' => ['company', 'government', 'estate_agent', 'lawyer'],
+            'shops' => ['convenience', 'supermarket', 'clothes', 'bakery', 'car_repair', 'hardware'],
+            'tourism' => ['hotel', 'guest_house', 'motel'],
+            'keywords' => ['toko', 'klinik', 'kantor', 'resto', 'hotel', 'bengkel', 'pt', 'cv']
+        ];
+    }
+
     // 1. Perusahaan, Korporasi & Industri (PT / CV)
     if (in_array($k, ['kantor_pt']) || preg_match('/\b(kantor pt|pt |perseroan terbatas)\b/i', $k)) {
         return [
@@ -2064,8 +2076,11 @@ function scrapeRealPlaces($rawQuery, $locationName, $centerLat, $centerLng, $rad
                         continue;
                     }
 
+                    $isAll = in_array(strtolower($q), ['all', 'semua', 'semua_bidang', 'all_categories']) || empty($q);
                     $matched = false;
-                    if (stripos($item['name'], $q) !== false ||
+                    if ($isAll) {
+                        $matched = true;
+                    } elseif (stripos($item['name'], $q) !== false ||
                         stripos($item['category_name'] ?? '', $q) !== false ||
                         stripos($item['sector'] ?? '', $q) !== false ||
                         stripos($item['subsector'] ?? '', $q) !== false) {
@@ -2566,8 +2581,8 @@ function generateTriChannelInsights($baseName, $categoryTitle, $rating, $reviews
     $rawPhone = trim((string)$phoneNum);
     $hasPhone = !empty($rawPhone) && $rawPhone !== '-' && strlen($rawPhone) >= 6;
     $digits = preg_replace('/[^0-9]/', '', $rawPhone);
-    if (str_starts_with($digits, '0')) $digits = '62' . substr($digits, 1);
-    $isWa = str_starts_with($digits, '628') && strlen($digits) >= 10 && strlen($digits) <= 14;
+    if (substr($digits, 0, 1) === '0') $digits = '62' . substr($digits, 1);
+    $isWa = (substr($digits, 0, 3) === '628') && strlen($digits) >= 10 && strlen($digits) <= 14;
 
     return [
         'triple_verified' => true,
