@@ -3,20 +3,22 @@
   position: fixed;
   top: 14px;
   right: 14px;
-  z-index: 9999999;
-  background: rgba(15, 23, 42, 0.94);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(59, 130, 246, 0.35);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), 0 0 20px rgba(37, 99, 235, 0.25);
+  z-index: 2147483647 !important;
+  pointer-events: auto !important;
+  background: rgba(15, 23, 42, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(59, 130, 246, 0.45);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 25px rgba(37, 99, 235, 0.35);
   border-radius: 12px;
-  width: 320px;
+  width: 330px;
   color: #f8fafc;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 13px;
   padding: 14px 16px;
   box-sizing: border-box;
   animation: crSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
 }
 
 @keyframes crSlideDown {
@@ -29,27 +31,28 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   padding-bottom: 8px;
 }
 
 .cr-title {
   font-weight: 700;
-  font-size: 13px;
+  font-size: 13.5px;
   color: #60a5fa;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
 }
 
 .cr-badge {
-  background: rgba(37, 99, 235, 0.25);
+  background: rgba(37, 99, 235, 0.3);
   color: #93c5fd;
-  border: 1px solid rgba(96, 165, 250, 0.4);
-  padding: 2px 7px;
+  border: 1px solid rgba(96, 165, 250, 0.5);
+  padding: 2px 8px;
   border-radius: 4px;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.3px;
 }
 
 .cr-status-box {
@@ -58,11 +61,14 @@
 
 .cr-status-text {
   font-size: 11.5px;
-  color: #cbd5e1;
+  color: #e2e8f0;
   margin-bottom: 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.4;
+  word-break: break-word;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
 }
 
 .cr-progress-container {
@@ -85,9 +91,10 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 8px 12px;
   border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .cr-stat-item {
@@ -98,6 +105,7 @@
 .cr-stat-val {
   font-weight: 700;
   color: #f8fafc;
+  font-size: 12px;
 }
 
 .cr-stat-val.wa {
@@ -107,40 +115,89 @@
 .cr-actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .cr-btn {
   flex: 1;
-  padding: 7px 10px;
+  padding: 8px 10px;
   border-radius: 6px;
   border: none;
   font-weight: 600;
   font-size: 11.5px;
-  cursor: pointer;
+  cursor: pointer !important;
+  pointer-events: auto !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  transition: all 0.2s;
+  gap: 6px;
+  transition: all 0.15s ease;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.cr-btn:active {
+  transform: scale(0.96);
 }
 
 .cr-btn-primary {
   background: #2563eb;
   color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
 }
 
 .cr-btn-primary:hover {
   background: #1d4ed8;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
 }
 
-.cr-btn-stop {
-  background: rgba(239, 68, 68, 0.2);
+.cr-btn-success {
+  background: #10b981;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+.cr-btn-success:hover {
+  background: #059669;
+}
+
+.cr-btn-danger {
+  background: rgba(239, 68, 68, 0.25);
   color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  border: 1px solid rgba(239, 68, 68, 0.5);
 }
 
-.cr-btn-stop:hover {
-  background: rgba(239, 68, 68, 0.35);
+.cr-btn-danger:hover {
+  background: rgba(239, 68, 68, 0.4);
+  color: #ffffff;
+}
+
+.cr-btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.cr-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+.cr-btn-back {
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.cr-btn-back:hover {
+  background: rgba(148, 163, 184, 0.15);
+  color: #e2e8f0;
+}
+
+.cr-btn-full {
+  flex: 1 1 100%;
+  padding: 10px;
+  font-size: 12px;
 }
 
 /* Floating Quick Trigger Button on Google Maps when not automated */
@@ -148,7 +205,8 @@
   position: fixed;
   bottom: 24px;
   right: 24px;
-  z-index: 9999990;
+  z-index: 2147483640 !important;
+  pointer-events: auto !important;
   background: linear-gradient(135deg, #1d4ed8, #2563eb);
   color: #ffffff;
   padding: 10px 16px;
@@ -158,14 +216,19 @@
   font-weight: 700;
   border: 1.5px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
-  cursor: pointer;
+  cursor: pointer !important;
   display: flex;
   align-items: center;
   gap: 8px;
   transition: transform 0.2s, box-shadow 0.2s;
+  user-select: none;
 }
 
 #clientreach-fab:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 28px rgba(37, 99, 235, 0.55);
+}
+
+#clientreach-fab:active {
+  transform: scale(0.96);
 }
