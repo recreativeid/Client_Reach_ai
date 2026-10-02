@@ -1,7 +1,9 @@
 /**
- * ClientReach AI - Google Maps Assistant (Content Script v1.1.0)
- * Mode Mendalam (Deep Scrape Engine)
- * Ekstraksi Kontak Real WhatsApp (08xx), PSTN, Rating, Alamat, Website & Jam Operasional
+ * ClientReach AI - Google Maps Assistant (Content Script v1.2.0)
+ * Mode Mendalam & Multi-Sector Auto-Rotation Pipeline
+ * 1. Menangani Single Place View (auto-extract + auto-reveal search list)
+ * 2. Menangani Rotasi Sektor Bergantian (Kuliner -> Toko -> Jasa -> Kesehatan -> Sekolah)
+ * 3. Ekstraksi Kontak Real WhatsApp (08xx), PSTN, Rating, Alamat & Jam Operasional
  */
 
 (function () {
@@ -15,9 +17,20 @@
     targetCount: 25,
     category: '',
     location: '',
+    isMultiSector: false,
     originUrl: 'http://localhost/Client_Reach_ai',
     hudEl: null
   };
+
+  // Predefined Multi-Sector Rotation List for "Semua Bidang Usaha"
+  const SECTOR_ROTATION = [
+    { key: 'kuliner', label: 'Kuliner & Kafe', query: 'kuliner' },
+    { key: 'toko', label: 'Toko & Ritel', query: 'toko swalayan' },
+    { key: 'jasa', label: 'Jasa & Kantor', query: 'jasa kantor' },
+    { key: 'kesehatan', label: 'Kesehatan & Apotek', query: 'klinik apotek' },
+    { key: 'sekolah', label: 'Pendidikan & Sekolah', query: 'sekolah kursus' },
+    { key: 'bengkel', label: 'Bengkel & Otomotif', query: 'bengkel' }
+  ];
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -44,6 +57,7 @@
     let category = urlParams.get('category') || hashParams.get('category');
     let location = urlParams.get('location') || hashParams.get('location');
     let origin = urlParams.get('origin') || hashParams.get('origin');
+    let multi = urlParams.get('multi_sector') === '1' || hashParams.get('multi_sector') === '1';
 
     if (isAuto || target || category) {
       try {
@@ -52,6 +66,7 @@
         if (category) sessionStorage.setItem('cr_category', category);
         if (location) sessionStorage.setItem('cr_location', location);
         if (origin) sessionStorage.setItem('cr_origin', origin);
+        if (multi) sessionStorage.setItem('cr_multi_sector', '1');
       } catch (e) {}
     } else {
       try {
@@ -60,10 +75,10 @@
         category = sessionStorage.getItem('cr_category');
         location = sessionStorage.getItem('cr_location');
         origin = sessionStorage.getItem('cr_origin');
+        multi = sessionStorage.getItem('cr_multi_sector') === '1';
       } catch (e) {}
     }
 
-    // Fallback: extract query text from Google Maps search box if needed
     const searchBox = document.getElementById('searchboxinput');
     const searchVal = searchBox ? searchBox.value.trim() : '';
 
@@ -71,6 +86,7 @@
     state.category = category || (searchVal ? searchVal.split(' di ')[0] : 'Bisnis');
     state.location = location || (searchVal && searchVal.includes(' di ') ? searchVal.split(' di ')[1] : 'Wilayah Target');
     state.originUrl = origin || 'http://localhost/Client_Reach_ai';
+    state.isMultiSector = multi || (state.category.toLowerCase().includes('semua') || state.category === 'all');
 
     return isAuto;
   }
@@ -83,7 +99,7 @@
 
     if (isAuto) {
       console.log('[ClientReach AI] Otomasi terdeteksi. Memulai ekstraksi Mode Mendalam...');
-      startDeepScraping();
+      startScrapePipeline();
     } else {
       updateStatus('Siap mengekstrak tempat di Google Maps. Klik "Mulai Sedot Sekarang".');
       renderButtons();
@@ -107,7 +123,7 @@
           </svg>
           <span>ClientReach AI</span>
         </div>
-        <span class="cr-badge">Mode Mendalam</span>
+        <span class="cr-badge" id="cr-mode-badge">${state.isMultiSector ? 'Rotasi Multi-Sektor' : 'Mode Mendalam'}</span>
       </div>
       <div class="cr-status-box">
         <div class="cr-status-text" id="cr-status-label">Menginisialisasi pencarian Google Maps...</div>
@@ -161,7 +177,7 @@
         btnSaveNow.onclick = () => {
           state.shouldStop = true;
           state.isScraping = false;
-          finalizeAndExport();
+          finalizeAndExport(true);
         };
       }
     } else {
@@ -179,10 +195,10 @@
         `;
 
         const btnRetry = document.getElementById('cr-btn-retry');
-        if (btnRetry) btnRetry.onclick = () => startDeepScraping();
+        if (btnRetry) btnRetry.onclick = () => startScrapePipeline();
 
         const btnFinish = document.getElementById('cr-btn-save-finish');
-        if (btnFinish) btnFinish.onclick = () => finalizeAndExport();
+        if (btnFinish) btnFinish.onclick = () => finalizeAndExport(true);
       } else {
         // Idle / 0 Data
         actionsBox.innerHTML = `
@@ -197,7 +213,7 @@
         `;
 
         const btnStart = document.getElementById('cr-btn-start-now');
-        if (btnStart) btnStart.onclick = () => startDeepScraping();
+        if (btnStart) btnStart.onclick = () => startScrapePipeline();
 
         const btnBack = document.getElementById('cr-btn-return-sys');
         if (btnBack) btnBack.onclick = () => returnToSystem();
@@ -220,17 +236,14 @@
     }
   }
 
-  // Multi-strategy place card discovery (Works in normal search view and split detail view)
+  // Multi-strategy place card discovery
   function getPlaceCardElements() {
-    // 1. Standard Google Maps search card elements
     const standardCards = Array.from(document.querySelectorAll('div.Nv2PK'));
     if (standardCards.length > 0) return standardCards;
 
-    // 2. Elements with role="article"
     const articles = Array.from(document.querySelectorAll('div[role="article"]'));
     if (articles.length > 0) return articles;
 
-    // 3. Fallback: links with /maps/place/ and aria-label inside sidebar
     const anchors = Array.from(document.querySelectorAll('a[href*="/maps/place/"][aria-label]'));
     const cards = [];
     const seen = new Set();
@@ -250,7 +263,7 @@
     return cards;
   }
 
-  // Find true scrollable container containing the place cards
+  // Find scrollable container of cards
   function findScrollableContainer(sampleCard) {
     if (sampleCard) {
       let cur = sampleCard.parentElement;
@@ -264,7 +277,6 @@
       }
     }
 
-    // Standard fallbacks
     const feed = document.querySelector('div[role="feed"]');
     if (feed) return feed;
 
@@ -279,7 +291,6 @@
   function extractDataFromCard(card) {
     if (!card) return null;
 
-    // 1. Place Name
     const nameEl = card.querySelector('div.qBF1Pd') || 
                    card.querySelector('.fontHeadlineSmall') || 
                    card.querySelector('a[aria-label]') || 
@@ -290,7 +301,6 @@
     }
     if (!name) return null;
 
-    // 2. Link & Coordinates
     const linkEl = card.querySelector('a.hfpxzc') || card.querySelector('a[href*="/maps/place/"]') || card.closest('a');
     const href = linkEl ? (linkEl.getAttribute('href') || '') : '';
     let lat = -7.46, lng = 110.22;
@@ -300,7 +310,6 @@
       lng = parseFloat(coordMatch[2]);
     }
 
-    // 3. Rating & Reviews
     let rating = 4.5;
     let reviewsCount = 20;
     const ratingEl = card.querySelector('span.MW4etd');
@@ -314,11 +323,9 @@
       if (!isNaN(rc)) reviewsCount = rc;
     }
 
-    // 4. Raw text from card info lines (.W4Efsd)
     const fullCardText = card.innerText || '';
     const textLines = Array.from(card.querySelectorAll('.W4Efsd')).map(el => el.innerText.trim()).filter(Boolean);
 
-    // 5. Category & Address Snippet
     let category = state.category;
     let address = state.location;
 
@@ -328,14 +335,13 @@
         if (part.startsWith('Jl.') || part.startsWith('Jalan') || part.match(/,\s*Kec\./i) || part.match(/[A-Z0-9\+]{4,8}\+[A-Z0-9]{2,4}/)) {
           address = part;
         } else if (!part.match(/\d+[\.,]\d+/) && !part.match(/\(\d+\)/) && !part.match(/buka|tutup|closed|open/i) && part.length < 40 && part.length > 2) {
-          if (category === 'Semua Bidang Usaha' || category === 'Bisnis' || !category) {
+          if (category.toLowerCase().includes('semua') || category === 'Bisnis' || !category) {
             category = part;
           }
         }
       }
     }
 
-    // 6. Phone / WhatsApp from card text
     let phone = '-';
     const waMatch = fullCardText.match(/(?:\+62|62|0)8[1-9][0-9]{7,11}/);
     if (waMatch) {
@@ -370,7 +376,6 @@
                        document.querySelector('div.TIHn2') ||
                        document.body;
 
-    // 1. Phone Button
     const phoneBtn = detailPane.querySelector('button[data-item-id*="phone:tel:"]') ||
                      detailPane.querySelector('button[data-tooltip*="telepon"]') ||
                      detailPane.querySelector('button[data-tooltip*="phone number"]');
@@ -389,7 +394,6 @@
       }
     }
 
-    // 2. Full Address Button
     const addrBtn = detailPane.querySelector('button[data-item-id*="address"]') ||
                     detailPane.querySelector('button[data-tooltip*="alamat"]') ||
                     detailPane.querySelector('button[data-tooltip*="address"]');
@@ -398,7 +402,6 @@
       if (aText.length > 5) placeData.address = aText;
     }
 
-    // 3. Website Link
     const webBtn = detailPane.querySelector('a[data-item-id*="authority"]') ||
                    detailPane.querySelector('a[data-tooltip*="situs web"]') ||
                    detailPane.querySelector('a[data-tooltip*="website"]');
@@ -407,12 +410,269 @@
       if (wHref && !wHref.includes('google.com') && wHref !== '-') placeData.website = wHref;
     }
 
-    // 4. Hours Button
     const hoursBtn = detailPane.querySelector('button[data-item-id*="hours"]') ||
                      detailPane.querySelector('div[aria-label*="Jam operasional"]');
     if (hoursBtn) {
       const hText = (hoursBtn.innerText || hoursBtn.getAttribute('aria-label') || '').replace(/^Jam buka:\s*/i, '').trim();
       if (hText.length > 2) placeData.opening_hours = hText;
+    }
+  }
+
+  // Handle case where Google Maps opens in Single Place Detail View (like SMP N 9 Magelang)
+  async function handleSinglePlaceOrRevealList() {
+    let cards = getPlaceCardElements();
+    if (cards.length > 0) return cards;
+
+    // 1. Extract currently open single place detail if visible
+    const detailPane = document.querySelector('div[role="main"]') || 
+                       document.querySelector('div.m6QErb[aria-label]') || 
+                       document.querySelector('div.TIHn2');
+
+    if (detailPane) {
+      const nameEl = detailPane.querySelector('h1.DUwDvf') || 
+                     detailPane.querySelector('h1.fontHeadlineLarge') || 
+                     detailPane.querySelector('h1');
+      if (nameEl && nameEl.innerText.trim().length > 1) {
+        const placeName = nameEl.innerText.trim();
+        const singlePlace = {
+          name: placeName,
+          category: state.category,
+          rating: 4.5,
+          reviews_count: 25,
+          phone: '-',
+          address: state.location,
+          website: '-',
+          opening_hours: '-',
+          lat: -7.46,
+          lng: 110.22,
+          source: 'gmaps',
+          source_name: 'Google Maps Asli'
+        };
+
+        enrichFromDetailPane(singlePlace);
+
+        const lower = singlePlace.name.toLowerCase();
+        if (!state.extractedPlaces.some(p => p.name.toLowerCase() === lower)) {
+          state.extractedPlaces.push(singlePlace);
+          updateStatus(`Terekstrak: ${singlePlace.name} (${singlePlace.phone})`, 10);
+        }
+      }
+
+      // 2. Click close (X) button to reveal the search list
+      const closeSelectors = [
+        'button[aria-label="Tutup"]',
+        'button[aria-label="Close"]',
+        'button[aria-label*="Kembali"]',
+        'button[aria-label*="Back"]',
+        'button[jsaction*="pane.close"]',
+        'button.VfPpkd-icon-LgbsSe',
+        'button[jsaction*="close"]'
+      ];
+
+      for (const sel of closeSelectors) {
+        const btn = document.querySelector(sel);
+        if (btn) {
+          console.log('[ClientReach AI] Menutup detail tempat untuk membuka daftar hasil:', sel);
+          btn.click();
+          await sleep(1000);
+          cards = getPlaceCardElements();
+          if (cards.length > 0) return cards;
+        }
+      }
+    }
+
+    // 3. Re-trigger search box if cards still not showing
+    const searchBtn = document.getElementById('searchbox-searchbutton') ||
+                      document.querySelector('button[aria-label="Telusuri"]') ||
+                      document.querySelector('button[aria-label="Search"]');
+    if (searchBtn) {
+      console.log('[ClientReach AI] Memicu pencarian ulang untuk menampilkan kartu...');
+      searchBtn.click();
+      await sleep(1500);
+      cards = getPlaceCardElements();
+    }
+
+    return cards;
+  }
+
+  // Master Scraping Pipeline (Supports Single Category AND Multi-Sector Auto-Rotation)
+  async function startScrapePipeline() {
+    if (state.isScraping) return;
+    state.isScraping = true;
+    state.shouldStop = false;
+    state.extractedPlaces = [];
+    renderButtons();
+
+    if (state.isMultiSector) {
+      await runMultiSectorRotation();
+    } else {
+      await runSingleSectorScrape(state.targetCount);
+    }
+
+    state.isScraping = false;
+    renderButtons();
+
+    if (state.extractedPlaces.length > 0) {
+      updateStatus(`Selesai! ${state.extractedPlaces.length} data terkumpul. Menyimpan ke sistem...`, 100);
+      await sleep(1200);
+      await finalizeAndExport(true);
+    } else {
+      updateStatus('Tidak ada data yang berhasil diekstrak. Silakan coba lagi.');
+    }
+  }
+
+  // Multi-Sector Auto-Rotation Pipeline (Kuliner -> Toko -> Jasa -> Kesehatan -> Sekolah)
+  async function runMultiSectorRotation() {
+    const totalTarget = state.targetCount;
+    const perSectorTarget = Math.max(8, Math.ceil(totalTarget / SECTOR_ROTATION.length));
+
+    updateStatus(`Memulai Rotasi Multi-Sektor (Target: ${totalTarget} bisnis beragam)...`, 5);
+    await sleep(800);
+
+    for (let idx = 0; idx < SECTOR_ROTATION.length; idx++) {
+      if (state.shouldStop || state.extractedPlaces.length >= totalTarget) break;
+
+      const sector = SECTOR_ROTATION[idx];
+      updateStatus(`[Sektor ${idx + 1}/${SECTOR_ROTATION.length}]: Mencari ${sector.label}...`, Math.min(90, (idx / SECTOR_ROTATION.length) * 85));
+
+      // 1. Change searchbox query in Google Maps
+      await executeSearchQuery(`${sector.query} di ${state.location}`);
+
+      // 2. Scrape batch for this sector
+      const beforeCount = state.extractedPlaces.length;
+      await runSingleSectorScrape(perSectorTarget, sector.label);
+      const newlyAdded = state.extractedPlaces.length - beforeCount;
+
+      // 3. Send partial batch to backend immediately
+      if (newlyAdded > 0) {
+        updateStatus(`[Sektor ${idx + 1}/${SECTOR_ROTATION.length}]: Berhasil ${newlyAdded} data ${sector.label}. Mengirim batch...`);
+        await sendBatchToBackend(false);
+        await sleep(1000);
+      }
+    }
+  }
+
+  // Change Google Maps search input and submit search
+  async function executeSearchQuery(queryText) {
+    const searchBox = document.getElementById('searchboxinput');
+    const searchBtn = document.getElementById('searchbox-searchbutton') ||
+                      document.querySelector('button#searchbox-searchbutton') ||
+                      document.querySelector('button[aria-label="Telusuri"]') ||
+                      document.querySelector('button[aria-label="Search"]');
+
+    if (searchBox && searchBtn) {
+      searchBox.value = queryText;
+      searchBox.dispatchEvent(new Event('input', { bubbles: true }));
+      await sleep(300);
+      searchBtn.click();
+      await sleep(2200);
+    }
+  }
+
+  // Single Sector Scrape Engine
+  async function runSingleSectorScrape(sectorLimit, sectorLabel = '') {
+    updateStatus(`Memindai hasil ${sectorLabel || state.category}...`);
+
+    let cards = [];
+    for (let wait = 0; wait < 16; wait++) {
+      if (state.shouldStop) break;
+      cards = await handleSinglePlaceOrRevealList();
+      if (cards.length > 0) break;
+      await sleep(500);
+    }
+
+    if (cards.length === 0) {
+      console.warn('[ClientReach AI] Tidak ada kartu ditemukan untuk sektor:', sectorLabel);
+      return;
+    }
+
+    // Scroll to discover more cards
+    const scrollContainer = findScrollableContainer(cards[0]);
+    let scrollAttempts = 0;
+    const maxScroll = Math.max(8, Math.ceil(sectorLimit / 3));
+
+    while (cards.length < sectorLimit && scrollAttempts < maxScroll && !state.shouldStop) {
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+      if (cards[cards.length - 1]) {
+        cards[cards.length - 1].scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+      await sleep(900);
+
+      cards = getPlaceCardElements();
+      scrollAttempts++;
+
+      const isEnd = scrollContainer && (
+        scrollContainer.innerText.includes('akhir daftar') || 
+        scrollContainer.innerText.includes('end of the list') ||
+        scrollContainer.innerText.includes('Hasil lainnya')
+      );
+      if (isEnd) break;
+    }
+
+    // Extract cards
+    const targetCards = cards.slice(0, sectorLimit);
+    const seenNames = new Set(state.extractedPlaces.map(p => p.name.toLowerCase()));
+
+    for (let i = 0; i < targetCards.length; i++) {
+      if (state.shouldStop || state.extractedPlaces.length >= state.targetCount) break;
+
+      const card = targetCards[i];
+      try {
+        const place = extractDataFromCard(card);
+        if (place && place.name) {
+          const lower = place.name.toLowerCase();
+          if (!seenNames.has(lower)) {
+            seenNames.add(lower);
+
+            // Click card for detail enrichment
+            try {
+              const clickTarget = card.querySelector('a.hfpxzc') || card.querySelector('div.qBF1Pd') || card;
+              clickTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              clickTarget.click();
+              await sleep(650);
+              enrichFromDetailPane(place);
+            } catch (err) {}
+
+            state.extractedPlaces.push(place);
+            updateStatus(`Terekstrak (${state.extractedPlaces.length}/${state.targetCount}): ${place.name}`);
+          }
+        }
+      } catch (err) {
+        console.warn('[ClientReach AI] Gagal ekstrak kartu:', err);
+      }
+
+      await sleep(250);
+    }
+  }
+
+  // Send batch to backend
+  async function sendBatchToBackend(isFinal = false) {
+    if (state.extractedPlaces.length === 0) return;
+
+    const payload = {
+      action: 'import_chrome',
+      source: 'google_maps_extension',
+      location: state.location,
+      category: state.category,
+      is_partial: !isFinal,
+      is_final: isFinal,
+      items: state.extractedPlaces
+    };
+
+    try {
+      const endpoint = `${state.originUrl}/api/scraper.php?action=import_chrome`;
+      await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {
+      console.warn('[ClientReach AI] Gagal POST batch:', e);
+      try {
+        localStorage.setItem('clientreach_pending_import', JSON.stringify(payload));
+      } catch (err) {}
     }
   }
 
@@ -426,158 +686,21 @@
     return clean;
   }
 
-  // Main Deep Scraping Flow
-  async function startDeepScraping() {
-    if (state.isScraping) return;
-    state.isScraping = true;
-    state.shouldStop = false;
-    state.extractedPlaces = [];
-    renderButtons();
-
-    updateStatus('Menunggu Google Maps memuat kartu tempat...', 5);
-
-    // 1. Wait for place cards to render in the DOM (up to 15 seconds)
-    let cards = [];
-    for (let wait = 0; wait < 30; wait++) {
-      if (state.shouldStop) break;
-      cards = getPlaceCardElements();
-      if (cards.length > 0) break;
-      await sleep(500);
-      updateStatus(`Menyiapkan daftar tempat... (${Math.floor((wait / 30) * 100)}%)`, 8);
-    }
-
-    if (cards.length === 0) {
-      state.isScraping = false;
-      renderButtons();
-      updateStatus('Daftar tempat belum terdeteksi. Pastikan pencarian Google Maps aktif lalu klik Mulai Sedot.');
-      return;
-    }
-
-    // 2. Discover cards by scrolling the list container
-    updateStatus(`Menemukan ${cards.length} tempat. Menggulir daftar...`, 15);
-    const scrollContainer = findScrollableContainer(cards[0]);
-
-    let scrollAttempts = 0;
-    const maxScroll = Math.max(12, Math.ceil(state.targetCount / 3));
-
-    while (cards.length < state.targetCount && scrollAttempts < maxScroll && !state.shouldStop) {
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      }
-      if (cards[cards.length - 1]) {
-        cards[cards.length - 1].scrollIntoView({ behavior: 'smooth', block: 'end' });
-      }
-      await sleep(1000);
-
-      cards = getPlaceCardElements();
-      scrollAttempts++;
-      const pct = Math.min(30, 15 + (cards.length / state.targetCount) * 15);
-      updateStatus(`Mengumpulkan tempat: ${cards.length} / ${state.targetCount}`, pct);
-
-      const isEnd = scrollContainer && (
-        scrollContainer.innerText.includes('akhir daftar') || 
-        scrollContainer.innerText.includes('end of the list') ||
-        scrollContainer.innerText.includes('Hasil lainnya')
-      );
-      if (isEnd) break;
-    }
-
-    // 3. Extract each place (Card data first + Deep Detail Pane enrichment)
-    const targetCards = cards.slice(0, state.targetCount);
-    updateStatus(`Mengekstrak ${targetCards.length} tempat...`, 30);
-
-    const seenNames = new Set();
-
-    for (let i = 0; i < targetCards.length; i++) {
-      if (state.shouldStop) break;
-
-      const card = targetCards[i];
-      try {
-        const place = extractDataFromCard(card);
-        if (place && place.name) {
-          const lower = place.name.toLowerCase();
-          if (!seenNames.has(lower)) {
-            seenNames.add(lower);
-
-            // Click card to open detail pane for enrichment
-            try {
-              const clickTarget = card.querySelector('a.hfpxzc') || card.querySelector('div.qBF1Pd') || card;
-              clickTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              clickTarget.click();
-              await sleep(750);
-              enrichFromDetailPane(place);
-            } catch (err) {}
-
-            state.extractedPlaces.push(place);
-          }
-        }
-      } catch (err) {
-        console.warn('[ClientReach AI] Gagal ekstrak kartu:', err);
-      }
-
-      const pct = 30 + ((i + 1) / targetCards.length) * 65;
-      const currentName = state.extractedPlaces[state.extractedPlaces.length - 1]?.name || '';
-      updateStatus(`Mengekstrak (${state.extractedPlaces.length}/${targetCards.length}): ${currentName}`, pct);
-      await sleep(300);
-    }
-
-    state.isScraping = false;
-    renderButtons();
-
-    if (state.extractedPlaces.length > 0) {
-      updateStatus(`Ekstraksi selesai! ${state.extractedPlaces.length} data terkumpul. Menyimpan...`, 100);
-      await sleep(1000);
-      await finalizeAndExport();
-    } else {
-      updateStatus('Tidak ada data yang berhasil diekstrak. Silakan coba lagi.');
-    }
-  }
-
-  // Export collected data to ClientReach AI web app
-  async function finalizeAndExport() {
+  // Export collected data and return to ClientReach AI web app
+  async function finalizeAndExport(redirectNow = true) {
     if (state.extractedPlaces.length === 0) {
       updateStatus('Belum ada data untuk disimpan. Klik "Mulai Sedot Sekarang".');
       renderButtons();
       return;
     }
 
-    const payload = {
-      action: 'import_chrome',
-      source: 'google_maps_extension',
-      location: state.location,
-      category: state.category,
-      items: state.extractedPlaces
-    };
+    await sendBatchToBackend(true);
 
-    updateStatus(`Menyimpan ${state.extractedPlaces.length} data ke ClientReach AI...`, 95);
-
-    try {
-      const endpoint = `${state.originUrl}/api/scraper.php?action=import_chrome`;
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (res.ok) {
-        const json = await res.json();
-        updateStatus(`Berhasil! ${json.count || state.extractedPlaces.length} data masuk ke sistem. Mengalihkan...`, 100);
-        await sleep(1200);
-        window.location.href = `${state.originUrl}/index.html#scraper&status=chrome_success&count=${state.extractedPlaces.length}`;
-        return;
-      }
-    } catch (e) {
-      console.warn('[ClientReach AI] Gagal POST langsung ke backend, simpan di localStorage:', e);
+    if (redirectNow) {
+      updateStatus(`Berhasil! ${state.extractedPlaces.length} data tersimpan. Mengalihkan ke sistem...`, 100);
+      await sleep(1000);
+      window.location.href = `${state.originUrl}/index.html#scraper&status=chrome_success&count=${state.extractedPlaces.length}`;
     }
-
-    // LocalStorage fallback
-    try {
-      localStorage.setItem('clientreach_pending_import', JSON.stringify(payload));
-    } catch (err) {}
-
-    updateStatus('Data disimpan di sesi browser. Mengalihkan ke sistem...', 100);
-    await sleep(1000);
-    window.location.href = `${state.originUrl}/index.html#scraper&status=chrome_local`;
   }
 
   // Navigate back to system

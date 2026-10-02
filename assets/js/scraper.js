@@ -3627,12 +3627,17 @@ const ScraperClient = {
 
         // Construct search query
         let categoryName = this.currentQuery.category || 'Semua Bidang Usaha';
-        if (categoryName === 'all' || categoryName === 'semua_bidang') {
-            categoryName = 'Semua Bidang Usaha';
-        }
+        let isMultiSector = 0;
+        let queryText = '';
 
-        let locName = this.currentQuery.location || 'Magelang Utara, Kota Magelang';
-        let queryText = `${categoryName} di ${locName}`;
+        if (categoryName === 'all' || categoryName === 'semua_bidang' || categoryName === 'Semua Bidang Usaha') {
+            categoryName = 'Semua Bidang Usaha';
+            isMultiSector = 1;
+            // First rotation sector: Kuliner & Kafe (densest merchant contact in Indonesia)
+            queryText = `kuliner di ${locName}`;
+        } else {
+            queryText = `${categoryName} di ${locName}`;
+        }
 
         let lat = this.currentQuery.lat || -7.46;
         let lng = this.currentQuery.lng || 110.22;
@@ -3645,7 +3650,7 @@ const ScraperClient = {
 
         const encodedQuery = encodeURIComponent(queryText);
         const originUrl = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '');
-        const targetUrl = `https://www.google.com/maps/search/${encodedQuery}/@${lat.toFixed(5)},${lng.toFixed(5)},${zoom}z?clientreach_auto=1&target=${limit}&category=${encodeURIComponent(categoryName)}&location=${encodeURIComponent(locName)}&origin=${encodeURIComponent(originUrl)}`;
+        const targetUrl = `https://www.google.com/maps/search/${encodedQuery}/@${lat.toFixed(5)},${lng.toFixed(5)},${zoom}z?clientreach_auto=1&target=${limit}&category=${encodeURIComponent(categoryName)}&location=${encodeURIComponent(locName)}&multi_sector=${isMultiSector}&origin=${encodeURIComponent(originUrl)}`;
 
         const win = window.open(targetUrl, '_blank');
         if (!win) {
@@ -3657,7 +3662,9 @@ const ScraperClient = {
 
     watchForChromeImportCompletion(expectedCount) {
         let attempts = 0;
-        const maxAttempts = 120; // 2 minutes max
+        const maxAttempts = 180; // 4.5 minutes max for multi-sector
+        const countBadge = document.getElementById('preview-count-badge');
+
         const pollInterval = setInterval(async () => {
             attempts++;
             if (attempts > maxAttempts) {
@@ -3671,7 +3678,7 @@ const ScraperClient = {
                 if (pending) {
                     localStorage.removeItem('clientreach_pending_import');
                     const parsed = JSON.parse(pending);
-                    if (parsed && parsed.items) {
+                    if (parsed && parsed.items && parsed.items.length > 0) {
                         clearInterval(pollInterval);
                         this.processImportedChromeLeads(parsed.items, parsed.category, parsed.location);
                         return;
@@ -3683,16 +3690,20 @@ const ScraperClient = {
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.success && data.items && data.items.length > 0) {
-                        const lastSeenHist = sessionStorage.getItem('clientreach_last_chrome_hist');
-                        if (!lastSeenHist || lastSeenHist != data.history_id) {
-                            sessionStorage.setItem('clientreach_last_chrome_hist', data.history_id);
+                        const count = data.items.length;
+                        if (countBadge) {
+                            countBadge.innerHTML = `<i class="fa-solid fa-cloud-arrow-down fa-beat" style="color:#2563eb;"></i> Mengimpor dari Google Maps: <strong>${count} data</strong>...`;
+                        }
+
+                        // If is_final is true or user returned or count meets target
+                        if (data.is_final || count >= expectedCount) {
                             clearInterval(pollInterval);
                             this.processImportedChromeLeads(data.items, data.category, data.location);
                         }
                     }
                 }
             } catch (err) {}
-        }, 1500);
+        }, 1200);
     },
 
     processImportedChromeLeads(items, category, location) {

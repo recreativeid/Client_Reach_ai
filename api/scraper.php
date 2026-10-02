@@ -3246,14 +3246,34 @@ if ($action === 'import_chrome') {
         error_log('import_chrome DB error: ' . $e->getMessage());
     }
 
-    // Cache latest import for instant client retrieval
+    // Support multi-sector rotation batch imports
     $cacheFile = __DIR__ . '/../data/latest_chrome_import.json';
+    $isPartial = !empty($input['is_partial']);
+    $isFinal = !empty($input['is_final']) || !$isPartial;
+
+    if ($isPartial && file_exists($cacheFile)) {
+        $prevData = json_decode(@file_get_contents($cacheFile), true);
+        if ($prevData && !empty($prevData['items']) && is_array($prevData['items'])) {
+            $existingNames = array_map(function($i) { return strtolower(trim($i['name'])); }, $prevData['items']);
+            foreach ($savedPlaces as $sp) {
+                if (!in_array(strtolower(trim($sp['name'])), $existingNames)) {
+                    $sp['id'] = count($prevData['items']) + 1;
+                    $prevData['items'][] = $sp;
+                    $existingNames[] = strtolower(trim($sp['name']));
+                }
+            }
+            $savedPlaces = $prevData['items'];
+        }
+    }
+
+    // Cache latest import for instant client retrieval
     @file_put_contents($cacheFile, json_encode([
         'success' => true,
         'history_id' => $historyId,
         'category' => $category,
         'location' => $locationName,
         'total_items' => count($savedPlaces),
+        'is_final' => $isFinal,
         'items' => $savedPlaces
     ], JSON_UNESCAPED_UNICODE));
 
@@ -3262,6 +3282,7 @@ if ($action === 'import_chrome') {
         'message' => 'Berhasil mengimpor ' . count($savedPlaces) . ' data dari Google Maps.',
         'history_id' => $historyId,
         'count' => count($savedPlaces),
+        'is_final' => $isFinal,
         'items' => $savedPlaces
     ]);
 }
