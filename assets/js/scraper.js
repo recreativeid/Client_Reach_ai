@@ -3627,6 +3627,7 @@ const ScraperClient = {
 
         // Construct search query
         let categoryName = this.currentQuery.category || 'Semua Bidang Usaha';
+        let locName = this.currentQuery.location || 'Magelang Utara, Kota Magelang';
         let isMultiSector = 0;
         let queryText = '';
 
@@ -3651,6 +3652,15 @@ const ScraperClient = {
         const encodedQuery = encodeURIComponent(queryText);
         const originUrl = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '');
         const targetUrl = `https://www.google.com/maps/search/${encodedQuery}/@${lat.toFixed(5)},${lng.toFixed(5)},${zoom}z?clientreach_auto=1&target=${limit}&category=${encodeURIComponent(categoryName)}&location=${encodeURIComponent(locName)}&multi_sector=${isMultiSector}&origin=${encodeURIComponent(originUrl)}`;
+
+        const btnGmapsAuto = document.getElementById('btn-scrape-gmaps-auto');
+        if (btnGmapsAuto) {
+            const originalHTML = btnGmapsAuto.innerHTML;
+            btnGmapsAuto.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Membuka Google Maps...</span>';
+            setTimeout(() => {
+                if (btnGmapsAuto) btnGmapsAuto.innerHTML = originalHTML;
+            }, 3000);
+        }
 
         const win = window.open(targetUrl, '_blank');
         if (!win) {
