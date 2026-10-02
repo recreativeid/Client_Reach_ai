@@ -1397,23 +1397,13 @@ const ScraperClient = {
                 { id: distId + '03', name: cleanDist + ' 3', lat: cLat + 0.005, lng: cLng - 0.005 }
             ];
         }
-        let activeVillageId = null;
-        vList.forEach((v, idx) => {
+        vList.forEach((v) => {
             const opt = document.createElement('option');
             opt.value = v.id;
             opt.textContent = v.name;
-            if (idx === 0) {
-                opt.selected = true;
-                activeVillageId = v.id;
-            }
             kelSelect.appendChild(opt);
         });
-
-        if (activeVillageId) {
-            kelSelect.value = activeVillageId;
-        } else {
-            kelSelect.value = '';
-        }
+        kelSelect.value = ''; // Default to '-- Semua Kelurahan/Desa --' so entire kecamatan is covered!
     },
 
     async handleRegionChange() {
@@ -3423,6 +3413,14 @@ const ScraperClient = {
             btnBackToSearch.addEventListener('click', () => {
                 document.getElementById('scraped-results-view').style.display = 'none';
                 document.getElementById('scraper-setup-view').style.display = 'block';
+                if (window.mapEngine && window.mapEngine.map) {
+                    setTimeout(() => {
+                        window.mapEngine.map.invalidateSize();
+                        if (this.candidatePlaces && this.candidatePlaces.length > 0) {
+                            window.mapEngine.showPreviewMarkers(this.candidatePlaces);
+                        }
+                    }, 50);
+                }
             });
         }
     },

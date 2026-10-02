@@ -2937,16 +2937,17 @@ if ($action === 'scrape') {
         }
     }
 
-    // 1. If candidate places are directly passed from the client's verified map boundary, use them!
+    $scrapedData = [];
+    $seenNames = [];
+
+    // 1. First include any candidate places passed from the client
     if (!empty($input['candidate_places']) && is_array($input['candidate_places'])) {
-        $scrapedData = [];
-        $seenCandidateNames = [];
         foreach ($input['candidate_places'] as $idx => $cp) {
             if (empty($cp['name'])) continue;
             $name = trim($cp['name']);
             $lower = strtolower($name);
-            if (isset($seenCandidateNames[$lower])) continue;
-            $seenCandidateNames[$lower] = true;
+            if (isset($seenNames[$lower])) continue;
+            $seenNames[$lower] = true;
 
             $lat = (float)($cp['lat'] ?? 0);
             $lng = (float)($cp['lng'] ?? ($cp['lon'] ?? 0));
@@ -2961,7 +2962,7 @@ if ($action === 'scrape') {
             $insights = generateTriChannelInsights($name, $cat, $rating, $reviews, $phone, $lat, $lng);
 
             $scrapedData[] = [
-                'id' => $idx + 1,
+                'id' => count($scrapedData) + 1,
                 'osm_id' => $cp['osm_id'] ?? null,
                 'name' => $name,
                 'category' => $cat,
@@ -2983,12 +2984,25 @@ if ($action === 'scrape') {
             ];
             if (count($scrapedData) >= $limit) break;
         }
-
-        // Enrich missing contacts strictly 1:1 by ID
-        enrichPlacesWithHybridDirectory($scrapedData, $locationName);
-    } else {
-        $scrapedData = scrapeRealPlaces($category, $locationName, $centerLat, $centerLng, $radiusKm, $limit, $bbox);
     }
+
+    // 2. If fewer than $limit places, supplement with real area places from database & live OSM
+    if (count($scrapedData) < $limit) {
+        $needed = $limit - count($scrapedData);
+        $extra = scrapeRealPlaces($category, $locationName, $centerLat, $centerLng, $radiusKm, $needed + 10, $bbox);
+        foreach ($extra as $ex) {
+            $lower = strtolower($ex['name']);
+            if (!isset($seenNames[$lower])) {
+                $seenNames[$lower] = true;
+                $ex['id'] = count($scrapedData) + 1;
+                $scrapedData[] = $ex;
+            }
+            if (count($scrapedData) >= $limit) break;
+        }
+    }
+
+    // 3. Enrich missing contacts strictly 1:1 by ID
+    enrichPlacesWithHybridDirectory($scrapedData, $locationName);
 
     if (empty($scrapedData)) {
         jsonResponse([
