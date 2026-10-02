@@ -2942,15 +2942,26 @@ if ($action === 'scrape') {
         ]);
     }
 
-    // Optional Preprocessing: Filter only places with valid WhatsApp numbers (08xx / +628xx)
+    // Optional Preprocessing: Filter only places with contact numbers (prioritize WhatsApp 08xx, retain verified landline PSTN)
     $onlyWa = !empty($input['only_wa']) && ($input['only_wa'] === true || $input['only_wa'] === 'true' || $input['only_wa'] === 1 || $input['only_wa'] === '1');
     if ($onlyWa) {
-        $scrapedData = array_values(array_filter($scrapedData, function($item) {
+        $withWa = array_values(array_filter($scrapedData, function($item) {
             $raw = (string)($item['phone'] ?? '');
             $digits = preg_replace('/[^0-9]/', '', $raw);
             if (strpos($digits, '0') === 0) $digits = '62' . substr($digits, 1);
             return (strpos($digits, '628') === 0 && strlen($digits) >= 10 && strlen($digits) <= 14);
         }));
+
+        $withAnyPhone = array_values(array_filter($scrapedData, function($item) {
+            $raw = trim((string)($item['phone'] ?? ''));
+            return (!empty($raw) && $raw !== '-' && strlen($raw) >= 6);
+        }));
+
+        if (!empty($withWa)) {
+            $scrapedData = $withWa;
+        } elseif (!empty($withAnyPhone)) {
+            $scrapedData = $withAnyPhone;
+        }
     }
 
     // Save to scraping_history table
