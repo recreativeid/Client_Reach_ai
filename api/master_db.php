@@ -40,15 +40,11 @@ switch ($action) {
 }
 
 /**
- * Get active database connection: Supabase Cloud PostgreSQL first, fallback to SQLite
+ * Get active database connection: Supabase Cloud PostgreSQL (Single Source of Truth)
  */
 function getMasterActiveDb() {
     require_once __DIR__ . '/db_manager.php';
-    try {
-        $primary = getPrimaryDb();
-        if ($primary) return $primary;
-    } catch (Exception $e) {}
-    return getSqliteDb();
+    return getPrimaryDb();
 }
 
 /**
@@ -642,32 +638,31 @@ function handleRegions($dataDir) {
 // ACTION: stats — Global statistics across all data
 // ─────────────────────────────────────────────────────────
 function handleStats($dataDir) {
-    // 1. Try SQLite Database first (Millisecond response)
+    // 1. Supabase Cloud PostgreSQL (Single Source of Truth)
     try {
         require_once __DIR__ . '/db_manager.php';
-        $sqlite = getSqliteDb();
-        $totalPlaces = (int)$sqlite->query("SELECT COUNT(*) FROM harvested_places")->fetchColumn();
-        $totalRegions = (int)$sqlite->query("SELECT COUNT(DISTINCT city) FROM harvested_places WHERE city IS NOT NULL AND city != ''")->fetchColumn();
-        
-        $dbPath = __DIR__ . '/../database/client_reach.db';
-        $dbSize = file_exists($dbPath) ? filesize($dbPath) : 0;
+        $db = getMasterActiveDb();
+        if ($db) {
+            $totalPlaces = (int)$db->query("SELECT COUNT(*) FROM harvested_places")->fetchColumn();
+            $totalRegions = (int)$db->query("SELECT COUNT(DISTINCT city) FROM harvested_places WHERE city IS NOT NULL AND city != ''")->fetchColumn();
 
-        $catStmt = $sqlite->query("SELECT COALESCE(sector, 'Lainnya') as sec, COUNT(*) as cnt FROM harvested_places GROUP BY sec ORDER BY cnt DESC");
-        $categories = [];
-        while ($r = $catStmt->fetch()) {
-            $categories[$r['sec']] = (int)$r['cnt'];
-        }
+            $catStmt = $db->query("SELECT COALESCE(sector, 'Lainnya') as sec, COUNT(*) as cnt FROM harvested_places GROUP BY sec ORDER BY cnt DESC");
+            $categories = [];
+            while ($r = $catStmt->fetch()) {
+                $categories[$r['sec']] = (int)$r['cnt'];
+            }
 
-        if ($totalPlaces > 0) {
-            echo json_encode([
-                'total_places'  => $totalPlaces,
-                'total_regions' => $totalRegions,
-                'total_size_mb' => round($dbSize / (1024 * 1024), 2),
-                'categories'    => $categories,
-                'source'        => 'sqlite_database',
-                'last_updated'  => date('Y-m-d H:i:s')
-            ]);
-            return;
+            if ($totalPlaces > 0) {
+                echo json_encode([
+                    'total_places'  => $totalPlaces,
+                    'total_regions' => $totalRegions,
+                    'total_size_mb' => 0,
+                    'categories'    => $categories,
+                    'source'        => 'supabase_cloud',
+                    'last_updated'  => date('Y-m-d H:i:s')
+                ]);
+                return;
+            }
         }
     } catch (Exception $e) {}
 

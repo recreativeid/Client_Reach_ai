@@ -3,8 +3,8 @@
  * Provides optional client-side Supabase Database & Auth connector.
  */
 const SupabaseService = {
-    // Ganti dengan kredensial Supabase Anda jika ingin mengakses langsung dari frontend
-    supabaseUrl: window.CLIENTO_SUPABASE_URL || '',
+    // Supabase Cloud Project URL
+    supabaseUrl: window.CLIENTO_SUPABASE_URL || 'https://idvxwrpifquqnekzjtxo.supabase.co',
     supabaseKey: window.CLIENTO_SUPABASE_KEY || '',
     client: null,
 

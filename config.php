@@ -69,39 +69,27 @@ define('SUPABASE_KEY', $supabaseKey);
 
 $dbConnected = false;
 
-// 1. Try Supabase Cloud PostgreSQL Connection (if credentials provided)
+// 1. Supabase Cloud PostgreSQL Connection (Single Source of Truth)
 if (!empty($supabaseHost) && extension_loaded('pdo_pgsql')) {
     try {
         $dsn = "pgsql:host={$supabaseHost};port={$supabasePort};dbname={$supabaseDb};sslmode=require";
         $pdo = new PDO($dsn, $supabaseUser, $supabasePass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_TIMEOUT => 15
         ]);
         $dbConnected = true;
     } catch (PDOException $e) {
-        // Fall back to SQLite if Supabase connection fails
+        error_log("Supabase Cloud connection error: " . $e->getMessage());
     }
 }
 
-// 2. Default Zero-Config Local SQLite Connection
 if (!$dbConnected) {
-    $dbDir = __DIR__ . '/database';
-    if (!is_dir($dbDir)) {
-        mkdir($dbDir, 0777, true);
-    }
-    $dbPath = $dbDir . '/client_reach.db';
-    try {
-        $pdo = new PDO("sqlite:" . $dbPath);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        $pdo->exec("PRAGMA foreign_keys = ON;");
-        $pdo->exec("PRAGMA journal_mode = WAL;");
-    } catch (PDOException $e) {
-        jsonResponse([
-            'success' => false,
-            'message' => 'Gagal terhubung ke database: ' . $e->getMessage()
-        ], 500);
-    }
+    // If running in development without internet, report clear guidance
+    jsonResponse([
+        'success' => false,
+        'message' => 'Gagal terhubung ke Supabase Cloud PostgreSQL. Pastikan koneksi internet aktif dan kredensial di config.local.php sudah benar.'
+    ], 500);
 }
 
 $geminiKey = $localConfig['GEMINI_API_KEY'] ?? (getenv('GEMINI_API_KEY') ?: '');
@@ -190,21 +178,31 @@ function isLocalDev() {
 }
 
 /**
- * Simple Rate Limiter using SQLite
- * Prevents brute force attacks on login, OTP verification, and password reset
+ * Rate Limiter for Login, OTP verification, and Password Reset
+ * Supports Supabase PostgreSQL & SQLite
  */
 function initRateLimitTable($pdo) {
     static $initialized = false;
     if ($initialized) return;
     try {
-        $pdo->exec("CREATE TABLE IF NOT EXISTS rate_limits (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ip_address TEXT NOT NULL,
-            action_type TEXT NOT NULL,
-            attempt_time DATETIME DEFAULT CURRENT_TIMESTAMP
-        )");
-        // Auto-clean entries older than 1 hour
-        $pdo->exec("DELETE FROM rate_limits WHERE attempt_time < datetime('now', '-1 hour')");
+        $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'pgsql') {
+            $pdo->exec("CREATE TABLE IF NOT EXISTS public.rate_limits (
+                id BIGSERIAL PRIMARY KEY,
+                ip_address VARCHAR(100) NOT NULL,
+                action_type VARCHAR(50) NOT NULL,
+                attempt_time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+            )");
+            $pdo->exec("DELETE FROM public.rate_limits WHERE attempt_time < NOW() - INTERVAL '1 hour'");
+        } else {
+            $pdo->exec("CREATE TABLE IF NOT EXISTS rate_limits (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ip_address TEXT NOT NULL,
+                action_type TEXT NOT NULL,
+                attempt_time DATETIME DEFAULT CURRENT_TIMESTAMP
+            )");
+            $pdo->exec("DELETE FROM rate_limits WHERE attempt_time < datetime('now', '-1 hour')");
+        }
         $initialized = true;
     } catch (Exception $e) {
         // Silently fail - don't block legitimate users if table creation fails
@@ -215,7 +213,12 @@ function checkRateLimit($pdo, $actionType, $maxAttempts = 5, $windowSeconds = 30
     initRateLimitTable($pdo);
     $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
     try {
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM rate_limits WHERE ip_address = ? AND action_type = ? AND attempt_time > datetime('now', '-' || ? || ' seconds')");
+        $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'pgsql') {
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM public.rate_limits WHERE ip_address = ? AND action_type = ? AND attempt_time > NOW() - (? || ' seconds')::INTERVAL");
+        } else {
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM rate_limits WHERE ip_address = ? AND action_type = ? AND attempt_time > datetime('now', '-' || ? || ' seconds')");
+        }
         $stmt->execute([$ip, $actionType, $windowSeconds]);
         $count = (int)$stmt->fetchColumn();
         return $count < $maxAttempts; // true = allowed, false = rate limited

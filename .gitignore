@@ -4,8 +4,10 @@ config.local.php
 .env.*
 *.env
 
-# SQLite Database (Tracked for GitHub & cPanel zero-config deployment)
-!database/client_reach.db
+# Database Files (Supabase Cloud PostgreSQL is the Single Source of Truth)
+database/*.db
+database/*.sqlite
+database/*.sqlite3
 database/*.db-journal
 database/*.db-wal
 database/*.db-shm

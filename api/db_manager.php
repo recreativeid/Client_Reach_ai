@@ -16,36 +16,41 @@ if (!is_dir($dbDir)) {
 }
 
 /**
- * Get dedicated portable SQLite connection (committed to GitHub, runs in cPanel)
- */
-function getSqliteDb() {
-    static $sqlite = null;
-    if ($sqlite === null) {
-        $dbPath = __DIR__ . '/../database/client_reach.db';
-        $sqlite = new PDO("sqlite:" . $dbPath);
-        $sqlite->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sqlite->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        $sqlite->exec("PRAGMA foreign_keys = ON;");
-        $sqlite->exec("PRAGMA journal_mode = WAL;");
-        initHarvestTables($sqlite, 'sqlite');
-    }
-    return $sqlite;
-}
-
-/**
- * Get primary PDO connection (MySQL in cPanel, Supabase, or SQLite)
+ * Primary Database Connection: Supabase Cloud PostgreSQL (Single Source of Truth)
  */
 function getPrimaryDb() {
     static $primary = null;
     if ($primary !== null) return $primary;
 
-    // Load local config if available
     $localConfig = [];
     if (file_exists(__DIR__ . '/../config.local.php')) {
         $localConfig = require __DIR__ . '/../config.local.php';
     }
 
-    // 1. Check MySQL / MariaDB (Standard cPanel Hosting)
+    // 1. Supabase Cloud PostgreSQL (Sole Operational Database)
+    $pgHost = $localConfig['SUPABASE_DB_HOST'] ?? (getenv('SUPABASE_DB_HOST') ?: '');
+    $pgPass = $localConfig['SUPABASE_DB_PASSWORD'] ?? (getenv('SUPABASE_DB_PASSWORD') ?: '');
+    $pgUser = $localConfig['SUPABASE_DB_USER'] ?? (getenv('SUPABASE_DB_USER') ?: 'postgres');
+    $pgPort = $localConfig['SUPABASE_DB_PORT'] ?? (getenv('SUPABASE_DB_PORT') ?: '6543');
+    $pgDb   = $localConfig['SUPABASE_DB_NAME'] ?? (getenv('SUPABASE_DB_NAME') ?: 'postgres');
+
+    if (!empty($pgHost) && extension_loaded('pdo_pgsql')) {
+        try {
+            $dsn = "pgsql:host={$pgHost};port={$pgPort};dbname={$pgDb};sslmode=require";
+            $pdo = new PDO($dsn, $pgUser, $pgPass, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_TIMEOUT => 15
+            ]);
+            initHarvestTables($pdo, 'pgsql');
+            $primary = $pdo;
+            return $primary;
+        } catch (PDOException $e) {
+            error_log("Supabase Cloud connection error in db_manager: " . $e->getMessage());
+        }
+    }
+
+    // 2. MySQL fallback (cPanel if explicitly configured)
     $mysqlHost = $localConfig['DB_HOST'] ?? (getenv('DB_HOST') ?: ($localConfig['MYSQL_HOST'] ?? (getenv('MYSQL_HOST') ?: '')));
     $mysqlDb   = $localConfig['DB_NAME'] ?? (getenv('DB_NAME') ?: ($localConfig['MYSQL_DATABASE'] ?? (getenv('MYSQL_DATABASE') ?: 'client_reach')));
     $mysqlUser = $localConfig['DB_USER'] ?? (getenv('DB_USER') ?: ($localConfig['MYSQL_USER'] ?? (getenv('MYSQL_USER') ?: '')));
@@ -62,36 +67,15 @@ function getPrimaryDb() {
             initHarvestTables($pdo, 'mysql');
             $primary = $pdo;
             return $primary;
-        } catch (PDOException $e) {
-            // Fall back to SQLite
-        }
+        } catch (PDOException $e) {}
     }
 
-    // 2. Check Supabase PostgreSQL
-    $pgHost = $localConfig['SUPABASE_DB_HOST'] ?? (getenv('SUPABASE_DB_HOST') ?: '');
-    $pgPass = $localConfig['SUPABASE_DB_PASSWORD'] ?? (getenv('SUPABASE_DB_PASSWORD') ?: '');
-    $pgUser = $localConfig['SUPABASE_DB_USER'] ?? (getenv('SUPABASE_DB_USER') ?: 'postgres');
-    $pgPort = $localConfig['SUPABASE_DB_PORT'] ?? (getenv('SUPABASE_DB_PORT') ?: '5432');
-    $pgDb   = $localConfig['SUPABASE_DB_NAME'] ?? (getenv('SUPABASE_DB_NAME') ?: 'postgres');
+    return null;
+}
 
-    if (!empty($pgHost) && extension_loaded('pdo_pgsql')) {
-        try {
-            $dsn = "pgsql:host={$pgHost};port={$pgPort};dbname={$pgDb};sslmode=require";
-            $pdo = new PDO($dsn, $pgUser, $pgPass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-            ]);
-            initHarvestTables($pdo, 'pgsql');
-            $primary = $pdo;
-            return $primary;
-        } catch (PDOException $e) {
-            // Fall back to SQLite
-        }
-    }
-
-    // 3. Fallback: Local SQLite
-    $primary = getSqliteDb();
-    return $primary;
+function getSqliteDb() {
+    // Forward directly to primary Supabase Cloud DB
+    return getPrimaryDb();
 }
 
 /**
@@ -202,14 +186,14 @@ function initHarvestTables($pdo, $driver = null) {
 }
 
 /**
- * Save an array of place records to the database (Target: SQLite for GitHub/cPanel, plus local MySQL if configured)
+ * Save an array of place records to Supabase Cloud PostgreSQL (Single Source of Truth)
  */
 function saveHarvestPlacesToDb($records, $regionName = '', $provinceName = '', $subdistrictName = '') {
     if (empty($records)) return 0;
 
     $inserted = 0;
 
-    // 1. Primary target: Supabase Cloud PostgreSQL (or MySQL if configured)
+    // Single Source of Truth: Supabase Cloud PostgreSQL
     try {
         $primaryDb = getPrimaryDb();
         if ($primaryDb) {
@@ -218,18 +202,8 @@ function saveHarvestPlacesToDb($records, $regionName = '', $provinceName = '', $
             syncToScrapedItems($primaryDb, $records, $regionName, $provinceName);
         }
     } catch (Exception $e) {
-        error_log("Error saving to primary DB: " . $e->getMessage());
+        error_log("Error saving to Supabase primary DB: " . $e->getMessage());
     }
-
-    // 2. Also keep local SQLite in sync as portable offline mirror
-    try {
-        $sqliteDb = getSqliteDb();
-        if ($sqliteDb) {
-            $sqInserted = insertRecordsToPdo($sqliteDb, 'sqlite', $records, $regionName, $provinceName, $subdistrictName);
-            syncToScrapedItems($sqliteDb, $records, $regionName, $provinceName);
-            if ($inserted === 0) $inserted = $sqInserted;
-        }
-    } catch (Exception $e) {}
 
     return $inserted;
 }
@@ -339,7 +313,7 @@ function syncToScrapedItems($pdo, $records, $regionName, $provinceName) {
         // Create or get history entry
         $hStmt = $pdo->prepare("
             INSERT INTO scraping_history (query_name, method, location_name, target_category, total_found, created_at)
-            VALUES (?, 'Automated Regional Harvest (Overpass + Photon)', ?, ?, ?, datetime('now'))
+            VALUES (?, 'Automated Regional Harvest (Overpass + Photon)', ?, ?, ?, CURRENT_TIMESTAMP)
         ");
         $hStmt->execute(["Harvest $locName", $locName, $catName, $total]);
         $historyId = $pdo->lastInsertId();
@@ -348,7 +322,7 @@ function syncToScrapedItems($pdo, $records, $regionName, $provinceName) {
         $itemStmt = $pdo->prepare("
             INSERT INTO scraped_items 
             (history_id, name, address, phone, lat, lng, category, social_media, opening_hours, rating, reviews_count, status, insights_json, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, '', ?, 4.5, 10, 'none', ?, datetime('now'))
+            VALUES (?, ?, ?, ?, ?, ?, ?, '', ?, 4.5, 10, 'none', ?, CURRENT_TIMESTAMP)
         ");
 
         $pdo->beginTransaction();
