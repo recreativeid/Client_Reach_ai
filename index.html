@@ -1872,37 +1872,29 @@
         </button>
       </div>
 
-      <!-- Target Business Summary Card (Shared Context) -->
-      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
-        <div class="d-flex justify-between align-center" style="margin-bottom: 2px;">
-          <span style="font-size: 0.7rem; color: #475569; font-weight: 700; text-transform: uppercase;">
-            Target Calon Klien:
-          </span>
-          <span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:600;" id="ai-modal-biz-badge">Terverifikasi</span>
+      <!-- Target Business Summary Card (Shared Context - Compact) -->
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+        <div style="min-width: 0;">
+          <div style="font-size: 0.88rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="ai-modal-biz-name">Kopi Senja Utama</div>
+          <div style="font-size: 0.7rem; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="ai-modal-biz-meta">
+            Cafe & Coffee Shop • Magelang Utara
+          </div>
         </div>
-        <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;" id="ai-modal-biz-name">Kopi Senja Utama</div>
-        <div style="font-size: 0.72rem; color: #475569;" id="ai-modal-biz-meta">
-          Cafe & Coffee Shop • Magelang Utara • <i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.8 (85 ulasan)
-        </div>
+        <span class="badge" style="background:#eff6ff; color:#2563eb; font-weight:600; font-size: 0.7rem; flex-shrink: 0;" id="ai-modal-biz-badge">Terverifikasi</span>
       </div>
 
-      <!-- Data-Driven Opportunity Detector (Multi-Checklist, Clean & Zero Emojis) -->
-      <div id="ai-modal-opp-section" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
-        <div class="d-flex justify-between align-center" style="margin-bottom: 8px;">
-          <div>
-            <div style="font-size: 0.72rem; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.3px;">
-              Analisis Celah &amp; Peluang Bisnis (Berdasarkan Data)
-            </div>
-            <div style="font-size: 0.68rem; color: #64748b;">
-              Centang satu atau beberapa peluang di bawah untuk meramu hook penawaran
-            </div>
-          </div>
-          <span id="opp-count-badge" class="badge" style="background: #f1f5f9; color: #334155; font-size: 0.68rem; font-weight: 600;">
+      <!-- Data-Driven Opportunity Detector (Multi-Checklist, Clean Single Line) -->
+      <div id="ai-modal-opp-section" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px;">
+        <div class="d-flex justify-between align-center" style="margin-bottom: 6px;">
+          <span style="font-size: 0.7rem; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.3px;">
+            Peluang Bisnis Berdasarkan Data
+          </span>
+          <span id="opp-count-badge" class="badge" style="background: #f1f5f9; color: #475569; font-size: 0.66rem; font-weight: 600;">
             0 Terdeteksi
           </span>
         </div>
-        <div id="opp-checklist-container" style="display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; padding-right: 4px;">
-          <!-- Dynamically populated via detectOpportunities() in JS -->
+        <div id="opp-checklist-container" style="display: flex; flex-direction: column; gap: 4px;">
+          <!-- Dynamically populated 1-row items via JS -->
         </div>
       </div>
 
@@ -1910,7 +1902,7 @@
            PANEL 1: TEMPLATE STANDAR (Sesuai Template Awal, Cepat & Praktis)
            ============================================================== -->
       <div id="outreach-panel-standard">
-        <div class="form-group" style="margin-bottom: 10px;">
+        <div class="form-group" style="margin-bottom: 8px;">
           <label class="form-label" style="font-size: 0.72rem;">Pilihan Gaya Sapaan Cepat</label>
           <select id="standard-greeting-select" class="form-select" style="font-size: 0.75rem;">
             <option value="formal">Formal: Hallo kak dgn pemilik/manajemen {nama_tempat}?</option>
@@ -1922,17 +1914,6 @@
         <div class="form-group">
           <label class="form-label" style="font-size: 0.72rem;">Naskah Pesan WhatsApp Terpersonalisasi</label>
           <textarea id="standard-pitch-output" class="form-textarea" rows="6" style="font-size: 0.78rem;"></textarea>
-        </div>
-
-        <!-- Callout Banner to AI Tab -->
-        <div style="background: #fdf4ff; border: 1px solid #f0abfc; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-          <div style="font-size: 0.72rem; color: #86198f;">
-            <strong>Ingin Closing Lebih Tinggi?</strong><br>
-            Gunakan <strong>Gemini AI</strong> untuk membuat calon pelanggan merasa butuh & sertakan gambar/brosur promo!
-          </div>
-          <button type="button" class="btn btn-sm" id="btn-quick-switch-to-ai" style="background: #a21caf; color:#fff; font-size: 0.72rem; padding: 5px 10px; border:none; white-space:nowrap;">
-            Buka AI Closer &rarr;
-          </button>
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 10px;">

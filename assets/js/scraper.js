@@ -3903,9 +3903,9 @@ const ScraperClient = {
                 id: 'no_web',
                 badge: 'Tanpa Website',
                 badgeClass: 'opp-badge-danger',
-                title: 'Jasa Pembuatan Website & Profil Landing Page Modern',
-                reason: 'Data audit mendeteksi bisnis ini belum memiliki website/landing page resmi. Calon pembeli kesulitan mengecek portofolio, menu, dan kredibilitas usaha secara langsung.',
-                solution: 'Pembuatan landing page mobile-friendly satu halaman dengan tombol langsung WhatsApp & integrasi peta.',
+                title: 'Jasa Pembuatan Website & Landing Page',
+                reason: 'Data audit mendeteksi bisnis ini belum memiliki website/landing page resmi. Calon pembeli kesulitan mengecek portofolio dan menu.',
+                solution: 'Pembuatan landing page mobile-friendly satu halaman dengan tombol langsung WhatsApp & peta.',
                 service: 'Jasa Pembuatan Website & Landing Page Profesional',
                 pain: 'Belum memiliki website resmi atau portofolio digital sehingga calon pembeli ragu',
                 pitchHook: 'kami perhatikan profil bisnis kakak di Google belum tertaut dengan website/landing page resmi. Banyak calon pembeli ragu bertransaksi karena tidak bisa melihat portofolio/menu lengkap',
@@ -3918,11 +3918,11 @@ const ScraperClient = {
         if (ratingNum > 0 && ratingNum < 4.2) {
             opps.push({
                 id: 'low_rating',
-                badge: 'Rating Rendah (< 4.2)',
+                badge: `Rating Rendah (${ratingNum.toFixed(1)})`,
                 badgeClass: 'opp-badge-warning',
-                title: 'Jasa Manajemen Reputasi & Review Positif Organik',
-                reason: `Rating bisnis tercatat ${ratingNum.toFixed(1)} dari 5.0 (di bawah rata-rata aman 4.2). Konsumen modern cenderung beralih ke kompetitor dengan rating 4.5 ke atas.`,
-                solution: 'Sistem pengumpulan ulasan bintang 5 organik dari pelanggan puas dan strategi mitigasi ulasan negatif.',
+                title: 'Manajemen Reputasi & Review Positif',
+                reason: `Rating tercatat ${ratingNum.toFixed(1)} dari 5.0 (di bawah rata-rata aman 4.2). Konsumen cenderung memilih tempat dengan rating 4.5+.`,
+                solution: 'Sistem pengumpulan ulasan bintang 5 organik dari pelanggan puas.',
                 service: 'Jasa Optimasi Google Maps & Review Booster',
                 pain: 'Jumlah ulasan masih sedikit atau ada review negatif yang belum ditangani profesional',
                 pitchHook: `kami melihat rating toko saat ini di angka ${ratingNum.toFixed(1)}. Padahal dengan sedikit penataan respon ulasan dan filter komplain, reputasi bisa cepat naik ke 4.7+`,
@@ -3935,11 +3935,11 @@ const ScraperClient = {
         if (revCount < 25 && (ratingNum >= 4.2 || ratingNum === 0)) {
             opps.push({
                 id: 'low_reviews',
-                badge: 'Ulasan Sedikit (< 25)',
+                badge: `Ulasan Sedikit (${revCount})`,
                 badgeClass: 'opp-badge-info',
-                title: 'Jasa Optimasi Google Maps & Review Booster Organik',
-                reason: `Jumlah ulasan baru tercatat ${revCount} ulasan. Algoritma Google Maps memprioritaskan bisnis dengan interaksi ulasan aktif untuk masuk ke Local 3-Pack (halaman utama).`,
-                solution: 'Optimasi listing peta (foto interior/eksterior HD, tagar lokasi) dan program kartu ulasan cepat via QR Code.',
+                title: 'Optimasi Google Maps & Review Booster',
+                reason: `Jumlah ulasan baru tercatat ${revCount} ulasan. Google Maps memprioritaskan bisnis dengan ulasan aktif di pencarian teratas.`,
+                solution: 'Optimasi listing peta dan booster ulasan bintang 5 organik.',
                 service: 'Jasa Optimasi Google Maps & Review Booster',
                 pain: 'Peringkat Google Maps belum di 3 besar & kompetitor di sekitar lebih ramai pengunjung',
                 pitchHook: `toko kakak sudah punya rating bagus (${ratingNum || '4.8'}), tapi ulasannya baru ${revCount}. Kompetitor di sekitar yang punya ratusan ulasan lebih berpeluang disarankan Google ke calon pembeli baru`,
@@ -3958,13 +3958,13 @@ const ScraperClient = {
         if (!isMobileWA) {
             opps.push({
                 id: 'no_wa_cs',
-                badge: hasAnyPhone ? 'Telepon Kantor (Bukan WA)' : 'Tanpa Kontak WA',
+                badge: hasAnyPhone ? 'Telepon Kantor' : 'Tanpa Kontak WA',
                 badgeClass: 'opp-badge-warning',
-                title: 'Setup WhatsApp Bisnis & Integrasi Chat CS Otomatis',
+                title: 'Setup WhatsApp Bisnis & Chat CS',
                 reason: hasAnyPhone 
-                    ? `Nomor kontak terdaftar adalah telepon PSTN/kantor (${rawPhone}). Mayoritas konsumen modern enggan telepon pulsa dan lebih memilih chat WhatsApp interaktif.`
+                    ? `Nomor kontak terdaftar adalah telepon kantor (${rawPhone}). Konsumen modern lebih memilih chat WhatsApp.`
                     : 'Belum ada nomor kontak yang dapat dihubungi pelanggan langsung dari direktori digital.',
-                solution: 'Setup WhatsApp Business resmi, auto-greeting 24/7 jam kerja, dan integrasi tombol chat di semua profil online.',
+                solution: 'Setup WhatsApp Business resmi dan integrasi tombol chat di profil online.',
                 service: 'Sistem POS Kasir Online & Manajemen Usaha',
                 pain: 'Ingin omset naik drastis tapi hemat biaya iklan berbayar yang mahal',
                 pitchHook: hasAnyPhone 
@@ -3980,11 +3980,11 @@ const ScraperClient = {
         if (!hasHours) {
             opps.push({
                 id: 'missing_hours',
-                badge: 'Jam Buka Belum Tertera',
+                badge: 'Jam Operasional Belum Ada',
                 badgeClass: 'opp-badge-neutral',
-                title: 'Jasa Verifikasi & Optimasi Profil Bisnis Google (GMB)',
-                reason: 'Jam operasional buka/tutup tidak terdata pada peta. Risiko calon pelanggan menganggap toko tutup saat mereka sedang mencari tempat di jam sibuk.',
-                solution: 'Audit kelengkapan info Google Business Profile: verifikasi jam operasional hari kerja/libur, penambahan foto HD, dan deskripsi SEO lokal.',
+                title: 'Verifikasi & Jam Buka Profil Bisnis',
+                reason: 'Jam operasional buka/tutup tidak terdata pada peta.',
+                solution: 'Audit kelengkapan info Google Business Profile dan verifikasi jam buka.',
                 service: 'Jasa Optimasi Google Maps & Review Booster',
                 pain: 'Kompetitor lokal lebih ramai di jam sibuk & ranking Google Maps belum #1',
                 pitchHook: 'jam operasional toko belum lengkap tercantum di Google Maps. Calon pelanggan berisiko ragu datang karena takut toko sedang tutup',
@@ -3996,11 +3996,11 @@ const ScraperClient = {
         if (opps.length === 0) {
             opps.push({
                 id: 'scale_growth',
-                badge: 'Perluasan Pasar & Scaling Iklan',
+                badge: 'Peluang Scaling Iklan',
                 badgeClass: 'opp-badge-success',
-                title: 'Jasa Perluasan Segmen Pasar & Iklan Digital Tertarget',
-                reason: `Profil bisnis ini sudah sangat kuat (${ratingNum || '4.8'} bintang dengan ${revCount} ulasan dan kontak aktif). Peluang emas saat ini adalah ekspansi penjualan melalui targeted traffic.`,
-                solution: 'Pengelolaan kampanye iklan Meta Ads / Google Ads tertarget lokal untuk melipatgandakan omset tanpa boros anggaran.',
+                title: 'Perluasan Pasar & Iklan Digital',
+                reason: `Profil bisnis ini sudah sangat kuat (${ratingNum || '4.8'} bintang). Peluang saat ini adalah ekspansi penjualan melalui targeted traffic.`,
+                solution: 'Pengelolaan kampanye iklan digital tertarget lokal untuk melipatgandakan omset.',
                 service: 'Jasa Kelola Media Sosial & Iklan Berbayar',
                 pain: 'Ingin omset naik drastis tapi hemat biaya iklan berbayar yang mahal',
                 pitchHook: `kami perhatikan profil bisnis ${item.name} sudah sangat rapi dan punya reputasi unggul di kawasan ini. Ini momen tepat untuk melipatgandakan jangkauan ke konsumen baru`,
@@ -4024,16 +4024,12 @@ const ScraperClient = {
         }
 
         oppContainer.innerHTML = this.detectedOpportunities.map((opp) => `
-            <label class="opp-item-row ${opp.defaultChecked ? 'is-selected' : ''}" data-opp-id="${opp.id}" style="display: flex; align-items: flex-start; gap: 10px; background: ${opp.defaultChecked ? '#ffffff' : '#f8fafc'}; border: 1px solid ${opp.defaultChecked ? '#2563eb' : '#e2e8f0'}; border-radius: 8px; padding: 8px 10px; cursor: pointer; margin-bottom: 6px; user-select: none;">
-                <input type="checkbox" class="opp-checkbox" data-opp-id="${opp.id}" ${opp.defaultChecked ? 'checked' : ''} style="width: 16px; height: 16px; margin-top: 3px; cursor: pointer; accent-color: #2563eb; flex-shrink: 0;">
-                <div style="flex: 1; min-width: 0;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                        <span class="opp-title" style="font-size: 0.78rem; font-weight: 700; color: #0f172a;">${opp.title}</span>
-                        <span class="opp-badge ${opp.badgeClass}">${opp.badge}</span>
-                    </div>
-                    <div class="opp-desc" style="font-size: 0.7rem; color: #475569; margin-top: 2px; line-height: 1.35;">${opp.reason}</div>
-                    <div class="opp-solution" style="font-size: 0.68rem; color: #2563eb; font-weight: 600; margin-top: 4px;">Solusi: ${opp.solution}</div>
+            <label class="opp-item-row ${opp.defaultChecked ? 'is-selected' : ''}" data-opp-id="${opp.id}">
+                <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+                    <input type="checkbox" class="opp-checkbox" data-opp-id="${opp.id}" ${opp.defaultChecked ? 'checked' : ''}>
+                    <span class="opp-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${opp.title}</span>
                 </div>
+                <span class="opp-badge ${opp.badgeClass}">${opp.badge}</span>
             </label>
         `).join('');
 
@@ -4042,8 +4038,6 @@ const ScraperClient = {
                 const row = e.target.closest('.opp-item-row');
                 if (row) {
                     row.classList.toggle('is-selected', e.target.checked);
-                    row.style.background = e.target.checked ? '#ffffff' : '#f8fafc';
-                    row.style.borderColor = e.target.checked ? '#2563eb' : '#e2e8f0';
                 }
                 this.syncSelectedOpportunities();
             });

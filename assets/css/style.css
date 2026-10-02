@@ -3178,32 +3178,35 @@ body:not(.authenticated) .mobile-bottom-nav {
 
 /* Clean Enterprise Opportunity Checklist & Badges (Zero Emojis) */
 .opp-item-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
-  padding: 8px 10px;
+  padding: 6px 10px;
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;
+  margin-bottom: 4px;
 }
 .opp-item-row:hover {
   background: #f1f5f9;
   border-color: #cbd5e1;
 }
 .opp-item-row.is-selected {
-  background: #ffffff;
-  border-color: #2563eb;
-  box-shadow: 0 1px 4px rgba(37, 99, 235, 0.08);
+  background: #ffffff !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08);
 }
 .opp-checkbox {
-  width: 16px;
-  height: 16px;
-  margin-top: 2px;
+  width: 15px;
+  height: 15px;
+  margin: 0;
   cursor: pointer;
   accent-color: #2563eb;
+  flex-shrink: 0;
 }
 .opp-badge {
   display: inline-flex;
